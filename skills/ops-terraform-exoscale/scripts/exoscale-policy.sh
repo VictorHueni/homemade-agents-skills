@@ -7,7 +7,12 @@
 # These checks are plain HCL pattern checks — deterministic and version-stable.
 #
 # Checks:
-#   EXO-001 (HIGH) — exoscale_security_group_rule opens SSH (22) INGRESS to 0.0.0.0/0
+#   EXO-001 (HIGH) — exoscale_security_group_rule opens SSH (22) INGRESS to the world
+#   EXO-002 (HIGH) — exoscale_security_group_rule opens any OTHER port (e.g. RDP 3389,
+#                    VNC 5900, or all-ports) INGRESS to the world
+#
+# "the world" = 0.0.0.0/0 or ::/0. A legitimately-scoped public rule (e.g. bootstrap
+# SSH from an admin /32) is NOT open to the world and does not trigger either check.
 #
 # Usage:  exoscale-policy.sh <dir>
 # Exit:   0 = clean, 1 = at least one HIGH finding, 2 = usage error
@@ -19,7 +24,8 @@ DIR="${1:-infra}"
 findings=0
 while IFS= read -r -d '' file; do
   # awk walks each `resource "exoscale_security_group_rule" "<n>" { ... }` block
-  # (brace-depth tracked) and flags SSH-22 INGRESS rules open to 0.0.0.0/0.
+  # (brace-depth tracked) and flags INGRESS rules open to the world (0.0.0.0/0 or
+  # ::/0): SSH-22 → EXO-001, any other port/proto → EXO-002.
   awk -v fname="$file" '
     function reset() { intype=""; proto=""; sp=""; ep=""; cidr=""; rname="" }
     BEGIN { depth=0; inblock=0; reset() }
@@ -42,13 +48,21 @@ while IFS= read -r -d '' file; do
         n=gsub(/{/,"{"); m=gsub(/}/,"}"); bdepth+=n-m
         if (bdepth<=0) {
           # block closed — evaluate
-          openworld=(cidr=="0.0.0.0/0")
+          openworld=(cidr=="0.0.0.0/0" || cidr=="::/0")
           ssh=(sp!="" && ep!="" && sp+0<=22 && ep+0>=22)
           ingress=(intype=="" || intype=="INGRESS")
           tcp=(proto=="" || proto=="TCP")
-          if (openworld && ssh && ingress && tcp) {
-            printf("EXO-001 (HIGH) %s: rule \"%s\" exposes SSH (22) INGRESS to 0.0.0.0/0\n", fname, rname)
-            hits++
+          if (openworld && ingress) {
+            if (ssh && tcp) {
+              printf("EXO-001 (HIGH) %s: rule \"%s\" exposes SSH (22) INGRESS to %s\n", fname, rname, cidr)
+              hits++
+            } else {
+              # any other public ingress: RDP 3389, VNC 5900, all-ports, non-TCP, etc.
+              portdesc=(sp=="" && ep=="") ? "all ports" : (sp==ep ? "port " sp : "ports " sp "-" ep)
+              protodesc=(proto=="") ? "ALL" : proto
+              printf("EXO-002 (HIGH) %s: rule \"%s\" exposes %s/%s INGRESS to %s\n", fname, rname, protodesc, portdesc, cidr)
+              hits++
+            }
           }
           inblock=0
         }
@@ -59,7 +73,8 @@ while IFS= read -r -d '' file; do
 done < <(find "$DIR" -type f -name '*.tf' -not -path '*/.terraform/*' -print0)
 
 if [ "$findings" -ne 0 ]; then
-  echo "exoscale-policy: HIGH findings above. Restrict the rule to an admin CIDR (var.admin_cidr)." >&2
+  echo "exoscale-policy: HIGH findings above. Scope each rule to a specific CIDR (e.g. an" >&2
+  echo "  admin /32) or bind the service to a private/overlay network — no public ingress." >&2
   exit 1
 fi
 echo "exoscale-policy: no findings"

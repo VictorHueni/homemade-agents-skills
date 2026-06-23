@@ -65,7 +65,7 @@ Stand up a clean Terraform project for Exoscale.
    - `.gitignore` — per Safety rule 3.
    - `.trivyignore` — reviewable Trivy suppression file (empty starter).
 
-   (Exoscale-specific security gating ships *with the skill* in `scripts/exoscale-policy.sh` — starter check `EXO-001`, SSH `0.0.0.0/0` — so nothing provider-specific needs scaffolding into the project.)
+   (Exoscale-specific security gating ships *with the skill* in `scripts/exoscale-policy.sh` — `EXO-001` (SSH open to the world) + `EXO-002` (any other port, e.g. RDP 3389 / VNC 5900, open to the world) — so nothing provider-specific needs scaffolding into the project.)
 3. Ask whether to enable **remote state in Exoscale SOS**. If yes, render `backend.tf` from the template and walk the user through `references/sos-backend.md` (endpoint, region, `skip_*` flags, locking caveat). If no, leave `backend.tf` out (local state).
 4. Tell the user to `export EXOSCALE_API_KEY=… EXOSCALE_API_SECRET=…` (point at an IAM key from the Exoscale portal → IAM → API Keys; recommend a scoped key, not the unrestricted root key).
 5. Finish by running **Mode 3 (Check)** so the scaffold is verified green before handoff.
@@ -86,7 +86,7 @@ Run `scripts/tf-check.sh <dir>` (defaults to `infra/`). The script executes, in 
 1. `terraform fmt -check -recursive -diff`
 2. `terraform init -backend=false` then `terraform validate`
 3. `tflint --init` then `tflint --recursive` (or single-dir) using the project `.tflint.hcl`
-4. `scripts/exoscale-policy.sh` — native, dependency-free Exoscale security checks (**always runs**). Starter `EXO-001` fails when an `exoscale_security_group_rule` opens SSH (22) INGRESS to `0.0.0.0/0`.
+4. `scripts/exoscale-policy.sh` — native, dependency-free Exoscale security checks (**always runs**). `EXO-001` fails when an `exoscale_security_group_rule` opens SSH (22) INGRESS to the world (`0.0.0.0/0` or `::/0`); `EXO-002` fails when any other port (RDP 3389, VNC 5900, all-ports, non-TCP, …) is opened INGRESS to the world. A rule scoped to a specific CIDR (e.g. an admin `/32`) passes both.
 5. `trivy fs --scanners misconfig,secret --severity HIGH,CRITICAL --exit-code 1` — built-in IaC misconfig (generic) + secret detection. **Auto-detected**: runs if `trivy` is on `PATH`, otherwise skipped with a warning (does not block). See `references/toolchain.md` for why Exoscale gating is native rather than a Trivy custom check.
 6. `terraform plan` (read-only; needs creds + may need real `init` with backend) — **stops here. No apply.**
 
