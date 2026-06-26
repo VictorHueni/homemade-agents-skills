@@ -65,7 +65,7 @@ Exact correspondence between C4 abstractions and arc42 sections, plus the gaps t
 | §6 Runtime View | `arch-runtime-view` (Milestone 2) — uses **dynamic** C4 views, not static |
 | §8 Cross-cutting Concepts | `arch-cross-cutting` (Milestone 2) |
 | §9 Architecture Decisions | `arch-adr` (existing) |
-| §10 Quality Requirements | `spec-quality-attributes` (existing) + `spec-test-strategy` (planned) |
+| §10 Quality Requirements | `spec-quality-attributes` (existing) + `qa-test-strategy` (planned; mints `TS-NN`) |
 | §11 Risks and Technical Debt | `arch-risks` (Milestone 2) + `dev-tech-debt` (user's separate workstream) |
 | §12 Glossary | `domain-glossary` (existing) |
 
