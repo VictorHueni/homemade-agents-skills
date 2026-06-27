@@ -24,11 +24,11 @@ A personal Claude Code toolkit — composable skills for business architecture, 
 | `domain-` | `domain-glossary` | Ubiquitous language — `GT-NN` |
 | `domain-` | `domain-model` | Entities · aggregates · events |
 | `spec-` | `spec-functional-breakdown-structure` | Feature registry — `C-N.M.FXX` |
-| `spec-` | `spec-delivery-roadmap` | Epics + walking skeleton — `E-NN` |
+| `plan-` | `plan-delivery-roadmap` | Epics + walking skeleton — `E-NN` |
 | `spec-` | `spec-quality-attributes` | NFRs — `QA-XXNN` |
 | `spec-` | `spec-use-case` | Use cases (actor↔system scenarios) — `UC-NN` |
 | `spec-` | `spec-prd` | Product Requirements Document — `PRD-NNNN` |
-| `spec-` | `spec-implementation-plan` | Atomic increment plan |
+| `plan-` | `plan-implementation` | Atomic increment plan |
 | `spec-` | `spec-peer-review` | PRD / plan review |
 | `arch-` | `arch-adr` | Architecture Decision Records — `ADR-NNNN` |
 | `arch-` | `arch-research` | Evidence base for ADRs — `Research-NNNN` |

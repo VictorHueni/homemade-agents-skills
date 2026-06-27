@@ -230,7 +230,7 @@ Frontmatter block (Status / Date / Author / Last verified / Feeds ADRs / Superse
 ## Naming convention
 
 - **Filename:** `{NNNN}-{kebab-case-slug}.md` (4-digit zero-padded, monotonically increasing per project) — mirrors `arch-adr` convention
-- **In-doc ID:** `Research-NNNN` (full word; mirrors `Plan-NNNN` style from `spec-implementation-plan`)
+- **In-doc ID:** `Research-NNNN` (full word; mirrors `Plan-NNNN` style from `plan-implementation`)
 - **Slug:** 2–5 kebab-case words naming the *topic*, not the question — "swiss-healthcare-data-protection-baseline" not "what-does-nfadp-require"
 
 **Examples:**

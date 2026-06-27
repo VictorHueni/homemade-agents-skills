@@ -150,7 +150,7 @@ what order, and where to put it**.
               │
               ▼
    ┌──────────────────────┐
-   │ spec-delivery-roadmap  │
+   │ plan-delivery-roadmap  │
    │ (Plan by Feature)    │
    │ Output: E-NN         │
    │ Groups FBS by VS     │
@@ -532,7 +532,7 @@ moving on.
 
 ### Step 8 — Delivery Roadmap (Plan by Feature + Walking Skeleton + Phase Goals)
 
-**Skill:** `spec-delivery-roadmap`
+**Skill:** `plan-delivery-roadmap`
 **Prerequisites:** Step 7 (FBS — VS stage links + phase tags + ★ markers); Steps 3–4 (Value Streams — pain index + value propositions); Step 1 (Personas — for walking skeleton narrative).
 **Process:**
 - Read FBS + value streams + personas
@@ -540,9 +540,9 @@ moving on.
 - Order by pain index; assign E-NN IDs in priority order
 - Define Walking Skeleton: identify the primary VS to validate; select minimum functionalities per epic covering every VS stage end-to-end; write "can / cannot yet" statement
 - Define Phase Plan: declare which VS streams become fully operational per phase; write one-sentence goal per phase
-- Produce `docs/product-specs/08a-delivery-roadmap.md`
+- Produce `docs/plans/delivery-roadmap.md`
 - Coverage check: every Phase 1 FBS functionality in exactly one epic
-**Output verification:** `docs/product-specs/08a-delivery-roadmap.md` exists; §Walking Skeleton covers every stage of primary VS; §Phase Plan has one goal per phase expressed as VS streams operational; every epic has a value statement; ★ functionalities each anchor their own epic; sizing within 5–25 FBS rows per epic; E-NN IDs in pain-index order.
+**Output verification:** `docs/plans/delivery-roadmap.md` exists; §Walking Skeleton covers every stage of primary VS; §Phase Plan has one goal per phase expressed as VS streams operational; every epic has a value statement; ★ functionalities each anchor their own epic; sizing within 5–25 FBS rows per epic; E-NN IDs in pain-index order.
 
 ### Step 8.5 — CLI Surface Contract (only when the product exposes a CLI)
 
@@ -589,10 +589,10 @@ moving on.
 
 ### Step 11 — Implementation Plans (atomic increments)
 
-**Skill:** `spec-implementation-plan`
+**Skill:** `plan-implementation`
 **Prerequisites:** Step 10 (PRDs).
 **Process:**
-- One plan per PRD: `docs/exec-plans/active/{NNNN}_exec_{slug}.md`
+- One plan per PRD: `docs/plans/active/{NNNN}_exec_{slug}.md`
 - Each plan: numbered increments (Inc-1, Inc-2, …), each small + testable + reversible.
 **Output verification:** each in-flight PRD has a corresponding plan; plan increments are atomic + testable.
 
@@ -625,7 +625,7 @@ Start at **Step 3** (Business Capability Map), skip Steps 1–2 unless:
 
 Skip Steps 1–8 entirely. Go straight to:
 - Step 10 (`spec-prd`) for the feature — manually define the E-NN scope inline in §0.
-- Step 11 (`spec-implementation-plan`) for the plan.
+- Step 11 (`plan-implementation`) for the plan.
 
 Optionally: `discovery-idea` first if the feature is still hypothetical — refine it through the divergent/convergent loop, then graduate to `spec-prd`. Write relevant ADRs before the PRD if architecture decisions are open. Write domain model for the feature's aggregate (Step 7b) if the aggregate isn't already modelled.
 
@@ -654,7 +654,7 @@ Artefact-type id_formats are defined in the structural registry [`artefact-types
 | `CST-NN` | Architecture constraint — technical, organizational, or legal-regulatory constraint limiting the solution space | `arch-arc42` (constraints mode) |
 | `CC-NN` | Cross-cutting concept — horizontal concern applying to multiple containers (auth, logging, error-handling, persistence, caching, etc.) | `arch-arc42` (cross-cutting mode) |
 | `RSK-NN` | Architectural risk or technical debt item — four types: `architectural`, `technical-debt`, `dependency`, `security` | `arch-arc42` (risks mode) |
-| `Inc-N` (within a plan) | Plan increment | `spec-implementation-plan` |
+| `Inc-N` (within a plan) | Plan increment | `plan-implementation` |
 
 **BC-NN namespace rule:** All tactical DDD IDs are scoped to their bounded context. `BC-01.AGG-03` and `BC-02.AGG-03` are different aggregates. Cross-references must always include the BC prefix — bare `AGG-03` is ambiguous and invalid.
 
@@ -685,16 +685,16 @@ docs/
 │   │   └── proc-NN-{slug}.md (one per process)
 │   └── 06a-models/
 │       └── qm-NN-{topic}.md (one per model)
-├── product-specs/                                       ← Product specs
+├── product-specs/                                       ← Product specs (spec-)
 │   ├── use-cases/                                       ← index.md + uc-NN-{slug}.md
 │   ├── 07a-fbs.md
-│   ├── 08a-delivery-roadmap.md
 │   ├── 09a-quality-attributes.md
 │   └── prds/
 │       └── prd-NNNN-{feature}.md (one per PRD)
-├── exec-plans/                                          ← Implementation plans
+├── plans/                                               ← Build planning (plan-)
+│   ├── delivery-roadmap.md                              ← epics (E-NN)
 │   └── active/
-│       └── {NNNN}_exec_{slug}.md  (one per plan)
+│       └── {NNNN}_exec_{slug}.md  (one per implementation plan)
 ├── architecture/                                        ← Architecture
 │   ├── decisions/                                       ← ADRs
 │   │   └── adr-{NNNN}-{slug}.md
@@ -773,7 +773,8 @@ docs/
 |---|---|---|
 | `business-` | `docs/business/` | All BIZBOK Business Architecture artefacts. **Exception:** `business-vision` outputs to `docs/VISION.md` (project root level) for agent-context visibility — the only `business-` skill whose output is not under `docs/business/`. |
 | `discovery-` | `docs/discovery/` | Pre-formal evidence layer — ideation, 1:1 research, group workshops. Cross-cutting; feeds every downstream artefact. Subfolders per artefact (`ideation/`, `interviews/`, `workshops/`). |
-| `spec-` | `docs/product-specs/`, `docs/exec-plans/` | Product specs and execution plans |
+| `spec-` | `docs/product-specs/` | Product specs — FBS, quality attributes, use cases, PRDs (what the product does and how well). |
+| `plan-` | `docs/plans/` | Build planning — delivery roadmap (epics `E-NN`) + implementation plans (`Plan-NNNN`). Split from `spec-` (clew ADR-0009): these specify *intended build sequence*, not the product. |
 | `arch-` | `docs/architecture/` | Subfolders per artefact (e.g., `decisions/` for ADRs) |
 | `domain-` | `docs/domain/` | DDD artefacts — the shared language between business and tech (bounded contexts, glossary, domain model) |
 | `ops-` | `docs/ops/` | Subfolders per artefact (`runbooks/`, `rcas/`) |

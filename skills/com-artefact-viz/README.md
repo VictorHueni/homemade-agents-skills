@@ -14,7 +14,7 @@ Markdown artefact ──parser──> model ──renderer──> one HTML file 
 |---|---|---|
 | `capability-map` | `business-capability-map` | L0-grouped cards + directional left-axis band |
 | `fbs` | `spec-functional-breakdown-structure` | Collapsible tree, horizontal⇄vertical, status badges |
-| `delivery-roadmap` | `spec-delivery-roadmap` | Phase-column timeline + walking skeleton + expandable epic features |
+| `delivery-roadmap` | `plan-delivery-roadmap` | Phase-column timeline + walking skeleton + expandable epic features |
 | `bmc` | `business-model-canvas` | 9-block canvas grid (BMC + Lean), confidence colour-coding |
 | `service-blueprint` | `business-process` + `business-value-stream` + `business-persona` *(composition)* | Swimlane grid with the line of visibility, phase columns, pain overlays + cross-actor handoff spine |
 

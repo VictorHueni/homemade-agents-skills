@@ -110,7 +110,7 @@ Detect from the user's prompt. Ask if ambiguous.
 #### Design process
 
 1. **Read the FBS** — `docs/product-specs/07a-fbs.md`. Group functionalities by capability cluster. Each cluster is a candidate top-level noun (Mode A) or verb group.
-2. **Read the delivery roadmap** — `docs/product-specs/08a-delivery-roadmap.md`. Phase-1 functionalities define the MVP command set. Later phases extend the command tree — document these as `status: planned`.
+2. **Read the delivery roadmap** — `docs/plans/delivery-roadmap.md`. Phase-1 functionalities define the MVP command set. Later phases extend the command tree — document these as `status: planned`.
 3. **Derive the command tree** using the taxonomy from Step 0. Apply rules from `references/discipline.md §Command taxonomy`.
 4. **Design global flags** first: `--help`, `--version`, `--output`, `--config`, `--verbose` / `--quiet`, `--no-color`. These must exist before per-command flags.
 5. **Design per-command signatures** following `references/discipline.md §Flag and argument rules`. For each command: synopsis, description, positional args (required), flags (optional), output description, exit codes.
@@ -225,7 +225,7 @@ find docs/architecture -name "cli-*.md" 2>/dev/null
 | Artefact | Relationship |
 |---|---|
 | **spec-functional-breakdown-structure (`C-N.M.FXX`)** | Primary input — each CLI command should map to one or more FBS functionalities |
-| **spec-delivery-roadmap (`E-NN`)** | Epic groupings drive command release phases; Phase 1 epics define the MVP command set |
+| **plan-delivery-roadmap (`E-NN`)** | Epic groupings drive command release phases; Phase 1 epics define the MVP command set |
 | **domain-bounded-context (`BC-NN`)** | Each command typically delegates to one BC; document which BC per command |
 | **spec-quality-attributes (`QA-XXNN`)** | `QA-PE` entries → response time SLA per command; `QA-US` entries → help text quality standards |
 | **arch-adr (`ADR-NNNN`)** | CLI design decisions → ADRs (taxonomy choice noun-verb vs verb-noun; config file format; output format strategy) |

@@ -221,8 +221,8 @@ git mv docs/runbooks/my-runbook.md docs/ops/runbooks/my-runbook.md
 # Repair inbound links (2)
 # docs/architecture/overview.md:45
 sed -i 's|../runbooks/my-runbook.md|../ops/runbooks/my-runbook.md|g' docs/architecture/overview.md
-# docs/exec-plans/active/0042_deploy/README.md:12
-sed -i 's|../../runbooks/my-runbook.md|../../ops/runbooks/my-runbook.md|g' "docs/exec-plans/active/0042_deploy/README.md"
+# docs/plans/active/0042_deploy/README.md:12
+sed -i 's|../../runbooks/my-runbook.md|../../ops/runbooks/my-runbook.md|g' "docs/plans/active/0042_deploy/README.md"
 ```
 
 **If inbound links = 0:** the fix block contains only `mkdir -p` + `git mv`. Safe to apply immediately.

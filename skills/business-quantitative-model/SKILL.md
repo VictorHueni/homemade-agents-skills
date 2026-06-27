@@ -227,7 +227,7 @@ analysis/
 3. **Pyodide lags CPython by 6-12 months.** Pin `requires-python` conservatively. Run a Pyodide hello-world smoke export *before* committing to a specific Python version in `pyproject.toml`.
 4. **Math module field naming should not assume a single product or single value-capture scope.** When the model has multiple scopes (e.g., direct vs. central allocation, or addressable vs. non-addressable channels), make that explicit in field names — `total_revenue` is ambiguous, `channel_a_revenue` is not.
 
-**Don't build the calculator inside this skill.** If the user wants it, point them at the project's plan-creation workflow (or your `spec-implementation-plan` skill) to scaffold a proper increment plan — calculators benefit from a real Ralph-Loop-able plan with explicit increments, not ad-hoc construction.
+**Don't build the calculator inside this skill.** If the user wants it, point them at the project's plan-creation workflow (or your `plan-implementation` skill) to scaffold a proper increment plan — calculators benefit from a real Ralph-Loop-able plan with explicit increments, not ad-hoc construction.
 
 ---
 

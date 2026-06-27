@@ -65,7 +65,7 @@ Ask the user the following 4 questions in a single message with lettered options
 1. Audit scope?
    A. Full docs/ tree — all 18 check categories (default)
    B. Business architecture layer only (docs/business/)
-   C. Product specs layer only (docs/product-specs/, docs/exec-plans/)
+   C. Product specs layer only (docs/product-specs/, docs/plans/)
    D. Discovery layer only (docs/discovery/ — ideation, interviews, workshops)
    E. Single file or folder — please name it
 

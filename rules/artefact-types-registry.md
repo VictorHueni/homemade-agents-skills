@@ -49,13 +49,13 @@ one row per type. Build order, dependencies, and the ER live in
 | `value_object` | `domain-model` | `BC-\d{2}\.VO-\d{2}` | inherits-from-parent (`domain_model`) | _(inherits `domain_model`)_ | `180d` | — | _TBD_ |
 | `domain_event` | `domain-model` | `BC-\d{2}\.EVT-\d{2}` | inherits-from-parent (`domain_model`) | _(inherits `domain_model`)_ | `180d` | — | _TBD_ |
 | `interface_contract` | `arch-service-contract` | `(BC-\d{2}\.)?CTR-\d{2}` | one-per-artefact | `docs/architecture/interfaces/{bc-slug}.md` | `90d` | — | _TBD_ |
-| `epic` | `spec-delivery-roadmap` | `E-\d{2}` | single-collection | `docs/product-specs/08a-delivery-roadmap.md` | `60d` | — | _TBD_ |
+| `epic` | `plan-delivery-roadmap` | `E-\d{2}` | single-collection | `docs/plans/delivery-roadmap.md` | `60d` | — | _TBD_ |
 | `cli_surface` | `arch-cli-contract` | `(BC-\d{2}\.)?CLI-\d{2}` | one-per-artefact | `docs/architecture/interfaces/cli-{slug}.md` | `90d` | — | _TBD_ |
 | `cli_command` | `arch-cli-contract` | `(BC-\d{2}\.)?CLI-\d{2}\.CMD-\d{2}` | inherits-from-parent (`cli_surface`) | _(inherits `cli_surface`)_ | `90d` | — | _TBD_ |
 | `quality_attribute` | `spec-quality-attributes` | `QA-[A-Z]{2}\d{2}` | single-collection | `docs/product-specs/09a-quality-attributes.md` | `60d` | — | _TBD_ |
 | `use_case` | `spec-use-case` | `UC-\d{2}` | one-per-artefact | `docs/product-specs/use-cases/uc-{nn}-{slug}.md` | `60d` | — | _TBD_ |
 | `prd` | `spec-prd` | `PRD-\d{4}` | one-per-artefact | `docs/product-specs/prds/prd-{nnnn}-{feature}.md` | `30d` | — | _TBD_ |
-| `implementation_plan` | `spec-implementation-plan` | `Plan-\d{4}` | one-per-artefact | `docs/exec-plans/active/{nnnn}_exec_{slug}.md` | `30d` | — | _TBD_ |
+| `implementation_plan` | `plan-implementation` | `Plan-\d{4}` | one-per-artefact | `docs/plans/active/{nnnn}_exec_{slug}.md` | `30d` | — | _TBD_ |
 | `adr` | `arch-adr` | `ADR-\d{4}` | one-per-artefact | `docs/architecture/decisions/adr-{nnnn}-{slug}.md` | `180d` | `supersedes`, `superseded_by` | _TBD_ |
 | `research` | `arch-research` | `Research-\d{4}` | one-per-artefact | `docs/architecture/research/{nnnn}-{slug}.md` | `90d` | — | _TBD_ |
 | `idea` | `discovery-idea` | `IDEA-\d{4}` | one-per-artefact | `docs/discovery/ideation/IDEA-{nnnn}-{slug}.md` | `90d` | `graduates_to` | _TBD_ |

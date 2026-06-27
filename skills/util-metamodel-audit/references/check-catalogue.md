@@ -20,11 +20,11 @@ find docs/business -maxdepth 1 -name "04b-objectives.md" 2>/dev/null          # 
 find docs/business/05a-processes -name "proc-*.md" 2>/dev/null | head -1
 find docs/business/06a-models -name "qm-*.md" 2>/dev/null | head -1
 find docs/product-specs -maxdepth 1 -name "07a-fbs.md" 2>/dev/null
-find docs/product-specs -maxdepth 1 -name "08a-delivery-roadmap.md" 2>/dev/null   # Step 8
+find docs/plans -maxdepth 1 -name "delivery-roadmap.md" 2>/dev/null   # Step 8
 find docs/product-specs -maxdepth 1 -name "09a-quality-attributes.md" 2>/dev/null
 find docs/product-specs/use-cases -name "uc-*.md" 2>/dev/null | head -1          # Step 9.5
 find docs/product-specs/prds -name "prd-*.md" 2>/dev/null | head -1
-find docs/exec-plans/active -maxdepth 1 -name "*_exec_*.md" 2>/dev/null | head -1
+find docs/plans/active -maxdepth 1 -name "*_exec_*.md" 2>/dev/null | head -1
 find docs/domain -maxdepth 1 -name "02b-bounded-contexts.md" 2>/dev/null           # Step 2b
 find docs/domain -maxdepth 1 -name "02c-glossary.md" 2>/dev/null                  # Step 2c
 find docs/domain/07b-models -name "*.md" 2>/dev/null | head -1             # Step 7b (per BC)
@@ -70,7 +70,7 @@ Then compare each path against the canonical map:
 - `04b-objectives.md` → must be at `docs/business/04b-objectives.md` (flat file)
 - `*-process.md` → must be under `docs/business/05a-processes/`
 - `07a-fbs.md` → must be at `docs/product-specs/07a-fbs.md` (flat file)
-- `08a-delivery-roadmap.md` → must be at `docs/product-specs/08a-delivery-roadmap.md` (flat file)
+- `delivery-roadmap.md` → must be at `docs/plans/delivery-roadmap.md` (flat file)
 - `09a-quality-attributes.md` → must be at `docs/product-specs/09a-quality-attributes.md` (flat file)
 - `uc-*.md` → must be under `docs/product-specs/use-cases/` (one file per use case + `index.md`)
 - `prd-*.md` → must be under `docs/product-specs/prds/`
@@ -172,7 +172,7 @@ grep -rn 'https\?://' docs/ --include="*.md" | grep -v 'Last verified'
 | `BC-NN.EVT-NN` | `\bBC-[0-9]{2}\.EVT-[0-9]{2}\b` | `docs/domain/07b-models/{bc-slug}.md` |
 | `OBJ-NN` | `\bOBJ-[0-9]{2}\b` | `docs/business/04b-objectives.md` |
 | `KR-NN.M` | `\bKR-[0-9]{2}\.[0-9]\b` | `docs/business/04b-objectives.md` |
-| `E-NN` | `\bE-[0-9]{2}\b` | `docs/product-specs/08a-delivery-roadmap.md` |
+| `E-NN` | `\bE-[0-9]{2}\b` | `docs/plans/delivery-roadmap.md` |
 | `QA-[A-Z]{2}[0-9]{2}` | `\bQA-[A-Z]{2}[0-9]{2}\b` | `docs/product-specs/09a-quality-attributes.md` |
 | `ADR-NNNN` | `\bADR-[0-9]{4}\b` | `docs/architecture/decisions/` |
 | `Research-NNNN` | `\bResearch-[0-9]{4}\b` | `docs/architecture/research/` |
@@ -270,11 +270,11 @@ grep -roh '\bCMD-[0-9]\b' docs/ --include="*.md"
 |---|---|
 | `docs/business/04a-value-streams.md` | `docs/business/03a-capability-map.md` (stages consume capabilities) |
 | `docs/product-specs/07a-fbs.md` | `docs/business/03a-capability-map.md` (FBS inherits L0+L1) |
-| `docs/product-specs/08a-delivery-roadmap.md` | `docs/product-specs/07a-fbs.md` (epics group FBS functionalities) |
+| `docs/plans/delivery-roadmap.md` | `docs/product-specs/07a-fbs.md` (epics group FBS functionalities) |
 | `docs/product-specs/09a-quality-attributes.md` | `docs/product-specs/07a-fbs.md` (QA reads FBS differentiators) |
-| Any `docs/product-specs/prds/prd-*.md` | `docs/product-specs/08a-delivery-roadmap.md` (PRDs map to E-NN epics) |
+| Any `docs/product-specs/prds/prd-*.md` | `docs/plans/delivery-roadmap.md` (PRDs map to E-NN epics) |
 | Any `docs/product-specs/prds/prd-*.md` | `docs/product-specs/09a-quality-attributes.md` (PRDs reference QA-XXNN) |
-| Any `exec-plans/active/*/` plan | Corresponding `docs/product-specs/prds/prd-*.md` |
+| Any `plans/active/*/` plan | Corresponding `docs/product-specs/prds/prd-*.md` |
 | `docs/domain/02c-glossary.md` exists | `docs/domain/02b-bounded-contexts.md` must also exist (glossary is scoped to BCs) |
 | `docs/domain/07b-models/{bc-slug}.md` exists | `docs/domain/02b-bounded-contexts.md` must exist (domain model is namespaced by BC) |
 | `docs/domain/07b-models/{bc-slug}.md` exists | `docs/domain/02c-glossary.md` must exist (entity names must match glossary terms) |
@@ -391,7 +391,7 @@ done | sort -rn
 | `04a-value-streams.md` | `## Catalogue`, `## Value Streams` | `grep -q '## Catalogue'` |
 | `07a-fbs.md` | At least one `### C` capability heading with a functionality table | `grep -q '### C[0-9]'` |
 | `use-cases/uc-*.md` | `Scope` + `Level` header fields, `## Main Success Scenario`, `## Extensions` | `grep -q '## Main Success Scenario'` |
-| `08a-delivery-roadmap.md` | Epic table with `E-NN` IDs | `grep -q 'E-[0-9][0-9]'` |
+| `delivery-roadmap.md` | Epic table with `E-NN` IDs | `grep -q 'E-[0-9][0-9]'` |
 | `09a-quality-attributes.md` | ISO characteristic headings (`Performance Efficiency`, `Security`, `Reliability`, etc.) | `grep -q 'Performance Efficiency\|Security\|Reliability'` |
 | `docs/product-specs/prds/prd-*.md` | `§0 Architecture Traceability` or traceability block, `## Acceptance criteria` | `grep -q 'Traceability\|Acceptance'` |
 | `04b-objectives.md` | At least one `OBJ-NN` heading, `## Changelog`, `## Objective × Epic` section | `grep -q 'OBJ-[0-9][0-9]\|Changelog'` |
@@ -554,7 +554,7 @@ done
 ```
 
 **Exclusions (never flag as orphaned):**
-- Hub docs: `01a-personas.md`, `03a-capability-map.md`, `04a-value-streams.md`, `08a-delivery-roadmap.md`, `09a-quality-attributes.md`, `07a-fbs.md`
+- Hub docs: `01a-personas.md`, `03a-capability-map.md`, `04a-value-streams.md`, `delivery-roadmap.md`, `09a-quality-attributes.md`, `07a-fbs.md`
 - README.md files
 - Index files
 
@@ -651,11 +651,11 @@ fi
 
 **Detection — epic ↔ PRD linkage:**
 ```bash
-epic_count=$(grep -c '\bE-[0-9]\{2\}\b' docs/product-specs/08a-delivery-roadmap.md 2>/dev/null || echo 0)
+epic_count=$(grep -c '\bE-[0-9]\{2\}\b' docs/plans/delivery-roadmap.md 2>/dev/null || echo 0)
 prd_count=$(find docs/product-specs/prds -name "prd-*.md" 2>/dev/null | wc -l)
 echo "Epics: $epic_count | PRDs: $prd_count"
 # Find epics with no corresponding PRD link
-grep -oh '\bE-[0-9]\{2\}\b' docs/product-specs/08a-delivery-roadmap.md 2>/dev/null | sort -u | while read epic; do
+grep -oh '\bE-[0-9]\{2\}\b' docs/plans/delivery-roadmap.md 2>/dev/null | sort -u | while read epic; do
   grep -rl "$epic" docs/product-specs/prds --include="prd-*.md" 2>/dev/null | head -1 || \
     echo "NO PRD for $epic"
 done

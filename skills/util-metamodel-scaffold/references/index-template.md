@@ -77,7 +77,7 @@ S7=$(check_file "docs/product-specs/07a-fbs.md")
 S7B=$(check_folder "docs/domain/07b-models/*.md")
 
 # Step 8 — Delivery Roadmap
-S8=$(check_file "docs/product-specs/08a-delivery-roadmap.md")
+S8=$(check_file "docs/plans/delivery-roadmap.md")
 
 # Step 9 — Quality Attributes
 S9=$(check_file "docs/product-specs/09a-quality-attributes.md")
@@ -86,7 +86,7 @@ S9=$(check_file "docs/product-specs/09a-quality-attributes.md")
 S10=$(check_folder "docs/product-specs/prds/prd-*.md")
 
 # Step 11 — Implementation Plans (multi-file folder)
-S11=$(check_folder "docs/exec-plans/active/*_exec_*.md")
+S11=$(check_folder "docs/plans/active/*_exec_*.md")
 ```
 
 ---
@@ -138,10 +138,10 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | 6 | Quantitative Models | `business-quantitative-model` | {S6} | [`docs/business/06a-models/`](business/06a-models/) | {age} |
 | 7 | Functional Breakdown Structure | `spec-functional-breakdown-structure` | {S7} | [`docs/product-specs/07a-fbs.md`](product-specs/07a-fbs.md) | {age} |
 | 7b | Domain Model | `domain-model` | {S7B} | [`docs/domain/07b-models/`](domain/07b-models/) | {age} |
-| 8 | Delivery Roadmap | `spec-delivery-roadmap` | {S8} | [`docs/product-specs/08a-delivery-roadmap.md`](product-specs/08a-delivery-roadmap.md) | {age} |
+| 8 | Delivery Roadmap | `plan-delivery-roadmap` | {S8} | [`docs/plans/delivery-roadmap.md`](plans/delivery-roadmap.md) | {age} |
 | 9 | Quality Attributes | `spec-quality-attributes` | {S9} | [`docs/product-specs/09a-quality-attributes.md`](product-specs/09a-quality-attributes.md) | {age} |
 | 10 | PRDs | `spec-prd` | {S10} | [`docs/product-specs/prds/`](product-specs/prds/) | {age} |
-| 11 | Implementation Plans | `spec-implementation-plan` | {S11} | [`docs/exec-plans/active/`](exec-plans/active/) | {age} |
+| 11 | Implementation Plans | `plan-implementation` | {S11} | [`docs/plans/active/`](plans/active/) | {age} |
 
 **Summary:** ✅ {N_done} / 🔄 {N_progress} / ⬜ {N_not_started} of 16 artefact steps
 
@@ -189,7 +189,7 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | `BC-NN.GT-NN` | Glossary Term | `02c-glossary.md` |
 | `BC-NN.AGG-NN` · `BC-NN.ENT-NN` | Aggregate · Entity | `07b-models/{bc-slug}.md` |
 | `C-N.M.FXX` | Functionality | `07a-fbs.md` |
-| `E-NN` | Epic | `08a-delivery-roadmap.md` |
+| `E-NN` | Epic | `delivery-roadmap.md` |
 | `QA-XXNN` | Quality Attribute | `09a-quality-attributes.md` |
 | `PRD-NNNN` | PRD | `prds/prd-NNNN-{slug}.md` |
 | `ADR-NNNN` | Architecture Decision | `architecture/decisions/adr-NNNN-{slug}.md` |

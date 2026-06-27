@@ -35,7 +35,7 @@ Markdown artefact ──(parser)──> normalized model ──(renderer)──>
 |---|---|---|---|
 | `capability-map` | `business-capability-map` | `docs/business/03a-capability-map.md` | L0-grouped capability cards + directional left-axis band; importance colour-coding |
 | `fbs` | `spec-functional-breakdown-structure` | `docs/product-specs/07a-fbs.md` | Collapsible tree, horizontal⇄vertical toggle, ✅/🔄/⬜ status badges + counts |
-| `delivery-roadmap` | `spec-delivery-roadmap` | `docs/product-specs/08a-delivery-roadmap.md` | Phase-column timeline, walking-skeleton band, pain-coded epic cards with expandable features/stories |
+| `delivery-roadmap` | `plan-delivery-roadmap` | `docs/plans/delivery-roadmap.md` | Phase-column timeline, walking-skeleton band, pain-coded epic cards with expandable features/stories |
 | `bmc` | `business-model-canvas` | `docs/business/02a-bmc.md` / `02a-lean-canvas.md` | Classic 9-block canvas grid (BMC + Lean variants), confidence colour-coding |
 | `service-blueprint` | `business-process` + `business-value-stream` + `business-persona` *(composition)* | `docs/communication/visualisations/service-blueprint.html` | Swimlane grid (evidence · customer · frontstage · backstage · systems) with the **line of visibility**, value-stream phase columns, pain overlays, and a cross-actor handoff spine |
 

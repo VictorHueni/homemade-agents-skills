@@ -36,7 +36,7 @@ in `SKILL.md` and `parsing-contract.md`.
   and `arch-structurizr`. This skill does not draw containers/components.
 - **Not an authoring tool.** It never writes into the source artefact and never
   invents content. Authoring stays with the owning skill
-  (`business-capability-map`, `spec-delivery-roadmap`, etc.).
+  (`business-capability-map`, `plan-delivery-roadmap`, etc.).
 - **Not a metamodel step.** It mints no IDs and nothing references its output.
   It is a supporting communication skill, wired like `com-slide-deck`.
 

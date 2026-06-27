@@ -27,8 +27,8 @@ mkdir -p docs/domain/07b-models
 # Product specs layer
 mkdir -p docs/product-specs/prds
 
-# Execution plans layer
-mkdir -p docs/exec-plans/active
+# Build planning layer (plan-)
+mkdir -p docs/plans/active
 
 # Architecture layer
 mkdir -p docs/architecture/decisions
@@ -52,7 +52,7 @@ mkdir -p docs/project-control/open-items/archive
 ```
 
 **Implied parent folders** (created automatically by `mkdir -p` above):
-`docs/` · `docs/business/` · `docs/discovery/` · `docs/domain/` · `docs/product-specs/` · `docs/exec-plans/`
+`docs/` · `docs/business/` · `docs/discovery/` · `docs/domain/` · `docs/product-specs/` · `docs/plans/`
 `docs/architecture/` · `docs/ops/` · `docs/communication/` · `var/` · `var/reports/`
 `docs/project-control/` · `docs/project-control/open-items/`
 

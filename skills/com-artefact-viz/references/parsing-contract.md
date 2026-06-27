@@ -38,9 +38,9 @@ Source: `docs/product-specs/07a-fbs.md`
 
 ---
 
-## delivery-roadmap — `spec-delivery-roadmap`
+## delivery-roadmap — `plan-delivery-roadmap`
 
-Source: `docs/product-specs/08a-delivery-roadmap.md`
+Source: `docs/plans/delivery-roadmap.md`
 
 | Field | Read from |
 |---|---|

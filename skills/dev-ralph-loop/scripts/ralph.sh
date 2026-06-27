@@ -26,7 +26,7 @@ Runs the Ralph Loop: spawns a fresh agent per increment until all
 increments in the execution plan are done.
 
 Arguments:
-  workspace-dir         Path to the workspace (e.g., docs/exec-plans/active/0001_my-feature)
+  workspace-dir         Path to the workspace (e.g., docs/plans/active/0001_my-feature)
 
 Options:
   --agent <name>        Agent CLI to use (default: claude)
@@ -37,11 +37,11 @@ Options:
   -h, --help            Show this help message
 
 Examples:
-  $(basename "$0") docs/exec-plans/active/0001_my-feature
-  $(basename "$0") docs/exec-plans/active/0001_my-feature --agent claude --max-iterations 20
-  $(basename "$0") docs/exec-plans/active/0001_my-feature --with-prd
-  $(basename "$0") docs/exec-plans/active/0001_my-feature --without-prd
-  $(basename "$0") docs/exec-plans/active/0001_my-feature --with-push
+  $(basename "$0") docs/plans/active/0001_my-feature
+  $(basename "$0") docs/plans/active/0001_my-feature --agent claude --max-iterations 20
+  $(basename "$0") docs/plans/active/0001_my-feature --with-prd
+  $(basename "$0") docs/plans/active/0001_my-feature --without-prd
+  $(basename "$0") docs/plans/active/0001_my-feature --with-push
 USAGE
 }
 

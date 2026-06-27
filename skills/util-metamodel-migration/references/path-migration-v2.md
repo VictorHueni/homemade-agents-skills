@@ -55,10 +55,12 @@ Used by the kit maintainer as the authoritative reference when updating skill fi
 | 6 (supporting) | Competitive Landscape | `docs/business/competitive-landscape/competitive-landscape.md` | `docs/business/01b-competitive-landscape/cl-NN-{slug}.md` + `CO-NN-{slug}.md` for competitor profiles | singleton-folder (Pattern B inside) |
 | 7 | FBS | `docs/product-specs/functional-breakdown-structure/FBS.md` | `docs/product-specs/07a-fbs.md` | singleton |
 | 7b | Domain Model (per BC) | `docs/domain/{bc-slug}/domain-model.md` | `docs/domain/07b-models/{bc-slug}.md` | multi-file folder |
-| 8 | Delivery Roadmap | `docs/product-specs/delivery-roadmap/delivery-roadmap.md` | `docs/product-specs/08a-delivery-roadmap.md` | singleton |
+| 8 | Delivery Roadmap | `docs/product-specs/delivery-roadmap/delivery-roadmap.md` | `docs/plans/delivery-roadmap.md` | singleton |
 | 9 | Quality Attributes | `docs/product-specs/quality-attributes/quality-attributes.md` | `docs/product-specs/09a-quality-attributes.md` | singleton |
 | 10 | PRDs | `docs/product-specs/{NNNN}_prd_{feature}.md` | `docs/product-specs/prds/prd-{NNNN}-{feature}.md` | pattern-b-rename |
-| 11 | Implementation Plans | `docs/exec-plans/active/{NNNN}_{slug}/` | `docs/exec-plans/active/{NNNN}_exec_{slug}.md` | pattern-b-rename |
+| 11 | Implementation Plans | `docs/plans/active/{NNNN}_{slug}/` | `docs/plans/active/{NNNN}_exec_{slug}.md` | pattern-b-rename |
+| 8† | Delivery Roadmap (pre-ADR-0009 `spec-` location) | `docs/product-specs/08a-delivery-roadmap.md` | `docs/plans/delivery-roadmap.md` | plan-split-move |
+| 11† | Implementation Plans (pre-ADR-0009 `spec-` location) | `docs/exec-plans/active/{NNNN}_exec_{slug}.md` | `docs/plans/active/{NNNN}_exec_{slug}.md` | plan-split-move |
 | — | ADRs | `docs/architecture/decisions/{NNNN}-{slug}.md` | `docs/architecture/decisions/adr-{NNNN}-{slug}.md` | pattern-b-rename |
 | — | Ops Runbooks | `docs/ops/runbooks/{slug}.md` | `docs/ops/runbooks/{slug}.md` | no-change |
 | — | Ops RCAs | `docs/ops/rcas/{YYYY-MM-DD}-{slug}.md` | `docs/ops/rcas/{YYYY-MM-DD}-{slug}.md` | no-change |

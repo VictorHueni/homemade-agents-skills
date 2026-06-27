@@ -27,7 +27,7 @@ Invoke when the user asks to:
 **Do NOT invoke for:**
 
 - Architecture decision records → use `arch-adr`
-- Implementation plans → use `spec-implementation-plan`
+- Implementation plans → use `plan-implementation`
 - General API or code documentation → use `technical-writer`
 - Post-incident reports → those have a different structure (timeline, impact, root cause, action items)
 

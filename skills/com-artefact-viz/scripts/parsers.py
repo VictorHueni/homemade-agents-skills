@@ -9,7 +9,7 @@ parser here changes — the renderer and templates stay put.
 Source shapes (see references/parsing-contract.md for the full contract):
   capability map  -> business-capability-map  (docs/business/03a-capability-map.md)
   fbs             -> spec-functional-breakdown-structure (docs/product-specs/07a-fbs.md)
-  delivery roadmap-> spec-delivery-roadmap     (docs/product-specs/08a-delivery-roadmap.md)
+  delivery roadmap-> plan-delivery-roadmap     (docs/plans/delivery-roadmap.md)
   bmc / lean      -> business-model-canvas      (docs/business/02a-bmc.md | 02a-lean-canvas.md)
 
 Standard library only.
