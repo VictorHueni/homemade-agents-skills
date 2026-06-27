@@ -1,5 +1,5 @@
 ---
-name: spec-grill-me
+name: agent-grill-me
 description: "Interactive Socratic stress-test of a PRD or implementation plan: one focused question at a time, project domain vocabulary checked against docs/domain/glossary.md, decisions crystallised into ADRs via arch-adr. Triggers on: grill me on this PRD, grill me on this plan, stress-test this with me, question this spec, challenge my thinking, interview me about this plan."
 version: "1.0.0"
 status: draft
@@ -9,7 +9,7 @@ user-invocable: true
 allow_implicit_invocation: true
 impact: "low"
 metadata:
-  category: "specification"
+  category: "agent"
   complexity: "high"
 ---
 
@@ -17,9 +17,9 @@ metadata:
 
 ## Objective
 
-Stress-test a PRD or implementation plan through a live Socratic session. Unlike `spec-peer-review` (static document scan), this skill grills the *author* one question at a time: surfacing ambiguities, enforcing domain vocabulary, and crystallising decisions into ADRs while context is live.
+Stress-test a PRD or implementation plan through a live Socratic session. Unlike `agent-peer-review` (static document scan), this skill grills the *author* one question at a time: surfacing ambiguities, enforcing domain vocabulary, and crystallising decisions into ADRs while context is live.
 
-Use after the artefact exists and before coding starts. Pair with `spec-peer-review` for full coverage: peer-review finds mechanical gaps automatically; grill-me surfaces the thinking gaps that only emerge under questioning.
+Use after the artefact exists and before coding starts. Pair with `agent-peer-review` for full coverage: peer-review finds mechanical gaps automatically; grill-me surfaces the thinking gaps that only emerge under questioning.
 
 ## Inputs
 

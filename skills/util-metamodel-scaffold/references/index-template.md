@@ -162,7 +162,7 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | Bug RCAs | `ops-bug-rca` | `docs/ops/rcas/{date}-{slug}.md` |
 | Pre-formal Ideas | `discovery-idea` | `docs/discovery/ideation/IDEA-NNNN-{slug}.md` |
 | Slide Decks | `com-slide-deck` | `docs/communication/slides/{slug}/` |
-| PRD / Plan reviews | `spec-peer-review` | — (interactive, no persistent artefact) |
+| PRD / Plan reviews | `agent-peer-review` | — (interactive, no persistent artefact) |
 
 ---
 

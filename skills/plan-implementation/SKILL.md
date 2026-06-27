@@ -32,7 +32,7 @@ This skill guides you through creating a high-quality, structured implementation
 - **Location:** `docs/plans/active/`
 - **Filename:** `{NNNN}_exec_{slug}.md` (e.g., 0001_exec_onboard-agent.md)
 - Open every generated file with the standard artefact frontmatter (title, status, owner, last_reviewed, review_interval). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: `rules/artefact-frontmatter.md`.
-- When a PRD exists for this plan, add a `prd:` field to the frontmatter: `prd: docs/product-specs/prds/prd-NNNN-{feature}.md`. This is the machine-readable link used by `dev-ralph-loop` to locate the PRD at its canonical location without requiring a workspace copy. Omit the field if the plan has no associated PRD.
+- When a PRD exists for this plan, add a `prd:` field to the frontmatter: `prd: docs/product-specs/prds/prd-NNNN-{feature}.md`. This is the machine-readable link used by `agent-ralph-loop` to locate the PRD at its canonical location without requiring a workspace copy. Omit the field if the plan has no associated PRD.
 
 ## Implementation Plan Template
 
@@ -100,7 +100,7 @@ Exit criteria:
 - **Test-Driven Gates:** Every increment must have a `Test gate`. If no logic is added, use a `smoke test` or `import test`.
 - **Deterministic Outcomes:** Exit criteria must be objective and verifiable.
 - **Sequential Flow:** Order increments to minimize rework and respect dependencies.
-- **Ralph Loop Ready:** Status fields on every increment and milestone enable autonomous execution via the `dev-ralph-loop` skill. Use `**Status:** pending | in-progress | done` to track progress.
+- **Ralph Loop Ready:** Status fields on every increment and milestone enable autonomous execution via the `agent-ralph-loop` skill. Use `**Status:** pending | in-progress | done` to track progress.
 
 ## Sync Open Items to the central ledger
 

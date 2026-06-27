@@ -1,6 +1,6 @@
 # Grill Protocol
 
-Full mechanics for the `spec-grill-me` session loop.
+Full mechanics for the `agent-grill-me` session loop.
 
 ## Confidence tracking
 
@@ -68,7 +68,7 @@ You are done when BOTH are true:
 
 ## Interaction with other skills
 
-- **`spec-peer-review`**: run first for static mechanical gaps; run `spec-grill-me` after for Socratic depth. They are complementary, not redundant.
+- **`agent-peer-review`**: run first for static mechanical gaps; run `agent-grill-me` after for Socratic depth. They are complementary, not redundant.
 - **`arch-adr`**: delegate ADR creation here when a decision passes the three-gate rule. Do not write raw ADRs outside that skill — it handles numbering, format, and file placement.
 - **`domain-glossary`**: delegate glossary updates here when a term is sharpened. Do not patch `docs/domain/glossary.md` directly outside that skill's conventions.
 - **`plan-implementation`**: if grilling reveals the plan needs structural rebuilding (not just clarification), stop and recommend re-running `plan-implementation` with the resolved intent rather than patching in place.

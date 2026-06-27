@@ -14,7 +14,7 @@ You are executing one iteration of the Ralph Loop.
 
 ### Step 1: Read the protocol
 
-Read `skills/dev-ralph-loop/SKILL.md` — specifically the **Iteration Protocol** section. This is your complete reference for what to do.
+Read `skills/agent-ralph-loop/SKILL.md` — specifically the **Iteration Protocol** section. This is your complete reference for what to do.
 
 ### Step 2: Read the workspace
 

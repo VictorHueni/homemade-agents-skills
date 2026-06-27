@@ -44,13 +44,14 @@ Skill folder name + `name:` frontmatter field must follow this exact pattern:
 |---|---|---|
 | `business-` | `docs/business/` | `business-persona`, `business-capability-map`, `business-value-stream`, `business-process`, `business-model-canvas`, `business-quantitative-model` |
 | `discovery-` | `docs/discovery/` (pre-formal evidence layer — ideation, interviews, workshops; cross-cutting, feeds every downstream artefact) | `discovery-idea` (→ `docs/discovery/ideation/`), `discovery-research` (→ `docs/discovery/interviews/`), `discovery-workshop` (→ `docs/discovery/workshops/`) |
-| `spec-` | `docs/product-specs/` | `spec-prd`, `spec-functional-breakdown-structure`, `spec-quality-attributes`, `spec-use-case`, `spec-peer-review`, `spec-grill-me` |
+| `spec-` | `docs/product-specs/` | `spec-prd`, `spec-functional-breakdown-structure`, `spec-quality-attributes`, `spec-use-case` |
 | `plan-` | `docs/plans/` (build planning — specifies *intended sequence*, split from `spec-` per clew ADR-0009) | `plan-delivery-roadmap` (→ `docs/plans/delivery-roadmap.md`, epics `E-NN`), `plan-implementation` (→ `docs/plans/active/`, `Plan-NNNN`) |
 | `arch-` | `docs/architecture/` (subfolders per artefact type) | `arch-adr` (writes to `docs/architecture/decisions/`) |
 | `domain-` | `docs/domain/` | DDD artefacts — bounded contexts, glossary, domain model; the shared language between business and tech | `domain-bounded-context`, `domain-glossary`, `domain-model` |
 | `ops-` | `docs/ops/` for doc artefacts; *(no doc folder)* for infra/devops automation | `ops-runbook` (→ `docs/ops/runbooks/`), `ops-bug-rca` (→ `docs/ops/rcas/`), `ops-terraform-exoscale` *(infra automation — scaffolds into the project's `infra/`, no `docs/ops/` output)* |
 | `qa-` | `docs/qa/` (subfolders per artefact) | Quality-assurance & test layer — the *validate / test* stage of the SDLC. Produces the **tests** that verify the quality *requirements* `spec-quality-attributes` defines (`QA-XXNN`); the two are distinct (`spec-quality-attributes` = what must hold; `qa-` = how it is checked). **Reserved — no skill yet:** `qa-test-strategy` (mints `TS-NN`; was the planned `spec-test-strategy`), `qa-test-scenario` (realises `UC-NN`), `qa-test-plan`, `qa-acceptance-test`, `qa-eval-harness` |
-| `dev-` | *(no doc folder — developer workflow utility)* | `dev-git-commit`, `dev-pr`, `dev-git-worktree`, `dev-ralph-loop` |
+| `dev-` | *(no doc folder — developer workflow utility)* | `dev-git-commit`, `dev-pr`, `dev-git-worktree`, `dev-stack-guide`, `dev-getting-started` |
+| `agent-` | *(no doc folder — Agent-Centric Development Cycle)* | Guide → Verify → Solve loop around agent code-gen (mints no IDs): `agent-config` (Guide — `CLAUDE.md`/`AGENTS.md`), `agent-grill-me` + `agent-peer-review` (Verify — stress-test / review specs), `agent-ralph-loop` (Solve — autonomous execution). Orchestrates *how the agent builds*, distinct from the `qa-` *tests* that verify the product. |
 | `ux-` | `docs/ux/` (design + experience layer — project visual source of truth + UX artefacts; tokens consumed by the `com-` presentation layer; cross-cutting) | `ux-design-system` (→ `docs/ux/design-system.md` + `tokens.css`) |
 | `com-` | `docs/communication/` (subfolders per artefact type, e.g. `slides/`) | `com-slide-deck` (→ `docs/communication/slides/{slug}/`) |
 | `util-` | *(no doc folder — housekeeping)* | `util-docs-audit`, `util-toolkit-doctor` |
@@ -91,7 +92,7 @@ When only ONE skill exists per artefact, **drop the verb suffix**. The "build" i
 | `spec-prd-creator` | `spec-prd` |
 | `spec-value-stream-mapper` | `spec-value-stream` |
 | `plan-implementationner` | `plan-implementation` |
-| `spec-peer-reviewer` | `spec-peer-review` |
+| `agent-peer-reviewer` | `agent-peer-review` |
 | `ops-runbook-creator` | `ops-runbook` |
 
 ### Allowed verbs (when disambiguation is needed)

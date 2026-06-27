@@ -936,5 +936,5 @@ gitleaks for all: `brew install gitleaks` (macOS) · `scoop install gitleaks` (W
 - **Consumed by `dev-git-commit`** (post-rewrite): reads `commitlint.config.js` (Node) / `pyproject.toml [tool.commitizen]` (Python) for type/scope rules; `.husky/commit-msg` or `.pre-commit-config.yaml` to know what's about to run; project script files for pre-flight commands; `CONTRIBUTING.md` for narrative fallback
 - **Consumed by `dev-pr`** (post-rewrite): reads `commitlint.config.js` / commitizen schema for PR title format; `.github/PULL_REQUEST_TEMPLATE.md` for body skeleton; `.github/CODEOWNERS` for reviewer acknowledgement; `docs/architecture/decisions/adr-*.md` glob for auto-linking ADR references
 - **Invokes `arch-adr`** via the Step 4 post-scaffold prompt (operator runs separately): records the Q2 + Q3 decisions as an ADR for revisitability
-- **Independent of `dev-git-worktree`, `dev-ralph-loop`, `dev-stack-guide`** — they operate alongside the enforcement stack without depending on its scaffolding state
+- **Independent of `dev-git-worktree`, `agent-ralph-loop`, `dev-stack-guide`** — they operate alongside the enforcement stack without depending on its scaffolding state
 - **Detected by `util-metamodel-audit`** indirectly — the optional ADR (if created via Step 4 prompt) is checked for frontmatter validity and ID conventions
