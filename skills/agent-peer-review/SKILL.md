@@ -1,5 +1,5 @@
 ---
-name: spec-peer-review
+name: agent-peer-review
 description: "Critically review PRDs and implementation plans to identify gaps, blind spots, contradictions, and delivery risks before coding begins. Use when asked to review product docs, technical specs, implementation plans, migration/deletion plans, acceptance criteria, or rollout strategy; produce ranked findings by severity (critical, major, normal, low) with concrete remediation and exact document updates."
 version: "1.0.0"
 status: active
@@ -9,7 +9,7 @@ user-invocable: true
 allow_implicit_invocation: true
 impact: "low"
 metadata:
-  category: "specification"
+  category: "agent"
   complexity: "high"
 ---
 
@@ -110,7 +110,7 @@ When reviewing implementation plans, additionally verify:
 
 ## Ralph Loop Readiness
 
-When reviewing plans intended for autonomous execution via `dev-ralph-loop`, additionally verify:
+When reviewing plans intended for autonomous execution via `agent-ralph-loop`, additionally verify:
 
 1. Every increment has a `**Status:** pending` field.
 2. The plan header includes `**Overall Status:**` and `**Current Increment:**` fields.

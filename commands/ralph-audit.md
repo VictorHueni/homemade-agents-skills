@@ -51,7 +51,7 @@ Read the plan and its workspace, then verify each item. Report PASS / FAIL / WAR
 4. **Ready-to-run command** — if no blockers, emit a single bash oneliner in a fenced code block:
 
     ```bash
-    cd <repo-root-or-worktree-path> && ~/.claude/skills/dev-ralph-loop/scripts/ralph.sh <workspace-dir> --max-iterations <N>
+    cd <repo-root-or-worktree-path> && ~/.claude/skills/agent-ralph-loop/scripts/ralph.sh <workspace-dir> --max-iterations <N>
     ```
 
    Rules for building the command:

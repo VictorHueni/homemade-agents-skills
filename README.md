@@ -29,7 +29,6 @@ A personal Claude Code toolkit — composable skills for business architecture, 
 | `spec-` | `spec-use-case` | Use cases (actor↔system scenarios) — `UC-NN` |
 | `spec-` | `spec-prd` | Product Requirements Document — `PRD-NNNN` |
 | `plan-` | `plan-implementation` | Atomic increment plan |
-| `spec-` | `spec-peer-review` | PRD / plan review |
 | `arch-` | `arch-adr` | Architecture Decision Records — `ADR-NNNN` |
 | `arch-` | `arch-research` | Evidence base for ADRs — `Research-NNNN` |
 | `arch-` | `arch-service-contract` | Service interface contract per BC — `BC-NN.CTR-NN` / `CTR-NN` |
@@ -46,7 +45,10 @@ A personal Claude Code toolkit — composable skills for business architecture, 
 | `dev-` | `dev-git-commit` | Conventional commit generation |
 | `dev-` | `dev-pr` | Pull request creation |
 | `dev-` | `dev-git-worktree` | Isolated git worktrees |
-| `dev-` | `dev-ralph-loop` | Autonomous increment execution |
+| `agent-` | `agent-config` | Guide — scaffold/review/improve `CLAUDE.md` + `AGENTS.md` |
+| `agent-` | `agent-grill-me` | Verify (inner loop) — Socratic stress-test of a PRD / plan |
+| `agent-` | `agent-peer-review` | Verify (outer loop) — PRD / plan review by severity |
+| `agent-` | `agent-ralph-loop` | Solve — autonomous increment execution |
 | `ux-` | `ux-design-system` | Project visual source of truth — `docs/ux/design-system.md` → `tokens.css` (themes the `com-` layer) |
 | `com-` | `com-slide-deck` | HTML slide deck builder |
 | `com-` | `com-artefact-viz` | Interactive HTML views of artefacts (capability map · FBS · roadmap · BMC) |

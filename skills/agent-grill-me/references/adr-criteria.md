@@ -1,6 +1,6 @@
 # ADR Logging Criteria
 
-Calibrated for use within `spec-grill-me` sessions. Consistent with `arch-adr` skill conventions.
+Calibrated for use within `agent-grill-me` sessions. Consistent with `arch-adr` skill conventions.
 
 ## The three-gate rule
 

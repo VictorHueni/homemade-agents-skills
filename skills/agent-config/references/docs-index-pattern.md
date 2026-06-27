@@ -49,7 +49,7 @@ For canonical path rules and build order, see ~/.claude/rules/metamodel.md.
 
 ### Non-kit projects
 
-For projects without the kit scaffold, create a minimal `docs/INDEX.md` manually or with the `dev-agent-config` scaffold mode. The minimal format is a flat table:
+For projects without the kit scaffold, create a minimal `docs/INDEX.md` manually or with the `agent-config` scaffold mode. The minimal format is a flat table:
 
 ```markdown
 # Documentation Index

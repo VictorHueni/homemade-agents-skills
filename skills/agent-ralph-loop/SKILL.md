@@ -1,12 +1,12 @@
 ---
-name: dev-ralph-loop
+name: agent-ralph-loop
 description: "Execute an implementation plan autonomously using the Ralph Loop protocol. Iterates through increments one at a time: implement, test, commit, repeat. Use when asked to 'run the ralph loop', 'execute this plan', or 'start autonomous execution'."
 version: '1.0.0'
 user-invocable: true
 allow_implicit_invocation: false
 impact: 'high'
 metadata:
-  category: 'execution'
+  category: 'agent'
   complexity: 'high'
 status: active
 last_reviewed: 2026-05-29
@@ -28,7 +28,7 @@ Before starting the Ralph Loop:
 
 1. **Execution plan exists** in `docs/plans/active/` with `**Status:** pending` on every increment.
 2. **Optional PRD exists** in `docs/product-specs/` if you want the loop to track acceptance criteria during execution.
-3. **Peer review recommended** — run `spec-peer-review` on the execution plan and PRD if both exist.
+3. **Peer review recommended** — run `agent-peer-review` on the execution plan and PRD if both exist.
 4. **Test infrastructure works** — verify the project's test commands run successfully.
 
 ## Workspace Setup Protocol
