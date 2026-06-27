@@ -15,7 +15,7 @@ review_interval: 180d
 
 **Companion documents:**
 - FBS: [../../product-specs/07a-fbs.md](../../product-specs/07a-fbs.md)
-- Delivery roadmap: [../../product-specs/08a-delivery-roadmap.md](../../product-specs/08a-delivery-roadmap.md)
+- Delivery roadmap: [../../plans/delivery-roadmap.md](../../plans/delivery-roadmap.md)
 - Quality attributes: [../../product-specs/09a-quality-attributes.md](../../product-specs/09a-quality-attributes.md)
 
 ---

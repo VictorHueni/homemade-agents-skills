@@ -23,7 +23,7 @@ The canonical OKR reference. Doerr synthesises Andy Grove's Intel OKR practice w
 BABOK v3 §1.3. IIBA (2015). *A Guide to the Business Analysis Body of Knowledge*, 3rd ed. International Institute of Business Analysis.
 Last verified: 2026-05-21
 
-Vocabulary anchor: "Business Requirements describe the goals, objectives, and outcomes that the enterprise needs to achieve. They may include the purpose of an initiative, the things the business needs to be able to do to meet the purpose, and the metrics that will be used to measure success." Used to maintain consistency with the kit's existing BABOK citations in `spec-quality-attributes`, `spec-functional-breakdown-structure`, and `spec-delivery-roadmap`.
+Vocabulary anchor: "Business Requirements describe the goals, objectives, and outcomes that the enterprise needs to achieve. They may include the purpose of an initiative, the things the business needs to be able to do to meet the purpose, and the metrics that will be used to measure success." Used to maintain consistency with the kit's existing BABOK citations in `spec-quality-attributes`, `spec-functional-breakdown-structure`, and `plan-delivery-roadmap`.
 
 ### Outcome discipline
 

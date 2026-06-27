@@ -87,7 +87,7 @@ Canonical metamodel directories that don't exist in this repo yet. Creating them
 | `docs/business/06a-models/` | `business-quantitative-model` outputs | Step 6 | `mkdir -p docs/business/models` |
 | `docs/domain/` | All `domain-*` outputs | Steps 2b/2c/7b | `mkdir -p docs/domain` |
 | `docs/product-specs/functional-breakdown-structure/` | `spec-functional-breakdown-structure` | Step 7 | `mkdir -p docs/product-specs/functional-breakdown-structure` |
-| `docs/product-specs/delivery-roadmap/` | `spec-delivery-roadmap` | Step 8 | `mkdir -p docs/product-specs/delivery-roadmap` |
+| `docs/product-specs/delivery-roadmap/` | `plan-delivery-roadmap` | Step 8 | `mkdir -p docs/product-specs/delivery-roadmap` |
 | `docs/product-specs/quality-attributes/` | `spec-quality-attributes` | Step 9 | `mkdir -p docs/product-specs/quality-attributes` |
 | `docs/ops/runbooks/` | `ops-runbook` outputs | Ongoing | `mkdir -p docs/ops/runbooks` |
 | `docs/ops/rcas/` | `ops-bug-rca` outputs | Ongoing | `mkdir -p docs/ops/rcas` |

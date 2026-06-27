@@ -1,12 +1,12 @@
 ---
-name: spec-delivery-roadmap
+name: plan-delivery-roadmap
 description: "Create a Delivery Roadmap — the Plan by Feature artefact that groups FBS functionalities into named, scoped, priority-ordered epics (E-NN), defines the MVP walking skeleton (minimum end-to-end journey), and declares per-phase goals expressed as value streams made operational. Bridges FBS (what the product does), value streams (how value flows), and PRDs (what we build next). Serves simultaneously as delivery planning tool (E-NN clusters, FBS scope, PRD links) and product roadmap (phase goals, walking skeleton, business narrative). For a solo founder or small team, one document serves both audiences. Triggers on: delivery roadmap, epic catalogue, epic list, plan by feature, group features into epics, define epics, epic planning, feature grouping, epic scope, what PRDs to write, product roadmap, phase plan, MVP slice, walking skeleton, release plan, what do we build next."
 version: "1.1.0"
 user-invocable: true
 allow_implicit_invocation: false
 impact: "low"
 metadata:
-  category: "specification"
+  category: "planning"
   complexity: "medium"
 status: active
 last_reviewed: 2026-05-29
@@ -30,7 +30,7 @@ For a solo founder or small team, one document serves both audiences. When
 audiences diverge (investors vs developers), extract a stakeholder copy —
 the delivery roadmap remains the source of truth.
 
-The artefact lives at `docs/product-specs/08a-delivery-roadmap.md`.
+The artefact lives at `docs/plans/delivery-roadmap.md`.
 
 ---
 
@@ -61,7 +61,7 @@ The artefact lives at `docs/product-specs/08a-delivery-roadmap.md`.
 ## The two layers in one document
 
 ```
-docs/product-specs/08a-delivery-roadmap.md
+docs/plans/delivery-roadmap.md
 │
 ├── §Walking Skeleton — MVP        ← PRODUCT ROADMAP LAYER
 │   Hypothesis · VS anchor ·
@@ -226,7 +226,7 @@ Verify every Phase 1 FBS functionality appears in exactly one epic:
 
 ```bash
 grep -o "C[0-9]\.[0-9]\.F[0-9][0-9]" \
-  docs/product-specs/08a-delivery-roadmap.md | sort | uniq | wc -l
+  docs/plans/delivery-roadmap.md | sort | uniq | wc -l
 ```
 
 Compare to Phase 1 FBS total. Flag orphaned functionalities.

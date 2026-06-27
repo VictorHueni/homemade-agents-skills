@@ -28,7 +28,7 @@ A file whose name matches one of these patterns is likely the artefact type list
 | `*bounded-context*.md` or `*context-map*.md` | Bounded context | `domain-bounded-context` | `docs/domain/02b-bounded-contexts.md` + `docs/domain/02b-context-map.md` |
 | `FBS.md` or `*functional-breakdown*.md` | FBS | `spec-functional-breakdown-structure` | `docs/product-specs/07a-fbs.md` |
 | `*quality-attributes*.md` or `*nfr*.md` or `*non-functional*.md` | Quality attributes | `spec-quality-attributes` | `docs/product-specs/09a-quality-attributes.md` |
-| `*delivery-roadmap*.md` or `*epic-catalogue*.md` or `*epic-catalog*.md` | Delivery roadmap | `spec-delivery-roadmap` | `docs/product-specs/08a-delivery-roadmap.md` |
+| `*delivery-roadmap*.md` or `*epic-catalogue*.md` or `*epic-catalog*.md` | Delivery roadmap | `plan-delivery-roadmap` | `docs/plans/delivery-roadmap.md` |
 | `*competitive-landscape*.md` or `*competitor*.md` | Competitive landscape | `business-competitive-landscape` | `docs/business/01b-competitive-landscape/` |
 | `*quant-model*.md` or `*tam-*.md` or `*savings-model*.md` | Quantitative model | `business-quantitative-model` | `docs/business/06a-models/qm-NN-{topic}.md` |
 | `VISION.md` or `*vision*.md` or `*north-star*.md` | Product vision | `business-vision` | `docs/VISION.md` (singleton at docs root) |
@@ -105,7 +105,7 @@ Read only `head -50 {file}`. Check for these high-signal headings. A content sig
 | `## Ubiquitous Language` or `GT-[0-9][0-9]` pattern | `domain-glossary` |
 | `✅\|🔄\|⬜` in functionality table rows | `spec-functional-breakdown-structure` |
 | `QA-[A-Z]{2}[0-9]{2}` pattern | `spec-quality-attributes` |
-| `E-[0-9][0-9].*epic` | `spec-delivery-roadmap` |
+| `E-[0-9][0-9].*epic` | `plan-delivery-roadmap` |
 | `## The Elevator Pitch` or `## North Star Metric` heading | `business-vision` |
 | `OBJ-[0-9][0-9]` pattern or `KR-[0-9][0-9]\.[0-9]` pattern | `business-objective` |
 | `## Objective.*Epic traceability` | `business-objective` |

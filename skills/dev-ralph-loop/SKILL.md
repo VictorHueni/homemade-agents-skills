@@ -26,7 +26,7 @@ A fresh agent instance handles each iteration, ensuring clean context and preven
 
 Before starting the Ralph Loop:
 
-1. **Execution plan exists** in `docs/exec-plans/active/` with `**Status:** pending` on every increment.
+1. **Execution plan exists** in `docs/plans/active/` with `**Status:** pending` on every increment.
 2. **Optional PRD exists** in `docs/product-specs/` if you want the loop to track acceptance criteria during execution.
 3. **Peer review recommended** — run `spec-peer-review` on the execution plan and PRD if both exist.
 4. **Test infrastructure works** — verify the project's test commands run successfully.
@@ -35,15 +35,15 @@ Before starting the Ralph Loop:
 
 Before the first iteration, prepare the workspace:
 
-1. **Create workspace directory**: `docs/exec-plans/active/NNNN_feature-name/`
-2. **Move exec plan into workspace**: Move `docs/exec-plans/active/NNNN_exec_feature-name.md` into the workspace directory. The exec plan's `prd:` frontmatter field (if present) points to the PRD at its canonical location — no copy needed.
-3. **Create progress log**: `docs/exec-plans/active/NNNN_feature-name/progress.txt`
+1. **Create workspace directory**: `docs/plans/active/NNNN_feature-name/`
+2. **Move exec plan into workspace**: Move `docs/plans/active/NNNN_exec_feature-name.md` into the workspace directory. The exec plan's `prd:` frontmatter field (if present) points to the PRD at its canonical location — no copy needed.
+3. **Create progress log**: `docs/plans/active/NNNN_feature-name/progress.txt`
 4. **Create feature branch**: `git checkout -b ralph/NNNN-feature-name`
 
 Workspace structure after setup:
 
 ```text
-docs/exec-plans/active/NNNN_feature-name/
+docs/plans/active/NNNN_feature-name/
   NNNN_exec_feature-name.md     # Execution plan (prd: frontmatter field links to canonical PRD)
   progress.txt                  # Iteration log
 ```
@@ -131,7 +131,7 @@ The loop is complete when:
 
 When all increments are done:
 
-1. **Move exec plan**: Move from workspace to `docs/exec-plans/completed/`.
+1. **Move exec plan**: Move from workspace to `docs/plans/completed/`.
 2. **Delete progress log**: Remove `progress.txt`.
 3. **Remove workspace**: Delete the empty `NNNN_feature-name/` directory.
 4. **Optional**: Invoke `git-dev-pr` to open a pull request for the feature branch.

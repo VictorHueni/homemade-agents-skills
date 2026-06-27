@@ -44,7 +44,8 @@ Skill folder name + `name:` frontmatter field must follow this exact pattern:
 |---|---|---|
 | `business-` | `docs/business/` | `business-persona`, `business-capability-map`, `business-value-stream`, `business-process`, `business-model-canvas`, `business-quantitative-model` |
 | `discovery-` | `docs/discovery/` (pre-formal evidence layer — ideation, interviews, workshops; cross-cutting, feeds every downstream artefact) | `discovery-idea` (→ `docs/discovery/ideation/`), `discovery-research` (→ `docs/discovery/interviews/`), `discovery-workshop` (→ `docs/discovery/workshops/`) |
-| `spec-` | `docs/product-specs/`, `docs/exec-plans/` | `spec-prd`, `spec-functional-breakdown-structure`, `spec-implementation-plan`, `spec-peer-review` |
+| `spec-` | `docs/product-specs/` | `spec-prd`, `spec-functional-breakdown-structure`, `spec-quality-attributes`, `spec-use-case`, `spec-peer-review`, `spec-grill-me` |
+| `plan-` | `docs/plans/` (build planning — specifies *intended sequence*, split from `spec-` per clew ADR-0009) | `plan-delivery-roadmap` (→ `docs/plans/delivery-roadmap.md`, epics `E-NN`), `plan-implementation` (→ `docs/plans/active/`, `Plan-NNNN`) |
 | `arch-` | `docs/architecture/` (subfolders per artefact type) | `arch-adr` (writes to `docs/architecture/decisions/`) |
 | `domain-` | `docs/domain/` | DDD artefacts — bounded contexts, glossary, domain model; the shared language between business and tech | `domain-bounded-context`, `domain-glossary`, `domain-model` |
 | `ops-` | `docs/ops/` for doc artefacts; *(no doc folder)* for infra/devops automation | `ops-runbook` (→ `docs/ops/runbooks/`), `ops-bug-rca` (→ `docs/ops/rcas/`), `ops-terraform-exoscale` *(infra automation — scaffolds into the project's `infra/`, no `docs/ops/` output)* |
@@ -89,7 +90,7 @@ When only ONE skill exists per artefact, **drop the verb suffix**. The "build" i
 | `spec-persona-builder` | `spec-persona` |
 | `spec-prd-creator` | `spec-prd` |
 | `spec-value-stream-mapper` | `spec-value-stream` |
-| `spec-implementation-planner` | `spec-implementation-plan` |
+| `plan-implementationner` | `plan-implementation` |
 | `spec-peer-reviewer` | `spec-peer-review` |
 | `ops-runbook-creator` | `ops-runbook` |
 
@@ -330,12 +331,12 @@ No new build order step. Run only the checks that apply:
 - Singleton — no IDs, path-referenced only → skip Check 5 + skip ID conventions row (add note instead)
 - Naming exception: `business-` prefix but output is `docs/VISION.md`, not `docs/business/` → document in prefix mapping table
 - Wire mode writes to `CLAUDE.md` → `impact: "medium"`
-- Upstream reads added to: `business-persona`, `business-model-canvas`, `business-objective`, `spec-delivery-roadmap`, `spec-prd`
+- Upstream reads added to: `business-persona`, `business-model-canvas`, `business-objective`, `plan-delivery-roadmap`, `spec-prd`
 
 **`business-objective` (2026-05-21) — Stage 2A, ID-minting:**
 - New Step 4.5 in build order
 - Mints `OBJ-NN` + `KR-NN.M` → add to ID conventions table + Check 5
-- Downstream references added to: `spec-delivery-roadmap` (epic template), `spec-prd` (§0 traceability), `spec-quality-attributes` (KR grounding), `business-model-canvas` (VP → OBJ soft-link), `business-value-stream` (pain index note)
+- Downstream references added to: `plan-delivery-roadmap` (epic template), `spec-prd` (§0 traceability), `spec-quality-attributes` (KR grounding), `business-model-canvas` (VP → OBJ soft-link), `business-value-stream` (pain index note)
 
 ## Publish and install
 

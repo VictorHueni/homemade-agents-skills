@@ -41,10 +41,10 @@ Copy this skeleton to `var/reports/metamodel-audit/stack-audit-{YYYY-MM-DD}.md` 
 | 5 | Business Processes | `business-process` | {✅/🔄/⬜} | `docs/business/05a-processes/` ({N} files) | {date} | {N} |
 | 6 | Quantitative Models | `business-quantitative-model` | {✅/🔄/⬜} | `docs/business/06a-models/` ({N} files) | {date} | {N} |
 | 7 | Functional Breakdown Structure | `spec-functional-breakdown-structure` | {✅/🔄/⬜} | `docs/product-specs/07a-fbs.md` | {date} | {N} |
-| 8 | Delivery Roadmap | `spec-delivery-roadmap` | {✅/🔄/⬜} | `docs/product-specs/08a-delivery-roadmap.md` | {date} | {N} |
+| 8 | Delivery Roadmap | `plan-delivery-roadmap` | {✅/🔄/⬜} | `docs/plans/delivery-roadmap.md` | {date} | {N} |
 | 9 | Quality Attributes | `spec-quality-attributes` | {✅/🔄/⬜} | `docs/product-specs/09a-quality-attributes.md` | {date} | {N} |
 | 10 | PRDs | `spec-prd` | {✅/🔄/⬜} | `docs/product-specs/` ({N} PRD files) | {date} | {N} |
-| 11 | Implementation Plans | `spec-implementation-plan` | {✅/🔄/⬜} | `docs/exec-plans/active/` ({N} plans) | {date} | {N} |
+| 11 | Implementation Plans | `plan-implementation` | {✅/🔄/⬜} | `docs/plans/active/` ({N} plans) | {date} | {N} |
 
 **Next step:** {Step N — Artefact name — invoke `{skill}` Mode 1}
 

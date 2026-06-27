@@ -18,7 +18,7 @@ You manage pre-formal ideas — the upstream layer that feeds **every** downstre
 
 An idea here is **pre-classification**. At capture, it does not yet know whether it will become a `PRD-NNNN`, an `OBJ-NN`, an `ADR-NNNN`, or be abandoned. The skill's job is to (1) capture it cleanly, (2) pressure-test it, and (3) **graduate** it to the right downstream skill when it is ready — never to do the downstream work itself.
 
-This skill does **not** replicate persona design, value-proposition shaping, hypothesis-anchored interview scripting, market sizing, ADR analysis, PRD acceptance criteria, or implementation breakdown. Those are owned by `business-persona`, `business-model-canvas`, `discovery-research`, `business-quantitative-model`, `arch-adr`, `spec-prd`, and `spec-implementation-plan` respectively. When the idea matures past its capture phase, route to them — do not absorb their work.
+This skill does **not** replicate persona design, value-proposition shaping, hypothesis-anchored interview scripting, market sizing, ADR analysis, PRD acceptance criteria, or implementation breakdown. Those are owned by `business-persona`, `business-model-canvas`, `discovery-research`, `business-quantitative-model`, `arch-adr`, `spec-prd`, and `plan-implementation` respectively. When the idea matures past its capture phase, route to them — do not absorb their work.
 
 ---
 
@@ -247,7 +247,7 @@ Triggers: `graduate IDEA-NNNN`, `promote idea`, `ship idea to PRD/ADR/OBJ`.
 
 1. Read the idea file. Confirm `lifecycle: ready` and `graduates_to:` is set.
 2. Run pre-flight checks per the routing target:
-   - `spec-prd` → verify an `E-NN` epic exists in the delivery roadmap that this PRD would belong to. If absent, route to `spec-delivery-roadmap` first.
+   - `spec-prd` → verify an `E-NN` epic exists in the delivery roadmap that this PRD would belong to. If absent, route to `plan-delivery-roadmap` first.
    - `business-persona` → verify `docs/business/01a-personas.md` exists.
    - `business-objective` → verify `docs/business/04b-objectives.md` exists; if not, scaffold via `business-objective` Mode 1.
    - `business-model-canvas` → verify the canvas file exists.
@@ -368,7 +368,7 @@ Worth knowing because it tells you when the skill is being misused. These artefa
 | `business-value-stream` | Falls out of personas × value propositions |
 | `business-quantitative-model` | Commissioned modelling; one model serves many decisions |
 | `domain-bounded-context` · `domain-glossary` · `domain-model` | Emerge from Event Storming + capability cohesion |
-| `spec-delivery-roadmap` · `spec-quality-attributes` · `spec-implementation-plan` | Downstream of FBS / PRDs; mechanical groupings, not creative bets |
+| `plan-delivery-roadmap` · `spec-quality-attributes` · `plan-implementation` | Downstream of FBS / PRDs; mechanical groupings, not creative bets |
 
 **Diagnostic:** if an "idea" wants to graduate to one of these, the underlying artefact is probably missing or stale. Don't graduate — invoke the missing skill directly. Example: an idea like "we need to track our value flows" doesn't graduate to anything; it means `business-value-stream` Mode 1 (scaffold) should run.
 

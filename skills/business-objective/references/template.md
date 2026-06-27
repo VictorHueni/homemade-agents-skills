@@ -14,7 +14,7 @@
 [BMC](../02a-bmc.md) ·
 [Value Streams](../04a-value-streams.md) ·
 [Personas](../01a-personas.md) ·
-[Delivery Roadmap](../../product-specs/08a-delivery-roadmap.md)
+[Delivery Roadmap](../../plans/delivery-roadmap.md)
 
 ---
 
