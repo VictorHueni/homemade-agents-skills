@@ -678,7 +678,7 @@ echo "Bounded contexts: $bc_count | Domain models: $dm_count"
 
 ## Check 17 — Frontmatter validity
 
-**What:** verifies that every `docs/**/*.md` file opens with the standard artefact frontmatter block and that all required fields are present, valid, and consistent.
+**What:** verifies that every `docs/**/*.md` file opens with the standard artefact frontmatter block and that all required fields are present, valid, and consistent; and that the OKF reserved `index.md` files are correct — the root declares `okf_version`, and no `index.md` is stale (older than an artefact in its subtree, since a frontmatter-free index is not covered by the `review_interval` staleness check).
 
 **Schema (canonical — defined in `rules/artefact-frontmatter.md`, an OKF v0.1 superset):**
 - Always present, hard-required: `type` (OKF-required), `title`, `status`, `owner`, `last_reviewed`, `review_interval`
@@ -837,6 +837,31 @@ if [ -f docs/index.md ]; then
 else
   echo "MISSING ROOT BUNDLE INDEX: docs/index.md (OKF bundle listing + okf_version)"
 fi
+
+# Stale-index check. Because index.md is frontmatter-free it is NOT covered by
+# the review_interval staleness check, so verify freshness directly: an index is
+# stale if any artefact in its subtree was committed more recently than the index
+# itself. Uses git commit time (last-committed epoch); an uncommitted file (empty
+# git time) is treated as "now" — a new uncommitted artefact correctly marks the
+# index stale, and a just-regenerated index counts as fresh. `command find`
+# bypasses any wrapped find (see the IMPORTANT note earlier in this check).
+now=$(date +%s)
+git_ct() {  # last-commit epoch of "$1", or "now" when uncommitted / untracked
+  local t; t=$(git log -1 --format=%ct -- "$1" 2>/dev/null)
+  [ -n "$t" ] && echo "$t" || echo "$now"
+}
+command find docs -name 'index.md' ! \( $EXCLUDED \) 2>/dev/null | while IFS= read -r idx; do
+  dir=$(dirname "$idx")
+  idx_t=$(git_ct "$idx")
+  newest=0; newest_f=""
+  while IFS= read -r a; do
+    at=$(git_ct "$a")
+    [ "$at" -gt "$newest" ] && { newest=$at; newest_f=$a; }
+  done < <(command find "$dir" -name '*.md' ! -name 'index.md' ! -name 'log.md' ! -name 'README.md' ! \( $EXCLUDED \) 2>/dev/null)
+  if [ -n "$newest_f" ] && [ "$newest" -gt "$idx_t" ]; then
+    echo "STALE INDEX: $idx — newer artefact committed since last refresh ($newest_f); regenerate via util-metamodel-scaffold Mode 3"
+  fi
+done
 ```
 
 **Two defensive guarantees of this version:**
@@ -865,6 +890,7 @@ fi
 - Empty `owner` → Warning
 - Invalid `last_reviewed` date format → Warning
 - Root `docs/index.md` missing or without `okf_version` → Error
+- Stale `index.md` (an artefact in its subtree was committed more recently) → Warning
 
 **Proposed fix template:**
 - Missing block: "Add standard frontmatter to `{file}` using `rules/artefact-frontmatter.md` schema (OKF superset). Run `git config user.name` for owner."
@@ -875,6 +901,7 @@ fi
 - Missing `superseded_by`: "Add `superseded_by: <path-to-replacement>` to `{file}` frontmatter."
 - Dead target: "Update `superseded_by` / `supersedes` path in `{file}` — target file no longer exists at `{path}`."
 - Root index: "Create `docs/index.md` (OKF bundle root: `okf_version: \"0.1\"` frontmatter + navigation body) via `util-metamodel-scaffold`."
+- Stale index: "Regenerate `{index}` via `util-metamodel-scaffold` Mode 3 (refresh) — an artefact in its subtree (`{newest_file}`) changed after the index was last updated."
 
 ---
 
