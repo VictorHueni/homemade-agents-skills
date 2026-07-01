@@ -1,5 +1,9 @@
 ---
+type: Architecture Documentation
 title: "{{project_name}} — Cross-Cutting Concepts (arc42 §8)"
+description: "{{One-sentence summary of this arc42 section}}"
+tags: []
+timestamp: "{{YYYY-MM-DDThh:mm:ssZ}}"
 status: draft
 owner: {{owner}}
 last_reviewed: {{today}}
