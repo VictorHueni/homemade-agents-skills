@@ -44,7 +44,7 @@ emits (see [`rules/artefact-frontmatter.md`](../../rules/artefact-frontmatter.md
 - **summary source**: the doc's OKF `description` field → else a preserved manual cell → else a
   `_TODO summarize_` placeholder (reported on stdout);
 - **root** `docs/index.md` gets `okf_version`; sub-folder indexes are frontmatter-free;
-- lists subfolders that themselves have an `index.md`;
+- lists **every** direct subfolder (non-recursive) under `## Subfolders` — links the ones that have their own `index.md`, marks the rest `(no index yet)`; skips hidden/transient dirs (`.git`, `node_modules`, …);
 - **idempotent + byte-stable** (no timestamps): re-running with no doc change writes nothing;
 - `--check` exits 1 (writes nothing) if the index would change — for hooks / audits.
 

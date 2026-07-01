@@ -30,6 +30,8 @@ import re
 import sys
 
 RESERVED = {"index.md", "log.md", "README.md"}
+# Transient / non-content directories never listed as subfolders.
+SKIP_DIRS = {"__pycache__", ".venv", "node_modules", ".git", ".pytest_cache", "__marimo__"}
 PLACEHOLDER = "_TODO summarize_"
 
 
@@ -97,7 +99,7 @@ def build(folder, okf_force=None):
     subdirs = sorted(
         d for d in os.listdir(folder)
         if os.path.isdir(os.path.join(folder, d))
-        and os.path.isfile(os.path.join(folder, d, "index.md"))
+        and not d.startswith(".") and d not in SKIP_DIRS
     )
 
     rows, needs = [], []
@@ -133,7 +135,11 @@ def build(folder, okf_force=None):
         out.append(f"| {typ} | [{title}]({fn}) | {status} | {summary} |")
     if subdirs:
         out += ["", "## Subfolders", ""]
-        out += [f"- [{d}/]({d}/index.md)" for d in subdirs]
+        for d in subdirs:
+            if os.path.isfile(os.path.join(folder, d, "index.md")):
+                out.append(f"- [{d}/]({d}/index.md)")
+            else:
+                out.append(f"- {d}/ — _(no index yet)_")
     footer = f"> {len(rows)} document(s)"
     if subdirs:
         footer += f" · {len(subdirs)} subfolder(s)"
