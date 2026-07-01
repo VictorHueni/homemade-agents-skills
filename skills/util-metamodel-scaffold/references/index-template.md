@@ -1,13 +1,15 @@
-# INDEX.md Template — util-metamodel-scaffold
+# index.md Template (OKF bundle root) — util-metamodel-scaffold
 
 This file contains:
-1. The full INDEX.md skeleton that the skill writes to `docs/INDEX.md`.
-2. The bash detection commands Claude runs before generating the INDEX.md
+1. The full `index.md` skeleton that the skill writes to `docs/index.md` (the OKF bundle root).
+2. The bash detection commands Claude runs before generating the `index.md`
    (one per canonical artefact path).
+
+**OKF reserved file.** `index.md` is an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) reserved filename — a directory listing for progressive disclosure, **not** an artefact concept document. It therefore does **not** carry the standard artefact frontmatter block (`title`/`status`/`owner`/`last_reviewed`/`review_interval`). The **root** `docs/index.md` carries a minimal frontmatter block declaring only `okf_version`; any **sub-folder** `index.md` a skill emits is entirely frontmatter-free. See `rules/artefact-frontmatter.md` §Reserved files.
 
 ---
 
-## §Detection — bash commands (run before generating INDEX.md)
+## §Detection — bash commands (run before generating index.md)
 
 Run each command. Capture the result (✅ / 🔄 / ⬜) and substitute into the template below.
 
@@ -91,7 +93,7 @@ S11=$(check_folder "docs/plans/active/*_exec_*.md")
 
 ---
 
-## §Template — docs/INDEX.md
+## §Template — docs/index.md
 
 Substitute `{placeholders}` before writing. Status emojis come from the detection block
 above. Age (days since last git commit) can be computed with:
@@ -100,15 +102,14 @@ git log -1 --format="%ci" -- {path} 2>/dev/null
 ```
 If the file has never been committed, use "—".
 
+The frontmatter is the OKF bundle-root declaration only (`okf_version`) — **no** artefact
+frontmatter fields. The rich navigation content lives entirely in the body.
+
 ---
 
 ```markdown
 ---
-title: {Project Name} — Documentation Stack Index
-status: active
-owner: {git config user.name}
-last_reviewed: {YYYY-MM-DD}
-review_interval: 30d
+okf_version: "0.1"
 ---
 
 # Documentation Stack — {Project Name}
@@ -117,6 +118,8 @@ review_interval: 30d
 >
 > Run `util-metamodel-scaffold` Mode 3 to refresh status.
 > Run `util-metamodel-audit` Mode 2 for a full progress snapshot.
+>
+> This is the OKF bundle root `index.md` (reserved file — no artefact frontmatter).
 
 ---
 
@@ -173,7 +176,7 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | `util-metamodel-audit` Mode 1 | Full 18-check health audit | Monthly (active) / Quarterly (maintenance) |
 | `util-metamodel-audit` Mode 2 | Progress snapshot | Before sprint planning |
 | `util-metamodel-audit` Mode 4 | Freshness check | Before research waves or presentations |
-| `util-metamodel-scaffold` Mode 3 | Refresh this INDEX.md | After completing any stack step |
+| `util-metamodel-scaffold` Mode 3 | Refresh this index.md | After completing any stack step |
 
 ---
 

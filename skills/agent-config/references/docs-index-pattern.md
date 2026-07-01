@@ -19,37 +19,37 @@ This works until the first refactor. Paths listed inline go stale silently — a
 
 ---
 
-## The solution: docs/INDEX.md
+## The solution: docs/index.md
 
-A `docs/INDEX.md` is a **living navigation hub** — a single file that the agent reads to understand what documentation exists and where. Because it lives in `docs/`, it evolves with the repo. Because it is the dedicated index, it stays accurate in a way that config-embedded paths never do.
+A `docs/index.md` is a **living navigation hub** — a single file that the agent reads to understand what documentation exists and where. Because it lives in `docs/`, it evolves with the repo. Because it is the dedicated index, it stays accurate in a way that config-embedded paths never do.
 
 The CLAUDE.md / AGENTS.md pointer is a single line:
 
 ```markdown
-Read [docs/INDEX.md](docs/INDEX.md) for the full documentation navigation hub.
+Read [docs/index.md](docs/index.md) for the full documentation navigation hub.
 ```
 
-That line is stable forever. The path `docs/INDEX.md` does not change when ADRs are added or PRDs are restructured.
+That line is stable forever. The path `docs/index.md` does not change when ADRs are added or PRDs are restructured.
 
 ---
 
-## How INDEX.md is generated
+## How index.md is generated
 
 ### Kit-based projects (homemade-claude-kit)
 
-Projects using the `util-metamodel-scaffold` skill have `docs/INDEX.md` auto-generated and maintained. The index is a live table with ✅/🔄/⬜ status per documentation step, covering all 18 artefact types in the strategic-architecture build order. Run `util-metamodel-scaffold` Mode 3 (refresh) to regenerate it after adding new artefacts.
+Projects using the `util-metamodel-scaffold` skill have `docs/index.md` auto-generated and maintained. The index is a live table with ✅/🔄/⬜ status per documentation step, covering all 18 artefact types in the strategic-architecture build order. Run `util-metamodel-scaffold` Mode 3 (refresh) to regenerate it after adding new artefacts.
 
-The `rules/metamodel.md` file in `~/.claude/rules/` is the **path map** that INDEX.md reflects — it contains the canonical output paths for every artefact type, the full dependency graph (DAG), and the build order. When in doubt about where something lives, read `rules/metamodel.md` — it is the authoritative source. INDEX.md is the project-specific read-out of that map.
+The `rules/metamodel.md` file in `~/.claude/rules/` is the **path map** that index.md reflects — it contains the canonical output paths for every artefact type, the full dependency graph (DAG), and the build order. When in doubt about where something lives, read `rules/metamodel.md` — it is the authoritative source. index.md is the project-specific read-out of that map.
 
 ```markdown
 # Pointer for kit-based projects
-Read [docs/INDEX.md](docs/INDEX.md) for the full documentation navigation hub.
+Read [docs/index.md](docs/index.md) for the full documentation navigation hub.
 For canonical path rules and build order, see ~/.claude/rules/metamodel.md.
 ```
 
 ### Non-kit projects
 
-For projects without the kit scaffold, create a minimal `docs/INDEX.md` manually or with the `agent-config` scaffold mode. The minimal format is a flat table:
+For projects without the kit scaffold, create a minimal `docs/index.md` manually or with the `agent-config` scaffold mode. The minimal format is a flat table:
 
 ```markdown
 # Documentation Index
@@ -73,11 +73,11 @@ The pointer section in CLAUDE.md should be 1–4 lines, not a full description:
 ```markdown
 ## Documentation
 - Vision and problem framing: [docs/VISION.md](docs/VISION.md)
-- Full docs navigation: [docs/INDEX.md](docs/INDEX.md)
+- Full docs navigation: [docs/index.md](docs/index.md)
 - Architecture decisions: [docs/architecture/decisions/](docs/architecture/decisions/)
 ```
 
-Only add the third line (architecture decisions) if the agent will frequently need to reference ADRs — otherwise the INDEX.md link is sufficient.
+Only add the third line (architecture decisions) if the agent will frequently need to reference ADRs — otherwise the index.md link is sufficient.
 
 ---
 
@@ -90,13 +90,13 @@ For projects with minimal or no docs/ content:
 _No structured docs yet. See README.md for project overview._
 ```
 
-Do not fabricate an INDEX.md for a project that has none. An empty or sparse docs/ tree does not need an index.
+Do not fabricate an index.md for a project that has none. An empty or sparse docs/ tree does not need an index.
 
 ---
 
 ## Maintenance
 
-`docs/INDEX.md` should be updated when:
+`docs/index.md` should be updated when:
 - A new major documentation artefact is added (new ADR, new PRD, new domain model)
 - A file is moved or renamed
 - The status of a major artefact changes (draft → active, active → superseded)

@@ -43,10 +43,10 @@ docs/
 └── domain/
 
 # Right (living, never stale)
-Read docs/INDEX.md for the full documentation navigation hub.
+Read docs/index.md for the full documentation navigation hub.
 ```
 
-**Fix:** wire the agent to `docs/INDEX.md` (a living file) instead of embedding the path tree inline. See [docs-index-pattern.md](docs-index-pattern.md).
+**Fix:** wire the agent to `docs/index.md` (a living file) instead of embedding the path tree inline. See [docs-index-pattern.md](docs-index-pattern.md).
 
 ---
 
@@ -96,7 +96,7 @@ Read docs/INDEX.md for the full documentation navigation hub.
 
 **Failure mode:** when `docs/` has substantial content (ADRs, PRDs, domain model, etc.) but the config doesn't point to it, the agent operates without architectural context. It may re-derive decisions that were already made, or propose implementations that contradict ADRs.
 
-**Fix:** add a pointer to `docs/INDEX.md` or `docs/VISION.md`. See [docs-index-pattern.md](docs-index-pattern.md).
+**Fix:** add a pointer to `docs/index.md` or `docs/VISION.md`. See [docs-index-pattern.md](docs-index-pattern.md).
 
 ---
 

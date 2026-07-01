@@ -29,7 +29,7 @@ A configuration file is good when:
 | Artefact | Path |
 |---|---|
 | Agent configuration | `CLAUDE.md` (Claude Code) and/or `AGENTS.md` (cross-agent) at project root |
-| Docs navigation index | `docs/INDEX.md` (created or updated when `docs/` has substantial content) |
+| Docs navigation index | `docs/index.md` (created or updated when `docs/` has substantial content) |
 
 ---
 
@@ -77,12 +77,12 @@ Single message, user responds like `1B, 2A, 3B`:
    - `CLAUDE.md` (if it already exists — preserve any content worth keeping)
    - `.env.example` — identify secret categories without reading values
    - `docs/` tree: run `find docs -name '*.md' | head -30` to understand the structure
-   - `docs/INDEX.md` — if it exists, it is the navigation hub; point to it
+   - `docs/index.md` — if it exists, it is the navigation hub; point to it
    - `.github/workflows/` or `.gitlab-ci.yml` — CI commands are the canonical test/build commands
 
 2. **Wire the docs index** (see [references/docs-index-pattern.md](references/docs-index-pattern.md)):
-   - If `docs/INDEX.md` exists: add `Read docs/INDEX.md for the full documentation navigation hub` to the config
-   - If `docs/` has ≥5 markdown files but no INDEX.md: create a minimal `docs/INDEX.md` (flat table of all found `.md` files with one-line descriptions) and point to it
+   - If `docs/index.md` exists: add `Read docs/index.md for the full documentation navigation hub` to the config
+   - If `docs/` has ≥5 markdown files but no index.md: create a minimal `docs/index.md` (flat table of all found `.md` files with one-line descriptions) and point to it
    - If `docs/` is sparse or absent: add only the VISION.md pointer if the file exists
 
 3. **Write the config** using [`templates/root.md`](templates/root.md):
@@ -140,7 +140,7 @@ Load [references/best-practices.md](references/best-practices.md) and [reference
 - [ ] CI commands used as canonical source (not invented)
 
 **Docs navigation:**
-- [ ] If `docs/` has substantial content: is there a pointer to `docs/INDEX.md` or `docs/VISION.md`?
+- [ ] If `docs/` has substantial content: is there a pointer to `docs/index.md` or `docs/VISION.md`?
 - [ ] Are inline path listings present that could instead point to an index? (flag as stale risk)
 
 **Permission boundary:**
@@ -197,7 +197,7 @@ Load [references/best-practices.md](references/best-practices.md) and [reference
 
 1. **Config as a style guide.** Long lists of formatting rules that a linter already enforces. Fix: remove them; wire the linter to run automatically instead.
 
-2. **Inline docs path map.** Listing `docs/architecture/`, `docs/product-specs/`, etc. inline. Goes stale with every refactor. Fix: point to `docs/INDEX.md` and let the index be the source of truth.
+2. **Inline docs path map.** Listing `docs/architecture/`, `docs/product-specs/`, etc. inline. Goes stale with every refactor. Fix: point to `docs/index.md` and let the index be the source of truth.
 
 3. **Speculative rules.** Adding rules before the agent has made the corresponding mistake. Fix: write reactively — only add a rule when the same mistake has happened twice.
 
@@ -216,7 +216,7 @@ Load [references/best-practices.md](references/best-practices.md) and [reference
 - [ ] Project files scanned (commands verified, not invented)
 - [ ] Behavioral posture block present verbatim
 - [ ] WHAT / WHY / HOW answered
-- [ ] Docs index wired (pointer to `docs/INDEX.md` or `docs/VISION.md`)
+- [ ] Docs index wired (pointer to `docs/index.md` or `docs/VISION.md`)
 - [ ] Permission boundary table present
 - [ ] File is ≤ 200 lines; overflow moved to `agent_docs/`
 - [ ] No credentials, linter rules, or stale paths
@@ -242,7 +242,7 @@ Load [references/best-practices.md](references/best-practices.md) and [reference
 After any mode, summarise in 5 lines:
 
 1. Mode + file(s) created or updated (path).
-2. Key decisions made (e.g. "behavioral posture block added, 3 anti-patterns removed, docs index wired to `docs/INDEX.md`").
+2. Key decisions made (e.g. "behavioral posture block added, 3 anti-patterns removed, docs index wired to `docs/index.md`").
 3. Line count before → after (Modes 2 and 3).
 4. Findings summary: N high / N medium / N low (Mode 2 and 3).
 5. Next action (e.g. "fill `_TODO_` in §Commands once stack is wired" or "refresh in 90 days").

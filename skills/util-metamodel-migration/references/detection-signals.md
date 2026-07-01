@@ -12,6 +12,7 @@ A file whose name matches one of these patterns is likely the artefact type list
 
 | Filename pattern (glob) | Likely artefact type | Canonical skill | Canonical path |
 |---|---|---|---|
+| `INDEX.md` (any depth under `docs/`) | Legacy bundle/folder index | `util-metamodel-scaffold` | Rename to `index.md` (OKF reserved file); strip artefact frontmatter; root keeps only `okf_version` — see `okf-index-rename` in `path-migration-v2.md` |
 | `*_prd_*.md` or `*-prd-*.md` | PRD | `spec-prd` | `docs/product-specs/prds/prd-NNNN-{feature}.md` |
 | `uc-[0-9][0-9]-*.md` or `*use-case*.md` | Use case | `spec-use-case` | `docs/product-specs/use-cases/uc-NN-{slug}.md` |
 | `[0-9][0-9][0-9][0-9]-*.md` or `[0-9][0-9][0-9][0-9]_*.md` in a decisions-like folder | ADR | `arch-adr` | `docs/architecture/decisions/adr-NNNN-{topic}.md` |
