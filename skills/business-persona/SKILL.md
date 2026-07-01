@@ -157,7 +157,7 @@ Ask 2–4 questions max, in a single message, with lettered options where possib
 
 ## Output structure — the fixed template
 
-- Open every generated file with the standard artefact frontmatter (title, status, owner, last_reviewed, review_interval). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
 
 The skill produces ONE markdown file at `{personas folder}/01a-personas.md` with this fixed structure (full template in `references/template.md`):
 

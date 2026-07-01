@@ -73,6 +73,15 @@ changes the emitted `type:` and the audit's accepted enum.
 | `adr` | `arch-adr` | `ADR-\d{4}` | one-per-artefact | `docs/architecture/decisions/adr-{nnnn}-{slug}.md` | `180d` | `supersedes`, `superseded_by` | _TBD_ |
 | `research` | `arch-research` | `Research-\d{4}` | one-per-artefact | `docs/architecture/research/{nnnn}-{slug}.md` | `90d` | — | _TBD_ |
 | `idea` | `discovery-idea` | `IDEA-\d{4}` | one-per-artefact | `docs/discovery/ideation/IDEA-{nnnn}-{slug}.md` | `90d` | `graduates_to` | _TBD_ |
+| `runbook` | `ops-runbook` | — | one-per-artefact | `docs/ops/runbooks/{slug}.md` | `90d` | — | _TBD_ |
+| `bug_rca` | `ops-bug-rca` | — | one-per-artefact | `docs/ops/rcas/{date}-{slug}.md` | `90d` | — | _TBD_ |
+| `stack_guide` | `dev-stack-guide` | — | one-per-artefact | `docs/dev-guides/{tech-slug}.md` | `90d` | — | _TBD_ |
+| `getting_started` | `dev-getting-started` | — | one-per-artefact | `docs/dev-guides/getting-started.md` | `180d` | — | _TBD_ |
+| `research_note` | `discovery-research` | — | one-per-artefact | `docs/discovery/interviews/{slug}.md` | `90d` | — | _TBD_ |
+| `workshop_note` | `discovery-workshop` | — | one-per-artefact | `docs/discovery/workshops/{slug}.md` | `90d` | — | _TBD_ |
+| `design_system` | `ux-design-system` | — | one-per-artefact | `docs/ux/design-system.md` | `180d` | — | _TBD_ |
+
+> **Supporting doc-types (2026-07-01).** The rows above `runbook`…`design_system` are doc-producing skills that mint **no business ID** (`id_format` `—`) but write `docs/**` markdown that OKF requires to carry a `type`. They were added to the registry when the OKF baseline made `type` mandatory for every concept document. They are not steps in the linear build order (see `metamodel.md` supporting-skills list). **Still pending a `type`:** the arc42 section docs (`docs/architecture/arc42/*.md`, co-authored by `arch-arc42` + `arch-c4`) — see the OKF changelog entry.
 
 ## OKF `type` display names
 
@@ -116,6 +125,13 @@ is revisited if per-instance explosion ships (issue #54).
 | `adr` | `Architecture Decision Record` |
 | `research` | `Architecture Research Note` |
 | `idea` | `Idea` |
+| `runbook` | `Runbook` |
+| `bug_rca` | `Bug RCA` |
+| `stack_guide` | `Stack Guide` |
+| `getting_started` | `Getting Started Guide` |
+| `research_note` | `Research Note` |
+| `workshop_note` | `Workshop Note` |
+| `design_system` | `Design System` |
 
 ## Maintenance coupling
 

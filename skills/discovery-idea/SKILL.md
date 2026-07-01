@@ -57,7 +57,11 @@ Every file opens with the canonical artefact frontmatter from `rules/artefact-fr
 
 ```yaml
 ---
+type: Idea
 title: <short descriptive title>
+description: <one-sentence summary of the idea>
+tags: []
+timestamp: <ISO 8601 datetime of last change, e.g. 2026-07-01T14:30:00Z>
 status: draft        # draft | active | superseded | deprecated
 owner: <git config user.name>
 last_reviewed: YYYY-MM-DD

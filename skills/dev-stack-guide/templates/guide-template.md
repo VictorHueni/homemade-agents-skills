@@ -1,5 +1,9 @@
 ---
+type: Stack Guide
 title: {Tech Name} Developer Guide
+description: Developer guide for building with {Tech Name} — patterns, anti-patterns, best practices.
+tags: []
+timestamp: <ISO 8601 datetime of last change>
 status: draft
 owner: {{git config user.name}}
 last_reviewed: YYYY-MM-DD

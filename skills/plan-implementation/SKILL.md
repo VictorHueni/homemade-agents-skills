@@ -31,7 +31,7 @@ This skill guides you through creating a high-quality, structured implementation
 - **Format:** Markdown (`.md`)
 - **Location:** `docs/plans/active/`
 - **Filename:** `{NNNN}_exec_{slug}.md` (e.g., 0001_exec_onboard-agent.md)
-- Open every generated file with the standard artefact frontmatter (title, status, owner, last_reviewed, review_interval). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: `rules/artefact-frontmatter.md`.
 - When a PRD exists for this plan, add a `prd:` field to the frontmatter: `prd: docs/product-specs/prds/prd-NNNN-{feature}.md`. This is the machine-readable link used by `agent-ralph-loop` to locate the PRD at its canonical location without requiring a workspace copy. Omit the field if the plan has no associated PRD.
 
 ## Implementation Plan Template

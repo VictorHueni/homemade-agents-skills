@@ -1,5 +1,9 @@
 ---
+type: Use Case
 title: "UC-{{NN}} — {{Use case goal as a short verb phrase}}"
+description: "{{One-sentence summary of the actor goal this use case satisfies}}"
+tags: []
+timestamp: "{{YYYY-MM-DDThh:mm:ssZ}}"
 status: draft
 owner: "{{git config user.name}}"
 last_reviewed: "{{YYYY-MM-DD}}"

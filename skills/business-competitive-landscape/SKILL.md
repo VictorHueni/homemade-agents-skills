@@ -344,5 +344,5 @@ Before declaring the work done:
 - [ ] Value curve has 5–8 factors + own + ≥2 competitor curves + Four Actions analysis (when in mode 4).
 - [ ] No anti-patterns survived: tiering / evidence / dates / SWOT-relative / Four Actions / substitutes-listed / reviewed-by / strategic-implications.
 - [ ] No project-specific terms baked in (kit version).
-- [ ] Open every generated file with the standard artefact frontmatter (title, status, owner, last_reviewed, review_interval). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
+- [ ] Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
 - [ ] Closing report delivered.

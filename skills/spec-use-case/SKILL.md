@@ -183,7 +183,7 @@ Ask 2–4 questions max, single message, lettered options. Don't run a wizard.
 
 ## Output frontmatter
 
-Open every generated file (`index.md` and each `uc-NN-*.md`) with the standard artefact frontmatter (`title`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. `status: draft` on creation. Default `review_interval: 180d` (use cases are stable behavioural specs). Full schema: `rules/artefact-frontmatter.md` — do not restate it inline.
+Open every generated **use-case file** (`uc-NN-*.md`) with the standard OKF-superset artefact frontmatter — `type: Use Case` (its `okf_type` in `rules/artefact-types-registry.md`), plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`. Run `git config user.name` for `owner`. `status: draft` on creation. Default `review_interval: 180d` (use cases are stable behavioural specs). Full schema: `rules/artefact-frontmatter.md` — do not restate it inline. Note: `index.md` is an **OKF reserved file** — frontmatter-free (a directory listing, not a concept doc).
 
 Each use-case file carries one document-level `## Open Items` section for unresolved questions (undecided business rules, deferred extensions). Initial state `_None at present._` — never scaffold placeholder rows. Schema and lifecycle: `rules/open-items-governance.md`. Chain to `util-open-items` to sync to the central ledger.
 

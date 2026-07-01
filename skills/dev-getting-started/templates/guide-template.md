@@ -1,5 +1,9 @@
 ---
+type: Getting Started Guide
 title: Getting Started — {Project Name}
+description: How to set up, run, and contribute to {Project Name}.
+tags: []
+timestamp: <ISO 8601 datetime of last change>
 status: draft
 owner: {{git config user.name}}
 last_reviewed: YYYY-MM-DD
