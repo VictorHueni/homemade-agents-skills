@@ -115,12 +115,13 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
 
 ### Mode 4 — Freshness check
 
-**When:** quarterly review, before a research wave, or before a stakeholder presentation. Runs checks §8, §11, §12, §14 only.
+**When:** quarterly review, before a research wave, or before a stakeholder presentation. Runs checks §8, §11, §12, §14, plus the **stale-index sub-check of §17** (freshness-only — not the full frontmatter validation).
 
 **Process:**
 1. Run checks §8 (_TODO_ density), §11 (confidence distribution), §12 (expiry + staleness), §14 (research sync).
-2. Output a freshness dashboard: `File | Completeness % | Confidence (A/T/V) | Age (days) | Flags`.
-3. Save to `var/reports/metamodel-audit/freshness-{YYYY-MM-DD}.md`.
+2. Run the **stale-index sub-check of §17** — flag any `index.md` older than an artefact in its subtree (see the "Stale-index check" block in `references/check-catalogue.md` Check 17). This is the one freshness signal a frontmatter-free `index.md` would otherwise miss between full audits.
+3. Output a freshness dashboard: `File | Completeness % | Confidence (A/T/V) | Age (days) | Flags`, with a row per stale index.
+4. Save to `var/reports/metamodel-audit/freshness-{YYYY-MM-DD}.md`.
 
 ### Mode 5 — Open-items governance
 

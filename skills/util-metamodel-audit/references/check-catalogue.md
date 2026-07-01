@@ -838,7 +838,8 @@ else
   echo "MISSING ROOT BUNDLE INDEX: docs/index.md (OKF bundle listing + okf_version)"
 fi
 
-# Stale-index check. Because index.md is frontmatter-free it is NOT covered by
+# Stale-index check. Also run standalone by Mode 4 (freshness) — see SKILL.md.
+# Because index.md is frontmatter-free it is NOT covered by
 # the review_interval staleness check, so verify freshness directly: an index is
 # stale if any artefact in its subtree was committed more recently than the index
 # itself. Uses git commit time (last-committed epoch); an uncommitted file (empty
