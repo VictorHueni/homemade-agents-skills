@@ -241,5 +241,5 @@ Before declaring the work done:
 - [ ] Conway's Law alignment noted (team boundary recommendation per BC).
 - [ ] Mermaid flowchart renders without parse errors (see diagramming-mermaid rule).
 - [ ] No project-specific terms baked into anything reusable in the kit version.
-- [ ] Open every generated file with the standard artefact frontmatter (title, status, owner, last_reviewed, review_interval). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
+- [ ] Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
 - [ ] Closing report delivered.

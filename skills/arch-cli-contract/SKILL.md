@@ -263,7 +263,7 @@ Before declaring the work done:
 
 - [ ] `docs/architecture/interfaces/` folder exists.
 - [ ] `docs/architecture/interfaces/cli-{slug}.md` exists.
-- [ ] Standard artefact frontmatter present (title, status, owner, last_reviewed, review_interval). Run `git config user.name` for owner. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
+- [ ] Standard artefact frontmatter present (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for owner. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
 - [ ] Every CLI-NN.CMD-NN entry maps to a FBS functionality (`C-N.M.FXX`) or epic (`E-NN`).
 - [ ] `--help` and `--version` documented as global flags.
 - [ ] stdout / stderr separation explicit in §5 Output contract.

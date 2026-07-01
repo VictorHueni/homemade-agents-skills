@@ -52,11 +52,13 @@ A personal Claude Code toolkit — composable skills for business architecture, 
 | `ux-` | `ux-design-system` | Project visual source of truth — `docs/ux/design-system.md` → `tokens.css` (themes the `com-` layer) |
 | `com-` | `com-slide-deck` | HTML slide deck builder |
 | `com-` | `com-artefact-viz` | Interactive HTML views of artefacts (capability map · FBS · roadmap · BMC) |
-| `util-` | `util-metamodel-scaffold` | Canonical docs/ folder tree + INDEX.md + CLAUDE.md wiring |
+| `util-` | `util-metamodel-scaffold` | Canonical docs/ folder tree + index.md + CLAUDE.md wiring |
 | `util-` | `util-metamodel-audit` | Artefact stack health check |
 | `util-` | `util-metamodel-migration` | Docs folder migration report |
 | `util-` | `util-docs-audit` | Documentation freshness audit |
 | `util-` | `util-docs-lint` | Docs lint toolchain (dprint/Vale/lychee) — audit, enforce, CI |
+| `util-` | `util-docs-index` | OKF `index.md` generator — deterministic parse + concise per-doc summaries (idempotent) |
+| `util-` | `util-docs-log` | OKF `log.md` generator — per-folder change history materialised from git history (on-demand) |
 | `util-` | `util-toolkit-doctor` | Claude Code setup health |
 
 ---
@@ -110,5 +112,4 @@ Cross-project conventions loaded automatically by Claude Code:
 | `rules/working-style.md` | Sequential plans, trust-but-verify |
 | `rules/diagramming-mermaid.md` | Mermaid diagram pitfalls |
 | `rules/frontend-nuxt.md` | Nuxt UI v4 / Vue 3.5 / Reka UI |
-| `rules/python-extras.md` | Python naming conventions |
 | `rules/writing-citations.md` | Citation discipline |

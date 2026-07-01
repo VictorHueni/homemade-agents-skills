@@ -75,7 +75,11 @@ Use when the project has no ADR directory yet, or when setting up ADRs for the f
 
 ```markdown
 ---
+type: Architecture Decision Record
 title: Record Architecture Decisions
+description: Establishes the use of ADRs to capture architecturally significant decisions.
+tags: []
+timestamp: <ISO 8601 datetime of last change>
 status: active
 owner: <git config user.name>
 last_reviewed: <today YYYY-MM-DD>
@@ -197,7 +201,7 @@ When asked to review an ADR:
 - Keep the narrative factual and concise.
 - Prefer complete ADR drafts over outlines unless the user asks for an outline.
 - If inputs are incomplete and user wants speed, draft with explicit `[ASSUMPTION]` markers and list required confirmations at the end.
-- All ADR files use the five-field frontmatter block defined in `rules/artefact-frontmatter.md`. The MADR templates already include it — do not omit or reorder fields.
+- All ADR files use the OKF-superset frontmatter block defined in `rules/artefact-frontmatter.md` (incl. `type: Architecture Decision Record`). The MADR templates already include it — do not omit or reorder fields.
 
 ## References
 

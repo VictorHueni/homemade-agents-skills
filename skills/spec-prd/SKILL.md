@@ -398,7 +398,7 @@ via the util-open-items skill in sync mode."
 - **Location:** `docs/product-specs/prds/`
 - **Filename:** `prd-NNNN-{feature}.md` (e.g., `prd-0001-semester-schedule-generation.md`)
 - **ID format:** `PRD-NNNN` — 4-digit zero-padded integer. Determine by running `find docs/product-specs/prds/ -name "prd-*.md" | sort` and taking max NNNN + 1. First PRD is `PRD-0001`.
-- Open every generated file with the standard artefact frontmatter (title, status, owner, last_reviewed, review_interval). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: `rules/artefact-frontmatter.md`.
 
 ---
 

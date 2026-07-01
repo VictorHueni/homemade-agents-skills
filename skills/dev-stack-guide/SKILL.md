@@ -99,7 +99,11 @@ Single message. Users respond like `1A, 2B, 3A`:
 
 ```yaml
 ---
+type: Stack Guide
 title: Research — {Tech Name}
+description: Research notes on {Tech Name} informing the developer guide.
+tags: []
+timestamp: <ISO 8601 datetime of last change>
 status: draft
 owner: {git config user.name}
 last_reviewed: YYYY-MM-DD

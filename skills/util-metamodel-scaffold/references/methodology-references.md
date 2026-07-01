@@ -74,15 +74,19 @@ and `util-metamodel-migration`: surface findings, let the operator act.
 
 ---
 
-## Why does INDEX.md use `review_interval: 30d`?
+## Why is `index.md` frontmatter-free (no `review_interval`)?
 
-The INDEX.md is a generated snapshot, not an authored artefact. Its content becomes stale
-the moment any stack step changes status. A 30-day review interval triggers `util-metamodel-audit`
-Check 12 (staleness) frequently enough to prompt regular refreshes without being so short
-that every sprint produces an audit warning.
+`index.md` is an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
+**reserved file** — a directory listing for progressive disclosure, not an artefact concept
+document — so it carries no artefact frontmatter block (the bundle-root `docs/index.md` carries
+only `okf_version`). It is a generated snapshot that becomes stale the moment any stack step
+changes status, but its freshness is not policed by the artefact `review_interval` staleness
+check; instead the body shows `> **Last refreshed:**` and `util-metamodel-audit` Check 17
+verifies the root `index.md` exists and declares `okf_version`.
 
-Mode 3 regenerates INDEX.md in seconds. The cost of refreshing is negligible; the cost of
-a stale INDEX.md misleading an agent into skipping a completed step is high.
+Mode 3 regenerates `index.md` in seconds. The cost of refreshing is negligible; the cost of
+a stale `index.md` misleading an agent into skipping a completed step is high — so refresh it
+after every stack step.
 
 ---
 

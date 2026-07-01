@@ -7,7 +7,11 @@ Source: <https://adr.github.io/madr/> and <https://github.com/adr/madr>.
 
 ```markdown
 ---
+type: Architecture Decision Record
 title: <short title>
+description: <one-sentence summary of the decision>
+tags: []
+timestamp: <ISO 8601 datetime of last change>
 status: draft
 owner: <git config user.name>
 last_reviewed: YYYY-MM-DD
@@ -95,7 +99,11 @@ Chosen option: "<option x>", because <summarize why this option is best against 
 
 ```markdown
 ---
+type: Architecture Decision Record
 title: <short title>
+description: <one-sentence summary of the decision>
+tags: []
+timestamp: <ISO 8601 datetime of last change>
 status: draft
 owner: <git config user.name>
 last_reviewed: YYYY-MM-DD
@@ -139,7 +147,7 @@ Chosen option: "<option x>", because <concise rationale>.
 
 The `## Status` section is **removed** from the MADR body. Frontmatter `status` is the single source of truth — never duplicate it in the document body.
 
-Supersession adds conditional fields to the standard five-field block:
+Supersession adds conditional fields to the standard OKF-superset block:
 
 ```yaml
 # ADR being retired — status switches to superseded, superseded_by is added:

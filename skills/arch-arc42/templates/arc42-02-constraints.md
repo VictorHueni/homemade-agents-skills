@@ -1,5 +1,9 @@
 ---
+type: Architecture Documentation
 title: "{{project_name}} — Architecture Constraints (arc42 §2)"
+description: "{{One-sentence summary of this arc42 section}}"
+tags: []
+timestamp: "{{YYYY-MM-DDThh:mm:ssZ}}"
 status: draft
 owner: {{owner}}
 last_reviewed: {{today}}

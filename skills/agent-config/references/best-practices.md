@@ -29,7 +29,7 @@ A CLAUDE.md / AGENTS.md is a **machine-readable project onboarding script**, not
 - Non-standard package manager or toolchain (only if it differs from the obvious default)
 - Exact build / test / lint commands — runnable, with flags, no hand-waving; use CI commands as the canonical source
 - Permission boundary: a table or short list of autonomous vs. approval-required actions
-- Docs navigation pointer: link to `docs/INDEX.md` or `docs/VISION.md` (see [docs-index-pattern.md](docs-index-pattern.md))
+- Docs navigation pointer: link to `docs/index.md` or `docs/VISION.md` (see [docs-index-pattern.md](docs-index-pattern.md))
 
 **Conditional — add when relevant:**
 - Monorepo layout: which subdirectory governs which package

@@ -1,5 +1,9 @@
 ---
+type: Architecture Documentation
 title: "{{project_name}} — Building Block View (arc42 §5)"
+description: "{{One-sentence summary of this arc42 section}}"
+tags: []
+timestamp: "{{YYYY-MM-DDThh:mm:ssZ}}"
 status: draft
 owner: {{owner}}
 last_reviewed: {{today}}

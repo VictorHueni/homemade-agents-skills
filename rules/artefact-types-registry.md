@@ -11,9 +11,23 @@ one row per type. Build order, dependencies, and the ER live in
 [`metamodel.md`](metamodel.md); per-type semantics live in each minting skill's `SKILL.md`
 `## Canonical definition` section.
 
+**OKF `type` source (2026-07-01).** Every generated artefact carries a **`type:` frontmatter
+field** — the required field of
+[Open Knowledge Format (OKF) v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md).
+Per OKF idiom the value is a **human-readable display name** (Title Case), because `type`
+doubles as the consumer-facing presentation label. These display names are **defined here, not
+inferred by the LLM** — the [OKF `type` display names](#okf-type-display-names) table below is
+the single source of truth. The snake_case `type` column in the registry remains the internal
+stable key (row identity, audit lookup, folder logic); the `okf_type` display value is what a
+skill writes into `type:` (full frontmatter schema in
+[`artefact-frontmatter.md`](artefact-frontmatter.md), an OKF superset). Adding or renaming a
+type means updating **both** the row's snake_case key and its `okf_type` display value, which
+changes the emitted `type:` and the audit's accepted enum.
+
 ## Columns
 
-- `type` — the snake_case identifier.
+- `type` — the snake_case identifier (internal stable key: row identity, audit lookup, folder logic).
+- `okf_type` — the Title-Case **display name** written into the artefact's `type:` frontmatter field (OKF-idiomatic). Defined canonically in the [OKF `type` display names](#okf-type-display-names) table, not in the row below.
 - `minting skill` — the skill that produces the type.
 - `id_format` — the business-ID regex (`—` when the type mints no ID).
 - `layout` — `single-collection` (many instances in one file), `one-per-artefact` (one file
@@ -59,11 +73,73 @@ one row per type. Build order, dependencies, and the ER live in
 | `adr` | `arch-adr` | `ADR-\d{4}` | one-per-artefact | `docs/architecture/decisions/adr-{nnnn}-{slug}.md` | `180d` | `supersedes`, `superseded_by` | _TBD_ |
 | `research` | `arch-research` | `Research-\d{4}` | one-per-artefact | `docs/architecture/research/{nnnn}-{slug}.md` | `90d` | — | _TBD_ |
 | `idea` | `discovery-idea` | `IDEA-\d{4}` | one-per-artefact | `docs/discovery/ideation/IDEA-{nnnn}-{slug}.md` | `90d` | `graduates_to` | _TBD_ |
+| `runbook` | `ops-runbook` | — | one-per-artefact | `docs/ops/runbooks/{slug}.md` | `90d` | — | _TBD_ |
+| `bug_rca` | `ops-bug-rca` | — | one-per-artefact | `docs/ops/rcas/{date}-{slug}.md` | `90d` | — | _TBD_ |
+| `stack_guide` | `dev-stack-guide` | — | one-per-artefact | `docs/dev-guides/{tech-slug}.md` | `90d` | — | _TBD_ |
+| `getting_started` | `dev-getting-started` | — | one-per-artefact | `docs/dev-guides/getting-started.md` | `180d` | — | _TBD_ |
+| `research_note` | `discovery-research` | — | one-per-artefact | `docs/discovery/interviews/{slug}.md` | `90d` | — | _TBD_ |
+| `workshop_note` | `discovery-workshop` | — | one-per-artefact | `docs/discovery/workshops/{slug}.md` | `90d` | — | _TBD_ |
+| `design_system` | `ux-design-system` | — | one-per-artefact | `docs/ux/design-system.md` | `180d` | — | _TBD_ |
+| `arc42_section` | `arch-arc42` | — | one-per-artefact | `docs/architecture/arc42/{nn}-{slug}.md` | `180d` | — | _TBD_ |
+
+> **Supporting doc-types (2026-07-01).** The rows above `runbook`…`arc42_section` are doc-producing skills that mint **no business ID** (`id_format` `—`) but write `docs/**` markdown that OKF requires to carry a `type`. They were added to the registry when the OKF baseline made `type` mandatory for every concept document. They are not steps in the linear build order (see `metamodel.md` supporting-skills list). **`arc42_section` (KISS):** all eight arc42 section files share the one display name `Architecture Documentation`, disambiguated by the section number in their `title` (and by the `CST-NN`/`SCN-NN`/`CC-NN`/`RSK-NN` sub-IDs they mint); `arch-arc42` owns the frontmatter even for §3/§5/§7 where `arch-c4` fills the DSL-derived tables (ADR-0004).
+
+## OKF `type` display names
+
+Canonical, metamodel-defined mapping from each registry key to the exact string a skill writes
+into the artefact's `type:` frontmatter field. **Skills emit the `okf_type` value verbatim —
+never invent, translate, or re-case it.** The audit validates the emitted `type:` against this
+column. For a `single-collection` file (many instances in one file), the file carries the
+singular `okf_type` of the instances it holds (e.g. `01a-personas.md` → `type: Persona`); this
+is revisited if per-instance explosion ships (issue #54).
+
+| registry key (`type`) | emitted `type:` (`okf_type`) |
+|---|---|
+| `vision` | `Product Vision` |
+| `persona` | `Persona` |
+| `canvas` | `Business Model Canvas` |
+| `bmc_block` | `Business Model Canvas Block` |
+| `capability` | `Business Capability` |
+| `value_stream` | `Value Stream` |
+| `vs_stage` | `Value Stream Stage` |
+| `objective` | `Business Objective` |
+| `key_result` | `Key Result` |
+| `process` | `Business Process` |
+| `quantitative_model` | `Quantitative Model` |
+| `competitor` | `Competitor Profile` |
+| `bounded_context` | `Bounded Context` |
+| `glossary_term` | `Glossary Term` |
+| `fbs_functionality` | `Functionality` |
+| `domain_model` | `Domain Model` |
+| `aggregate` | `Aggregate` |
+| `entity` | `Entity` |
+| `value_object` | `Value Object` |
+| `domain_event` | `Domain Event` |
+| `interface_contract` | `Interface Contract` |
+| `epic` | `Epic` |
+| `cli_surface` | `CLI Surface Contract` |
+| `cli_command` | `CLI Command` |
+| `quality_attribute` | `Quality Attribute` |
+| `use_case` | `Use Case` |
+| `prd` | `Product Requirements Document` |
+| `implementation_plan` | `Implementation Plan` |
+| `adr` | `Architecture Decision Record` |
+| `research` | `Architecture Research Note` |
+| `idea` | `Idea` |
+| `runbook` | `Runbook` |
+| `bug_rca` | `Bug RCA` |
+| `stack_guide` | `Stack Guide` |
+| `getting_started` | `Getting Started Guide` |
+| `research_note` | `Research Note` |
+| `workshop_note` | `Workshop Note` |
+| `design_system` | `Design System` |
+| `arc42_section` | `Architecture Documentation` |
 
 ## Maintenance coupling
 
 | What changed | Update |
 |---|---|
 | New type, or a change to its id_format / path / layout / skill / interval | this file (the type's row) |
+| New type, or a change to its `okf_type` display name | this file — the [OKF `type` display names](#okf-type-display-names) table + `util-metamodel-audit` Check 17 `type` enum |
 | A type's semantics | the minting `SKILL.md` `## Canonical definition` |
 | Build order / dependencies / ER | [`metamodel.md`](metamodel.md) |

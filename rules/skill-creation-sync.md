@@ -169,14 +169,22 @@ ruby -e 'require "yaml"; d = YAML.load_file("SKILL.md")["description"]; puts d.l
 ## Output artefact frontmatter (mandatory for all doc-producing skills)
 
 Every markdown file a skill writes under `docs/` must open with the standard
-five-field frontmatter block. The canonical schema, field rules, default
+frontmatter block — an **OKF v0.1 superset**: the six OKF fields (`type`, `title`,
+`description`, `resource`, `tags`, `timestamp`) followed by the kit lifecycle fields
+(`status`, `owner`, `last_reviewed`, `review_interval`). The canonical schema, field rules,
+the `type` display-name source (`okf_type` in `rules/artefact-types-registry.md`), default
 `review_interval` values per artefact type, and audit enforcement details live in
 `rules/artefact-frontmatter.md`. Reference that file in every new skill's output
 or checklist section — do not restate the schema inline.
 
 ```yaml
 ---
+type: <artefact's okf_type display name — see artefact-types-registry.md>
 title: <instance title — not the artefact type name>
+description: <one-sentence instance summary>
+resource: <asset URI — omit when no external asset>
+tags: [<tag>, <tag>]
+timestamp: <ISO 8601 datetime of last change>
 status: draft
 owner: <git config user.name>
 last_reviewed: YYYY-MM-DD

@@ -1,5 +1,9 @@
 ---
+type: Architecture Documentation
 title: "{{project_name}} — Deployment View (arc42 §7)"
+description: "{{One-sentence summary of this arc42 section}}"
+tags: []
+timestamp: "{{YYYY-MM-DDThh:mm:ssZ}}"
 status: draft
 owner: {{owner}}
 last_reviewed: {{today}}

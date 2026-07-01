@@ -29,7 +29,7 @@ This skill does **not** replicate persona design, value-proposition shaping, hyp
 ```
 docs/discovery/
 ├── ideation/      ← discovery-idea  (this skill)
-│   ├── INDEX.md
+│   ├── index.md
 │   └── {slug}.md
 ├── interviews/    ← discovery-research
 └── workshops/     ← discovery-workshop
@@ -47,7 +47,7 @@ Every idea file declares a `graduates_to:` field naming the downstream skill tha
 
 **Filename rule:** `IDEA-{NNNN}-{slug}.md` — e.g. `IDEA-0042-sms-reorder-for-regulars.md`. The ID prefix guarantees uniqueness without per-domain subfolders; the slug is kebab-case, 3–5 words, human-readable. Same convention as `prd-NNNN-{feature}.md` and `adr-NNNN-{slug}.md` in the kit.
 
-**Index:** one `docs/discovery/ideation/INDEX.md` listing every idea with status, domain, graduates-to target, and one-line summary. Filterable by the `domain:` column.
+**Index:** one `docs/discovery/ideation/index.md` listing every idea with status, domain, graduates-to target, and one-line summary. Filterable by the `domain:` column.
 
 ---
 
@@ -57,7 +57,11 @@ Every file opens with the canonical artefact frontmatter from `rules/artefact-fr
 
 ```yaml
 ---
+type: Idea
 title: <short descriptive title>
+description: <one-sentence summary of the idea>
+tags: []
+timestamp: <ISO 8601 datetime of last change, e.g. 2026-07-01T14:30:00Z>
 status: draft        # draft | active | superseded | deprecated
 owner: <git config user.name>
 last_reviewed: YYYY-MM-DD
@@ -207,10 +211,10 @@ Triggers: `/idea`, `new idea`, `add idea`, `capture idea <text>`.
 3. If `domain` is not stated, ask once (lettered options: a=product · b=business · c=architecture · d=process · e=dx · f=ops).
 4. Scaffold the file at `docs/discovery/ideation/IDEA-{NNNN}-{slug}.md` with frontmatter + `## Problem statement` + `## Context` + `## Not doing` + `## Open Items` (empty) + `## Changelog` (one row).
 5. Set `lifecycle: captured`, `graduates_to: _TBD_`, `target_id: _TBD_`, `status: draft`.
-6. Update `docs/discovery/ideation/INDEX.md` (create if missing).
+6. Update `docs/discovery/ideation/index.md` (create if missing).
 7. Report the ID and the path. Offer to enter Refine mode immediately.
 
-**Verification:** file exists with valid frontmatter, monotonic IDEA-NNNN, INDEX.md updated, `## Open Items` section present even if empty.
+**Verification:** file exists with valid frontmatter, monotonic IDEA-NNNN, index.md updated, `## Open Items` section present even if empty.
 
 ### Mode 2 — Refine (lifecycle: captured → refining → ready)
 
@@ -237,9 +241,9 @@ This is the **socratic core**. Run it in three phases, in order. Do not skip.
 4. Set `graduates_to:` in frontmatter to the downstream skill name.
 5. Set `lifecycle: ready`.
 6. Append a Changelog row.
-7. Sync `docs/discovery/ideation/INDEX.md`.
+7. Sync `docs/discovery/ideation/index.md`.
 
-**Verification:** all of §Variations, §Direction, §Assumption audit, §Recommended direction, §Not doing are non-empty; `graduates_to` is no longer `_TBD_`; ≥3 items in `## Not doing`; ≥1 "Must be true" assumption; INDEX.md row matches.
+**Verification:** all of §Variations, §Direction, §Assumption audit, §Recommended direction, §Not doing are non-empty; `graduates_to` is no longer `_TBD_`; ≥3 items in `## Not doing`; ≥1 "Must be true" assumption; index.md row matches.
 
 ### Mode 3 — Graduate (lifecycle: ready → graduated)
 
@@ -257,11 +261,11 @@ Triggers: `graduate IDEA-NNNN`, `promote idea`, `ship idea to PRD/ADR/OBJ`.
    - `spec-functional-breakdown-structure` → verify the parent capability `C-N.M` exists.
 3. Invoke the downstream skill in its scaffold mode. **Do not write the downstream artefact yourself** — only invoke and pass the idea's `Recommended direction` + `Assumption audit` + `Not doing` as context.
 4. Once the downstream skill mints its ID, write that ID into `target_id:` and add the relative path to `## Graduation §Resulting artefact`.
-5. Set `lifecycle: graduated`. Append Changelog row. Update INDEX.md.
+5. Set `lifecycle: graduated`. Append Changelog row. Update index.md.
 
 **Cross-link:** the new downstream artefact MUST reference back to the idea in its §0 traceability block (e.g., "Originated from `IDEA-0042`"). The downstream skill is responsible for that back-link.
 
-**Verification:** `lifecycle: graduated`; `target_id` filled; downstream file exists at the expected path; downstream file mentions `IDEA-NNNN`; INDEX.md reflects graduated status.
+**Verification:** `lifecycle: graduated`; `target_id` filled; downstream file exists at the expected path; downstream file mentions `IDEA-NNNN`; index.md reflects graduated status.
 
 ### Mode 4 — Abandon (lifecycle: any → abandoned)
 
@@ -270,9 +274,9 @@ Triggers: `abandon IDEA-NNNN`, `drop idea`, `kill idea`.
 1. Set `lifecycle: abandoned` and `status: deprecated`.
 2. Add a 1–3 sentence rationale at the end of `## Recommended direction` (replacing the prior content if any).
 3. Append Changelog row including the rationale.
-4. Update INDEX.md (move row to bottom; do not delete the file).
+4. Update index.md (move row to bottom; do not delete the file).
 
-**Verification:** `lifecycle: abandoned`; rationale present; INDEX.md reflects abandoned status.
+**Verification:** `lifecycle: abandoned`; rationale present; index.md reflects abandoned status.
 
 ### Mode 5 — Maintain (lifecycle: graduated → review)
 
@@ -281,7 +285,7 @@ Triggers: monthly cadence; user runs the maintenance pass; `util-metamodel-audit
 1. For each idea where `lifecycle: graduated`, verify the `target_id` artefact still exists at the recorded path.
 2. If the downstream artefact has been superseded, set this idea's `status: superseded` + `superseded_by: <path>`.
 3. For each idea where `lifecycle: ready` for >`review_interval` days, prompt the user to graduate or re-refine.
-4. Sync INDEX.md.
+4. Sync index.md.
 
 ---
 
@@ -390,17 +394,13 @@ Worth knowing because it tells you when the skill is being misused. These artefa
 
 ---
 
-## INDEX.md schema
+## index.md schema
+
+`docs/discovery/ideation/index.md` is an **OKF reserved sub-folder index** — a directory
+listing, not an artefact concept document — so it is **frontmatter-free** (no artefact block;
+per `rules/artefact-frontmatter.md` §Reserved files). The listing is the body:
 
 ```markdown
----
-title: Discovery — Ideation Index
-status: active
-owner: <git config user.name>
-last_reviewed: YYYY-MM-DD
-review_interval: 90d
----
-
 # Discovery — Ideation Index
 
 | ID         | Status     | Domain       | Title                              | Graduates to        | Target ID  | Summary                                       |
@@ -437,5 +437,5 @@ Sort: `refining` → `ready` → `captured` → `graduated` → `abandoned` (act
 - [ ] If `lifecycle = graduated`: `target_id` is filled, downstream artefact exists, downstream artefact back-references `IDEA-NNNN`
 - [ ] `## Open Items` section uses canonical schema from `rules/open-items-governance.md` §4
 - [ ] `## Changelog` has at least one row reflecting the latest lifecycle change
-- [ ] `INDEX.md` updated and sorted
+- [ ] `index.md` updated and sorted
 - [ ] Slug is kebab-case, 3–5 words

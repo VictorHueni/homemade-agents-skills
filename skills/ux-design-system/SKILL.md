@@ -116,9 +116,10 @@ contract is what makes the design system the single lever for re-theming.
 
 ## Output frontmatter
 
-`docs/ux/design-system.md` opens with the standard five-field artefact
-frontmatter (`title`, `status`, `owner`, `last_reviewed`, `review_interval`);
-default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
+`docs/ux/design-system.md` opens with the standard OKF-superset artefact
+frontmatter — `type: Design System` (its `okf_type` in `rules/artefact-types-registry.md`),
+plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`,
+`review_interval`; default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
 
 `tokens.css` is a generated machine artefact (no frontmatter) — author durable
 changes in the `.md`, not the `.css`.

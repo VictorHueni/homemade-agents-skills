@@ -64,7 +64,9 @@ Used by the kit maintainer as the authoritative reference when updating skill fi
 | — | ADRs | `docs/architecture/decisions/{NNNN}-{slug}.md` | `docs/architecture/decisions/adr-{NNNN}-{slug}.md` | pattern-b-rename |
 | — | Ops Runbooks | `docs/ops/runbooks/{slug}.md` | `docs/ops/runbooks/{slug}.md` | no-change |
 | — | Ops RCAs | `docs/ops/rcas/{YYYY-MM-DD}-{slug}.md` | `docs/ops/rcas/{YYYY-MM-DD}-{slug}.md` | no-change |
-| — | Ideas | `docs/ideas/{slug}.md` or `docs/ideas/{domain}/{slug}.md` | `docs/discovery/ideation/IDEA-{NNNN}-{slug}.md` + flat `INDEX.md` (domain becomes a frontmatter tag, not a subfolder) | pattern-c-discovery-promote |
+| — | Ideas | `docs/ideas/{slug}.md` or `docs/ideas/{domain}/{slug}.md` | `docs/discovery/ideation/IDEA-{NNNN}-{slug}.md` + flat `index.md` (domain becomes a frontmatter tag, not a subfolder) | pattern-c-discovery-promote |
+| — | Bundle / folder index | `docs/INDEX.md` (or any `INDEX.md`) | `docs/index.md` (or `index.md`) | okf-index-rename — `git mv INDEX.md index.md`; strip the artefact frontmatter block (OKF reserved file); on the **root** `docs/index.md` keep only `okf_version: "0.1"`; sub-folder indexes are frontmatter-free |
+| — | Missing OKF frontmatter | any concept `.md` under `docs/` with no `type:` field | add the OKF-superset frontmatter block (`type` = the artefact's `okf_type` from `rules/artefact-types-registry.md`, plus `title`/`description`/`tags`/`timestamp` + kit lifecycle fields) | okf-frontmatter-upgrade |
 | — | Discovery Research | `docs/business/discovery/interviews/` | `docs/discovery/interviews/` | pattern-c-discovery-promote |
 | — | Discovery Workshops | `docs/business/discovery/workshops/` | `docs/discovery/workshops/` | pattern-c-discovery-promote |
 

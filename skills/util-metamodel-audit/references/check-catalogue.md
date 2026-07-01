@@ -678,12 +678,15 @@ echo "Bounded contexts: $bc_count | Domain models: $dm_count"
 
 ## Check 17 — Frontmatter validity
 
-**What:** verifies that every `docs/**/*.md` file opens with the standard artefact frontmatter block and that all required fields are present, valid, and consistent.
+**What:** verifies that every `docs/**/*.md` file opens with the standard artefact frontmatter block and that all required fields are present, valid, and consistent; and that the OKF reserved `index.md` files are correct — the root declares `okf_version`, and no `index.md` is stale (older than an artefact in its subtree, since a frontmatter-free index is not covered by the `review_interval` staleness check).
 
-**Schema (canonical — defined in `rules/artefact-frontmatter.md`):**
-- Always present: `title`, `status`, `owner`, `last_reviewed`, `review_interval`
-- Conditional: `superseded_by` required when `status: superseded`; `supersedes` present only on documents created to replace another
+**Schema (canonical — defined in `rules/artefact-frontmatter.md`, an OKF v0.1 superset):**
+- Always present, hard-required: `type` (OKF-required), `title`, `status`, `owner`, `last_reviewed`, `review_interval`
+- Always present, OKF-recommended (Warning if missing during adoption): `description`, `tags`, `timestamp`
+- Conditional: `resource` present only when the artefact has an external asset; `superseded_by` required when `status: superseded`; `supersedes` present only on documents created to replace another
 - Valid `status` values: `draft`, `active`, `superseded`, `deprecated`
+- `type` value: must equal a canonical `okf_type` display name from `rules/artefact-types-registry.md` (a value outside the set is tolerated by OKF but flagged Warning — "unregistered type")
+- **Reserved files** (`index.md`, `log.md`) are exempt from the artefact block; the root `docs/index.md` must instead declare `okf_version`
 
 **Detection:**
 
@@ -709,12 +712,12 @@ printf '0 0 0\n' > "$tally"   # scanned missing_frontmatter findings
 
 echo "=== Check 17: Frontmatter validity — starting ==="
 
-# Exempt: files literally named README.md (case-sensitive) at any depth.
-# Per `rules/artefact-frontmatter.md`, READMEs are tool/folder/vendor navigation
-# aids whose lifecycle does not match the artefact review cadence, so they are
-# explicitly out of scope for this check. INDEX.md is NOT exempt (it is a
-# metamodel artefact produced by util-metamodel-scaffold).
-command find docs -name "*.md" ! -name 'README.md' ! \( $EXCLUDED \) 2>/dev/null | sort | while IFS= read -r f; do
+# Exempt: README.md (tool/folder/vendor nav) + the OKF reserved files index.md
+# and log.md (directory-navigation / history aids, NOT concept documents — per
+# rules/artefact-frontmatter.md they carry no artefact frontmatter). The root
+# docs/index.md is checked separately for okf_version below. Names are
+# case-sensitive.
+command find docs -name "*.md" ! -name 'README.md' ! -name 'index.md' ! -name 'log.md' ! \( $EXCLUDED \) 2>/dev/null | sort | while IFS= read -r f; do
   read scanned missing findings < "$tally"
   scanned=$((scanned + 1))
 
@@ -738,13 +741,35 @@ command find docs -name "*.md" ! -name 'README.md' ! \( $EXCLUDED \) 2>/dev/null
       | sed -E "s/^${1}:[[:space:]]*//; s/[[:space:]]+\$//; s/^[\"']//; s/[\"']\$//"
   }
 
-  # 2. All 5 required fields must exist
-  for field in title status owner last_reviewed review_interval; do
+  # 2. All hard-required fields must exist (type is OKF-required — its absence
+  #    breaks OKF conformance).
+  for field in type title status owner last_reviewed review_interval; do
     command grep -q "^${field}:" "$f" || {
       echo "MISSING FIELD '${field}': $f"
       findings=$((findings + 1))
     }
   done
+
+  # 2a. OKF-recommended fields — Warning (gentler during adoption; OKF-optional).
+  for field in description tags timestamp; do
+    command grep -q "^${field}:" "$f" || {
+      echo "MISSING OKF FIELD (warn) '${field}': $f"
+      findings=$((findings + 1))
+    }
+  done
+
+  # 2b. type must be a non-empty canonical okf_type display name. The enum below
+  #     mirrors the "OKF type display names" table in
+  #     rules/artefact-types-registry.md — keep in sync when a type is added.
+  #     A value outside the set is tolerated by OKF but flagged (unregistered).
+  type_val=$(fm type)
+  if [ -n "$type_val" ]; then
+    okf_types="Product Vision|Persona|Business Model Canvas|Business Model Canvas Block|Business Capability|Value Stream|Value Stream Stage|Business Objective|Key Result|Business Process|Quantitative Model|Competitor Profile|Bounded Context|Glossary Term|Functionality|Domain Model|Aggregate|Entity|Value Object|Domain Event|Interface Contract|Epic|CLI Surface Contract|CLI Command|Quality Attribute|Use Case|Product Requirements Document|Implementation Plan|Architecture Decision Record|Architecture Research Note|Idea|Runbook|Bug RCA|Stack Guide|Getting Started Guide|Research Note|Workshop Note|Design System|Architecture Documentation"
+    echo "$type_val" | command grep -qxE "($okf_types)" || {
+      echo "UNREGISTERED type '${type_val}' (warn): $f"
+      findings=$((findings + 1))
+    }
+  fi
 
   # 3. status must be one of the four allowed values
   status=$(fm status)
@@ -802,6 +827,42 @@ done
 read scanned missing findings < "$tally"
 echo "=== Check 17 complete: scanned=${scanned} missing_frontmatter=${missing} total_findings=${findings} ==="
 rm -f "$tally"
+
+# Reserved-file check (OKF bundle root): docs/index.md must exist and declare
+# the bundle's okf_version. Sub-folder index.md / log.md files are frontmatter-
+# free and intentionally not checked.
+if [ -f docs/index.md ]; then
+  command grep -q '^okf_version:' docs/index.md \
+    || echo "ROOT index.md MISSING okf_version: docs/index.md"
+else
+  echo "MISSING ROOT BUNDLE INDEX: docs/index.md (OKF bundle listing + okf_version)"
+fi
+
+# Stale-index check. Also run standalone by Mode 4 (freshness) — see SKILL.md.
+# Because index.md is frontmatter-free it is NOT covered by
+# the review_interval staleness check, so verify freshness directly: an index is
+# stale if any artefact in its subtree was committed more recently than the index
+# itself. Uses git commit time (last-committed epoch); an uncommitted file (empty
+# git time) is treated as "now" — a new uncommitted artefact correctly marks the
+# index stale, and a just-regenerated index counts as fresh. `command find`
+# bypasses any wrapped find (see the IMPORTANT note earlier in this check).
+now=$(date +%s)
+git_ct() {  # last-commit epoch of "$1", or "now" when uncommitted / untracked
+  local t; t=$(git log -1 --format=%ct -- "$1" 2>/dev/null)
+  [ -n "$t" ] && echo "$t" || echo "$now"
+}
+command find docs -name 'index.md' ! \( $EXCLUDED \) 2>/dev/null | while IFS= read -r idx; do
+  dir=$(dirname "$idx")
+  idx_t=$(git_ct "$idx")
+  newest=0; newest_f=""
+  while IFS= read -r a; do
+    at=$(git_ct "$a")
+    [ "$at" -gt "$newest" ] && { newest=$at; newest_f=$a; }
+  done < <(command find "$dir" -name '*.md' ! -name 'index.md' ! -name 'log.md' ! -name 'README.md' ! \( $EXCLUDED \) 2>/dev/null)
+  if [ -n "$newest_f" ] && [ "$newest" -gt "$idx_t" ]; then
+    echo "STALE INDEX: $idx — newer artefact committed since last refresh ($newest_f); regenerate via util-metamodel-scaffold Mode 3"
+  fi
+done
 ```
 
 **Two defensive guarantees of this version:**
@@ -821,19 +882,27 @@ rm -f "$tally"
 
 **Severity:**
 - Missing frontmatter block → Error
-- Missing required field → Error
+- Missing hard-required field (`type`, `title`, `status`, `owner`, `last_reviewed`, `review_interval`) → Error
+- Missing OKF-recommended field (`description`, `tags`, `timestamp`) → Warning
+- Unregistered `type` value (not a canonical `okf_type`) → Warning
 - Invalid `status` value → Error
 - `superseded` without `superseded_by` → Error
 - Dead `superseded_by` or `supersedes` target → Error
 - Empty `owner` → Warning
 - Invalid `last_reviewed` date format → Warning
+- Root `docs/index.md` missing or without `okf_version` → Error
+- Stale `index.md` (an artefact in its subtree was committed more recently) → Warning
 
 **Proposed fix template:**
-- Missing block: "Add standard frontmatter to `{file}` using `rules/artefact-frontmatter.md` schema. Run `git config user.name` for owner."
+- Missing block: "Add standard frontmatter to `{file}` using `rules/artefact-frontmatter.md` schema (OKF superset). Run `git config user.name` for owner."
+- Missing `type`: "Add `type: <okf_type>` to `{file}` — use the artefact's display name from the OKF type table in `rules/artefact-types-registry.md`."
+- Unregistered type: "Change `type:` in `{file}` to a canonical `okf_type` display name, or register the new type in `rules/artefact-types-registry.md` + this check's enum."
 - Missing field: "Add `{field}:` to the frontmatter of `{file}`."
 - Invalid status: "Set `status:` in `{file}` to one of: `draft`, `active`, `superseded`, `deprecated`."
 - Missing `superseded_by`: "Add `superseded_by: <path-to-replacement>` to `{file}` frontmatter."
 - Dead target: "Update `superseded_by` / `supersedes` path in `{file}` — target file no longer exists at `{path}`."
+- Root index: "Create `docs/index.md` (OKF bundle root: `okf_version: \"0.1\"` frontmatter + navigation body) via `util-metamodel-scaffold`."
+- Stale index: "Regenerate `{index}` via `util-metamodel-scaffold` Mode 3 (refresh) — an artefact in its subtree (`{newest_file}`) changed after the index was last updated."
 
 ---
 
