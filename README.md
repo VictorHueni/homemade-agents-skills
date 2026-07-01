@@ -57,6 +57,7 @@ A personal Claude Code toolkit — composable skills for business architecture, 
 | `util-` | `util-metamodel-migration` | Docs folder migration report |
 | `util-` | `util-docs-audit` | Documentation freshness audit |
 | `util-` | `util-docs-lint` | Docs lint toolchain (dprint/Vale/lychee) — audit, enforce, CI |
+| `util-` | `util-docs-index` | OKF `index.md` generator — deterministic parse + concise per-doc summaries (idempotent) |
 | `util-` | `util-toolkit-doctor` | Claude Code setup health |
 
 ---
