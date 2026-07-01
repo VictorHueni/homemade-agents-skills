@@ -112,5 +112,4 @@ Cross-project conventions loaded automatically by Claude Code:
 | `rules/working-style.md` | Sequential plans, trust-but-verify |
 | `rules/diagramming-mermaid.md` | Mermaid diagram pitfalls |
 | `rules/frontend-nuxt.md` | Nuxt UI v4 / Vue 3.5 / Reka UI |
-| `rules/python-extras.md` | Python naming conventions |
 | `rules/writing-citations.md` | Citation discipline |
