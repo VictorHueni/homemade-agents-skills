@@ -244,19 +244,19 @@ Before touching any file, answer:
 
 For every brand-new artefact step, the following files require updates. Work through them in order.
 
-**Core metamodel files (always — 7 change points in `rules/metamodel.md`):**
+**Core metamodel files (always).** The metamodel is split: the imperative spine is `rules/metamodel.md`; the heavy reference (DAG, ER, per-step detail, ID conventions, canonical paths, maintenance-coupling contract) is the on-demand companion `rules/metamodel-reference.md`. Update both as noted:
 
-| Change point | What to update |
-|---|---|
-| Artefact table header | Update count ("The N artefacts") |
-| Artefact table row | Add `\| step \| **Name** (tagline) \| \`skill-name\` \| output path \| IDs or *(singleton)* \|` |
-| Build order step section | Add `### Step N` with: Skill, Prerequisites, Process (modes), Output verification criteria |
-| DAG flowchart (text art) | Add node box + edges showing what it consumes (solid) and what soft-links to it (dashed) |
-| ER diagram | Add entity + FK fields + relationship lines |
-| Cross-doc ID conventions table | Add `\| \`ID-NN\` \| meaning \| owning skill \|` row — or note "singleton — no ID" |
-| Canonical output paths | Add the output path in the correct position in the `docs/` tree |
-| Prefix → folder mapping | Note any exception if the output location breaks the prefix convention |
-| Maintenance coupling log | Add a dated entry listing every file updated |
+| Change point | File | What to update |
+|---|---|---|
+| Spine table header | `rules/metamodel.md` | Update count ("The build-order spine — N artefacts") |
+| Spine table row | `rules/metamodel.md` | Add `\| step \| **Name** (tagline) \| \`skill-name\` \| IDs or — \|` |
+| Build order step section | `rules/metamodel-reference.md` | Add `### Step N` with: Skill, Prerequisites, Process (modes), Output verification criteria |
+| DAG flowchart (text art) | `rules/metamodel-reference.md` | Add node box + edges showing what it consumes (solid) and what soft-links to it (dashed) |
+| ER diagram | `rules/metamodel-reference.md` | Add entity + FK fields + relationship lines |
+| Cross-doc ID conventions table | `rules/metamodel-reference.md` | Add `\| \`ID-NN\` \| meaning \| owning skill \|` row (diagram / sub-element IDs only — artefact-type IDs live in `artefact-types-registry.md`) |
+| Canonical output paths tree | `rules/metamodel-reference.md` | Add the output path in the correct position in the `docs/` tree |
+| Prefix → folder mapping | `rules/metamodel-reference.md` | Note any exception if the output location breaks the prefix convention |
+| Maintenance coupling log | `docs/project-control/metamodel-changelog.md` (→ clew, metamodel SoT) | Add a dated entry listing every file updated |
 
 **README.md (always — 4 change points):**
 
@@ -316,9 +316,9 @@ No new build order step. Run only the checks that apply:
 
 | Changed? | Update |
 |---|---|
-| Output path changed | `rules/metamodel.md` canonical paths · Check 1 · §Filename patterns |
-| New ID format minted | `rules/metamodel.md` ID conventions · Check 5 · §Filename patterns |
-| Prerequisite added/removed | `rules/metamodel.md` DAG + build order step · Check 7 |
+| Output path changed | `rules/metamodel-reference.md` canonical paths · Check 1 · §Filename patterns |
+| New ID format minted | `rules/metamodel-reference.md` ID conventions · Check 5 · §Filename patterns |
+| Prerequisite added/removed | `rules/metamodel-reference.md` DAG + build order step · Check 7 |
 | Mandatory section added/renamed/removed | Check 9 · §Content signals |
 
 ---
