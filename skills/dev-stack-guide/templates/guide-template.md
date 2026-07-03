@@ -148,15 +148,6 @@ Tips for working effectively with Claude Code in this stack:
 
 ---
 
-## Open Items
-
-| OI-ID  | Type           | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :----- | :------------- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._
-
----
-
 ## Changelog
 
 | Date | Version | Summary |

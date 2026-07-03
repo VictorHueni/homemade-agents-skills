@@ -353,11 +353,10 @@ Intro paragraph:
       |---|---|---|---|
       | C-N.M.F01 | ... | ✅ | VS-2.3 |
 
-§Open Items
-  - Document-level canonical section per rules/open-items-governance.md §1
-  - Schema: OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref
-  - Source anchor = capability or functionality ID (e.g. `#c21`, `#c21f03`); Source heading = full heading text
-  - Initial state is `_None at present._` — do NOT scaffold placeholder rows just to fill the section
+Open items: no local section (ADR-0005). File unresolved work directly to the central
+ledger via `util-open-items`, citing this FBS as `Source artefact` with `Source anchor` =
+the capability or functionality ID (e.g. `#c21`, `#c21f03`) and `Source heading` = the
+full heading text. Schema + lifecycle: `rules/open-items-governance.md`.
 
 Changelog
 ```

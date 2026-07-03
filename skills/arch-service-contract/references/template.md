@@ -279,14 +279,6 @@ All synchronous API errors use **RFC 7807 Problem Details** (`Content-Type: appl
 
 ---
 
-## §6 Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
-| _None at present._ | | | | | | | | | | |
-
----
-
 ## Changelog
 
 | Date | Change | Author |

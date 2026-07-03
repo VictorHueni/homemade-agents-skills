@@ -73,10 +73,3 @@ _Optional figure._ A cross-cutting concept may be illustrated by a UML diagram p
 | [`docs/architecture/arc42/05-building-blocks.md`](./05-building-blocks.md) | `CON-NN` containers that implement these concepts |
 | [`docs/product-specs/09a-quality-attributes.md`](../../product-specs/09a-quality-attributes.md) | `QA-XXNN` items (security, maintainability, operability) that drove some CC-NN entries |
 | [`docs/architecture/arc42/04-solution-strategy.md`](./04-solution-strategy.md) | Technology decisions that selected the frameworks implementing these concepts |
-
-## Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :---- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._

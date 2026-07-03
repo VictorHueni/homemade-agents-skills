@@ -135,9 +135,6 @@ One H3 per anti-pattern: name · source URL · problem · fix
 
 ## 6. Official agent rules / CLAUDE.md
 Content if found; "none found" with search date if not.
-
-## Open Items
-Canonical schema per rules/open-items-governance.md §4. _None at present._ if empty.
 ```
 
 #### Do NOT in Research mode
@@ -275,7 +272,7 @@ Canonical schema per rules/open-items-governance.md §4. _None at present._ if e
 - [ ] §Anti-patterns: table, ≥3 rows.
 - [ ] §Coding agent integration: MCP entry (package + install) or explicit "none found as of {date}".
 - [ ] §Resources: table with official docs + changelog + migration guide.
-- [ ] §Open Items: canonical schema per `rules/open-items-governance.md` §4.
+- [ ] Any unresolved research gap was filed directly via `util-open-items` (no local section — ADR-0005).
 - [ ] Step 0 asked and respected.
 
 **Mode 3 — Refresh:**
@@ -300,6 +297,8 @@ After any mode, summarise in 5 lines:
 
 ---
 
-## Sync Open Items
+## File Open Items
 
-After Mode 2 (draft) or Mode 3 (refresh), chain to `util-open-items` to sync rows from the guide's `## Open Items` section into the central ledger at `docs/project-control/open-items/`. Skip if §Open Items reads `_None at present._`.
+After Mode 2 (draft) or Mode 3 (refresh), file any unresolved research gap directly to the
+central ledger via `util-open-items` at `docs/project-control/open-items/` — there is no
+local section to author first (ADR-0005). File nothing if there's nothing to file.

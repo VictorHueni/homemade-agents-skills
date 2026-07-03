@@ -305,26 +305,24 @@ Metrics that take time to develop (weeks to months):
 
 Narrative discussion section — unresolved scope debates, persona edge cases, or PRD-internal trade-offs that need stakeholder input. Free-form prose / bullets are fine here. This section is for **discussion**, not actionable governance work.
 
-**Actionable unresolved work** (doc-gap / decision-gap / execution-item / tech-debt) goes in the document-level §Open Items section below, NOT here.
+**Actionable unresolved work** (doc-gap / decision-gap / execution-item / tech-debt) is filed directly to the central ledger per §9 below, NOT here.
 
 ---
 
 ### 9. Open Items
 
-The PRD carries a document-level `## Open Items` section for unresolved work. Its schema and
-lifecycle are governed by [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md),
-which applies to every artefact automatically — emit the section using the PRD output
-structure; do not restate the schema here.
+The PRD carries no local Open Items section ([ADR-0005](https://github.com/VictorHueni/homemade-claude-kit/blob/main/docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)). Unresolved work is filed
+directly to the central ledger via `util-open-items`. Schema and lifecycle are governed by
+[`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md) — do not restate the schema here.
 
 **Rules:**
 
-- One row per actionable unresolved item. Inline `_TODO_` placeholders elsewhere in the PRD are scaffold debt, not open items.
+- One filing per actionable unresolved item. Inline `_TODO_` placeholders elsewhere in the PRD are scaffold debt, not open items.
 - `Type` is exactly one of `doc-gap` | `decision-gap` | `execution-item` | `tech-debt`.
 - `Source anchor` + `Source heading` together preserve provenance — for example, `#us-003` + `US-003 Partner authentication` when the open item surfaced from a user story. For PRD-wide items use `#open-items` + `_central-only_`.
 - `Tracker ref` is `_TBD_` while the row is `open`; required (PR · ADR · plan increment · audit report link) to move to `closed` or `dropped`.
-- Empty section is acceptable — `_None at present._` is the correct initial state for a brand-new PRD.
-- The skill MAY append additional informational columns AFTER `Tracker ref`; canonical columns must not be reordered or removed.
-- After the PRD ships, `util-open-items` syncs rows to the central ledger at `docs/project-control/open-items/` and replaces the local `OI-NNN` with the canonical `OI-NNNN` ledger ID.
+- File nothing when there's no actionable unresolved work — do not invoke `util-open-items` just to record "none."
+- `Source artefact` is this PRD's path (`docs/product-specs/prds/prd-NNNN-{feature}.md`).
 
 ---
 
@@ -360,35 +358,22 @@ access, make the edits directly and commit the FBS alongside the PRD.
 
 ---
 
-## Step 5: Sync Open Items to the central ledger
+## Step 5: File Open Items to the central ledger
 
-After the PRD is saved, chain to the `util-open-items` skill to sync rows from
-§9 `## Open Items` into the central living ledger at
-`docs/project-control/open-items/open-items.md`.
+While drafting the PRD, file each actionable unresolved item directly to the central
+ledger via `util-open-items` — there is no local §9 table to populate first.
 
-- **Local first, ledger second.** §9 is the PRD's authoring surface; the
-  ledger at `docs/project-control/open-items/` is the consolidated read-out across
-  the repo. Always populate §9 first — each row carries `Source anchor` +
-  `Source heading` pointing back to the originating PRD section (e.g.
-  `#us-003` + "US-003 Partner authentication" for items surfaced from a user
-  story; `#open-items` + `_central-only_` for PRD-wide items) — then invoke
-  sync.
-- **Sync preserves provenance.** `util-open-items` carries `Source anchor`
-  and `Source heading` forward unchanged so each ledger row navigates back
-  into the originating PRD section, surviving heading edits and anchor
-  renames (per `rules/open-items-governance.md` §4 + §5).
-- **Sync mints canonical IDs.** Local PRD-scoped `OI-NNN` IDs are reassigned
-  to ledger-canonical `OI-NNNN` on first sync; the PRD §9 row is updated in
-  place with the ledger ID.
-- **Skip when empty.** If §9 reads `_None at present._`, do not invoke the
-  sync — there is nothing to consolidate. The PRD §8 Open Questions narrative
-  is discussion-only and never syncs.
-- **Re-sync on edits.** Any subsequent edit to §9 (status changes, owners
-  added, rows closed with a Tracker ref) should re-invoke sync so the ledger
-  stays in step with the PRD.
+- **File as you go.** Each row carries `Source anchor` + `Source heading` pointing back
+  to the originating PRD section (e.g. `#us-003` + "US-003 Partner authentication" for
+  items surfaced from a user story; `#open-items` + `_central-only_` for PRD-wide items),
+  citing this PRD's path as `Source artefact`.
+- **File nothing when there's nothing to file.** The PRD §8 Open Questions narrative is
+  discussion-only and never gets filed.
+- **Keep filing as the PRD evolves.** Status changes, owners added, or rows closed with a
+  Tracker ref go through `util-open-items` (`close` / `drop` / `sync`) directly.
 
-Invoke as: "Sync open items for `docs/product-specs/prds/prd-NNNN-{feature}.md`
-via the util-open-items skill in sync mode."
+Invoke as: "File the open item for `docs/product-specs/prds/prd-NNNN-{feature}.md`
+§{section} via the util-open-items skill."
 
 ---
 
@@ -418,4 +403,4 @@ Before saving the PRD:
 - [ ] Success metrics anchored to persona context and value-stream pain index
 - [ ] Saved to `docs/product-specs/prds/prd-NNNN-{feature}.md`
 - [ ] FBS promotion instructions provided (⬜ → 🔄 for committed functionalities)
-- [ ] §Open Items section present per `rules/open-items-governance.md`; empty (`_None at present._`) is acceptable. No placeholder-only rows.
+- [ ] Any unresolved work identified while drafting was filed directly via `util-open-items` per `rules/open-items-governance.md` (no local section — ADR-0005)

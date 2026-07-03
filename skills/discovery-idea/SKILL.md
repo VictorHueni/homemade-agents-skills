@@ -177,16 +177,6 @@ section is empty.
 - **Related ideas:** other `IDEA-NNNN` files
 - **External:** URLs (with `Last verified: YYYY-MM-DD` per `rules/writing-citations.md`)
 
-## Open Items
-
-The output idea-file carries a document-level `## Open Items` section for unresolved work,
-governed by `rules/open-items-governance.md` (which applies to every artefact automatically —
-the schema is not restated here).
-
-Use the `Type` taxonomy: `doc-gap` (missing info needed before graduation) · `decision-gap`
-(unresolved choice between variations) · `execution-item` (validation task — invoke
-`discovery-research` or run a probe) · `tech-debt` (rare — refactor implied by the idea).
-
 ## Changelog
 
 | Date       | Lifecycle change            | Note                                  |
@@ -209,12 +199,12 @@ Triggers: `/idea`, `new idea`, `add idea`, `capture idea <text>`.
 1. Read the user's one-line idea.
 2. Assign next available `IDEA-NNNN` ID by scanning `docs/discovery/ideation/` for the highest existing `IDEA-NNNN-*.md` filename prefix and incrementing.
 3. If `domain` is not stated, ask once (lettered options: a=product · b=business · c=architecture · d=process · e=dx · f=ops).
-4. Scaffold the file at `docs/discovery/ideation/IDEA-{NNNN}-{slug}.md` with frontmatter + `## Problem statement` + `## Context` + `## Not doing` + `## Open Items` (empty) + `## Changelog` (one row).
+4. Scaffold the file at `docs/discovery/ideation/IDEA-{NNNN}-{slug}.md` with frontmatter + `## Problem statement` + `## Context` + `## Not doing` + `## Changelog` (one row). No local Open Items section — unresolved work is filed directly to the central ledger (ADR-0005).
 5. Set `lifecycle: captured`, `graduates_to: _TBD_`, `target_id: _TBD_`, `status: draft`.
 6. Update `docs/discovery/ideation/index.md` (create if missing).
 7. Report the ID and the path. Offer to enter Refine mode immediately.
 
-**Verification:** file exists with valid frontmatter, monotonic IDEA-NNNN, index.md updated, `## Open Items` section present even if empty.
+**Verification:** file exists with valid frontmatter, monotonic IDEA-NNNN, index.md updated.
 
 ### Mode 2 — Refine (lifecycle: captured → refining → ready)
 
@@ -343,16 +333,19 @@ The graduating skill is responsible for writing this back-link during its own sc
 
 ### 5. Open-Items routing (cross-cutting dispatch layer)
 
-The idea's local `## Open Items` section acts as a dispatcher:
+Unresolved work surfaced during Refine is filed directly to the central ledger via
+`util-open-items` (no local section — ADR-0005), citing the idea file as `Source
+artefact`. The `Type` dispatches where the row's `Resolution path` should point:
 
 | `Type` | Routes to | Resolution path text |
 |---|---|---|
 | `execution-item` (validation) | `discovery-research` | "Run `discovery-research` Mode 2 with hypothesis: `<Must-be-true statement>`" |
 | `execution-item` (alignment) | `discovery-workshop` | "Run `discovery-workshop` Mode 1 with focus question: `<Decision question>`" |
-| `decision-gap` | stays local | "Refine pass — pick between variations A/B/C" |
+| `decision-gap` | stays with the idea | "Refine pass — pick between variations A/B/C" |
 | `doc-gap` | blocks graduation | "Fill `<missing section>` before graduating to `<target skill>`" |
 
-After `util-open-items` sync, the row gets a canonical `OI-NNNN` in `docs/project-control/open-items/`.
+The filed row gets a canonical `OI-NNNN` (or issue number, under `github`) immediately —
+there is no separate sync step.
 
 ### 6. Lifecycle: supersession
 
@@ -382,15 +375,15 @@ Worth knowing because it tells you when the skill is being misused. These artefa
 
 | Skill | Relationship |
 |---|---|
-| `discovery-research` | Receives `execution-item` Open Items from idea refine. When an assumption needs interview validation, the OI row's `Resolution path` says "Run `discovery-research` Mode 2 with hypothesis: `<Must-be-true statement>`". Conversely, when `discovery-research` synthesis surfaces a new hunch, it can create a Mode 1 idea here. |
-| `discovery-workshop` | Workshop synthesis often produces multiple candidate ideas; each gets a Mode 1 capture call. Conversely, ideation can request a workshop to align stakeholders before graduating — emit an Open Item routing to `discovery-workshop`. |
+| `discovery-research` | Receives `execution-item` open items filed during idea refine. When an assumption needs interview validation, the filed row's `Resolution path` says "Run `discovery-research` Mode 2 with hypothesis: `<Must-be-true statement>`". Conversely, when `discovery-research` synthesis surfaces a new hunch, it can create a Mode 1 idea here. |
+| `discovery-workshop` | Workshop synthesis often produces multiple candidate ideas; each gets a Mode 1 capture call. Conversely, ideation can request a workshop to align stakeholders before graduating — file an open item routing to `discovery-workshop`. |
 | `spec-prd` | Most common graduation target for `product` domain ideas. PRD §0 must reference the originating `IDEA-NNNN`. |
 | `arch-adr`, `arch-research` | Graduation target for `architecture` domain ideas. ADR's `## Context` references the originating `IDEA-NNNN`. |
 | `business-objective`, `business-model-canvas`, `business-persona` | Graduation targets for `business` domain ideas. |
 | `business-process` | Graduation target for `process` domain ideas. |
 | `spec-functional-breakdown-structure` | Graduation target when an idea is "add this functionality `C-N.M.FXX` to an existing capability". |
-| `util-open-items` | Picks up the local `## Open Items` rows on sync and writes them to `docs/project-control/open-items/open-items.md` with canonical `OI-NNNN` IDs. |
-| `util-metamodel-audit` | Reports on stale `ready` ideas, missing `graduates_to`, dead `target_id` links, and `## Open Items` schema drift. |
+| `util-open-items` | Files open items surfaced during Refine directly to `docs/project-control/open-items/open-items.md` (or GitHub Issues) with canonical `OI-NNNN` IDs — no local section (ADR-0005). |
+| `util-metamodel-audit` | Reports on stale `ready` ideas, missing `graduates_to`, and dead `target_id` links. |
 
 ---
 
@@ -421,7 +414,7 @@ Sort: `refining` → `ready` → `captured` → `graduated` → `abandoned` (act
 - **Do not do downstream work.** The skill never writes a PRD body, an ADR analysis, a persona profile, or a domain-event catalogue. It writes the *sketch* and *invokes* the right skill.
 - **`## Not doing` is mandatory.** An idea with no exclusions is not refined.
 - **Sources cited.** Every variation cluster in §Direction with a "User value" claim that names an existing persona must use the `P-NN` ID. Fabricated personas are forbidden — route to `business-persona` first.
-- **Assumption tier discipline.** "Must be true" assumptions become Open Items with `Type: execution-item` and `Resolution path: discovery-research` (or another evidence skill).
+- **Assumption tier discipline.** "Must be true" assumptions get filed as open items with `Type: execution-item` and `Resolution path: discovery-research` (or another evidence skill).
 - **Cross-doc linking.** Use `[IDEA-NNNN — title](../../discovery/ideation/IDEA-NNNN-{slug}.md)` from anywhere else in `docs/`.
 - **Today's date format:** `YYYY-MM-DD`.
 
@@ -435,7 +428,7 @@ Sort: `refining` → `ready` → `captured` → `graduated` → `abandoned` (act
 - [ ] If `lifecycle ≥ ready`: §Variations, §Direction, §Assumption audit, §Recommended direction, §Not doing are all non-empty
 - [ ] If `lifecycle = ready`: `graduates_to` is set (not `_TBD_`) and matches the recommended direction
 - [ ] If `lifecycle = graduated`: `target_id` is filled, downstream artefact exists, downstream artefact back-references `IDEA-NNNN`
-- [ ] `## Open Items` section uses canonical schema from `rules/open-items-governance.md` §4
+- [ ] Any unresolved work found during Refine was filed directly via `util-open-items` (no local section — ADR-0005)
 - [ ] `## Changelog` has at least one row reflecting the latest lifecycle change
 - [ ] `index.md` updated and sorted
 - [ ] Slug is kebab-case, 3–5 words

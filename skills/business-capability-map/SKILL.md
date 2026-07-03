@@ -220,11 +220,10 @@ Intro paragraph:
     - Soft-links (personas / value streams / processes / FBS row)
     §§§ L2 if applicable
 
-§Open Items
-  - Document-level canonical section per rules/open-items-governance.md §1
-  - Schema: OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref
-  - Source anchor = capability ID (e.g. `#c1`, `#c12`); Source heading = full capability heading
-  - Initial state is `_None at present._` — do NOT scaffold placeholder rows just to fill the section
+Open items: no local section (ADR-0005). File unresolved work directly to the central
+ledger via `util-open-items`, citing this map as `Source artefact` with `Source anchor` =
+the capability ID (e.g. `#c1`, `#c12`) and `Source heading` = the full capability heading.
+Schema + lifecycle: `rules/open-items-governance.md`.
 
 Changelog
 ```

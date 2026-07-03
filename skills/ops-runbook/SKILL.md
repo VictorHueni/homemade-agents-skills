@@ -129,43 +129,30 @@ Tell the user:
 - Any `<PLACEHOLDER>` values left in the draft that need the user's input to fill
 - Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
 
-### 9. Sync Open Items to the central ledger
+### 9. File Open Items to the central ledger
 
 Operator-grade runbooks frequently carry actionable unresolved work surfaced
 while the procedure was captured — non-obvious decisions still to be made
 (decision-gap), placeholder steps awaiting evidence (doc-gap), follow-up
 hardening tasks that should not block first use (execution-item), known
-workarounds to be paid back later (tech-debt). When the runbook carries such
-work, add a document-level `## Open Items` section per
-[`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md)
-(rows carry `Source anchor` +
-`Source heading` pointing back to the originating runbook step — e.g.
-`#step-3` + "Step 3 — Restore from backup").
+workarounds to be paid back later (tech-debt). File each directly to the
+central ledger via `util-open-items` — there is no local section to author
+first ([ADR-0005](https://github.com/VictorHueni/homemade-claude-kit/blob/main/docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)).
+Cite the runbook as `Source artefact` with `Source anchor` + `Source heading`
+pointing back to the originating runbook step — e.g. `#step-3` + "Step 3 —
+Restore from backup" (per
+[`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md)).
 
-After the runbook is saved, chain to the `util-open-items` skill to sync the
-`## Open Items` rows into the central living ledger at
-`docs/project-control/open-items/open-items.md`.
-
-- **Local first, ledger second.** The runbook's own `## Open Items` table is
-  the authoring surface; the ledger is the consolidated read-out across the
-  repo. Always populate the local section first, then invoke sync.
-- **Sync preserves provenance.** `util-open-items` carries `Source anchor`
-  and `Source heading` forward unchanged so each ledger row navigates back
-  into the originating runbook step, surviving heading edits and anchor
-  renames (per `rules/open-items-governance.md` §4 + §5).
-- **Sync mints canonical IDs.** Local runbook-scoped `OI-NNN` IDs are
-  reassigned to ledger-canonical `OI-NNNN` on first sync.
-- **Skip when the runbook carries no open items.** A runbook whose procedure
-  is fully executable and whose troubleshooting catalogue is complete does
-  not need an `## Open Items` section; in that case, sync is skipped. Unfilled
-  `<PLACEHOLDER>` tokens awaiting user input are NOT open items — they are
-  scaffold debt and MUST NOT be mirrored to the ledger.
+- **File nothing when there's nothing to file.** A runbook whose procedure is
+  fully executable and whose troubleshooting catalogue is complete needs no
+  filing at all. Unfilled `<PLACEHOLDER>` tokens awaiting user input are NOT
+  open items — they are scaffold debt and MUST NOT be filed to the ledger.
 - **Reference-type and troubleshooting-only runbooks.** These carry open
   items rarely. When they do (e.g. a secrets inventory with a row whose
   source-of-truth is still unverified), apply the same contract.
 
-Invoke as: "Sync open items for `docs/ops/runbooks/<runbook>.md` via the
-util-open-items skill in sync mode."
+Invoke as: "File the open item for `docs/ops/runbooks/<runbook>.md` step
+`<step>` via the util-open-items skill."
 
 ## Quality checklist
 

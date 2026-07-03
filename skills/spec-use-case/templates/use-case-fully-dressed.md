@@ -72,9 +72,3 @@ _Populated by the `slice` mode. The basic flow is the first slice; each alternat
 | Slice | Narrative | Test case(s) | Status |
 |---|---|---|---|
 | UC-{{NN}}.S1 | Basic flow (main success scenario) | {{test ref}} | ⬜ |
-
-## Open Items
-
-_Document-level unresolved work (undecided business rules, deferred extensions). Schema + lifecycle: `rules/open-items-governance.md`. Sync to the central ledger with `util-open-items`._
-
-_None at present._

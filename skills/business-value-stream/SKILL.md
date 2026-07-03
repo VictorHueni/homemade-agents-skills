@@ -209,11 +209,10 @@ Intro paragraph:
     - Triggering stakeholder, value proposition, scope
     - Per-stage H3 blocks (VS-N.1, VS-N.2, ...)
 
-§Open Items
-  - Document-level canonical section per rules/open-items-governance.md §1
-  - Schema: OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref
-  - Source anchor = stream or stage ID (e.g. `#vs-1`, `#vs-1-3`); Source heading = full heading text
-  - Initial state is `_None at present._` — do NOT scaffold placeholder rows just to fill the section
+Open items: no local section (ADR-0005). File unresolved work directly to the central
+ledger via `util-open-items`, citing this artefact as `Source artefact` with `Source
+anchor` = the stream or stage ID (e.g. `#vs-1`, `#vs-1-3`) and `Source heading` = the full
+heading text. Schema + lifecycle: `rules/open-items-governance.md`.
 
 Changelog
 ```

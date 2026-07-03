@@ -96,12 +96,6 @@ onto these in its own stylesheet), so a project only ever themes these four.
 
 ---
 
-## Open Items
-
-_None at present._
-
----
-
 ## Changelog
 
 | Date | Change | Author |

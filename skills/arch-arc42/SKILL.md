@@ -234,7 +234,7 @@ Known risks and technical debt items that have not yet been addressed. Each risk
 ### Pre-flight
 
 1. Read all existing ADRs — superseded ADRs and ADRs with `status: deprecated` often surface risks.
-2. Read `docs/product-specs/09a-quality-attributes.md` — QA-XXNN items with low confidence or a `## Open Items` gap may indicate risk.
+2. Read `docs/product-specs/09a-quality-attributes.md` — QA-XXNN items with low confidence, or open items filed against this artefact in the central ledger, may indicate risk.
 3. Read `docs/architecture/arc42/05-building-blocks.md` if present — technology choices in §5.1 with known limitations are risk candidates.
 4. Read `docs/architecture/arc42/08-cross-cutting-concepts.md` if present — incomplete CC-NN concepts (e.g. "auth model TBD") signal active risks.
 
@@ -274,7 +274,7 @@ Known risks and technical debt items that have not yet been addressed. Each risk
 - Figure pulled (`runtime`/`cross-cutting`): source (`arch-c4` / `arch-uml`) + SVG path embedded via the declared-figure block; or "none"
 - Upstream artefacts read (list files)
 - ADR cross-references linked (list `ADR-NNNN`)
-- Open items flagged (any gaps recorded in the artefact's `## Open Items` section)
+- Open items flagged (any gaps filed against this artefact via `util-open-items`)
 - Next step suggestion
 
 ---
@@ -308,5 +308,5 @@ Known risks and technical debt items that have not yet been addressed. Each risk
 - [ ] (`runtime`/`cross-cutting`) any embedded figure uses the `<!-- arch-figure … -->` block; figure path resolves or is a `_TODO_` soft-reference
 - [ ] §11 distinguishes `architectural` risk from `technical-debt`; does NOT attempt to be an exhaustive debt ledger
 - [ ] Output file has standard frontmatter (see `rules/artefact-frontmatter.md`)
-- [ ] `## Open Items` section present (empty initial state: "None at present.")
+- [ ] Any unresolved work found while writing this section was filed directly via `util-open-items` (no local Open Items section — ADR-0005)
 - [ ] Closing report delivered

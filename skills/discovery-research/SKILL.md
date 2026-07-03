@@ -123,7 +123,7 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
      - BMC blocks: which blocks promote from `Assumed` to `Tested` (or get demoted)
      - Model assumptions: which inputs recalibrate (e.g., recovery rate 50% → 65%)
      - Competitive landscape: which competitor claims gain evidence
-   - **Open Items** (document-level canonical section per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md) §1 + §4) — actionable unresolved work surfaced by the wave: what wasn't answered (next-wave research), decisions deferred, follow-up execution items. Each row carries `Source anchor` + `Source heading` pointing into the synthesis (e.g. Per-hypothesis verdict, Theme cluster N). Empty is acceptable — `_None at present._` is correct if nothing actionable remains. Do NOT scaffold placeholder rows.
+   - **Open items** — actionable unresolved work surfaced by the wave (what wasn't answered for next-wave research, decisions deferred, follow-up execution items) filed directly to the central ledger via `util-open-items` (per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md); no local section — ADR-0005). Each row carries `Source anchor` + `Source heading` pointing into the synthesis (e.g. Per-hypothesis verdict, Theme cluster N). File nothing if nothing actionable remains.
    - **Confidence summary** — count of claims now Validated vs Tested vs still Assumed
 
 ### Mode 4 — Research plan (optional)
@@ -279,17 +279,24 @@ Three files in `references/`:
 
 ---
 
-## Sync Open Items to the central ledger
+## File Open Items to the central ledger
 
-After a synthesis or research-plan file is created or updated, chain to the `util-open-items` skill to sync rows from the document-level `## Open Items` section into the central living ledger at `docs/project-control/open-items/open-items.md`.
+While producing a synthesis or research-plan file, file each unresolved item directly to
+the central ledger via `util-open-items` — there is no local section to author first
+(ADR-0005).
 
-- **Local first, ledger second.** The synthesis or plan's own `## Open Items` table is the authoring surface; the ledger at `docs/project-control/open-items/` is the consolidated read-out across the repo. Always populate the local section first (rows carry `Source anchor` + `Source heading` pointing back into the originating sub-section of the synthesis — Per-hypothesis verdict, Theme cluster, Per-artefact updates needed, etc.), then invoke sync.
-- **Sync preserves provenance.** `util-open-items` carries `Source anchor` and `Source heading` forward unchanged so each ledger row navigates back into the originating synthesis section, surviving heading edits and anchor renames (per `rules/open-items-governance.md` §4 + §5).
-- **Sync mints canonical IDs.** Local placeholder `OI-NNN` IDs are reassigned to ledger-canonical `OI-NNNN` on first sync.
-- **Skip when empty.** If §Open Items reads `_None at present._`, do not invoke the sync — there is nothing to consolidate.
-- **Mode coverage.** Run sync after Mode 3 Synthesise (the primary mode that surfaces unresolved next-wave research, deferred decisions, and execution items) and Mode 4 Research plan (when planning surfaces hypotheses that require ADRs or process work to close). Mode 1 Scaffold and Mode 2 Create interview script do not author open items, so sync is skipped.
+- **File as you go.** Each row carries `Source anchor` + `Source heading` pointing back
+  into the originating sub-section of the synthesis (Per-hypothesis verdict, Theme
+  cluster, Per-artefact updates needed, etc.), citing the synthesis/plan file as `Source
+  artefact`, so it navigates back cleanly (per `rules/open-items-governance.md` §4 + §5).
+- **File nothing when there's nothing to file.**
+- **Mode coverage.** File after Mode 3 Synthesise (the primary mode that surfaces
+  unresolved next-wave research, deferred decisions, and execution items) and Mode 4
+  Research plan (when planning surfaces hypotheses that require ADRs or process work to
+  close). Mode 1 Scaffold and Mode 2 Create interview script surface no open items.
 
-Invoke as: "Sync open items for `docs/business/research/{file}.md` via the util-open-items skill in sync mode."
+Invoke as: "File the open item for `docs/business/research/{file}.md` via the
+util-open-items skill."
 
 ---
 

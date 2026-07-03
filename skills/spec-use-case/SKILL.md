@@ -185,7 +185,7 @@ Ask 2–4 questions max, single message, lettered options. Don't run a wizard.
 
 Open every generated **use-case file** (`uc-NN-*.md`) with the standard OKF-superset artefact frontmatter — `type: Use Case` (its `okf_type` in `rules/artefact-types-registry.md`), plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`. Run `git config user.name` for `owner`. `status: draft` on creation. Default `review_interval: 180d` (use cases are stable behavioural specs). Full schema: `rules/artefact-frontmatter.md` — do not restate it inline. Note: `index.md` is an **OKF reserved file** — frontmatter-free (a directory listing, not a concept doc).
 
-Each use-case file carries one document-level `## Open Items` section for unresolved questions (undecided business rules, deferred extensions). Initial state `_None at present._` — never scaffold placeholder rows. Schema and lifecycle: `rules/open-items-governance.md`. Chain to `util-open-items` to sync to the central ledger.
+Unresolved questions (undecided business rules, deferred extensions) are filed directly to the central ledger via `util-open-items` — no local Open Items section (ADR-0005). Cite the use-case file as `Source artefact`. Schema and lifecycle: `rules/open-items-governance.md`.
 
 ---
 
@@ -223,7 +223,7 @@ Before declaring the work done:
 - [ ] Guarantees (success + minimal) + preconditions + trigger present (fully-dressed).
 - [ ] `UC-NN` minted, registry row added, never reused.
 - [ ] `Realises:` FBS IDs / `Primary Actor:` persona linked where those artefacts exist.
-- [ ] `## Open Items` section present (initial `_None at present._`).
+- [ ] Any unresolved question found while writing was filed directly via `util-open-items` (no local section — ADR-0005).
 - [ ] Standard artefact frontmatter on every file.
 - [ ] No project-specific terms baked into the kit copy.
 - [ ] Closing report delivered.

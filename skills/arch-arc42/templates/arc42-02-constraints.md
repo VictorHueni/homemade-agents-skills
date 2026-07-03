@@ -47,10 +47,3 @@ These constraints are non-negotiable within the current project scope. Each row 
 | [`docs/architecture/decisions/`](../decisions/) | ADRs that record the architectural response to each constraint |
 | [`docs/product-specs/09a-quality-attributes.md`](../../product-specs/09a-quality-attributes.md) | Quality targets derived from regulatory constraints (QA-XXNN) |
 | [`docs/architecture/arc42/04-solution-strategy.md`](./04-solution-strategy.md) | How constraints shaped the solution strategy |
-
-## Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :---- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._

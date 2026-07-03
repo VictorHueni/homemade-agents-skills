@@ -99,9 +99,3 @@ Dual-purpose delivery plan + product roadmap.
 | ID | Functionality | Status |
 |---|---|---|
 | C3.2.F01 | Usage metering | ⬜ |
-
----
-
-## Open Items
-
-_None at present._

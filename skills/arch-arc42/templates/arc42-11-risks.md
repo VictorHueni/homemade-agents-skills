@@ -65,10 +65,3 @@ _None yet._
 | [`docs/product-specs/09a-quality-attributes.md`](../../product-specs/09a-quality-attributes.md) | Low-confidence `QA-XXNN` items that may signal architectural risk |
 | [`docs/architecture/arc42/08-cross-cutting-concepts.md`](./08-cross-cutting-concepts.md) | Incomplete CC-NN concepts often surface as active risks |
 | [`docs/ops/runbooks/`](../../ops/runbooks/) | Operational risks and DR procedures (out of scope for §11) |
-
-## Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :---- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._

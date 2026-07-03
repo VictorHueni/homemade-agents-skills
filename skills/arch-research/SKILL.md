@@ -25,7 +25,7 @@ A research note is good when a reader can answer, without ambiguity:
 | **For each question, what's the answer + how confident?** | Per-Q §Finding + the Findings summary table |
 | **What evidence supports each claim?** | Per-Q §Sources consulted table (URL + Last verified + ★ confidence + quote) |
 | **Which ADRs does this research feed?** | Header `Feeds ADRs:` + per-Q §Implication for ADRs |
-| **What's still unknown?** | Document-level §Open Items (one consolidated section; rows carry `Source anchor = #qN` + `Source heading`) + Status field (Draft / Active / Frozen) |
+| **What's still unknown?** | Open items filed directly to the central ledger (rows carry `Source anchor = #qN` + `Source heading`) + Status field (Draft / Active / Frozen) |
 | **When were the sources last verified?** | Header `Last verified:` + per-source `Last verified` column |
 
 ---
@@ -95,13 +95,13 @@ Ask the user the following 4 questions in a single message with lettered options
    - Populate §Sources consulted table (one row per source, with the answers from Q3 + Q4 governing depth + verification).
    - Write §Finding (1–3 paragraphs, falsifiable, honest about uncertainty).
    - Populate §Implication for ADRs (cite by ADR number + section).
-   - Consolidate any unresolved gaps for this question into the document-level §Open Items section (one canonical table per file, per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md)). Each row carries `Source anchor = #qN` and `Source heading = "Qn — restated question"`; do NOT add a per-Q open-gap subsection (no `###` heading inside the Q for this purpose).
+   - File any unresolved gaps for this question directly to the central ledger via `util-open-items` (per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md)). Each row carries `Source anchor = #qN` and `Source heading = "Qn — restated question"`; do NOT add a per-Q open-gap subsection (no `###` heading inside the Q for this purpose) or a local table — there is no local surface (ADR-0005).
 3. Fill the §Findings summary table (one row per Q).
 4. Consolidate §Sources section (deduplicated by URL).
 5. Add Changelog entry.
 
 **Do NOT in Fill mode:**
-- Fabricate sources. If you don't have a real verifiable URL for a claim, mark the claim inline as `_TODO_` AND add a `doc-gap` row to the document-level §Open Items section with `Source anchor` + `Source heading` pointing back to the affected question. Inline `_TODO_` alone is scaffold debt, not an open item — both surfaces matter.
+- Fabricate sources. If you don't have a real verifiable URL for a claim, mark the claim inline as `_TODO_` AND file a `doc-gap` row directly to the central ledger with `Source anchor` + `Source heading` pointing back to the affected question. Inline `_TODO_` alone is scaffold debt, not an open item — both surfaces matter.
 - Inflate confidence. Consultancy blogs are ★★ at best (per [`references/discipline.md`](references/discipline.md) confidence rubric); never ★★★★ or ★★★★★.
 - Cite without quote. Every source row needs an exact short quote or specific table/section reference. "See source X" is not citation.
 - Skip per-Q §Implication for ADRs. The whole point is ADR linkage; an unlinked finding is research without a decision.
@@ -128,7 +128,7 @@ Ask the following 2 questions in a single message. Users respond like `1B, 2A`:
 
 **Process:**
 1. For each in-scope question (per Q1 answer):
-   - Re-fetch every source's URL. If 404 / paywalled / moved, mark in §Sources consulted table + add a `doc-gap` row to §Open Items.
+   - Re-fetch every source's URL. If 404 / paywalled / moved, mark in §Sources consulted table + file a `doc-gap` row to the central ledger.
    - Check if quoted text still appears in the source (regulations get amended; pages get rewritten).
    - Update confidence ratings where evidence has shifted (e.g. an Assumed industry norm now has a regulator publication backing it → promote ★★★ → ★★★★★).
    - If Finding has materially shifted, rewrite §Finding + §Implication for ADRs.
@@ -187,7 +187,6 @@ Frontmatter block (Status / Date / Author / Last verified / Feeds ADRs / Superse
 §Findings summary (citable table — one row per Q)
 §Decisions Anchored (only populated in Mode 4 Freeze)
 §Consolidated sources (deduplicated by URL, grouped by type)
-§Open Items (document-level canonical table per rules/open-items-governance.md §4; rows carry `Source anchor` + `Source heading` to preserve per-Q provenance)
 §Changelog (dated rows)
 ```
 
@@ -290,17 +289,25 @@ Three files in `references/` carry the canonical content. Read them when needed:
 
 ---
 
-## Sync Open Items to the central ledger
+## File Open Items to the central ledger
 
-After the research note is created or updated, chain to the `util-open-items` skill to sync rows from the document-level `## Open Items` section into the central living ledger at `docs/project-control/open-items/open-items.md`.
+Unresolved gaps surfaced while writing this research note are filed **directly** to the
+central ledger via `util-open-items` — there is no local section to author first
+(ADR-0005).
 
-- **Local first, ledger second.** The research note's own `## Open Items` table is the authoring surface; the ledger at `docs/project-control/open-items/` is the consolidated read-out across the repo. Always populate the local section first (with per-Q `Source anchor = #qN` + `Source heading = "Qn — restated question"`), then invoke sync.
-- **Sync preserves provenance.** `util-open-items` carries `Source anchor` and `Source heading` forward unchanged so each ledger row navigates back into the originating question of this research note, surviving heading edits and anchor renames (per `rules/open-items-governance.md` §4 + §5).
-- **Sync mints canonical IDs.** Local placeholder `OI-NNN` IDs are reassigned to ledger-canonical `OI-NNNN` on first sync; subsequent updates retain the ledger ID.
-- **Skip when empty.** If §Open Items reads `_None at present._`, do not invoke the sync — there is nothing to consolidate.
-- **Mode coverage.** Run sync after Mode 2 Fill (new gaps surface), Mode 3 Refresh (some rows may resolve or new doc-gaps appear when sources rot), and Mode 4 Freeze (terminal-state rows reach `closed`). Mode 1 Scaffold has no open items yet, so sync is skipped.
+- **File as you go.** The moment a question's gap is identified, file it with
+  `Source anchor = #qN` + `Source heading = "Qn — restated question"` so the ledger row
+  navigates back into the originating question, surviving heading edits and anchor
+  renames (per `rules/open-items-governance.md` §4 + §5).
+- **File nothing when there's nothing to file.** If a mode pass surfaces no unresolved
+  gaps, do not invoke `util-open-items` at all.
+- **Mode coverage.** File after Mode 2 Fill (new gaps surface) and Mode 3 Refresh (new
+  doc-gaps may appear when sources rot); use `close`/`drop` on existing rows during
+  Mode 4 Freeze (terminal-state rows reach `closed`). Mode 1 Scaffold has no content yet,
+  so nothing to file.
 
-Invoke as: "Sync open items for `docs/architecture/research/{NNNN}-{slug}.md` via the util-open-items skill in sync mode."
+Invoke as: "File the open item for `docs/architecture/research/{NNNN}-{slug}.md` Q{N} via
+the util-open-items skill."
 
 ---
 
@@ -311,7 +318,7 @@ After running any mode, summarise in 5–7 lines:
 1. **Mode executed** + **file created or updated** (path).
 2. **Questions count** + per-Q confidence distribution (e.g. "Q1 ★★★★, Q2 ★★★, Q3 ★★ — Q3 needs deeper sources before ADR cite").
 3. **ADRs fed** by this research (from the header).
-4. **§Open Items summary** — what's still unverified (count by Type: doc-gap / decision-gap / execution-item / tech-debt).
+4. **Open items filed** — what's still unverified (count by Type: doc-gap / decision-gap / execution-item / tech-debt).
 5. **Next action** — typically "fill remaining Q via Mode 2" or "have target ADR cite §findings Q1 + Q2" or "schedule Mode 3 Refresh in 6 months".
 
 Keep it short. The user will open the file directly; your job is to flag where evidence is still thin.
@@ -327,8 +334,8 @@ Before declaring the work done:
 - [ ] HTML version comment present with doc-version + created + last-verified dates.
 - [ ] Header has Status / Date / Author / Last verified / Feeds ADRs (Superseded by may be empty).
 - [ ] §Questions index lists every Q numbered.
-- [ ] Every Q section has its 4 sub-sections (Context / Sources consulted / Finding / Implication for ADRs). Per-Q gaps are consolidated into the single document-level §Open Items section — no `###` open-gap subsection per question.
-- [ ] Document-level §Open Items section present per `rules/open-items-governance.md`. Each row from a per-Q gap carries `Source anchor = #qN` and `Source heading = "Qn — restated question"`.
+- [ ] Every Q section has its 4 sub-sections (Context / Sources consulted / Finding / Implication for ADRs). Per-Q gaps are filed directly to the central ledger — no `###` open-gap subsection per question, no local table.
+- [ ] Every open item filed for this note carries `Source anchor = #qN` and `Source heading = "Qn — restated question"` per `rules/open-items-governance.md`.
 - [ ] §Sources consulted tables have: URL · Type · Last verified · Confidence · Quote (no missing columns).
 - [ ] No confidence inflation (consultancy blogs not rated above ★★).
 - [ ] No citation without quote.

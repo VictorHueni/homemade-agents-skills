@@ -242,28 +242,6 @@ Operator-grade observations. Don't argue for a product solution here — that's 
 
 ---
 
-## Open Items
-
-<!--
-Document-level canonical section per rules/open-items-governance.md §1.
-Only actionable unresolved work (doc-gap | decision-gap | execution-item | tech-debt).
-Inline `_TODO_` placeholders inside the body are NOT open items — they are scaffold
-debt tracked by util-metamodel-audit Check 8. Do not scaffold placeholder-only rows
-to satisfy this section; an empty table with `_None at present._` is correct when
-there is no actionable unresolved work yet.
-
-Skills MAY add `§` (section pointer) as an extra column AFTER `Tracker ref` for
-intra-doc navigation; canonical columns below must not be reordered or removed.
--->
-
-| OI-ID  | Type           | Summary                                       | Source anchor      | Source heading                  | Resolution path                                        | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------- | :-------------------------------------------- | :----------------- | :------------------------------ | :----------------------------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | doc-gap        | {Sourced KPI baseline still missing}           | #8-kpis            | §8 KPIs — measurable indicators | Extract from {system X}; owner: {role}                  | high     | open   | _TBD_   | {YYYY-MM-DD}      | _TBD_       |
-
-_Replace with real rows, or replace the row with `_None at present._` if there is no actionable unresolved work yet._
-
----
-
 ## Changelog
 
 ### YYYY-MM-DD — Initial doc

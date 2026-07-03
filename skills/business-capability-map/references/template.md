@@ -182,31 +182,6 @@ into L1 or move feature-grain detail into the FBS.*
 
 ---
 
-## Open Items
-
-<!--
-Document-level canonical section per rules/open-items-governance.md §1.
-Only actionable unresolved work (doc-gap | decision-gap | execution-item | tech-debt).
-Inline `_TODO_` fields (e.g. Strategic Importance still pending) and absent Maturity
-ratings are NOT open items — they are scaffold debt tracked by util-metamodel-audit
-Check 8. Do not scaffold placeholder-only rows; an empty table with
-`_None at present._` is correct when no actionable unresolved work exists.
-
-`Source anchor` uses the capability ID as a fragment (e.g. `#c1`, `#c12`, `#c211`) so
-each row jumps back to the originating capability. `Source heading` carries the full
-heading text (e.g. `C1 · Customer Onboarding`). For map-wide items (e.g. L0 axis
-disputes), use `#map` and `Map-wide` respectively.
--->
-
-| OI-ID  | Type           | Summary                                                | Source anchor | Source heading                                 | Resolution path                                                | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------- | :----------------------------------------------------- | :------------ | :--------------------------------------------- | :------------------------------------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | decision-gap   | {{Overlap between C2.1 and C3.2 needs adjudication}}   | #c21          | C2.1 · {{capability name}}                     | Workshop with capability owners; consolidate or split          | high     | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-| OI-002 | doc-gap        | {{Strategic Importance still empty for C1.3}}          | #c13          | C1.3 · {{capability name}}                     | Run business-objective alignment; fill from OBJ-NN rationale   | medium   | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-
-_Replace the placeholder rows above with real entries, or replace the table with `_None at present._` if the map has no actionable unresolved work yet (per §2 of the governance rule, scaffold `_TODO_` fields are not open items)._
-
----
-
 ## Changelog
 
 | Date | Change | Author |

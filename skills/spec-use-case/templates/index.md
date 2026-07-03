@@ -26,9 +26,3 @@ flowchart LR
   uc1(["UC-01 {{Goal}}"])
   actor1 --> uc1
 ```
-
-## Open Items
-
-_Schema + lifecycle: `rules/open-items-governance.md`._
-
-_None at present._

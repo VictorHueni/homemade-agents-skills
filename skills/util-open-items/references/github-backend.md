@@ -65,8 +65,8 @@ review_date · tracker_ref
 
 ## 2. GitHub serialization
 
-The local `## Open Items` section stays §4 markdown (rule §1) regardless of backend; only the
-central read-out changes. One `OpenItem` ⇒ one **Issue**, projected into one **Project**.
+Every field is supplied directly at filing time regardless of backend (rule §1); only where
+it lands changes. One `OpenItem` ⇒ one **Issue**, projected into one **Project**.
 
 | Canonical slug | GitHub home | Mechanism |
 | :--- | :--- | :--- |
@@ -138,8 +138,8 @@ The migration is operated by **Mode 7 (`migrate`)** in `SKILL.md`, driven by
   concurrent. One backend per project.
 - **I3** — Terminal status requires evidence (`tracker_ref`); native on `github`, validated
   on `markdown`.
-- **I4** — The local `## Open Items` section is backend-invariant: always §4 markdown, so
-  switching backends never touches authoring surfaces — only what `sync` writes to.
+- **I4** — Filing is direct in both backends (rule §1): switching backends never introduces
+  or removes an authoring step, only where `sync` writes to.
 - **I5** — Provenance is the same composite in both backends; central-only items are
   `_central-only_` heading + empty anchor in both.
 
@@ -149,9 +149,9 @@ The migration is operated by **Mode 7 (`migrate`)** in `SKILL.md`, driven by
 
 ```mermaid
 flowchart TD
-    LS["Local ## Open Items section<br/>(markdown — ALWAYS this, both backends)"]
+    FIELDS["Fields supplied at filing time<br/>(type, summary, provenance, ... — both backends)"]
     SYNC["util-open-items: sync<br/>(adapter; backend: markdown or github)"]
-    LS -->|"authoring surface"| SYNC
+    FIELDS -->|"direct authoring"| SYNC
     SYNC -->|"backend: markdown"| MD["Central ledger open-items.md + archive"]
     SYNC -->|"backend: github"| GH["GitHub Issues + Project"]
     MD -.->|"one-way migration + OI-NNNN to N map"| GH
@@ -170,7 +170,7 @@ erDiagram
     }
     MARKDOWN_ROW {
         string oi_nnnn PK
-        string surface "local or ledger or archive"
+        string surface "ledger or archive"
     }
     GITHUB_ISSUE {
         int    issue_number PK

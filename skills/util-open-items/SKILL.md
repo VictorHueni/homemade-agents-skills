@@ -1,9 +1,9 @@
 ---
 name: util-open-items
-description: "Maintain the repo-wide living ledger of unresolved governance work at `docs/project-control/open-items/open-items.md`. Use this skill to sync local `## Open Items` sections from artefacts into the central ledger, triage incoming rows, close or drop items with a tracker ref, archive terminal rows at the end of a review cycle, and produce status reports. Triggers on: sync open items, triage open items, close open item, drop open item, archive open items, open-items report, roll up open items, OI-NNNN, central ledger, docs/project-control/open-items."
-version: "1.2.1"
+description: "Maintain the repo-wide living ledger of unresolved governance work at `docs/project-control/open-items/open-items.md`. Use this skill to file open items directly into the central ledger, triage incoming rows, close or drop items with a tracker ref, archive terminal rows at the end of a review cycle, and produce status reports. Triggers on: log open item, file open item, sync open items, triage open items, close open item, drop open item, archive open items, open-items report, roll up open items, OI-NNNN, central ledger, docs/project-control/open-items."
+version: "2.0.0"
 status: active
-last_reviewed: 2026-06-04
+last_reviewed: 2026-07-03
 review_interval: 180d
 user-invocable: true
 allow_implicit_invocation: true
@@ -16,9 +16,11 @@ metadata:
 # util-open-items — Open Items Ledger Operator
 
 Operate the central control plane for unresolved governance work. This skill is the only
-sanctioned writer of `docs/project-control/open-items/open-items.md`; every other skill emits
-open items into its own artefact's document-level `## Open Items` section and then chains
-to this skill to push them into the ledger.
+sanctioned writer of the central ledger — `docs/project-control/open-items/open-items.md`
+under the `markdown` backend, or GitHub Issues labelled `open-item` under `github`. Every
+other skill that identifies unresolved work chains to this skill to file it **directly**:
+there is no per-artefact local section to author first
+([ADR-0005](../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)).
 
 The canonical contract — section name, schema, taxonomy, lifecycle, central-plane rules —
 lives in [`rules/open-items-governance.md`](../rules/open-items-governance.md). This skill
@@ -46,9 +48,9 @@ repo: owner/name         # github only — where the issues live
 project: 7               # github only — the Project (v2) number for the read-out
 ```
 
-**What stays the same regardless of backend:** the local `## Open Items` section is always
-§4 markdown (Invariant I4) — only what `sync` *writes to* changes. The abstract model,
-taxonomy, lifecycle, and provenance composite are identical (governance §4/§5.3).
+**What stays the same regardless of backend:** filing is always direct (Invariant I4) — only
+what `sync` *writes to* changes. The abstract model, taxonomy, lifecycle, and provenance
+composite are identical (governance §4/§5.3).
 
 **One backend per project.** Never both. Moving between them is a one-way
 `markdown → github` migration (Mode 7, `OI-0031`), never a live two-way sync.
@@ -78,9 +80,10 @@ I1–I5. The authoring surface for a github-backend project is the issue form
 
 Invoke `util-open-items` whenever:
 
-- An artefact has just been generated or updated and its `## Open Items` section has new,
-  changed, or terminal rows → run `sync`.
-- A new row was authored locally without an `OI-NNNN` ID → run `sync` to assign one.
+- Unresolved work is identified while producing or updating any artefact → run `sync` to
+  file it directly, citing that artefact as `Source artefact`.
+- Governance or kit-development work with no artefact home is identified → run `sync` as a
+  central-only row (governance §5.2).
 - A row needs review for priority, owner, or de-duplication against the ledger → run
   `triage`.
 - An open item has been resolved by a PR / ADR / plan increment / runbook / audit
@@ -102,46 +105,43 @@ cutover (Mode 7, `markdown → github`). Each mode reads or writes
 
 ### Mode 1 — `sync`
 
-Roll local `## Open Items` rows from one or more artefacts into the central ledger.
+File a new open item directly into the central ledger. ("Sync" now means "commit this item
+to the ledger" — the name is retained for continuity with existing trigger phrasing and
+callers; there is no local table left to reconcile against, per
+[ADR-0005](../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md).)
 
 Input:
 
-- One or more artefact paths (e.g. `docs/architecture/research/0003-token-auth.md`). If no
-  path is given, scan every `docs/**/*.md` for a document-level `## Open Items` section.
+- The item's fields: `Type`, `Summary`, `Source artefact` (a relative repo path, or the
+  central-only scope marker per governance §5.2), `Source anchor`, `Source heading`,
+  `Resolution path`, `Priority`, `Owner`, `Due / Review date`. `Status` defaults to `open`;
+  `Tracker ref` defaults to `_TBD_`.
 
 Process:
 
-1. **Read each source artefact** and locate the document-level `## Open Items` section
-   (top-level `^## Open Items` heading; reject nested `### Open Items` per §1 of the
-   governance rule).
-2. **Parse rows** using the canonical column order (`OI-ID`, `Type`, `Summary`,
-   `Source anchor`, `Source heading`, `Resolution path`, `Priority`, `Status`, `Owner`,
-   `Due / Review date`, `Tracker ref`). Reject rows with missing mandatory columns or with
-   a `Type` outside the four-value taxonomy.
-3. **Match each row against the ledger.** Identity is the triple `(Source artefact path,
-   Source anchor, Summary fingerprint)`. If the row already carries a canonical `OI-NNNN`
-   ID, that ID wins.
-4. **Assign IDs.** For unmatched rows, mint the next monotonic `OI-NNNN` starting from
-   `OI-0001`. Compute the next ID from the maximum currently in `open-items.md` plus the
-   maximum in every `archive/*.md` file — never recycle.
-5. **Write back to the source artefact.** Replace the local pre-sync ID with the
-   canonical `OI-NNNN`. The source artefact remains the authoring surface; after sync it
-   simply carries the ledger ID.
-6. **Write the ledger row.** In `open-items.md` use the extended schema (canonical 11
-   columns + `Source artefact` inserted after `Summary`). Preserve `Source anchor` and
-   `Source heading` verbatim — this is the provenance contract from §4 of the governance
-   rule and is non-negotiable.
-7. **Reconcile drift.** If a ledger row's `Source heading` changed in the source artefact,
-   update the ledger row but keep `OI-NNNN` and `Source anchor` stable. If
-   `Source anchor` changed, update both fields and log the rename in §Status snapshot.
+1. **Validate the fields.** `Type` must be one of the four taxonomy values. `Source anchor`
+   and `Source heading` are supplied together, or both left empty for a central-only row.
+2. **De-duplicate against the existing ledger/issues.** Identity is the triple
+   `(Source artefact, Source anchor, Summary fingerprint)` (see De-duplication policy
+   below) — search the ledger table, or `gh issue list --search` under `github`, before
+   creating.
+3. **Assign the ID.** `markdown` backend: mint the next monotonic `OI-NNNN` (max across
+   `open-items.md` plus every `archive/*.md`, plus one — never recycle). `github` backend:
+   `gh issue create`; the resulting issue number `#N` **is** the ID — no `OI-NNNN` is
+   minted.
+4. **Write the row.** `markdown`: append to `open-items.md` using the §4 schema.
+   `github`: form-structured issue body (provenance + `Resolution path`), `type:` label or
+   native Issue Type, assignee, Project fields.
+5. **Report** the assigned `OI-NNNN` or issue number back to the caller.
 
 Refuse to sync if:
 
-- The source artefact's `## Open Items` section is `### Open Items` (nested) — point the
-  operator at §1 of the governance rule.
-- A row's `Type` is not one of `doc-gap`, `decision-gap`, `execution-item`, `tech-debt`.
-- A row carries `Status: closed` or `Status: dropped` with `Tracker ref: _TBD_` — §3
-  requires a non-`_TBD_` tracker ref before reaching a terminal state.
+- `Type` is not one of `doc-gap`, `decision-gap`, `execution-item`, `tech-debt`.
+- The row is filed already `closed`/`dropped` with `Tracker ref: _TBD_` — §3 requires a
+  non-`_TBD_` tracker ref before reaching a terminal state.
+- A duplicate is found and the caller's intent is unclear — surface the existing
+  `OI-NNNN`/issue number and ask the operator to reference it directly, or use `triage`/
+  `drop` to merge explicitly, instead of silently creating a second row.
 
 ### Mode 2 — `triage`
 
@@ -172,9 +172,7 @@ Process:
 2. Verify `Tracker ref` is a non-`_TBD_` value — §3 requires it.
 3. Update the ledger row: `Status: closed`, `Tracker ref: <value>`,
    `Due / Review date: <closure-date>`.
-4. Mirror the change back to the source artefact's local `## Open Items` row (so the
-   authoring surface stays in sync).
-5. Leave the row on the live ledger for one review cycle (default 30 days) before it
+4. Leave the row on the live ledger for one review cycle (default 30 days) before it
    becomes archive-eligible.
 
 ### Mode 4 — `drop`
@@ -212,9 +210,8 @@ Output sections:
 - **Oldest open items.** Top-N by age.
 - **Stale closure candidates.** Rows in `closed` / `dropped` older than 30 days (i.e.
   archive-eligible — feeds Mode 5).
-- **Coverage map.** Source artefacts with at least one open item; soft-flag artefacts
-  that have a `## Open Items` section but zero rows for more than two review cycles (may
-  indicate stale governance).
+- **Coverage map.** Distribution of ledger rows by `Source artefact`, so an operator can see
+  which artefacts currently have open governance work and which have none.
 
 Write to `var/reports/open-items/report-YYYY-MM-DD.md`. Never mutates the ledger.
 
@@ -279,22 +276,21 @@ anything it could not set so you can finish via the GitHub UI or GraphQL.
 
 ## Backend behaviour per mode (`github`)
 
-Under `backend: github`, the six modes keep their contract but retarget GitHub via `gh`. The
-local `## Open Items` section is still the input; only the central writes change. See
+Under `backend: github`, the six modes keep their contract but retarget GitHub via `gh`.
+Fields are supplied directly by the calling skill; only the write target changes. See
 [`references/github-backend.md`](references/github-backend.md) for the full field mapping.
 
 | Mode | `github` behaviour |
 | :--- | :--- |
-| `sync` | For each local row without a resolved `#N`: `gh issue create` from the form fields — `summary` → title, `type` → Issue Type + form dropdown, provenance + `resolution_path` → form body, `priority` → Project field; set assignee = `owner`, Project `Review date` = `review_date`. Write the resulting `#N` back into the local row's `OI-ID` cell. De-dup by `(source_artefact, source_anchor, summary)` via `gh issue list --search` before creating. |
+| `sync` | `gh issue create` from the supplied fields — `summary` → title, `type` → Issue Type + form dropdown, provenance + `resolution_path` → form body, `priority` → Project field; set assignee = `owner`, Project `Review date` = `review_date`. Report the resulting `#N` back to the caller. De-dup by `(source_artefact, source_anchor, summary)` via `gh issue list --search` before creating. |
 | `triage` | `gh issue list` / `gh project item-list` to cluster duplicates, flag `_TBD_` assignees and stale high-priority items. Proposal only — never mutates silently. |
 | `close` | `gh issue close --reason completed`. The closing reference (`Closes #N` / linked PR) **is** the `tracker_ref` — evidence is structurally enforced, so the §3 `_TBD_` guard cannot be violated. |
 | `drop` | `gh issue close --reason "not planned"`; record the rationale as an issue comment (the `Resolution path` analog). |
 | `archive` | No-op. Closed issues are the archive (searchable indefinitely); there is no `archive/` file. |
 | `report` | Render from the Project (v2) view / `gh` queries instead of the markdown ledger. May still emit a `var/reports/open-items/report-YYYY-MM-DD.md` snapshot. |
 
-Refusal conditions from `sync` (nested `### Open Items`, invalid `Type`, terminal status
-with `_TBD_` tracker) apply unchanged — they are validated on the **local** section before
-any `gh` call.
+Refusal conditions from `sync` (invalid `Type`, terminal status filed with a `_TBD_`
+tracker) apply unchanged — validated before any `gh` call.
 
 ---
 
@@ -307,9 +303,8 @@ Canonical IDs are `OI-NNNN` (four-digit zero-padded, monotonic).
 
 - The next ID is computed by scanning every row in `open-items.md` AND every
   `archive/*.md` file for the highest `OI-NNNN` value, then incrementing by one.
-- Pre-sync local IDs in source artefacts MAY use any short token (e.g. `OI-001`); they
-  are replaced by the canonical `OI-NNNN` on first sync, and the source artefact is
-  rewritten in place.
+- Every row is filed once, directly, with its canonical ID — there is no pre-sync
+  placeholder stage to reconcile.
 - IDs are never recycled. A `dropped` row's ID stays with that row forever, including
   after it moves to `archive/`.
 
@@ -317,12 +312,12 @@ Canonical IDs are `OI-NNNN` (four-digit zero-padded, monotonic).
 
 ## Source-location provenance
 
-Every synced ledger row preserves three coordinates back to its origin:
+Every filed ledger row preserves three coordinates back to its origin:
 
 | Field             | Where it comes from                                                          |
 | :---------------- | :--------------------------------------------------------------------------- |
 | `Source artefact` | Relative repo path to the source document (e.g. `docs/business/04a-value-streams.md`). |
-| `Source anchor`   | Short fragment identifier from the local row (e.g. `#stage-onboarding`, `#q3`). |
+| `Source anchor`   | Short fragment identifier supplied at filing time (e.g. `#stage-onboarding`, `#q3`). |
 | `Source heading`  | Full heading text the anchor resolves to (e.g. `Stage 2: Onboarding`).        |
 
 The pair `(Source anchor, Source heading)` is the provenance contract from
@@ -351,11 +346,11 @@ A row is considered a duplicate of an existing ledger row when ALL of the follow
 
 When `sync` detects a duplicate:
 
-- If the local row carries no `OI-NNNN`: adopt the existing ledger row's ID and write it
-  back to the source artefact. No new row is created.
-- If the local row carries a different `OI-NNNN`: refuse the sync and produce an operator
-  warning naming both IDs — the operator must merge manually (typically by `drop`-ping
-  the newer ID with rationale `Duplicate of OI-NNNN`).
+- No new row is created. Report the existing `OI-NNNN`/issue number back to the caller so
+  they reference it directly instead.
+- If the caller insists a second row is genuinely distinct, file it and let `triage` flag
+  the pair for manual review; if it turns out to be a true duplicate, `drop` the newer one
+  with rationale `Duplicate of OI-NNNN`.
 
 ---
 
@@ -380,21 +375,23 @@ audits use the linger period to scan recent resolutions for patterns.
 
 ## Operator-facing examples
 
-**Sync after authoring an arch-research note:**
+**File an open item identified while authoring an arch-research note:**
 
 ```text
-util-open-items sync docs/architecture/research/0003-token-auth.md
-# → reads the document-level ## Open Items section,
-#   mints OI-NNNN for any unmatched rows,
-#   writes those IDs back into the source file,
-#   appends rows to docs/project-control/open-items/open-items.md.
+util-open-items sync --source-artefact docs/architecture/research/0003-token-auth.md \
+  --source-anchor "#q3" --source-heading "Q3 — How do partners authenticate?" \
+  --type decision-gap --summary "Auth model for partner API" \
+  --resolution-path "Open ADR on token strategy" --priority high
+# → mints OI-NNNN (or opens a GitHub issue),
+#   appends the row directly to docs/project-control/open-items/open-items.md
+#   (or files it as an issue under the github backend).
 ```
 
 **Close a resolved decision gap:**
 
 ```text
 util-open-items close OI-0007 --tracker-ref https://github.com/.../pull/142
-# → updates the ledger row + the source artefact row to Status: closed.
+# → updates the ledger row to Status: closed.
 ```
 
 **End-of-quarter archive sweep:**
@@ -423,15 +420,16 @@ util-open-items report
 | `docs/project-control/open-items/archive/<YYYY-Q[1-4]>.md`         | This skill (archive only).             |
 | `var/reports/open-items/triage-YYYY-MM-DD.md`                 | This skill (triage report).            |
 | `var/reports/open-items/report-YYYY-MM-DD.md`                 | This skill (report mode).              |
-| The source artefact's document-level `## Open Items` section. | This skill (sync writes back IDs only). |
 
 The `open-items.md` / `archive/` paths above apply to the **`markdown` backend**. Under
-**`github`**, those central writes go to GitHub Issues + the Project instead (via `gh`); the
-only repo-file this skill writes is the local `## Open Items` section (writing back `#N`).
+**`github`**, those central writes go to GitHub Issues + the Project instead (via `gh`) —
+this skill writes no repo file at all in that case.
 
 This skill MUST NOT write to any other path. In particular it MUST NOT mutate
 `util-metamodel-audit` reports (those are produced by a separate report-only skill) and
-MUST NOT touch artefact body content outside the document-level `## Open Items` table.
+MUST NOT touch any artefact body — there is no local section for it to write back to
+(ADR-0005). A producing skill MAY add its own optional backlink to an artefact it generates
+(governance §1), but `util-open-items` itself never edits artefact content.
 
 ---
 

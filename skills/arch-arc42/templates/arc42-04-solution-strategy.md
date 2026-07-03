@@ -49,10 +49,3 @@ _TODO_ — brief notes on organizational decisions with architectural impact: de
 | [`docs/domain/02b-bounded-contexts.md`](../../domain/02b-bounded-contexts.md) | Decomposition basis — BC-NN boundaries that drove the service split |
 | [`docs/architecture/arc42/02-constraints.md`](./02-constraints.md) | Constraints that narrowed the solution space |
 | [`docs/architecture/arc42/05-building-blocks.md`](./05-building-blocks.md) | Detailed structural realisation of the decomposition described above |
-
-## Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :---- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._

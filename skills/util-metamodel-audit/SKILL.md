@@ -1,7 +1,7 @@
 ---
 name: util-metamodel-audit
-description: "Audit the strategic-architecture documentation stack across 18 dimensions: stack progress, folder placement, internal + external links, ID cross-references + integrity, dependency enforcement, _TODO_ density, mandatory sections, methodology pointers, confidence distribution, expiry + staleness, orphaned files, research sync, ADR supersession chains, FBS + epic delivery, frontmatter validity, and open-items governance, backend-aware (markdown ledger or GitHub Issues): section + schema compliance, source-location provenance, tracker sync coverage, closure drift, stale open items, github form/slug integrity per rules/open-items-governance.md. Report-only with a proposed fix per finding. Triggers on: metamodel audit, audit the stack, check docs health, validate dependencies, broken links, audit artefact compliance, open items governance, tracker sync, closure drift, schema compliance."
-version: "1.1.1"
+description: "Audit the strategic-architecture documentation stack across 18 dimensions: stack progress, folder placement, internal + external links, ID cross-references + integrity, dependency enforcement, _TODO_ density, mandatory sections, methodology pointers, confidence distribution, expiry + staleness, orphaned files, research sync, ADR supersession chains, FBS + epic delivery, frontmatter validity, and open-items governance, backend-aware (markdown ledger or GitHub Issues): stale local-section relic sweep, ledger schema compliance, source-location provenance + resolution, closure drift, stale open items, github form/slug integrity per rules/open-items-governance.md. Report-only with a proposed fix per finding. Triggers on: metamodel audit, audit the stack, check docs health, validate dependencies, broken links, audit artefact compliance, open items governance, closure drift, schema compliance."
+version: "1.2.0"
 user-invocable: true
 allow_implicit_invocation: true
 impact: "low"
@@ -9,7 +9,7 @@ metadata:
   category: "utility"
   complexity: "high"
 status: active
-last_reviewed: 2026-06-04
+last_reviewed: 2026-07-03
 ---
 
 # Stack Audit
@@ -45,7 +45,7 @@ A report is good when a reader can answer, without ambiguity:
 | **Which ADR supersession chains are broken?** | §15 ADR chain findings |
 | **What is the FBS + epic delivery status?** | §16 Delivery progress table |
 | **Which artefacts have missing or invalid frontmatter?** | §17 Frontmatter validity findings |
-| **Is open-items governance healthy across artefacts and the central read-out?** | §18 Open items governance (backend-aware) — section + schema compliance, source-location provenance, tracker sync coverage, closure drift, stale items, github form/slug integrity |
+| **Is open-items governance healthy on the central ledger?** | §18 Open items governance (backend-aware) — stale local-section relic sweep, ledger schema compliance, source-location provenance + resolution, closure drift, stale items, github form/slug integrity |
 
 ---
 
@@ -125,22 +125,21 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
 
 ### Mode 5 — Open-items governance
 
-**When:** focused governance-drift check; run after a `util-open-items sync` to confirm
-the central read-out and artefacts agree, or before archiving terminal rows. Runs Check 18
-only — backend-aware (governance §5.3): section compliance, schema compliance,
-source-location provenance, tracker sync coverage, closure drift, stale open items, plus
-the github-only form/slug integrity sub-check (18g).
+**When:** focused governance-drift check on the central ledger itself; run after a batch of
+`util-open-items sync` filings, or before archiving terminal rows. Runs Check 18 only —
+backend-aware (governance §5.3): stale local-section relic sweep, ledger schema compliance,
+source-location provenance + resolution, closure drift, stale open items, plus the
+github-only form/slug integrity sub-check (18g).
 
 **Process:**
 1. Detect the backend (`docs/project-control/open-items/backend.yml`, default `markdown`),
-   then run the sub-checks of Check 18 — see `references/check-catalogue.md`. The
-   local-section checks (18a–18c) are backend-independent; 18d–18f have a markdown and a
-   github variant; 18g is github-only.
+   then run the sub-checks of Check 18 — see `references/check-catalogue.md`. 18a and 18c
+   are backend-independent; 18e–18f have a markdown and a github variant; 18b is
+   `markdown`-only; 18g is github-only; 18d is retired (ADR-0005).
 2. Output findings grouped by sub-check.
 3. Save to `var/reports/metamodel-audit/open-items-governance-{YYYY-MM-DD}.md`.
-4. Never mutate `docs/project-control/open-items/open-items.md` or any artefact's local
-   `## Open Items` section — remediation is always operator-driven through
-   `util-open-items` or direct artefact edits.
+4. Never mutate `docs/project-control/open-items/open-items.md` or any artefact —
+   remediation is always operator-driven through `util-open-items` or direct ledger edits.
 
 ---
 
@@ -167,7 +166,7 @@ Full detection patterns and bash commands in `references/check-catalogue.md`. Br
 | 15 | **ADR chains** | One-sided supersession links (ADR-A supersedes ADR-B but ADR-B has no back-link) | Warning |
 | 16 | **Delivery progress** | FBS ✅/🔄/⬜ counts; epic ↔ PRD linkage completeness | Info |
 | 17 | **Frontmatter validity** | Missing frontmatter block, missing required fields, invalid `status`, broken supersession links | Error / Warning |
-| 18 | **Open items governance** | Six sub-checks against `rules/open-items-governance.md`: section compliance (canonical `## Open Items` heading, no legacy variants), schema compliance (canonical column order), source-location provenance (`Source anchor` + `Source heading` populated), tracker sync coverage (canonical `OI-NNNN` IDs aligned between local sections and `docs/project-control/open-items/open-items.md`), closure drift (`closed`/`dropped` rows must carry a non-`_TBD_` `Tracker ref`), stale open items (`open`/`in-progress`/`blocked` rows past `Due / Review date`) | Error / Warning |
+| 18 | **Open items governance** | Six sub-checks against `rules/open-items-governance.md`: stale local-section relic sweep (no artefact may carry a local `## Open Items` table per ADR-0005; legacy heading variants forbidden), ledger schema compliance (canonical column order), source-location provenance + resolution (`Source anchor` + `Source heading` populated; `Source artefact` resolves to a real file), tracker sync coverage (retired, ADR-0005 — see 18c), closure drift (`closed`/`dropped` rows must carry a non-`_TBD_` `Tracker ref`), stale open items (`open`/`in-progress`/`blocked` rows past `Due / Review date`) | Error / Warning |
 
 ---
 
@@ -201,7 +200,7 @@ H1: Stack Audit — {project} — {YYYY-MM-DD}
 §15 ADR chains              ADR | Supersedes | Back-link present? | Proposed fix
 §16 Delivery progress       FBS: ✅ N / 🔄 N / ⬜ N | Epics with PRD: N / N total
 §17 Frontmatter validity    File | Missing / invalid field | Proposed fix
-§18 Open items governance   six sub-tables: 18a section compliance · 18b schema compliance · 18c source-location provenance · 18d tracker sync coverage · 18e closure drift · 18f stale open items
+§18 Open items governance   sub-tables: 18a stale local-section relic sweep · 18b ledger schema compliance · 18c source-location provenance + resolution · 18e closure drift · 18f stale open items · 18g form/slug integrity (github only)
 
 Audit metadata
   Generated: YYYY-MM-DD | Scope: {scope} | Files scanned: N | Checks run: N

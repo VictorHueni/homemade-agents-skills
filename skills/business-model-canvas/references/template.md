@@ -294,32 +294,6 @@ If any of these is missing or `_TODO_`, the canvas has a coherence gap.
 
 ---
 
-## Open Items
-
-<!--
-Document-level canonical section per rules/open-items-governance.md §1.
-Only actionable unresolved work (doc-gap | decision-gap | execution-item | tech-debt).
-Inline `_TODO_` block bullets and confidence flags are NOT open items — they are
-scaffold debt tracked by util-metamodel-audit Check 8. Do not scaffold placeholder-only
-rows to satisfy this section; an empty table with `_None at present._` is correct when
-there is no actionable unresolved work yet.
-
-`Source anchor` uses the canvas block ID as a fragment (e.g. `#cs-1`, `#vp-2`, `#r-3`)
-so each row jumps back to the originating block. `Source heading` carries the full
-block name (e.g. `CS-1: Solo founders shipping weekly`). For canvas-wide items that do
-not belong to a single block (e.g. cross-block coherence gaps), use `#canvas` and
-`Canvas-wide` respectively.
--->
-
-| OI-ID  | Type           | Summary                                            | Source anchor | Source heading                              | Resolution path                                          | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------- | :------------------------------------------------- | :------------ | :------------------------------------------ | :------------------------------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | decision-gap   | {{Pivot CS-3 from SMB to mid-market or split?}}    | #cs-3         | CS-3: {{segment name}}                      | Open ADR-NNNN after VPC-CS-3 evidence wave               | high     | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-| OI-002 | doc-gap        | {{Channel CH-2 unit economics still unsourced}}    | #ch-2         | CH-2: {{channel name}}                      | Re-fetch from [Source X]({{url}}) after {{date}}         | medium   | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-
-_Replace the placeholder rows above with real entries, or replace the table with `_None at present._` if the canvas has no actionable unresolved work yet (per §2 of the governance rule, scaffold placeholders and confidence-flagged blocks are not open items)._
-
----
-
 ## Changelog
 
 > *Every refresh adds an entry. Date · block(s) changed · evidence

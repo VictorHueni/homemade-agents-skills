@@ -211,17 +211,6 @@ Within 1 hour after the interview, fill this in. **Don't rely on memory beyond 2
 - Evaluated? ☐ yes ☐ no
 - If evaluated, liked: ___; disliked: ___; rejected because: ___
 
-## Open Items
-<!--
-Document-level canonical section per rules/open-items-governance.md §1.
-One row per unresolved item surfaced during this interview. Source anchor +
-Source heading point back into the script section (Section A / B / C / …) the
-item originated from. Inline `_TODO_` placeholders are NOT open items.
-Columns: OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref.
--->
-
-- _None at present._ (Replace with the canonical table once an actionable item is identified — e.g. "Things they couldn't answer but might be answerable by an adjacent role" become `doc-gap` rows pointing to the relevant script section.)
-
 ## Updates to upstream artefacts
 
 ### Personas — P-NN
@@ -345,25 +334,6 @@ from upstream artefacts:
 | Competitor / claim | Change | Source | Confidence shift |
 |---|---|---|---|
 | Competitor X | Verified pricing $Y/month | Interview Z | Assumed → Tested |
-
----
-
-## Open Items
-
-<!--
-Document-level canonical section per rules/open-items-governance.md §1.
-What this research wave did NOT answer + actionable follow-ups for the next wave.
-Each row carries `Source anchor` + `Source heading` pointing to the synthesis
-section the gap surfaced from (Theme cluster / Per-hypothesis verdict / Per-artefact updates / Sample summary).
-Types: doc-gap | decision-gap | execution-item | tech-debt. Empty is fine — use
-`_None at present._` until a real actionable row exists.
--->
-
-| OI-ID  | Type           | Summary                                       | Source anchor       | Source heading                  | Resolution path                                        | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------- | :-------------------------------------------- | :------------------ | :------------------------------ | :----------------------------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | doc-gap        | {{What the wave did not answer}}               | #per-hypothesis     | Per-hypothesis verdict          | Plan next wave targeting {{role/segment}}              | medium   | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-
-_Replace the placeholder row above with real entries, or replace it with `_None at present._` if no actionable unresolved work remains._
 
 ---
 

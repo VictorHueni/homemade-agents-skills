@@ -34,10 +34,3 @@ _No environments documented yet. Run `arch-c4 deployment production` to document
 | [`docs/architecture/arc42/05-building-blocks.md`](./05-building-blocks.md) | The containers (`CON-NN`) deployed below |
 | [`docs/product-specs/09a-quality-attributes.md`](../../product-specs/09a-quality-attributes.md) | Quality requirements (`QA-XXNN`) — the Quality/Performance Features subsection here explains *how* the deployment achieves them |
 | [`docs/ops/runbooks/`](../../ops/runbooks/) | Operational procedures that depend on this deployment structure |
-
-## Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :---- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._

@@ -147,7 +147,7 @@ Detect from the user's prompt. Ask if ambiguous.
 1. Ask for: existing route file paths, OpenAPI spec (if any), or a cURL / Postman collection.
 2. Scan the provided material for route definitions, event publish calls, and event subscription handlers.
 3. For each discovered element, find the matching `BC-NN.AGG-NN`, `BC-NN.ENT-NN`, or `BC-NN.EVT-NN`. Flag surface elements with no domain model backing — these are candidates for removal, or for a new domain model entry.
-4. Flag discipline violations: verb in path, inconsistent error shapes, missing status codes, undocumented auth, collection endpoints without pagination. These become `OI-NNN` entries in §Open Items.
+4. Flag discipline violations: verb in path, inconsistent error shapes, missing status codes, undocumented auth, collection endpoints without pagination. File each directly to the central ledger via `util-open-items`.
 5. Produce the artefact using `references/template.md`. Mark documented items `status: documented`; items needing review `status: review`.
 6. Emit a **drift report**: surface elements found in code but absent from the domain model; domain model concepts not yet surfaced in any API or event.
 

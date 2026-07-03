@@ -64,9 +64,3 @@ Example Platform
 | C2.3 | Quality Assurance | C2 · Service Delivery | Necessary | Verify delivered work meets the contract. |
 | C3.1 | Observability | C3 · Platform Operations | Necessary | Monitor health and trace incidents. |
 | C3.2 | Billing | C3 · Platform Operations | Commodity | Meter usage and issue invoices. |
-
----
-
-## Open Items
-
-_None at present._

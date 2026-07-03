@@ -105,9 +105,3 @@ One-page synthesis of customer, value, infrastructure, and financial logic.
 ## Inter-block coherence check
 
 For CS-1: reachable, related, valued, paying.
-
----
-
-## Open Items
-
-_None at present._

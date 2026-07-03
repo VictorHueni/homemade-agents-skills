@@ -166,27 +166,6 @@ every source has a real verifiable URL; no "see bibliography" without link.
 
 ---
 
-## Open Items
-
-<!--
-Document-level section per rules/open-items-governance.md §1.
-One row per unresolved item across the whole research note. Per-Q gaps live HERE,
-not under each ## Qn heading — they carry `Source anchor` (e.g. `#q1`) and
-`Source heading` (e.g. `Q1 — restated question`) so provenance survives.
-Each row is exactly one of: doc-gap | decision-gap | execution-item | tech-debt.
-Tracker ref is `_TBD_` while the row is `open`; required to leave `open` for a terminal state.
-Do not scaffold placeholder-only rows — `_None at present._` is the correct initial state.
--->
-
-| OI-ID  | Type           | Summary                                       | Source anchor | Source heading                  | Resolution path                                        | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------- | :-------------------------------------------- | :------------ | :------------------------------ | :----------------------------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | doc-gap        | {{Specific gap that wasn't resolved by Q1}}    | #q1           | Q1 — {{restated question}}      | Re-fetch [Source X]({{url}}) after {{date}}            | medium   | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-| OI-002 | decision-gap   | {{Open ADR-NNNN decision blocked by Q2}}       | #q2           | Q2 — {{restated question}}      | Open ADR-NNNN once Q2 finding is ★★★★+ verified         | high     | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-
-_Replace the placeholder rows above with real entries, or leave only `_None at present._` if the research note has no actionable unresolved work yet (per §2 of the governance rule, scaffold placeholders are not open items)._
-
----
-
 ## Changelog
 
 | Date | Author | Mode | Change summary |

@@ -88,9 +88,3 @@ Example Platform
 | C2.1.F01 | Guided order form | 🔄 | VS-2.1 |
 | C2.1.F02 | Bulk order import | ⬜ | _TODO_ |
 | C2.1.F03 | Order validation rules | ⬜ | VS-2.1 |
-
----
-
-## Open Items
-
-_None at present._

@@ -65,10 +65,3 @@ Used sparingly when a Component itself has internal substructure worth surfacing
 | [`docs/architecture/arc42/06-runtime-view.md`](./06-runtime-view.md) | How the building blocks here interact over time |
 | [`docs/architecture/arc42/07-deployment.md`](./07-deployment.md) | How these building blocks map onto infrastructure |
 | [`docs/product-specs/09a-quality-attributes.md`](../../product-specs/09a-quality-attributes.md) | Quality requirements (`QA-XXNN`) attached to specific containers / components |
-
-## Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :---- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._

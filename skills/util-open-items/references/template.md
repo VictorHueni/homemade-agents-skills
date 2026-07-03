@@ -1,6 +1,6 @@
-# Open Items Ledger — Template & Worked Sync Example
+# Open Items Ledger — Template & Worked Filing Example
 
-This file shows the canonical ledger table skeleton and a worked end-to-end sync example
+This file shows the canonical ledger table skeleton and a worked end-to-end filing example
 so an operator (or a future agent invocation) can reproduce the mechanics of `sync` mode
 without reverse-engineering them from the live ledger.
 
@@ -13,8 +13,7 @@ copy-pasteable template, not an independent definition.
 ## 1. Canonical ledger table skeleton
 
 The live ledger at `docs/project-control/open-items/open-items.md` uses this header and
-column order. The ledger extends the local artefact schema with `Source artefact`
-inserted after `Summary`.
+column order — the §4 schema, unchanged by backend:
 
 ```markdown
 ## Open Items
@@ -22,7 +21,7 @@ inserted after `Summary`.
 | OI-ID | Type | Summary | Source artefact | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
 | :---- | :--- | :------ | :-------------- | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
 
-_None at present._ The ledger initialises empty; the first sync from any artefact will
+_None at present._ The ledger initialises empty; the first item filed by any skill will
 populate it. Do not scaffold placeholder rows here — empty is the correct initial state
 per §2 of the governance rule.
 ```
@@ -32,45 +31,13 @@ The same 12-column shape is used for every archive file under
 
 ---
 
-## 2. Local artefact section template
+## 2. Worked filing example
 
-Use this exact heading + table header inside any artefact that may carry unresolved work.
-The local schema is the canonical 11 columns (the ledger adds `Source artefact` on sync).
+This example walks through one `sync` invocation end-to-end: a skill working on an
+`arch-research` note identifies two unresolved questions and files them directly. The
+central ledger starts empty.
 
-```markdown
-## Open Items
-
-| OI-ID  | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :----- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._
-```
-
-When the artefact has actionable rows, replace the `_None at present._` line with the
-populated rows. Do NOT mix the placeholder line with real rows — either the section is
-empty (placeholder line only) or it is populated (placeholder line removed).
-
----
-
-## 3. Worked sync example
-
-This example walks through one sync invocation end-to-end. The source artefact is an
-`arch-research` note with two `## Open Items` rows; the central ledger is empty.
-
-### Before sync — source artefact
-
-`docs/architecture/research/0003-token-auth.md`:
-
-```markdown
-## Open Items
-
-| OI-ID  | Type          | Summary                                | Source anchor | Source heading                          | Resolution path                  | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------ | :------------------------------------- | :------------ | :-------------------------------------- | :------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | decision-gap  | Auth model for partner API undecided   | #q3           | Q3 — How do partners authenticate?      | Open ADR on token strategy       | high     | open   | victor  | 2026-06-15        | _TBD_       |
-| OI-002 | doc-gap       | Threat model for refresh tokens absent | #q5           | Q5 — What is the refresh-token threat model? | Extend research note §Threats | medium   | open   | _TBD_   | 2026-07-01        | _TBD_       |
-```
-
-### Before sync — central ledger
+### Before — central ledger
 
 `docs/project-control/open-items/open-items.md`:
 
@@ -83,38 +50,33 @@ This example walks through one sync invocation end-to-end. The source artefact i
 _None at present._
 ```
 
-### Invocation
+### Invocations
 
 ```text
-util-open-items sync docs/architecture/research/0003-token-auth.md
+util-open-items sync --source-artefact docs/architecture/research/0003-token-auth.md \
+  --source-anchor "#q3" --source-heading "Q3 — How do partners authenticate?" \
+  --type decision-gap --summary "Auth model for partner API undecided" \
+  --resolution-path "Open ADR on token strategy" --priority high --owner victor \
+  --due 2026-06-15
+
+util-open-items sync --source-artefact docs/architecture/research/0003-token-auth.md \
+  --source-anchor "#q5" --source-heading "Q5 — What is the refresh-token threat model?" \
+  --type doc-gap --summary "Threat model for refresh tokens absent" \
+  --resolution-path "Extend research note §Threats" --priority medium --due 2026-07-01
 ```
 
-### Sync mechanics (what the skill does)
+### Filing mechanics (what the skill does, per invocation)
 
-1. Read the source artefact and locate the document-level `## Open Items` section.
-2. Parse the two rows; validate `Type` values against the four-value taxonomy; validate
-   that no terminal-state row carries `Tracker ref: _TBD_` (none here — both rows are
-   `open`).
-3. Look up duplicates against the empty ledger — none found.
-4. Mint IDs: the ledger is empty, so the next ID is `OI-0001`. Assign `OI-0001` to the
-   first row and `OI-0002` to the second.
-5. Write the canonical IDs back to the source artefact (`OI-001` → `OI-0001`, `OI-002` →
-   `OI-0002`).
-6. Append two rows to the central ledger with `Source artefact` populated and
-   `Source anchor` + `Source heading` preserved verbatim.
+1. Validate `Type` against the four-value taxonomy; validate the row isn't filed already
+   `closed`/`dropped` with `Tracker ref: _TBD_` (neither here — both are `open`).
+2. Look up duplicates against the ledger — none found on the first call; the second call
+   checks against the row the first call just created.
+3. Mint the next ID: `OI-0001` for the first call, `OI-0002` for the second.
+4. Append the row to the central ledger with `Source artefact`, `Source anchor`, and
+   `Source heading` populated verbatim from the input.
+5. Report the assigned ID back to the caller.
 
-### After sync — source artefact (rewritten in place)
-
-```markdown
-## Open Items
-
-| OI-ID   | Type          | Summary                                | Source anchor | Source heading                          | Resolution path                  | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :------ | :------------ | :------------------------------------- | :------------ | :-------------------------------------- | :------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-0001 | decision-gap  | Auth model for partner API undecided   | #q3           | Q3 — How do partners authenticate?      | Open ADR on token strategy       | high     | open   | victor  | 2026-06-15        | _TBD_       |
-| OI-0002 | doc-gap       | Threat model for refresh tokens absent | #q5           | Q5 — What is the refresh-token threat model? | Extend research note §Threats | medium   | open   | _TBD_   | 2026-07-01        | _TBD_       |
-```
-
-### After sync — central ledger
+### After — central ledger
 
 ```markdown
 ## Open Items
@@ -127,9 +89,9 @@ util-open-items sync docs/architecture/research/0003-token-auth.md
 
 ---
 
-## 4. Worked close example
+## 3. Worked close example
 
-Continuing from the sync example above, the ADR has now been written and merged.
+Continuing from the filing example above, the ADR has now been written and merged.
 
 ### Invocation
 
@@ -146,9 +108,7 @@ util-open-items close OI-0001 --tracker-ref https://github.com/example/repo/pull
    - `Status: closed`
    - `Tracker ref: https://github.com/example/repo/pull/142`
    - `Due / Review date: 2026-05-25` (today, as the closure date).
-4. Locate the matching row in the source artefact (matched by `OI-0001` ID) and apply
-   the same three updates so the local section stays in sync.
-5. Leave the row on the live ledger — it becomes archive-eligible in 30 days.
+4. Leave the row on the live ledger — it becomes archive-eligible in 30 days.
 
 ### After close — ledger row
 
@@ -158,7 +118,7 @@ util-open-items close OI-0001 --tracker-ref https://github.com/example/repo/pull
 
 ---
 
-## 5. Worked archive example
+## 4. Worked archive example
 
 Thirty days after the closure above, the row becomes archive-eligible.
 
@@ -180,17 +140,17 @@ util-open-items archive --older-than 30d
 
 ---
 
-## 6. Field-by-field reference
+## 5. Field-by-field reference
 
 The columns below are reproduced for operator convenience. The rule wins on every
 conflict:
 
 | Column              | Allowed values / format                                                                   |
 | :------------------ | :---------------------------------------------------------------------------------------- |
-| `OI-ID`             | Pre-sync local token (any short string) → canonical `OI-NNNN` after sync. Monotonic, never recycled. |
+| `OI-ID`             | Assigned at filing time: monotonic `OI-NNNN` (`markdown`) or the native issue number `#N` (`github`). Never recycled. |
 | `Type`              | `doc-gap` \| `decision-gap` \| `execution-item` \| `tech-debt`.                            |
 | `Summary`           | One-sentence statement of the open item. Self-contained.                                   |
-| `Source artefact`   | (Ledger-only field) Relative repo path to the source document.                             |
+| `Source artefact`   | Relative repo path to the source document, or the central-only scope marker (governance §5.2). |
 | `Source anchor`     | Short fragment identifier (`#q3`, `#stage-onboarding`, `#vp-2`). Stable jump target.        |
 | `Source heading`    | Full heading text the anchor resolves to. Readable provenance.                              |
 | `Resolution path`   | What closing looks like (`Open ADR on token strategy`, `Schedule into refactor epic E-07`). |
@@ -202,18 +162,16 @@ conflict:
 
 ---
 
-## 7. Anti-patterns to refuse during sync
+## 6. Anti-patterns to refuse during sync
 
 The `sync` mode refuses to act on:
 
-- A nested `### Open Items` heading anywhere in the source artefact — only document-level
-  `## Open Items` is canonical.
 - A row whose `Type` is not one of the four allowed values.
 - A row whose `Status` is `closed` or `dropped` but whose `Tracker ref` is `_TBD_`.
-- A row whose `Source anchor` and `Source heading` are both empty (governance-only rows
-  must be entered directly via `report` mode or operator editing, not synced).
-- A duplicate row with a conflicting `OI-NNNN` — the operator must merge manually before
-  re-syncing.
+- A row whose `Source anchor` and `Source heading` are supplied inconsistently — either
+  both are present, or both are empty for a genuine central-only row (governance §5.2).
+- A duplicate row where the caller's intent is unclear — report the existing ID and ask for
+  confirmation rather than silently creating a second row.
 
 When refusing, the skill prints the refusal reason + the conflicting row + a pointer to
-the relevant section of `rules/open-items-governance.md`. It never partially syncs.
+the relevant section of `rules/open-items-governance.md`. It never partially files a row.

@@ -7,44 +7,40 @@ paths:
 
 The kit captures unresolved work across many artefact types — research questions, missing
 decisions, follow-up implementation items, deferred refactors. Without a single contract
-those captures drift in heading name, table shape, lifecycle vocabulary, and physical
-location, making it impossible to audit governance health or roll up live open work across
-the stack.
+those captures drift in schema, lifecycle vocabulary, and provenance completeness, making it
+impossible to audit governance health or roll up live open work across the stack.
 
 This rule is the **single source of truth** for that contract. Every skill that emits
-unresolved work, every artefact template that exposes it, and every audit that verifies it
-must conform to the schema and lifecycle defined here. `util-docs-audit` stays generic
-(file-level rot) and is out of scope; stack-aware governance lives in `util-metamodel-audit`
-and the dedicated `util-open-items` skill.
+unresolved work and every audit that verifies it must conform to the schema and lifecycle
+defined here. `util-docs-audit` stays generic (file-level rot) and is out of scope;
+stack-aware governance lives in `util-metamodel-audit` and the dedicated `util-open-items`
+skill.
 
 ---
 
-## 1. Canonical local section
+## 1. Authoring surface: the central ledger only
 
-Every artefact that can carry unresolved work exposes it in **exactly one**
-**document-level** `## Open Items` section. Document-level means the section is a top-level
-heading (`## Open Items`) in the artefact file — never an inner subsection nested under
-per-question, per-stage, or per-block headings.
+Every open item — whatever artefact it concerns, or none at all — is authored **directly
+into the central ledger**: the living markdown table at
+`docs/project-control/open-items/open-items.md`, or a GitHub Issue labelled `open-item`,
+per whichever backend the project selects (`backend.yml`, §5.3). There is no per-artefact
+local section to expose, populate, or keep in sync — the ledger (or issue tracker) is the
+only surface a skill or contributor writes to.
 
-**Heading:**
+**Why no local section ([ADR-0005](../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)).**
+An earlier version of this contract required every artefact to expose a document-level
+`## Open Items` table as an authoring surface, synced into the ledger by `util-open-items`.
+That local step had already gone unfollowed in practice — new items were being filed
+straight to the ledger with full provenance and no local-row counterpart — because filing
+directly is strictly less work for the same result: the ledger/Issue Form already demands
+the same provenance fields (§4) at creation time. ADR-0005 retired the local step to match
+observed practice.
 
-```markdown
-## Open Items
-```
-
-**Variants forbidden** (these are migrated by Increment 03 of the plan that introduced this
-contract):
-
-- `## Open / TODO`
-- `## Open TODOs`
-- `## Open questions remaining`
-- `## Open questions for next interview`
-- `## Open questions for next workshop / research wave`
-- `### Open Items` (any non-document-level placement)
-- `§Open Issues` (legacy wording in discipline docs)
-
-Discipline docs, skill instructions, and audit catalogues all use the canonical phrase
-`## Open Items` when they reference the section.
+A skill MAY still add a single-line backlink in a generated artefact (e.g.
+`Open items: #57, #58`) so a reader can find related ledger rows without leaving the
+document. This is optional per skill and is never a table — a full local table is the
+retired pattern this rule no longer sanctions. Any leftover local `## Open Items` table
+found in a swept artefact is a stale relic of the prior contract; delete it.
 
 ---
 
@@ -70,10 +66,9 @@ incomplete first draft of the document itself. `_TODO_` density is measured by
 `util-metamodel-audit` Check 8 and is reported separately.
 
 Open items capture **work that remains after the artefact is internally complete** —
-unanswered questions, deferred decisions, follow-ups, debt. Skills must not scaffold
-placeholder-only rows in `## Open Items` just to satisfy the heading; an empty `## Open
-Items` section (with a "None at present." note) is the correct initial state when no
-actionable unresolved work exists yet.
+unanswered questions, deferred decisions, follow-ups, debt. Skills must not file
+placeholder-only rows to the central ledger just to have something to point at; filing
+nothing is the correct state when no actionable unresolved work exists yet.
 
 ---
 
@@ -96,27 +91,32 @@ report) is required to move a row to `closed` or `dropped`.
 
 ## 4. Table schema
 
-The `## Open Items` section uses one canonical Markdown table. Column order and headings are
-fixed:
+Every open item is captured with one canonical set of fields, whatever the backend. Under
+the `markdown` backend these are literal table columns in `open-items.md`; under `github`
+they are the Issue Form fields (see §5.3 and `util-open-items/references/github-backend.md`
+for the field-to-form mapping). Column order and headings, where a literal table is used,
+are fixed:
 
 ```markdown
-## Open Items
-
-| OI-ID  | Type           | Summary                       | Source anchor         | Source heading                          | Resolution path                                  | Priority | Status      | Owner   | Due / Review date | Tracker ref       |
-| :----- | :------------- | :---------------------------- | :-------------------- | :-------------------------------------- | :----------------------------------------------- | :------- | :---------- | :------ | :---------------- | :---------------- |
-| OI-001 | decision-gap   | Auth model for partner API    | #q3                   | Q3 — How do partners authenticate?      | Open ADR on token strategy                       | high     | open        | victor  | 2026-06-15        | _TBD_             |
+| OI-ID  | Type           | Summary                       | Source artefact                                | Source anchor | Source heading                          | Resolution path                                  | Priority | Status      | Owner   | Due / Review date | Tracker ref       |
+| :----- | :------------- | :---------------------------- | :---------------------------------------------- | :------------- | :-------------------------------------- | :----------------------------------------------- | :------- | :---------- | :------ | :---------------- | :---------------- |
+| OI-001 | decision-gap   | Auth model for partner API    | `docs/architecture/research/0003-token-auth.md` | #q3            | Q3 — How do partners authenticate?      | Open ADR on token strategy                       | high     | open        | victor  | 2026-06-15        | _TBD_             |
 ```
 
 **Column rules:**
 
-- `OI-ID` — local to the artefact only when the row has not yet been synced to the central
-  ledger. After sync the row carries the ledger-assigned `OI-NNNN` ID and the local ID is
-  retired (see §5 below).
+- `OI-ID` — assigned at filing time: the next monotonic `OI-NNNN` under the `markdown`
+  backend, or the native issue number `#N` under `github`. There is no pre-sync placeholder
+  stage — a row is filed once, directly, with its canonical ID.
 - `Type` — exactly one of the four taxonomy values from §2.
 - `Summary` — one-sentence statement of the open item. Self-contained: a reader should
-  understand the row without opening the source artefact.
+  understand the row without opening the source artefact, since there is no local row
+  co-located with it.
+- `Source artefact` — relative repo path to the artefact this item concerns (e.g.
+  `docs/architecture/research/0003-token-auth.md`), or the central-only scope marker per
+  §5.2 when the item has no artefact home.
 - `Source anchor` — short fragment identifier (e.g. `#q3`, `#stage-onboarding`, `#vp-2`,
-  `#cs-1`). Provides a precise jump target inside the source document and is the stable
+  `#cs-1`) inside the source artefact. Provides a precise jump target and is the stable
   half of the provenance pair.
 - `Source heading` — the full heading text the anchor resolves to (e.g.
   `Q3 — How do partners authenticate?`, `Stage 2: Onboarding`, `VP-2: Self-serve setup`).
@@ -164,11 +164,11 @@ Why it is separate from product backlog artefacts (PRDs, delivery roadmap, FBS):
 - The FBS tracks **functionality status** in shipped or in-flight features. Open items can
   include doc gaps and decision gaps that never appear as functionalities.
 
-Source-of-truth rule: **the local `## Open Items` section in each artefact is the authoring
-surface; the central ledger is the consolidated read-out.** Skills must update the local
-section first; `util-open-items` then syncs to the central ledger, assigns the canonical
-`OI-NNNN` ID, and preserves both `Source anchor` and `Source heading` on every synced row so
-the ledger can navigate back into the source artefact without relying on tribal knowledge.
+Source-of-truth rule: **the central ledger is the only authoring surface (§1).** A skill
+files a row directly via `util-open-items`, which assigns the canonical `OI-NNNN` ID (or, on
+`github`, the row is the issue itself) and records `Source anchor` and `Source heading` at
+filing time so the ledger can navigate back into the source artefact without relying on
+tribal knowledge.
 
 Each ledger row points back to its source via three coordinates:
 
@@ -182,22 +182,23 @@ anchor is updated and the new heading recorded.
 
 ### 5.1 Ledger column layout
 
-The ledger uses the §4 canonical columns plus one ledger-only column, `Source artefact`
-(the relative repo path), inserted **after `Summary`**:
+The ledger uses exactly the §4 canonical columns — `Source artefact` is a baseline §4 field,
+not a ledger-only addition (an artefact of the pre-ADR-0005 contract, when the ledger added
+this column on top of a slimmer local-section schema):
 
 ```
 OI-ID | Type | Summary | Source artefact | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref
 ```
 
-This is the one sanctioned deviation from §4's "additional columns only after `Tracker ref`"
-rule — it applies to the ledger surface only, never to a local `## Open Items` section.
+Skills MAY add additional informational columns after `Tracker ref` per §4; no other
+deviation is sanctioned.
 
 ### 5.2 Central-only rows (governance work with no source artefact)
 
-Most rows originate in an artefact's local `## Open Items` section and carry full provenance.
-Some governance work is raised **directly at the central plane** and has no artefact home —
-e.g. kit-development items (per §9), or repo-wide decisions not owned by any single document.
-These **central-only** rows are valid and use this provenance form:
+Most rows cite a `Source artefact` — the specific document the item concerns. Some
+governance work is raised with **no artefact home at all** — e.g. kit-development items (per
+§9), or repo-wide decisions not owned by any single document. These **central-only** rows are
+valid and use this provenance form:
 
 - `Source heading` = `_central-only_`
 - `Source anchor` = empty
@@ -219,9 +220,9 @@ for the consolidated read-out. Whatever the backend, these invariants hold:
   serialization of it. The field **slugs** (the stable lower-snake keys behind each §4
   column) — not column headers or UI labels — are the binding contract every backend
   conforms to. The audit reads any backend through that single slug map.
-- **Authoring surface is backend-invariant.** The local `## Open Items` section (§1) is
-  always §4 markdown regardless of backend. Only what the sync step *writes to* changes;
-  switching backends never edits an authoring surface.
+- **Authoring surface is backend-invariant.** Every backend is filed into directly (§1);
+  only *what* gets written — a ledger row or an issue — changes with the backend. Switching
+  backends never introduces or removes an authoring step.
 - **One backend per project.** Backends are never run concurrently — two live writers over
   two identity spaces reintroduce the dual-source-of-truth this contract exists to prevent.
   Moving between backends is a **one-way migration** performed once, and MUST emit an
@@ -240,8 +241,8 @@ is maintained as the reference model that operator tooling and the audit conform
 
 ## 6. Archive and snapshots
 
-Closed and dropped items remain on the active local section and the central ledger for one
-review cycle (default: 30 days). After that they are moved to:
+Closed and dropped items remain on the active central ledger for one review cycle (default:
+30 days). After that they are moved to:
 
 ```text
 docs/project-control/open-items/archive/
@@ -258,29 +259,30 @@ The live ledger never silently deletes rows — archival is explicit and dated.
 | :---------------------------- | :---------------------------------------------------------------------------------------------------------- |
 | `util-docs-audit`             | Generic file-level rot (stale, outdated, dead). **Not** an open-items governance tracker.                   |
 | `util-open-items`             | Maintains the central plane — sync, triage, close, archive, report — honouring the configured backend (§5.3). Living ledger CRUD.         |
-| `util-metamodel-audit`        | Report-only. Verifies `## Open Items` section presence, schema compliance, source-anchor / source-heading provenance, tracker sync coverage, closure drift — reading whichever backend is configured via the canonical field slugs (§5.3). Never mutates source artefacts or the ledger. |
+| `util-metamodel-audit`        | Report-only. Verifies central-ledger/issue rows conform to the §4 schema, that `Source artefact` / `Source anchor` resolve to a real file/heading, and that closure evidence is present — reading whichever backend is configured via the canonical field slugs (§5.3). Never mutates the ledger. |
 
-`util-metamodel-audit` is the only place that flags governance drift between artefacts and
-the central ledger. It must not mutate either side; remediation is always operator-driven
-via `util-open-items` or direct artefact edits.
+`util-metamodel-audit` is the only place that flags governance drift on the central ledger
+(schema compliance, dangling provenance, closure evidence). It must not mutate the ledger;
+remediation is always operator-driven via `util-open-items`.
 
 ---
 
 ## 8. Skill conformance checklist
 
-When a skill emits or governs unresolved work **in the artefacts it produces** (under a
-project's `docs/`), its `SKILL.md` instructions and template files must:
+When a skill emits or governs unresolved work **about the artefacts it produces** (under a
+project's `docs/`), its `SKILL.md` instructions must:
 
-1. Use the canonical `## Open Items` heading at document level.
-2. Reference the column schema in §4 (either inline or by linking to this rule).
+1. File the item directly with `util-open-items` the moment it is identified — no local
+   heading, table, or scaffold to populate first (§1).
+2. Cite the column schema in §4 by reference (link to this rule) — never restate it inline.
 3. Distinguish `_TODO_` scaffold placeholders from real `doc-gap` / `decision-gap` /
-   `execution-item` / `tech-debt` rows.
-4. Preserve `Source anchor` + `Source heading` on every row that originates from a
-   sub-section of the artefact (questions, stages, blocks, processes).
-5. Chain to `util-open-items` after generation or update to sync the central ledger.
+   `execution-item` / `tech-debt` rows; only the latter are open items.
+4. Supply `Source artefact` + `Source anchor` + `Source heading` on every row that concerns a
+   specific sub-section of the artefact (questions, stages, blocks, processes) it is
+   producing.
 
-Templates SHOULD include the bare table header with the canonical columns and a single
-"None at present." note for the initial empty state.
+Output templates carry no Open Items scaffold of any kind — there is nothing for a template
+to include (§1).
 
 ---
 
@@ -291,9 +293,10 @@ research notes, and the like) — the documents a skill *produces* under a proje
 It does **not** apply to the skill definitions themselves.
 
 A skill folder (`<skill>/SKILL.md` and its `references/`, `templates/`, `scripts/`) is
-tooling, not a governed artefact. It **MUST NOT** contain a `## Open Items` section tracking
-the skill's own development. Such a section is swept by no ledger, drifts silently, and
-mis-signals to `util-metamodel-audit` (which expects open items only in project artefacts).
+tooling, not a governed artefact. It **MUST NOT** carry its own open-items tracking of any
+kind, and ledger rows about the skill's own development MUST NOT cite the skill folder as a
+`Source artefact` — that field names a project artefact under `docs/`, and the skill folder
+is not one. Genuine kit-dev items are central-only rows instead (below).
 
 Follow-up work on a skill — new modes, extra checks, deferred refinements — is **real
 governance work on the kit itself**, so the kit dogfoods this very contract: such items live
@@ -305,18 +308,19 @@ recorded under `docs/project-control/open-items/archive/`. A skill's `SKILL.md` 
 **"Follow-up work"** pointer to the ledger; it never carries the canonical `## Open Items`
 table.
 
-**Skills do not restate the schema.** A skill that produces an artefact carrying Open Items
-does **not** embed the canonical table, an example row, or a §4 column recital in its
-`SKILL.md` or inline instructions. The schema is supplied by the artefact's own **output
-template** (under the skill's `templates/`, or a `references/template.md` copied verbatim
-into `docs/`), and by this rule, which applies to every artefact globally — so the skill has
-nothing to point at. The sole place an Open Items table literally appears in a skill folder
-is such an output template: that template *is* the artefact's initial state (§8).
+**Skills do not restate the schema.** A skill whose process may surface unresolved work does
+**not** embed the canonical table, an example row, or a §4 column recital in its `SKILL.md`.
+It names the fields it needs to supply (type, summary, provenance, resolution path) and
+points at this rule for the mechanics — the schema lives here and in
+`util-open-items/references/template.md`, never duplicated into a skill folder or an output
+template (§1, §8).
 
 Restated:
 
-- Items a skill tells Claude to **write into produced artefacts** → governed by §1–§8; schema comes from the output template, not from the SKILL.md.
-- Items about the **skill's own evolution** → the kit's `docs/project-control/open-items/` ledger, never inside the skill folder.
+- Items a skill identifies **about the artefacts it produces** → filed directly to the
+  central ledger per §1–§8, citing that artefact as `Source artefact`.
+- Items about the **skill's own evolution** → the kit's `docs/project-control/open-items/`
+  ledger, as central-only rows, never inside the skill folder.
 
 ---
 

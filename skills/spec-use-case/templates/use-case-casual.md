@@ -23,9 +23,3 @@ review_interval: 180d
 
 - {{Condition}} → {{handling}}
 - {{Condition}} → {{handling}}
-
-## Open Items
-
-_Schema + lifecycle: `rules/open-items-governance.md`._
-
-_None at present._

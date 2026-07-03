@@ -51,7 +51,7 @@ The skill operates in one of three modes. Detect which mode the user wants from 
 **Output:** ONE file at `{processes folder}/proc-NN-{slug}.md` from the canonical template — all sections present, all cells `_TODO_`. Do NOT fill actors, activities, KPIs, or any substantive content in scaffold mode.
 
 Seed §8 KPIs with 3–5 starter candidate rows (values `_TODO_`) — a process without KPIs is a narrative, not a process.
-Do NOT seed §11 §Open Items with placeholder rows. §Open Items is the canonical document-level open-items section per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md); only actionable unresolved work (doc-gap / decision-gap / execution-item / tech-debt) belongs there. Inline `_TODO_` placeholders in §8 or elsewhere are scaffold debt and stay inline. Initialise §Open Items with `_None at present._`.
+There is no Open Items section to scaffold ([ADR-0005](https://github.com/VictorHueni/homemade-claude-kit/blob/main/docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)) — unresolved work found later is filed directly to the central ledger via `util-open-items`. Inline `_TODO_` placeholders in §8 or elsewhere are scaffold debt and stay inline; they are never open items.
 Update the processes index if the project has one.
 
 ### Mode 2 — Fill
@@ -104,14 +104,14 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
 2. Read project context to pre-fill what is knowable: persona IDs for actors, capability IDs for enabling systems, upstream / downstream process slugs.
 3. Fill the template end-to-end — pre-fill known content; mark the rest `_TODO_`.
 4. Seed §8 KPIs with concrete starter rows matched to the process type (see §8 KPI patterns below).
-5. Add rows to §Open Items ONLY for actionable unresolved work (e.g. a known doc-gap with a real resolution path, a deferred decision blocking a downstream ADR). Do not migrate scaffold `_TODO_` placeholders into §Open Items — they are different per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md) §2. Empty §Open Items is acceptable.
+5. File open items directly to the central ledger via `util-open-items` ONLY for actionable unresolved work (e.g. a known doc-gap with a real resolution path, a deferred decision blocking a downstream ADR). Do not file scaffold `_TODO_` placeholders — they are different per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md) §2. File nothing when nothing is actionable.
 6. Update the processes index if the project has one.
 
 **Do NOT:**
 - Invent actor names, KPI values, or system names — those are research. Use abstract placeholders.
 - Conflate descriptive content with strategic argument — this doc says **what is**, not what should change.
 - Produce a BPMN XML file — this skill produces the markdown source-of-truth.
-- Skip §8 KPIs because the user "doesn't have any yet" — seed candidate rows with `_TODO_` values regardless. (These are scaffold placeholders; do NOT mirror them as §Open Items rows.)
+- Skip §8 KPIs because the user "doesn't have any yet" — seed candidate rows with `_TODO_` values regardless. (These are scaffold placeholders; do NOT file them as open items.)
 - Leave Mermaid diagrams empty — at minimum produce a master flow (§0) and one sequence diagram per actor or phase in §6.
 
 ### Mode 3 — Update
@@ -177,15 +177,15 @@ Frontmatter blockquote:
 §10 Sources
   By category: primary regulatory / legal | professional society | industry | internal companion docs
 
-§11 Open Items  (canonical document-level section per rules/open-items-governance.md §1 + §4)
-  Table: OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref
-  Skills MAY append a `§` column AFTER `Tracker ref` for intra-doc navigation; canonical columns must not be reordered or removed.
-  Only actionable unresolved work belongs here (doc-gap | decision-gap | execution-item | tech-debt). Inline `_TODO_` placeholders are NOT open items.
-
 Changelog
 ```
 
-**Section count is fixed; ordering is fixed; §8 KPIs is mandatory (never empty). §11 §Open Items is mandatory as a section but may be empty — `_None at present._` is the correct initial state when no actionable unresolved work exists. Do NOT scaffold placeholder rows there.**
+**Section count is fixed; ordering is fixed; §8 KPIs is mandatory (never empty).** There is
+no Open Items section in the template ([ADR-0005](https://github.com/VictorHueni/homemade-claude-kit/blob/main/docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)) — actionable unresolved work
+(doc-gap | decision-gap | execution-item | tech-debt) is filed directly to the central
+ledger via `util-open-items`, citing this process doc as `Source artefact` with `Source
+anchor` + `Source heading` pointing into the originating §-section. Inline `_TODO_`
+placeholders are NOT open items and are never filed.
 
 **§6 Activities decomposition has 5 documented exceptions** — full detail in `references/logic-and-sequence.md` *When to break the template*. Most processes use per-actor §6 sub-sections. Use a deviation when the natural organising axis is clearly different:
 
@@ -333,7 +333,7 @@ When the user asks you to produce a process doc but the conversation has been ab
 | Activities per actor in §6 | 5–15 | Practitioner |
 | KPIs in §8 | 3–8 (minimum 3 mandatory) | Practitioner — fewer = narrative, not process |
 | Decision points in §7 | 1–6 | Practitioner — more signals the process should be split |
-| Open Items in §11 on first scaffold | 0 (empty is correct; placeholder-only rows are forbidden per `rules/open-items-governance.md` §2) | Governance contract |
+| Open items filed on first scaffold | 0 (nothing to file yet; placeholder-only filings are forbidden per `rules/open-items-governance.md` §2) | Governance contract |
 
 **If any number exceeds the recommended range, reconsider:**
 - Too many actors (>6) → the process spans too many organisational boundaries; split into sub-processes or use a higher-level coordinator actor.
@@ -378,17 +378,23 @@ Three files in `references/` carry the canonical content. Read them when needed:
 
 ---
 
-## Sync Open Items to the central ledger
+## File Open Items to the central ledger
 
-After the process file is created or updated, chain to the `util-open-items` skill to sync rows from §11 `## Open Items` into the central living ledger at `docs/project-control/open-items/open-items.md`.
+While creating or updating the process file, file each unresolved item directly to the
+central ledger via `util-open-items` — there is no local section to author first
+(ADR-0005).
 
-- **Local first, ledger second.** The process doc's §11 table is the authoring surface; the ledger at `docs/project-control/open-items/` is the consolidated read-out. Always populate §11 first (rows carry `Source anchor` + `Source heading` pointing into the originating sub-section, e.g. `#7-decisions` + "§7 Decision points + business rules"), then invoke sync.
-- **Sync preserves provenance.** `util-open-items` carries `Source anchor` and `Source heading` forward unchanged so each ledger row navigates back into the originating §-section of this process (per `rules/open-items-governance.md` §4 + §5).
-- **Sync mints canonical IDs.** Local placeholder `OI-NNN` IDs are reassigned to ledger-canonical `OI-NNNN` on first sync.
-- **Skip when empty.** If §11 reads `_None at present._`, do not invoke the sync. Inline `_TODO_` placeholders in §8 KPIs or elsewhere are scaffold debt — they MUST NOT be mirrored to the ledger.
-- **Mode coverage.** Run sync after Mode 2 Fill and after Mode 3 Update when those modes touch §11. Mode 1 Scaffold has no actionable open items yet (§11 initialises empty), so sync is skipped.
+- **File as you go.** Each row carries `Source anchor` + `Source heading` pointing into
+  the originating sub-section (e.g. `#7-decisions` + "§7 Decision points + business
+  rules"), citing this process doc as `Source artefact` (per
+  `rules/open-items-governance.md` §4 + §5).
+- **File nothing when there's nothing to file.** Inline `_TODO_` placeholders in §8 KPIs
+  or elsewhere are scaffold debt — they MUST NOT be filed to the ledger.
+- **Mode coverage.** File after Mode 2 Fill and after Mode 3 Update when those modes
+  surface unresolved work. Mode 1 Scaffold has no content yet, so nothing to file.
 
-Invoke as: "Sync open items for `{processes folder}/proc-NN-{slug}.md` via the util-open-items skill in sync mode."
+Invoke as: "File the open item for `{processes folder}/proc-NN-{slug}.md` via the
+util-open-items skill."
 
 ---
 
@@ -417,7 +423,7 @@ Before declaring the work done:
 - [ ] §2 Triggers table has at least one row.
 - [ ] §3 Actors table populated (or honest `_TODO_`).
 - [ ] §8 KPIs table has ≥3 starter rows (even if values are `_TODO_`).
-- [ ] §11 §Open Items section present with canonical schema from `rules/open-items-governance.md` §4; populated only with actionable unresolved work (or `_None at present._` if empty). No placeholder-only rows.
+- [ ] Any actionable unresolved work found while writing was filed directly via `util-open-items` (no local section — ADR-0005).
 - [ ] No strategic argument or "what should change" content leaked into the process doc.
 - [ ] No BPMN XML generated — markdown source-of-truth only.
 - [ ] Processes index updated if the project has one.

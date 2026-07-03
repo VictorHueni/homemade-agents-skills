@@ -347,27 +347,6 @@ Synthesis of outputs from the workshop held on {{YYYY-MM-DD}}.
 
 ---
 
-## Open Items
-
-<!--
-Document-level canonical section per rules/open-items-governance.md §1.
-Unresolved work surfaced during the workshop — questions the room could not
-close, decisions deferred, follow-ups for the next wave. Each row carries
-`Source anchor` + `Source heading` pointing to the synthesis section the item
-came from (Outputs / Decisions / Follow-up commitments / Updates to upstream
-artefacts / What to change next time). Types: doc-gap | decision-gap |
-execution-item | tech-debt. Empty is fine — `_None at present._` is the correct
-initial state when no actionable unresolved work exists yet.
--->
-
-| OI-ID  | Type           | Summary                                       | Source anchor       | Source heading                  | Resolution path                                        | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------- | :-------------------------------------------- | :------------------ | :------------------------------ | :----------------------------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | decision-gap   | {{Question the room could not close}}          | #decisions-made     | Decisions made                  | Bring to next workshop with {{stakeholder}} present     | medium   | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-
-_Replace with real rows, or replace with `_None at present._` if no actionable unresolved work remains after the workshop._
-
----
-
 ## Changelog
 
 | Date | Change | Author |

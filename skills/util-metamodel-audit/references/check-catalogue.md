@@ -384,7 +384,7 @@ done | sort -rn
 
 | File type | Mandatory sections | Detection pattern |
 |---|---|---|
-| `*-process.md` | `## §8 KPIs` or `## KPIs`, `## Open Items` (canonical document-level section per `rules/open-items-governance.md` §1; legacy variants such as the older §11 unresolved-work heading are forbidden), `## §0 Master flow` | `grep -q 'KPI\|§8'` |
+| `*-process.md` | `## §8 KPIs` or `## KPIs`, `## §0 Master flow` | `grep -q 'KPI\|§8'` |
 | `docs/business/06a-models/*.md` | `§5.2` or `Implicit assumptions`, `§6` or `Scenario Matrix`, `§7` or `Value capture` | `grep -q '5\.2\|Implicit assumptions'` |
 | `01a-personas.md` | `## Persona Backlog`, `## Personas`, `## Persona Template` | `grep -q 'Persona Backlog'` |
 | `03a-capability-map.md` | `## L0 axis`, `## Global overview`, `## Capability index` | `grep -q 'L0 axis\|Capability index'` |
@@ -401,25 +401,24 @@ done | sort -rn
 | `docs/domain/07b-models/{bc-slug}.md` | `## Aggregate catalogue`, `## Domain event catalogue`, Mermaid `classDiagram` | `grep -q 'Aggregate catalogue\|classDiagram'` |
 | `docs/architecture/research/*.md` | `## Questions`, `## Findings`, `## Changelog` | `grep -q '## Questions\|## Findings'` |
 | `docs/business/01b-competitive-landscape/*.md` | `## Porter Five Forces`, `## Competitor Profiles` or `## CO-` heading | `grep -q 'Five Forces\|CO-[0-9]'` |
-| `docs/architecture/interfaces/*.md` (not `cli-*.md`) | `## §0 Traceability`, `## §3 Error contract`, `## §4 Versioning & deprecation policy`, `## §5 Security surface`, `## Open Items`, `## Changelog` | `grep -q '§0 Traceability\|§3 Error contract'` |
-| `docs/architecture/interfaces/cli-*.md` | `## §0 Traceability`, `## §2 Command catalogue`, `## §5 Output contract`, `## §7 Error contract`, `## Open Items`, `## Changelog` | `grep -q 'Command catalogue\|§7 Error contract'` |
-| `docs/discovery/ideation/IDEA-*.md` | `## Problem statement`, `## Not doing`, `## Open Items`, `## Changelog`; frontmatter must include `idea_id`, `domain`, `lifecycle`, `graduates_to` | `grep -q '## Problem statement\|## Not doing'` and `grep -q '^idea_id:\|^lifecycle:\|^graduates_to:'` |
+| `docs/architecture/interfaces/*.md` (not `cli-*.md`) | `## §0 Traceability`, `## §3 Error contract`, `## §4 Versioning & deprecation policy`, `## §5 Security surface`, `## Changelog` | `grep -q '§0 Traceability\|§3 Error contract'` |
+| `docs/architecture/interfaces/cli-*.md` | `## §0 Traceability`, `## §2 Command catalogue`, `## §5 Output contract`, `## §7 Error contract`, `## Changelog` | `grep -q 'Command catalogue\|§7 Error contract'` |
+| `docs/discovery/ideation/IDEA-*.md` | `## Problem statement`, `## Not doing`, `## Changelog`; frontmatter must include `idea_id`, `domain`, `lifecycle`, `graduates_to` | `grep -q '## Problem statement\|## Not doing'` and `grep -q '^idea_id:\|^lifecycle:\|^graduates_to:'` |
 | `docs/architecture/c4/workspace.dsl` | `workspace "..."` block, `model { ... }` block, `views { ... }` block, at least one `systemContext` view | `grep -q '^workspace\|^[[:space:]]*model {\|^[[:space:]]*views {'` |
 | `docs/architecture/c4/render.sh` | Pinned image (no `:latest`), `validate` step before `export`, `--user` flag on every `docker run`, exit codes documented in header | `grep -q 'STRUCTURIZR_VERSION=' && grep -q 'validate -workspace' && grep -q -- '--user'` |
-| `docs/architecture/arc42/02-constraints.md` | `# 2. Architecture Constraints`, `## 2.1 Technical Constraints`, `## 2.2 Organizational Constraints`, `## 2.3 Legal and Regulatory Constraints`, `## Open Items` | `grep -q '## 2.1 Technical\|## 2.2 Organizational\|## 2.3 Legal'` |
-| `docs/architecture/arc42/03-context.md` | `# 3. Context and Scope`, `## 3.1 Business Context` (with embedded `systemContext.svg`), `## 3.2 Technical Context`, `## Open Items` | `grep -q '## 3.1 Business Context\|## 3.2 Technical Context'` |
-| `docs/architecture/arc42/04-solution-strategy.md` | `# 4. Solution Strategy`, `## 4.1 Technology Decisions`, `## 4.2 Top-Level Decomposition`, `## 4.3 Quality Goal`, `## Open Items` | `grep -q '## 4.1 Technology\|## 4.3 Quality Goal'` |
-| `docs/architecture/arc42/05-building-blocks.md` | `# 5. Building Block View`, `## 5.1 Whitebox Overall System` with containers table including `Domain aggregates implemented` column, at least one `## 5.2.x` drill, `## Open Items` | `grep -q '## 5.1 Whitebox\|Domain aggregates implemented'` |
-| `docs/architecture/arc42/06-runtime-view.md` | `# 6. Runtime View`, at least one `## 6.x` scenario subsection with `SCN-NN` ID + step table + a `<!-- arch-figure … -->` block (figure from `arch-c4` dynamic or `arch-uml sequence`), `## Open Items`. Owned by `arch-arc42` per ADR-0004; marker/figure integrity in Check 7a. | `grep -q '## 6\.\|SCN-[0-9]'` |
-| `docs/architecture/arc42/07-deployment.md` | `# 7. Deployment View`, `## 7.1` overview, at least one per-environment `### Production` (or named env), Mapping table, `## Open Items` | `grep -q '## 7.1\|Mapping of building blocks'` |
-| `docs/architecture/arc42/08-cross-cutting-concepts.md` | `# 8. Cross-Cutting Concepts`, `## Concept catalogue` table with `CC-NN` IDs and `Applies to` column, `## Open Items` | `grep -q '## Concept catalogue\|CC-[0-9]'` |
-| `docs/architecture/arc42/11-risks.md` | `# 11. Risks and Technical Debt`, `## 11.1 Active Risks` table with `RSK-NN` IDs, `## 11.2 Technical Debt`, `## Open Items` | `grep -q '## 11.1\|RSK-[0-9]'` |
+| `docs/architecture/arc42/02-constraints.md` | `# 2. Architecture Constraints`, `## 2.1 Technical Constraints`, `## 2.2 Organizational Constraints`, `## 2.3 Legal and Regulatory Constraints` | `grep -q '## 2.1 Technical\|## 2.2 Organizational\|## 2.3 Legal'` |
+| `docs/architecture/arc42/03-context.md` | `# 3. Context and Scope`, `## 3.1 Business Context` (with embedded `systemContext.svg`), `## 3.2 Technical Context` | `grep -q '## 3.1 Business Context\|## 3.2 Technical Context'` |
+| `docs/architecture/arc42/04-solution-strategy.md` | `# 4. Solution Strategy`, `## 4.1 Technology Decisions`, `## 4.2 Top-Level Decomposition`, `## 4.3 Quality Goal` | `grep -q '## 4.1 Technology\|## 4.3 Quality Goal'` |
+| `docs/architecture/arc42/05-building-blocks.md` | `# 5. Building Block View`, `## 5.1 Whitebox Overall System` with containers table including `Domain aggregates implemented` column, at least one `## 5.2.x` drill | `grep -q '## 5.1 Whitebox\|Domain aggregates implemented'` |
+| `docs/architecture/arc42/06-runtime-view.md` | `# 6. Runtime View`, at least one `## 6.x` scenario subsection with `SCN-NN` ID + step table + a `<!-- arch-figure … -->` block (figure from `arch-c4` dynamic or `arch-uml sequence`). Owned by `arch-arc42` per ADR-0004; marker/figure integrity in Check 7a. | `grep -q '## 6\.\|SCN-[0-9]'` |
+| `docs/architecture/arc42/07-deployment.md` | `# 7. Deployment View`, `## 7.1` overview, at least one per-environment `### Production` (or named env), Mapping table | `grep -q '## 7.1\|Mapping of building blocks'` |
+| `docs/architecture/arc42/08-cross-cutting-concepts.md` | `# 8. Cross-Cutting Concepts`, `## Concept catalogue` table with `CC-NN` IDs and `Applies to` column | `grep -q '## Concept catalogue\|CC-[0-9]'` |
+| `docs/architecture/arc42/11-risks.md` | `# 11. Risks and Technical Debt`, `## 11.1 Active Risks` table with `RSK-NN` IDs, `## 11.2 Technical Debt` | `grep -q '## 11.1\|RSK-[0-9]'` |
 
 **Detection (example for process doc):**
 ```bash
 find docs/business/05a-processes -name "proc-*.md" 2>/dev/null | while read f; do
   grep -q 'KPI\|§8' "$f" || echo "MISSING KPIs: $f"
-  grep -q '^## Open Items' "$f" || echo "MISSING canonical Open Items section: $f"
 done
 
 # Service contracts
@@ -428,7 +427,6 @@ find docs/architecture/interfaces -name "*.md" ! -name "cli-*.md" 2>/dev/null | 
   grep -q '§3 Error contract' "$f" || echo "MISSING §3 Error contract: $f"
   grep -q '§4 Versioning' "$f" || echo "MISSING §4 Versioning: $f"
   grep -q '§5 Security' "$f" || echo "MISSING §5 Security surface: $f"
-  grep -q '^## Open Items' "$f" || echo "MISSING canonical Open Items section: $f"
 done
 
 # CLI contracts
@@ -437,9 +435,11 @@ find docs/architecture/interfaces -name "cli-*.md" 2>/dev/null | while read f; d
   grep -q 'Command catalogue' "$f" || echo "MISSING §2 Command catalogue: $f"
   grep -q '§5 Output contract' "$f" || echo "MISSING §5 Output contract: $f"
   grep -q '§7 Error contract' "$f" || echo "MISSING §7 Error contract: $f"
-  grep -q '^## Open Items' "$f" || echo "MISSING canonical Open Items section: $f"
 done
 ```
+
+Leftover local `## Open Items` tables are not a mandatory-section finding — they are a
+transitional relic swept by Check 18a instead.
 
 **Severity:** Error
 
@@ -908,14 +908,15 @@ done
 
 ## Check 18 — Open items governance
 
-**What:** verifies that every artefact's local `## Open Items` section conforms to
-`rules/open-items-governance.md` and that the central ledger at
-`docs/project-control/open-items/open-items.md` stays in sync with the artefact rows.
+**What:** verifies that the central ledger — `docs/project-control/open-items/open-items.md`
+under `markdown`, or GitHub Issues under `github` — conforms to
+`rules/open-items-governance.md`. Since [ADR-0005](../../../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)
+retired the per-artefact local `## Open Items` section, there is only one surface to check —
+no local-vs-ledger reconciliation is possible or needed.
 
-This is the only check category in the catalogue that spans both `docs/` and
-`docs/project-control/`. It is **report-only** — findings are surfaced to the operator;
-remediation is always done through `util-open-items` (sync, triage, close, archive)
-or direct artefact edits. The audit never mutates the ledger or any source artefact.
+It is **report-only** — findings are surfaced to the operator; remediation is always done
+through `util-open-items` (sync, triage, close, archive) or direct ledger edits. The audit
+never mutates the ledger, artefact bodies, or GitHub.
 
 The check bundles the sub-checks below, each with its own detection pattern and severity.
 They run together in Mode 1 (full audit); operators wanting only governance drift can invoke
@@ -937,29 +938,32 @@ How the sub-checks split by backend:
 
 | Sub-check | `markdown` | `github` |
 | :-- | :-- | :-- |
-| 18a / 18b / 18c (local sections) | run as written | **run unchanged** — local `## Open Items` sections are always §4 markdown (Invariant I4) |
-| 18d Tracker sync coverage | ledger vs local `OI-NNNN` | **github variant** — local `#N` vs Issues |
+| 18a Stale local-section relic sweep | run as written | run as written (a leftover local table is a relic regardless of backend) |
+| 18b Ledger schema compliance | run as written | not applicable — no literal table; see 18g |
+| 18c Source-location provenance & resolution | run as written | **github variant** — reads issue body fields via `gh` |
 | 18e Closure drift | scan ledger rows | **github variant** — structurally enforced; verify the closing reference exists |
-| 18f Stale open items | local `Due / Review date` | **github variant** — open issues' Project `Review date` field |
+| 18f Stale open items | ledger `Due / Review date` | **github variant** — open issues' Project `Review date` field |
 | 18g Form / slug integrity | — | **github only** — issue bodies carry the canonical slug fields + valid Type |
 
-The local-section sub-checks (18a–18c) never change — only the *central read-out* differs by
-backend. Everything below stays **report-only**; remediation routes through `util-open-items`.
+(18d is retired — see below.) Everything stays **report-only**; remediation routes through
+`util-open-items`.
 
-### Sub-check 18a — Section compliance
+### Sub-check 18a — Stale local-section relic sweep (transitional)
 
-**What:** every artefact that carries unresolved work uses the canonical document-level
-`## Open Items` heading. Forbidden variants — listed in §1 of
-`rules/open-items-governance.md` — must not appear anywhere in the repo's artefact files.
+**What:** per ADR-0005, no artefact may carry a local `## Open Items` table any more — the
+ledger is the sole authoring surface (rule §1). Any such table found outside the ledger/
+archive path is a leftover from the retired contract and must be deleted, not reconciled.
+This also keeps the legacy-heading-variant sweep from the pre-ADR-0005 contract, since those
+variants are malformed regardless of surface.
 
 **Detection:**
 
 ```bash
-# 1. Forbidden legacy heading variants (must return zero matches)
-rg -n '^## Open / TODO$|^## Open TODOs$|^## Open questions remaining$|^## Open questions for next interview$|^## Open questions for next workshop / research wave$|^## 11\. Open TODOs' docs/ business-* arch-* spec-* domain-* ops-* com-* util-* 2>/dev/null
+# 1. Any ## Open Items table outside the ledger + archive path is a stale relic.
+rg -n '^## Open Items$' docs/ 2>/dev/null | grep -v '^docs/project-control/open-items/'
 
-# 2. Non-document-level placement (### subsection forbidden per §1)
-rg -n '^### Open Items$' docs/ 2>/dev/null
+# 2. Forbidden legacy heading variants (must return zero matches, anywhere)
+rg -n '^## Open / TODO$|^## Open TODOs$|^## Open questions remaining$|^## Open questions for next interview$|^## Open questions for next workshop / research wave$|^## 11\. Open TODOs' docs/ business-* arch-* spec-* domain-* ops-* com-* util-* 2>/dev/null
 
 # 3. Legacy wording in discipline / SKILL docs
 rg -n '§Open Issues|Open Issues' docs/ business-* arch-* spec-* domain-* 2>/dev/null
@@ -967,158 +971,105 @@ rg -n '§Open Issues|Open Issues' docs/ business-* arch-* spec-* domain-* 2>/dev
 
 **Severity:** Error
 
-**Proposed fix template:** "Rename `{found heading}` in `{file}` line {N} to the canonical
-`## Open Items` (document-level). Migration steps in `rules/open-items-governance.md` §1."
+**Proposed fix template:** "Delete the local `## Open Items` table in `{file}` — file its
+rows directly to the central ledger via `util-open-items` if they are not already there,
+then remove the table (`rules/open-items-governance.md` §1, ADR-0005)."
 
-### Sub-check 18b — Schema compliance
+### Sub-check 18b — Ledger schema compliance
 
-**What:** tables under `## Open Items` use the canonical column order and column names
-from §4 of `rules/open-items-governance.md`. Columns must not be removed or reordered;
-additional informational columns are permitted only **after** `Tracker ref`.
+**What:** the ledger table (and every archive bucket) uses the canonical column order and
+column names from §4 of `rules/open-items-governance.md`. Columns must not be removed or
+reordered; additional informational columns are permitted only **after** `Tracker ref`.
 
 **Detection:**
 
 ```bash
-# Find every ## Open Items section, capture the header row (first line beginning with |
-# after the heading), and verify the column sequence.
-find docs -name "*.md" -print0 | while IFS= read -r -d '' f; do
-  awk '
+for f in docs/project-control/open-items/open-items.md docs/project-control/open-items/archive/*.md; do
+  [ -f "$f" ] || continue
+  header=$(awk '
     /^## Open Items[[:space:]]*$/ { in_section=1; next }
     in_section && /^## / { in_section=0 }
-    in_section && /^\|/ {
-      print FILENAME ":" NR ":" $0
-      exit
-    }
-  ' "$f"
-done | while IFS=':' read -r file line header; do
-  echo "$header" | grep -qE '\|[[:space:]]*OI-ID[[:space:]]*\|[[:space:]]*Type[[:space:]]*\|[[:space:]]*Summary[[:space:]]*\|[[:space:]]*Source anchor[[:space:]]*\|[[:space:]]*Source heading[[:space:]]*\|[[:space:]]*Resolution path[[:space:]]*\|[[:space:]]*Priority[[:space:]]*\|[[:space:]]*Status[[:space:]]*\|[[:space:]]*Owner[[:space:]]*\|[[:space:]]*Due / Review date[[:space:]]*\|[[:space:]]*Tracker ref' || \
-    echo "SCHEMA NON-COMPLIANT: $file line $line — header is: $header"
+    in_section && /^\|/ { print; exit }
+  ' "$f")
+  echo "$header" | grep -qE '\|[[:space:]]*OI-ID[[:space:]]*\|[[:space:]]*Type[[:space:]]*\|[[:space:]]*Summary[[:space:]]*\|[[:space:]]*Source artefact[[:space:]]*\|[[:space:]]*Source anchor[[:space:]]*\|[[:space:]]*Source heading[[:space:]]*\|[[:space:]]*Resolution path[[:space:]]*\|[[:space:]]*Priority[[:space:]]*\|[[:space:]]*Status[[:space:]]*\|[[:space:]]*Owner[[:space:]]*\|[[:space:]]*Due / Review date[[:space:]]*\|[[:space:]]*Tracker ref' || \
+    echo "SCHEMA NON-COMPLIANT: $f — header is: $header"
 done
 ```
 
 **Severity:** Error
 
-**Proposed fix template:** "Restore canonical column order in `## Open Items` table at
-`{file}` line {N}. Canonical order: `OI-ID | Type | Summary | Source anchor | Source
-heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref`.
-Additional columns are allowed only after `Tracker ref`."
+**Proposed fix template:** "Restore canonical column order in `{file}`. Canonical order:
+`OI-ID | Type | Summary | Source artefact | Source anchor | Source heading | Resolution
+path | Priority | Status | Owner | Due / Review date | Tracker ref`. Additional columns are
+allowed only after `Tracker ref`."
 
-### Sub-check 18c — Source-location provenance
+### Sub-check 18c — Source-location provenance & resolution
 
-**What:** every row in a local `## Open Items` table has both `Source anchor` and
-`Source heading` populated. Rows that genuinely have no in-artefact origin (raised
-directly at the central plane) carry the sentinel `_central-only_` in `Source heading`
-and an empty `Source anchor` — these are not flagged.
+**What:** every ledger/issue row has both `Source anchor` and `Source heading` populated
+(or both empty for a genuine central-only row, governance §5.2), **and** its
+`Source artefact` resolves to a real file when one is cited. This subsumes the old
+local-vs-ledger sync check (retired 18d below) — there is nothing left to sync against, but
+a row's provenance can still point at a file that was renamed or deleted, which is exactly
+what this check catches.
 
-**Detection:**
+**Detection (`markdown`):**
 
 ```bash
-# For each ## Open Items table, read the data rows and check columns 4 (Source anchor)
-# and 5 (Source heading) are non-blank and not _TBD_.
-find docs -name "*.md" -print0 | while IFS= read -r -d '' f; do
+for f in docs/project-control/open-items/open-items.md docs/project-control/open-items/archive/*.md; do
+  [ -f "$f" ] || continue
   awk -v F="$f" '
     /^## Open Items[[:space:]]*$/ { in_section=1; row=0; next }
     in_section && /^## / { in_section=0 }
     in_section && /^\|/ {
       row++
-      if (row <= 2) next   # header + separator
+      if (row <= 2) next
       n = split($0, cols, "|")
-      anchor = cols[5]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", anchor)
-      heading = cols[6]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", heading)
       oi = cols[2]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", oi)
+      artefact = cols[5]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", artefact)
+      anchor = cols[6]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", anchor)
+      heading = cols[7]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", heading)
       if (heading == "_central-only_") next
       if (anchor == "" || anchor == "_TBD_" || heading == "" || heading == "_TBD_") {
         printf "PROVENANCE MISSING: %s row %s (OI=%s anchor=%s heading=%s)\n", F, NR, oi, anchor, heading
       }
-    }
-  ' "$f"
-done
-```
-
-**Severity:** Warning
-
-**Proposed fix template:** "Populate `Source anchor` and `Source heading` for row `{OI-ID}`
-in `{file}`. The pair is the provenance contract (§4 of `rules/open-items-governance.md`).
-Use `_central-only_` in `Source heading` only when the row has no in-artefact origin."
-
-### Sub-check 18d — Tracker sync coverage
-
-**What:** every local row whose `OI-ID` has been promoted to the canonical `OI-NNNN`
-format must have a corresponding row in `docs/project-control/open-items/open-items.md`.
-Rows still on a pre-sync local ID (e.g. `OI-001`, `OI-002`) are not flagged — they
-indicate the artefact has not been synced yet, which is normal between edits.
-
-**Detection:**
-
-```bash
-ledger="docs/project-control/open-items/open-items.md"
-[ ! -f "$ledger" ] && echo "LEDGER MISSING: $ledger" && exit 0
-
-# Collect every canonical OI-NNNN ID present in the ledger
-grep -oh '\bOI-[0-9]\{4\}\b' "$ledger" 2>/dev/null | sort -u > /tmp/oi_ledger.txt
-
-# Collect every canonical OI-NNNN ID referenced in artefact-local Open Items sections
-find docs -name "*.md" -print0 | while IFS= read -r -d '' f; do
-  awk -v F="$f" '
-    /^## Open Items[[:space:]]*$/ { in_section=1; next }
-    in_section && /^## / { in_section=0 }
-    in_section && /^\|/ {
-      if (match($0, /OI-[0-9][0-9][0-9][0-9]/)) {
-        printf "%s\t%s\n", substr($0, RSTART, RLENGTH), F
+      gsub(/`/, "", artefact)
+      if (artefact != "" && system("test -f \"" artefact "\"") != 0) {
+        printf "DANGLING SOURCE ARTEFACT: %s row %s (OI=%s) cites %s, which does not exist\n", F, NR, oi, artefact
       }
     }
   ' "$f"
-done | sort -u > /tmp/oi_local.txt
-
-# Local OI-NNNN IDs that are missing from the ledger → sync drift
-cut -f1 /tmp/oi_local.txt | sort -u > /tmp/oi_local_ids.txt
-comm -23 /tmp/oi_local_ids.txt /tmp/oi_ledger.txt | while read oi; do
-  src=$(grep -P "^${oi}\t" /tmp/oi_local.txt | cut -f2 | head -1)
-  echo "SYNC DRIFT: $oi present in $src but missing from $ledger"
-done
-
-# Ledger OI-NNNN IDs that have no local row → orphaned ledger entry (or _central-only_)
-comm -13 /tmp/oi_local_ids.txt /tmp/oi_ledger.txt | while read oi; do
-  is_central=$(grep -P "\|\s*${oi}\s*\|" "$ledger" | grep -c '_central-only_' || true)
-  [ "$is_central" -eq 0 ] && echo "ORPHANED LEDGER ROW: $oi in $ledger has no matching local row"
 done
 ```
 
 **Severity:** Warning
 
-**Proposed fix template:**
+**Proposed fix template:** "Populate `Source anchor` and `Source heading` for row
+`{OI-ID}` in `{file}` (use `_central-only_` only when the row has no in-artefact origin), or
+fix `Source artefact` — it currently points at a file that no longer exists (§4 of
+`rules/open-items-governance.md`)."
 
-- Sync drift: "Run `util-open-items` in `sync` mode for `{source artefact}` so the local
-  `{OI-NNNN}` row reaches `docs/project-control/open-items/open-items.md`."
-- Orphaned ledger row: "Either the source artefact was deleted (close or drop the ledger
-  row with `util-open-items` and record the rationale) or the row should be marked
-  `_central-only_` in `Source heading` per §5 of `rules/open-items-governance.md`."
-
-**github variant** (requires `gh` auth). Under `backend: github` there is no markdown
-ledger; the local `OI-ID` cell carries the issue number `#N` after sync. Verify each `#N`
-resolves and each open open-item issue has a local source row:
+**github variant** (requires `gh` auth). Read the same fields from the issue body and check
+`source_artefact` resolves:
 
 ```bash
 if [ "$backend" = "github" ]; then
-  repo=$(grep -oE '^repo:[[:space:]]*\S+' "$backend_cfg" | awk '{print $2}')
-  # local #N references inside ## Open Items sections
-  find docs -name "*.md" -print0 | while IFS= read -r -d '' f; do
-    awk '/^## Open Items[[:space:]]*$/{s=1;next} s&&/^## /{s=0} s&&/^\|/{if(match($0,/#[0-9]+/))print substr($0,RSTART+1,RLENGTH-1)}' "$f"
-  done | sort -u > /tmp/oi_local_gh.txt
-  while read -r n; do
-    gh issue view "$n" -R "$repo" --json number >/dev/null 2>&1 || \
-      echo "DANGLING ISSUE REF: #$n referenced locally but not found in $repo"
-  done < /tmp/oi_local_gh.txt
-  # open open-item issues with no local source row — EXCLUDING _central-only_ items
-  # (kit-dev work with no artefact home, §5.2/§9; they legitimately have no local row,
-  # exactly as the markdown 18d variant excludes _central-only_ ledger rows).
   gh issue list -R "$repo" --label open-item --state open --json number,body \
-    -q '.[] | select((.body // "") | test("_central-only_") | not) | .number' | while read -r n; do
-    grep -qx "$n" /tmp/oi_local_gh.txt || \
-      echo "ORPHANED ISSUE: #$n is an open open-item with no local source row"
+    -q '.[] | [(.number|tostring), (.body // "")] | @tsv' \
+  | while IFS=$'\t' read -r n body; do
+    artefact=$(echo "$body" | grep -A1 -i 'source_artefact\|Source artefact' | tail -1 | xargs)
+    heading=$(echo "$body" | grep -A1 -i 'source_heading\|Source heading' | tail -1 | xargs)
+    [ "$heading" = "_central-only_" ] && continue
+    [ -n "$artefact" ] && [ ! -f "$artefact" ] && \
+      echo "DANGLING SOURCE ARTEFACT: issue #$n cites $artefact, which does not exist"
   done
 fi
 ```
+
+### Sub-check 18d — Retired
+
+Tracker sync coverage (local `OI-NNNN`/`#N` vs. the central ledger) is retired: per
+ADR-0005 there is no local surface left to be out of sync with. Its useful half —
+verifying a row's `Source artefact` actually exists — is now covered by 18c.
 
 ### Sub-check 18e — Closure drift
 
@@ -1129,44 +1080,21 @@ fi
 
 ```bash
 ledger="docs/project-control/open-items/open-items.md"
-
-# Closure drift in artefact-local sections
-find docs -name "*.md" -print0 | while IFS= read -r -d '' f; do
-  awk -v F="$f" '
-    /^## Open Items[[:space:]]*$/ { in_section=1; row=0; next }
-    in_section && /^## / { in_section=0 }
-    in_section && /^\|/ {
-      row++
-      if (row <= 2) next
-      n = split($0, cols, "|")
-      oi = cols[2]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", oi)
-      status = cols[9]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", status)
-      tracker = cols[12]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", tracker)
-      if ((status == "closed" || status == "dropped") && (tracker == "" || tracker == "_TBD_")) {
-        printf "CLOSURE DRIFT: %s row %s (OI=%s status=%s tracker=%s)\n", F, NR, oi, status, tracker
-      }
+[ -f "$ledger" ] && awk -v F="$ledger" '
+  /^## Open Items[[:space:]]*$/ { in_section=1; row=0; next }
+  in_section && /^## / { in_section=0 }
+  in_section && /^\|/ {
+    row++
+    if (row <= 2) next
+    n = split($0, cols, "|")
+    oi = cols[2]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", oi)
+    status = cols[10]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", status)
+    tracker = cols[13]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", tracker)
+    if ((status == "closed" || status == "dropped") && (tracker == "" || tracker == "_TBD_")) {
+      printf "CLOSURE DRIFT: %s row %s (OI=%s status=%s tracker=%s)\n", F, NR, oi, status, tracker
     }
-  ' "$f"
-done
-
-# Same check against the central ledger (Source artefact is column 4 there → tracker is column 13)
-if [ -f "$ledger" ]; then
-  awk -v F="$ledger" '
-    /^## Live items[[:space:]]*$/ { in_section=1; row=0; next }
-    in_section && /^## / { in_section=0 }
-    in_section && /^\|/ {
-      row++
-      if (row <= 2) next
-      n = split($0, cols, "|")
-      oi = cols[2]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", oi)
-      status = cols[10]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", status)
-      tracker = cols[13]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", tracker)
-      if ((status == "closed" || status == "dropped") && (tracker == "" || tracker == "_TBD_")) {
-        printf "CLOSURE DRIFT: %s row %s (OI=%s status=%s tracker=%s)\n", F, NR, oi, status, tracker
-      }
-    }
-  ' "$ledger"
-fi
+  }
+' "$ledger"
 ```
 
 **Severity:** Error
@@ -1201,32 +1129,30 @@ re-triage via `util-open-items`. Surfacing them in the audit is the trigger.
 **Detection:**
 
 ```bash
+ledger="docs/project-control/open-items/open-items.md"
 today=$(date +%s)
-find docs -name "*.md" -print0 | while IFS= read -r -d '' f; do
-  awk -v F="$f" -v TODAY="$today" '
-    /^## Open Items[[:space:]]*$/ { in_section=1; row=0; next }
-    in_section && /^## / { in_section=0 }
-    in_section && /^\|/ {
-      row++
-      if (row <= 2) next
-      n = split($0, cols, "|")
-      oi = cols[2]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", oi)
-      status = cols[9]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", status)
-      due = cols[11]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", due)
-      if (status != "open" && status != "in-progress" && status != "blocked") next
-      if (due == "" || due == "_TBD_") next
-      # parse YYYY-MM-DD into epoch via system date
-      cmd = "date -d \"" due "\" +%s 2>/dev/null"
-      cmd | getline due_ts
-      close(cmd)
-      if (due_ts == "" || due_ts == 0) next
-      if (TODAY > due_ts) {
-        overdue_days = int((TODAY - due_ts) / 86400)
-        printf "OVERDUE %dd: %s row %s (OI=%s status=%s due=%s)\n", overdue_days, F, NR, oi, status, due
-      }
+[ -f "$ledger" ] && awk -v F="$ledger" -v TODAY="$today" '
+  /^## Open Items[[:space:]]*$/ { in_section=1; row=0; next }
+  in_section && /^## / { in_section=0 }
+  in_section && /^\|/ {
+    row++
+    if (row <= 2) next
+    n = split($0, cols, "|")
+    oi = cols[2]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", oi)
+    status = cols[10]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", status)
+    due = cols[12]; gsub(/^[[:space:]]+|[[:space:]]+$/, "", due)
+    if (status != "open" && status != "in-progress" && status != "blocked") next
+    if (due == "" || due == "_TBD_") next
+    cmd = "date -d \"" due "\" +%s 2>/dev/null"
+    cmd | getline due_ts
+    close(cmd)
+    if (due_ts == "" || due_ts == 0) next
+    if (TODAY > due_ts) {
+      overdue_days = int((TODAY - due_ts) / 86400)
+      printf "OVERDUE %dd: %s row %s (OI=%s status=%s due=%s)\n", overdue_days, F, NR, oi, status, due
     }
-  ' "$f"
-done
+  }
+' "$ledger"
 ```
 
 **Severity:** Warning
@@ -1290,15 +1216,14 @@ canonical slug fields. The form `id:` keys are the binding contract (Invariant I
 
 | Sub-check | Severity | Backend | What it flags |
 | :-- | :-- | :-- | :-- |
-| 18a Section compliance | Error | both | Forbidden legacy headings; non-document-level `### Open Items` |
-| 18b Schema compliance | Error | both | Missing / reordered canonical columns in `## Open Items` tables |
-| 18c Source-location provenance | Warning | both | Empty / `_TBD_` `Source anchor` or `Source heading` (excludes `_central-only_`) |
-| 18d Tracker sync coverage | Warning | markdown: ledger ↔ local · github: Issues ↔ local | `OI-NNNN` (or `#N`) out of sync between local sections and the central read-out |
+| 18a Stale local-section relic sweep | Error | both | Leftover local `## Open Items` table (ADR-0005 relic); forbidden legacy headings |
+| 18b Ledger schema compliance | Error | `markdown` | Missing / reordered canonical columns in the ledger or an archive bucket |
+| 18c Source-location provenance & resolution | Warning | both | Empty / `_TBD_` `Source anchor`/`Source heading` (excludes `_central-only_`); `Source artefact` pointing at a nonexistent file |
+| 18d Tracker sync coverage | — | — | **Retired** (ADR-0005) — no local surface left to sync against; see 18c |
 | 18e Closure drift | Error | markdown: ledger · github: closing-ref | Terminal rows / issues without evidencing `Tracker ref` |
 | 18f Stale open items | Warning | markdown: `Due / Review date` · github: Project field | Active rows / issues past their review date |
 | 18g Form / slug integrity | Warning | **github only** | Open-item issues with invalid Type or missing canonical slug fields |
 
-All sub-checks are read-only; none write to `docs/project-control/open-items/`, to any source
+All sub-checks are read-only; none write to `docs/project-control/open-items/`, to any
 artefact, or to GitHub. Findings always route to the operator for action through
-`util-open-items`. The local-section checks (18a–18c) are backend-independent; 18d–18f have a
-markdown and a github variant; 18g runs only under the `github` backend.
+`util-open-items`.

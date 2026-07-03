@@ -74,12 +74,6 @@ visualisations theme from the tokens below.
 
 ---
 
-## Open Items
-
-_None at present._
-
----
-
 ## Changelog
 
 | Date | Change | Author |

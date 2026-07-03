@@ -60,10 +60,3 @@ _TODO_ — describe what happens when step N fails. Skip if error handling is tr
 | [`docs/architecture/arc42/07-deployment.md`](./07-deployment.md) | Where the containers here actually run |
 | [`docs/business/04-value-streams.md`](../../business/04-value-streams.md) | Value stream stages that motivated the scenario selection |
 | [`docs/architecture/decisions/`](../decisions/) | ADRs governing async patterns, retry policies, saga patterns visible in scenarios |
-
-## Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :---- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._

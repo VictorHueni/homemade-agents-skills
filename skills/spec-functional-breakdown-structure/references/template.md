@@ -146,32 +146,6 @@ definition.*
 
 ---
 
-## Open Items
-
-<!--
-Document-level canonical section per rules/open-items-governance.md §1.
-Only actionable unresolved work (doc-gap | decision-gap | execution-item | tech-debt).
-Inline `_TODO_` cells in functionality tables (status, VS stage, code paths still
-empty) are NOT open items — they are scaffold debt tracked by util-metamodel-audit
-Check 8. Do not scaffold placeholder-only rows; an empty table with `_None at present._`
-is correct when no actionable unresolved work exists.
-
-`Source anchor` uses the capability ID or functionality ID as a fragment (e.g. `#c21`,
-`#c21f03`) so each row jumps back to the originating capability or functionality.
-`Source heading` carries the full heading text (e.g. `C2.1 · Customer Onboarding`,
-`C2.1.F03 · Send invitation email`). For FBS-wide items, use `#fbs` and `FBS-wide`.
--->
-
-| OI-ID  | Type           | Summary                                                       | Source anchor | Source heading                              | Resolution path                                           | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------- | :------------------------------------------------------------ | :------------ | :------------------------------------------ | :-------------------------------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | decision-gap   | {{Which capability owns C-N.M.F12? C2.1 vs C2.3 overlap}}     | #c21          | C2.1 · {{capability name}}                  | Adjudicate via BC Map review; reassign single parent      | high     | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-| OI-002 | execution-item | {{C3.1.F04 marked ⬜ — schedule into next PRD}}                | #c31f04       | C3.1.F04 · {{functionality name}}           | Promote to PRD-NNNN in epic E-07                          | medium   | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-| OI-003 | tech-debt      | {{C2.2.F08 ships against legacy auth stack — refactor later}} | #c22f08       | C2.2.F08 · {{functionality name}}           | Schedule refactor into maintenance epic                   | low      | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-
-_Replace the placeholder rows above with real entries, or replace the table with `_None at present._` if no actionable unresolved work exists yet (per §2 of the governance rule, scaffold `_TODO_` cells are not open items)._
-
----
-
 ## Changelog
 
 | Date | Change | Author |

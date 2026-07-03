@@ -102,39 +102,27 @@ Exit criteria:
 - **Sequential Flow:** Order increments to minimize rework and respect dependencies.
 - **Ralph Loop Ready:** Status fields on every increment and milestone enable autonomous execution via the `agent-ralph-loop` skill. Use `**Status:** pending | in-progress | done` to track progress.
 
-## Sync Open Items to the central ledger
+## File Open Items to the central ledger
 
 Implementation plans frequently carry actionable unresolved work surfaced while
 breaking the PRD down into increments — deferred decisions an ADR must close,
 doc-gaps to fill before a specific increment can start, follow-up execution
 items that should not block the plan but must not be lost, tech-debt items
-explicitly deferred. When the plan carries such work, add a document-level
-`## Open Items` section per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md)
-(rows carry `Source anchor` +
-`Source heading` pointing back to the originating increment — e.g.
-`#increment-03` + "Increment 03: Normalize Existing Artefact Templates").
+explicitly deferred. File each directly to the central ledger via
+`util-open-items` — there is no local section to author first
+([ADR-0005](https://github.com/VictorHueni/homemade-claude-kit/blob/main/docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)).
+Cite the plan as `Source artefact` with `Source anchor` + `Source heading`
+pointing back to the originating increment — e.g. `#increment-03` +
+"Increment 03: Normalize Existing Artefact Templates" (per
+[`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md)).
 
-After the plan is saved or updated, chain to the `util-open-items` skill to
-sync the `## Open Items` rows into the central living ledger at
-`docs/project-control/open-items/open-items.md`.
+- **File nothing when there's nothing to file.** A plan whose unresolved work
+  is fully captured by the increment list itself needs no filing at all.
+  Scaffold `_TODO_` placeholders inside an increment scope or test gate are
+  NOT open items and MUST NOT be filed to the ledger.
+- **File as state changes.** When the Ralph Loop or a manual editor closes,
+  reassigns, or discovers new unresolved work, use `util-open-items` (`close`
+  / `drop` / `sync`) so the ledger reflects the current plan state.
 
-- **Local first, ledger second.** The plan's own `## Open Items` table is
-  the authoring surface; the ledger is the consolidated read-out across the
-  repo. Always populate the local section first, then invoke sync.
-- **Sync preserves provenance.** `util-open-items` carries `Source anchor`
-  and `Source heading` forward unchanged so each ledger row navigates back
-  into the originating increment, surviving heading edits and anchor renames
-  (per `rules/open-items-governance.md` §4 + §5).
-- **Sync mints canonical IDs.** Local plan-scoped `OI-NNN` IDs are reassigned
-  to ledger-canonical `OI-NNNN` on first sync.
-- **Skip when the plan carries no open items.** A plan whose unresolved work
-  is fully captured by the increment list itself does not need an
-  `## Open Items` section; in that case, sync is skipped. Scaffold `_TODO_`
-  placeholders inside an increment scope or test gate are NOT open items and
-  MUST NOT be mirrored to the ledger.
-- **Re-sync on edits.** When the Ralph Loop or a manual editor closes,
-  reassigns, or adds rows, re-invoke sync so the ledger reflects the current
-  plan state.
-
-Invoke as: "Sync open items for `docs/plans/active/[NNNN]_exec_[feature-name].md`
-via the util-open-items skill in sync mode."
+Invoke as: "File the open item for `docs/plans/active/[NNNN]_exec_[feature-name].md`
+increment `<NN>` via the util-open-items skill."

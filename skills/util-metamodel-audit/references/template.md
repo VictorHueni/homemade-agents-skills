@@ -207,40 +207,37 @@ Copy this skeleton to `var/reports/metamodel-audit/stack-audit-{YYYY-MM-DD}.md` 
 
 ## §18 Open items governance
 
-Six sub-checks against `rules/open-items-governance.md`. Sections kept even when empty
-so readers can see the check ran.
+Sub-checks against `rules/open-items-governance.md`. Sections kept even when empty so
+readers can see the check ran. 18d is retired (ADR-0005) and always reports "Retired".
 
-### §18a Section compliance
+### §18a Stale local-section relic sweep
 
 {No findings. / Table below:}
 
 | File | Line | Found heading | Issue | Proposed fix |
 |---|---|---|---|---|
-| `{file}` | {N} | `{found heading}` | Forbidden legacy variant / Non-document-level | Rename to canonical `## Open Items` per §1 |
+| `{file}` | {N} | `{found heading}` | Leftover local Open Items table (ADR-0005 relic) / Forbidden legacy variant | Delete the local table; file its rows to the central ledger via `util-open-items` first if not already there |
 
-### §18b Schema compliance
-
-{No findings. / Table below:}
-
-| File | Line | Issue | Proposed fix |
-|---|---|---|---|
-| `{file}` | {N} | Missing / reordered columns | Restore canonical column order: `OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref` |
-
-### §18c Source-location provenance
+### §18b Ledger schema compliance
 
 {No findings. / Table below:}
 
-| File | OI-ID | Anchor | Heading | Proposed fix |
-|---|---|---|---|---|
-| `{file}` | `{OI-NNNN}` | `{anchor or empty}` | `{heading or empty}` | Populate both fields, or use `_central-only_` in heading if no in-artefact origin |
+| File | Issue | Proposed fix |
+|---|---|---|
+| `{file}` | Missing / reordered columns | Restore canonical column order: `OI-ID | Type | Summary | Source artefact | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref` |
 
-### §18d Tracker sync coverage
+### §18c Source-location provenance & resolution
 
 {No findings. / Table below:}
 
-| OI-ID | Local artefact | Ledger row? | Proposed fix |
-|---|---|---|---|
-| `{OI-NNNN}` | `{file or —}` | {✅ / ❌} | Run `util-open-items` in `sync` mode for the local artefact, or mark ledger-only row as `_central-only_` |
+| File | OI-ID | Anchor | Heading | Source artefact | Proposed fix |
+|---|---|---|---|---|---|
+| `{file}` | `{OI-NNNN}` | `{anchor or empty}` | `{heading or empty}` | `{path or dangling}` | Populate anchor/heading (or use `_central-only_`), or fix a `Source artefact` that no longer exists |
+
+### §18d Tracker sync coverage — Retired (ADR-0005)
+
+No local surface remains to sync against; see §18c for the provenance/resolution check
+that replaced it.
 
 ### §18e Closure drift
 

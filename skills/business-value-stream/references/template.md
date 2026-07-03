@@ -123,31 +123,6 @@ sections) below this heading.*
 
 ---
 
-## Open Items
-
-<!--
-Document-level canonical section per rules/open-items-governance.md §1.
-Only actionable unresolved work (doc-gap | decision-gap | execution-item | tech-debt).
-Inline `_TODO_` placeholders (pain index unsourced, capability link missing) are NOT
-open items — they are scaffold debt tracked by util-metamodel-audit Check 8. Do not
-scaffold placeholder-only rows; an empty table with `_None at present._` is correct
-when no actionable unresolved work exists.
-
-`Source anchor` uses the stream or stage ID as a fragment (e.g. `#vs-1`, `#vs-1-3`) so
-each row jumps back to the originating stream or stage. `Source heading` carries the
-full heading text (e.g. `VS-1 · Adopt the product`, `VS-1.3 · Activate first workspace`).
-For catalogue-wide items, use `#catalogue` and `Catalogue-wide`.
--->
-
-| OI-ID  | Type           | Summary                                              | Source anchor | Source heading                                | Resolution path                                              | Priority | Status | Owner   | Due / Review date | Tracker ref |
-| :----- | :------------- | :--------------------------------------------------- | :------------ | :-------------------------------------------- | :----------------------------------------------------------- | :------- | :----- | :------ | :---------------- | :---------- |
-| OI-001 | decision-gap   | {{Should VS-1 split into self-serve vs sales-led?}}  | #vs-1         | VS-1 · {{value stream name}}                  | Workshop with product + sales; split or keep merged          | high     | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-| OI-002 | doc-gap        | {{Pain index unsourced for stage VS-2.3}}            | #vs-2-3       | VS-2.3 · {{stage name}}                       | Run discovery-research wave; replace estimate with evidence  | medium   | open   | _TBD_   | {{YYYY-MM-DD}}    | _TBD_       |
-
-_Replace the placeholder rows above with real entries, or replace the table with `_None at present._` if no actionable unresolved work exists yet (per §2 of the governance rule, scaffold `_TODO_` cells are not open items)._
-
----
-
 ## Changelog
 
 | Date | Change | Author |

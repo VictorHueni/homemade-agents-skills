@@ -129,7 +129,7 @@ Anti-patterns:
 
 Use this order when proposing an owner during triage:
 
-1. The `Owner` already set in the source artefact's local `## Open Items` row.
+1. The `Owner` supplied when the row was filed, if any.
 2. The `owner` frontmatter field of the source artefact.
 3. The `Owner` of the closest related ledger row (same `Source artefact` and adjacent
    `Source anchor`).

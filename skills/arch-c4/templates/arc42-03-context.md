@@ -58,12 +58,3 @@ _(Narrative — owned by `arch-arc42`.)_ _TODO_ — for each row above, briefly 
 | [`docs/domain/02b-bounded-contexts.md`](../../domain/02b-bounded-contexts.md) | External SaaS in the BC map's `Generic` subdomains often appear here as external systems |
 | [`docs/architecture/interfaces/`](../interfaces/) | Service contracts (`CTR-NN`) define the wire formats for partners |
 | [`docs/architecture/arc42/05-building-blocks.md`](./05-building-blocks.md) | What's *inside* the black box drawn above |
-
-## Open Items
-
-| OI-ID | Type | Summary | Source anchor | Source heading | Resolution path | Priority | Status | Owner | Due / Review date | Tracker ref |
-| :---- | :--- | :------ | :------------ | :------------- | :-------------- | :------- | :----- | :---- | :---------------- | :---------- |
-
-_None at present._
-
-(Schema follows the kit's Open Items Governance contract: every row is one of `doc-gap` / `decision-gap` / `execution-item` / `tech-debt`. Sync to [`docs/project-control/open-items/`](../../project-control/open-items/) via the `util-open-items` skill.)
