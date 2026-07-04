@@ -1,9 +1,9 @@
 ---
 name: agent-peer-review
 description: "Critically review PRDs and implementation plans to identify gaps, blind spots, contradictions, and delivery risks before coding begins. Use when asked to review product docs, technical specs, implementation plans, migration/deletion plans, acceptance criteria, or rollout strategy; produce ranked findings by severity (critical, major, normal, low) with concrete remediation and exact document updates."
-version: "1.0.0"
+version: "1.1.0"
 status: active
-last_reviewed: 2026-05-22
+last_reviewed: 2026-07-04
 review_interval: 180d
 user-invocable: true
 allow_implicit_invocation: true
@@ -73,7 +73,13 @@ Use all lenses, then emphasize the highest-risk areas:
 
 ## Output Format
 
-Open every generated report with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: `rules/artefact-frontmatter.md`.
+A peer review is a **working record, not a spine `docs/` artefact** — the `agent-*` family mints no IDs and writes no catalogued `docs/` documents (it orchestrates *how the agent builds*, not *what the product is*). So the review does **not** carry the OKF artefact-frontmatter block: no registered `type`, no `review_interval`, no `rules/artefact-types-registry.md` lookup. Registering a `peer_review` type would miscategorise a transient review as a first-class artefact and force it into the audit's spine.
+
+Default output location: `var/reports/<feature>/` (a feature-named subfolder, per the skill-output convention) — e.g. `var/reports/<feature>/<target-slug>-peer-review.md`. This path is outside `docs/`, so `util-metamodel-audit` never sweeps it, which is correct: a review is regenerable and not part of the knowledge graph.
+
+Open with a **light plain-markdown header** (no YAML frontmatter block): an H1 title, then a one-line metadata line — target reviewed (path), date, reviewer (`git config user.name`), and the one-line verdict.
+
+If the caller explicitly wants the review colocated with the artefact it reviews (e.g. next to a plan under `docs/exec-plans/`), honour that placement but keep the same light header — it stays a record, never a catalogued doc.
 
 Produce findings first, sorted by severity descending. Include:
 
