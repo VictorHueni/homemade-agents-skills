@@ -83,5 +83,5 @@ Upstream: [docs.arc42.org/section-7](https://docs.arc42.org/section-7/).
 - [ ] At least one §7.x environment subsection exists (Production at minimum)
 - [ ] Each environment subsection has: embedded SVG + Motivation + Quality/Performance features + Mapping table
 - [ ] Mapping table includes every `CON-NN` defined in the container view; absent containers explicitly listed as "not deployed in this environment"
-- [ ] Infrastructure ADRs referenced (or `## Open Items` notes if missing)
+- [ ] Infrastructure ADRs referenced (or a `decision-gap` row filed to the central ledger if missing)
 - [ ] Quality/Performance section references `QA-XXNN` where they exist

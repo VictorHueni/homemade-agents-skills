@@ -103,4 +103,4 @@ Anti-patterns sourced from Tier 4 community sources (blog posts, Reddit) must be
 | `status: refreshed` | Research re-run for a new version; guide updated | Mode 3 refresh |
 | `status: archived` | Tech is no longer used in the project; guide superseded | Manual action |
 
-The research scratch is NOT a published document — it is internal scaffolding. It does not need to follow the full open-items governance lifecycle. It does carry a `## Open Items` section because gaps discovered during research may not be resolved before Mode 2 runs and should not be lost.
+The research scratch is NOT a published document — it is internal scaffolding. It does not need to follow the full open-items governance lifecycle. Gaps discovered during research that may not be resolved before Mode 2 runs should still be filed directly to the central ledger (`doc-gap`, citing this scratch file as `Source artefact`) rather than lost — there is no local section to hold them.

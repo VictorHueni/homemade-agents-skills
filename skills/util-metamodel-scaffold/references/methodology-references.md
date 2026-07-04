@@ -44,9 +44,10 @@ This is the same convention used in the kit's own `docs/project-control/open-ite
 
 ## Why scaffold `docs/project-control/open-items/` rather than leaving it to `util-open-items`?
 
-`util-open-items` is a **runtime operator** — its `sync` mode reads artefact-local
-`## Open Items` sections and writes rows to the central ledger. It assumes the ledger
-path (`docs/project-control/open-items/open-items.md`) already exists. When it doesn't, `sync`
+`util-open-items` is a **runtime operator** — skills file rows directly into the central
+ledger through it as unresolved work is identified (there is no per-artefact local section
+to sync from; ADR-0005 retired that step). It assumes the ledger path
+(`docs/project-control/open-items/open-items.md`) already exists. When it doesn't, filing
 fails with a file-not-found error before any row is processed.
 
 The scaffold is the correct place to initialise the control plane because:

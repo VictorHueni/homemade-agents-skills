@@ -351,8 +351,8 @@ Rationale:
   rebuilt on every refresh wave, so the `Changelog` captures the meaningful change set.
 
 When governance items of the four canonical types *do* arise (for example, a deferred
-ADR on whether to enter a substitute-product category), they belong in the BMC or the
-relevant ADR's `## Open Items` section, **not** in this artefact. This stance is
-re-evaluated after one rollout cycle; if competitive intel accumulates governance items
-that do not fit the existing artefacts, this rule is revisited and a document-level
-`## Open Items` section is added then.
+ADR on whether to enter a substitute-product category), file them directly to the
+central ledger (`docs/project-control/open-items/`) citing this artefact or the relevant
+ADR as `Source artefact` — never inline in this document. This stance is re-evaluated
+after one rollout cycle; if competitive intel accumulates governance items that do not
+fit the existing artefacts, this rule is revisited.

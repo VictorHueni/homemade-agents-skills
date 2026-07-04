@@ -89,6 +89,6 @@ The kit distinguishes four risk types in §11:
 - [ ] `docs/architecture/arc42/11-risks.md` exists with standard frontmatter
 - [ ] All four risk types represented or explicitly noted as "none currently"
 - [ ] Risks ordered by severity descending
-- [ ] Every `technical-debt` row has a `Remediation path` (or `decision-gap` in `## Open Items`)
+- [ ] Every `technical-debt` row has a `Remediation path` (or a `decision-gap` row filed to the central ledger)
 - [ ] Every `accepted` row has a rationale
 - [ ] No operational (infrastructure) risks duplicated from ops runbooks

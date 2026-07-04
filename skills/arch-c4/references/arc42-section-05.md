@@ -79,7 +79,7 @@ Upstream: [docs.arc42.org/section-5](https://docs.arc42.org/section-5/).
 - **Quality/Performance Characteristics** filled when a `QA-XXNN` from `spec-quality-attributes` is associated with the container or component
 - **Directory/file location** filled when `properties.code-path` is set in the DSL
 - **Fulfilled requirements** filled when the component traces to a `PRD-NNNN` (`properties.satisfies` in the DSL)
-- **Open issues** filled when this artefact has rows in the `## Open Items` section pointing to this CON-NN or CMP-NN
+- **Open issues** filled when this artefact has central-ledger rows pointing to this CON-NN or CMP-NN
 
 ---
 
@@ -93,7 +93,7 @@ Upstream: [docs.arc42.org/section-5](https://docs.arc42.org/section-5/).
 
 4. **Skip Level 3 drilling unless the component is genuinely complex.** "Prefer relevance over completeness" is the arc42 mantra — a 12-component diagram of a simple CRUD service is noise.
 
-5. **One file (`05-building-blocks.md`) until it exceeds ~600 lines.** If it grows too long, split one drilled container into its own file (`05-building-blocks-CON-02.md`) and link from §5 — record this split under `## Open Items`.
+5. **One file (`05-building-blocks.md`) until it exceeds ~600 lines.** If it grows too long, split one drilled container into its own file (`05-building-blocks-CON-02.md`) and link from §5 — file an `execution-item` row to the central ledger recording this split.
 
 ---
 

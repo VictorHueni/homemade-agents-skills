@@ -65,7 +65,7 @@ Artefact-type id_formats are in [`artefact-types-registry.md`](artefact-types-re
 
 ## Open Items governance (cross-cutting)
 
-Every artefact can carry unresolved work (research questions, missing decisions, follow-up items, deferred refactors). The canonical contract for capturing, classifying, syncing, and auditing it is [`rules/open-items-governance.md`](./open-items-governance.md) — mandatory for any skill whose output may emit unresolved work. In brief: one **document-level** `## Open Items` section per artefact; every row is one of `doc-gap` / `decision-gap` / `execution-item` / `tech-debt` (inline `_TODO_` placeholders are **not** open items); the consolidated ledger is `docs/project-control/open-items/`. When a new skill produces or governs unresolved work, conform to §8 of that rule.
+Every artefact can carry unresolved work (research questions, missing decisions, follow-up items, deferred refactors). The canonical contract for capturing, classifying, and auditing it is [`rules/open-items-governance.md`](./open-items-governance.md) — mandatory for any skill whose output may emit unresolved work. In brief: the central ledger at `docs/project-control/open-items/` is the sole authoring surface (no per-artefact local section); every row is filed directly and is one of `doc-gap` / `decision-gap` / `execution-item` / `tech-debt` (inline `_TODO_` placeholders are **not** open items). When a new skill produces or governs unresolved work, conform to §8 of that rule.
 
 ---
 

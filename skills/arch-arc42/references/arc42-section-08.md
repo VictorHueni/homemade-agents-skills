@@ -70,5 +70,5 @@ The kit uses eleven canonical cross-cutting concept areas. Each maps to a `CC-NN
 - [ ] `docs/architecture/arc42/08-cross-cutting-concepts.md` exists with standard frontmatter
 - [ ] All 11 canonical CC areas addressed (subset is fine — mark others "Not applicable" with a rationale)
 - [ ] Each `CC-NN` entry lists which containers it applies to
-- [ ] Each `CC-NN` entry links to the governing ADR (or flags `decision-gap` in `## Open Items`)
+- [ ] Each `CC-NN` entry links to the governing ADR (or files a `decision-gap` row to the central ledger)
 - [ ] No domain model content duplicated from `docs/domain/`

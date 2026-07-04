@@ -83,4 +83,4 @@ Upstream: [docs.arc42.org/section-3](https://docs.arc42.org/section-3/).
 - [ ] §3.2 Technical Context contains a channels + protocols table (one row per relationship)
 - [ ] At least one Tier-1 persona appears as an actor (P-NN); if no persona file exists, document why
 - [ ] No internal containers / components / aggregates appear in §3 (those belong to §5)
-- [ ] All listed partners have ≥1 input or output specified (an empty row signals a discovery gap → record under `## Open Items`)
+- [ ] All listed partners have ≥1 input or output specified (an empty row signals a discovery gap → file a `doc-gap` row to the central ledger)

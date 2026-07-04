@@ -18,12 +18,12 @@ Documentation rot is one of the most common problems in codebases. This skill pe
 
 ## Scope and Boundaries
 
-This skill is intentionally **generic**. It looks at file-level signals — stale dates, outdated references, dead docs, broken links, drift between prose and code — across any documentation directory in any kind of repository. It does not know about the strategic-architecture metamodel, the canonical `## Open Items` contract, the central living ledger, or any cross-artefact dependency rule.
+This skill is intentionally **generic**. It looks at file-level signals — stale dates, outdated references, dead docs, broken links, drift between prose and code — across any documentation directory in any kind of repository. It does not know about the strategic-architecture metamodel, the open-items governance contract, the central living ledger, or any cross-artefact dependency rule.
 
 That separation is deliberate. Stack-aware governance lives in dedicated tools:
 
-- **This skill (`util-docs-audit`)** — generic doc rot only: stale, outdated, dead docs. **Not a stack-governance tracker.** It does not enforce the open-items schema, does not verify ledger sync, does not flag provenance drift, and does not check metamodel build-order placement.
-- **`util-metamodel-audit`** — report-only stack-aware compliance audit: open-item section presence and schema compliance, source-anchor / source-heading provenance, tracker sync coverage, closure drift, dependency enforcement, ID integrity. Authoritative for any check that depends on `rules/open-items-governance.md` or `rules/metamodel.md`.
+- **This skill (`util-docs-audit`)** — generic doc rot only: stale, outdated, dead docs. **Not a stack-governance tracker.** It does not enforce the open-items schema, does not verify ledger provenance, does not flag closure drift, and does not check metamodel build-order placement.
+- **`util-metamodel-audit`** — report-only stack-aware compliance audit: central-ledger schema compliance, source-anchor / source-heading provenance, closure drift, dependency enforcement, ID integrity. Authoritative for any check that depends on `rules/open-items-governance.md` or `rules/metamodel.md`.
 - **`util-open-items`** — operational CRUD for the central living ledger at `docs/project-control/open-items/`: sync, triage, close, drop, archive, report. The only sanctioned writer of the ledger.
 
 If a user asks "are my open items in sync with the ledger?" or "is my docs structure metamodel-compliant?" — route to `util-metamodel-audit`. If they ask "fix this open item" or "roll up open items" — route to `util-open-items`. This skill stays out of those workflows so the two governance tools remain the single source of truth for stack-aware checks.

@@ -107,7 +107,7 @@ Cross-project conventions loaded automatically by Claude Code:
 | `rules/skill-creation-sync.md` | Skill naming, frontmatter, cross-machine sync |
 | `rules/metamodel.md` | Artefact definitions, build order, ID conventions |
 | `rules/artefact-types-registry.md` | Per-type structural registry: id_format, file layout, default path, review interval, property-schema ref (structural half of clew ADR-0006) |
-| `rules/open-items-governance.md` | Cross-cutting open-items contract: canonical document-level `## Open Items` heading, item taxonomy (`doc-gap`, `decision-gap`, `execution-item`, `tech-debt`), provenance fields (`Source anchor` + `Source heading`), and central ledger under `docs/project-control/open-items/` |
+| `rules/open-items-governance.md` | Cross-cutting open-items contract: central ledger as sole authoring surface, item taxonomy (`doc-gap`, `decision-gap`, `execution-item`, `tech-debt`), provenance fields (`Source anchor` + `Source heading`), and ledger location under `docs/project-control/open-items/` |
 | `rules/git-and-tools.md` | Git discipline, Edit tool usage |
 | `rules/working-style.md` | Sequential plans, trust-but-verify |
 | `rules/diagramming-mermaid.md` | Mermaid diagram pitfalls |
