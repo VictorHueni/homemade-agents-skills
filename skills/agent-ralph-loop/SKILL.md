@@ -161,6 +161,13 @@ If the agent or script crashes mid-iteration:
 - Per-increment pottery wheel: 3 attempts maximum.
 - Per-loop max iterations: configurable via `ralph.sh --max-iterations` (default: 50).
 
+## Agent Provider and Model Selection
+
+`ralph.sh` defaults to `--agent claude --model sonnet`. Both are overridable per run:
+
+- `--agent <name>` — agent CLI (provider) to use. Currently only `claude` is supported.
+- `--model <name>` — model alias (`sonnet`, `opus`, `haiku`, `fable`) or full model ID (e.g. `claude-sonnet-5`) passed straight through to the `claude` CLI's own `--model` flag for every spawned iteration.
+
 ## PRD Modes
 
 `ralph.sh` supports three PRD modes:

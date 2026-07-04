@@ -8,6 +8,7 @@ set -euo pipefail
 
 # ─── Defaults ──────────────────────────────────────────────────────────────────
 AGENT="claude"
+MODEL="sonnet"
 MAX_ITERATIONS=50
 WORKSPACE_DIR=""
 PRD_MODE="auto"
@@ -29,7 +30,8 @@ Arguments:
   workspace-dir         Path to the workspace (e.g., docs/plans/active/0001_my-feature)
 
 Options:
-  --agent <name>        Agent CLI to use (default: claude)
+  --agent <name>        Agent CLI (provider) to use (default: claude)
+  --model <name>        Model alias or full ID to use (default: sonnet)
   --max-iterations <n>  Maximum iterations before stopping (default: 50)
   --with-prd            Require a PRD in the workspace for each iteration
   --without-prd         Ignore any PRD file and run plan-only
@@ -38,7 +40,8 @@ Options:
 
 Examples:
   $(basename "$0") docs/plans/active/0001_my-feature
-  $(basename "$0") docs/plans/active/0001_my-feature --agent claude --max-iterations 20
+  $(basename "$0") docs/plans/active/0001_my-feature --agent claude --model opus --max-iterations 20
+  $(basename "$0") docs/plans/active/0001_my-feature --model claude-sonnet-5
   $(basename "$0") docs/plans/active/0001_my-feature --with-prd
   $(basename "$0") docs/plans/active/0001_my-feature --without-prd
   $(basename "$0") docs/plans/active/0001_my-feature --with-push
@@ -59,6 +62,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --agent)
       AGENT="$2"
+      shift 2
+      ;;
+    --model)
+      MODEL="$2"
       shift 2
       ;;
     --max-iterations)
@@ -195,7 +202,7 @@ run_agent() {
 
   case "$AGENT" in
     claude)
-      echo "$prompt" | claude --dangerously-skip-permissions --print 2>&1
+      echo "$prompt" | claude --dangerously-skip-permissions --model "$MODEL" --print 2>&1
       ;;
     *)
       echo "Error: Unsupported agent '$AGENT'. Currently supported: claude" >&2
@@ -211,6 +218,7 @@ echo "  Workspace:  $WORKSPACE_DIR"
 echo "  Exec Plan:  $EXEC_PLAN"
 echo "  PRD Mode:   $EFFECTIVE_PRD_MODE"
 echo "  Agent:      $AGENT"
+echo "  Model:      $MODEL"
 echo "  Max Iter:   $MAX_ITERATIONS"
 echo "  Push:       $PUSH_AFTER_COMMIT"
 echo "═══════════════════════════════════════════════════════════"
