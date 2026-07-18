@@ -1,6 +1,6 @@
 ---
 name: util-metamodel-audit
-description: "Audit the strategic-architecture documentation stack across 18 dimensions: stack progress, folder placement, internal + external links, ID cross-references + integrity, dependency enforcement, _TODO_ density, mandatory sections, methodology pointers, confidence distribution, expiry + staleness, orphaned files, research sync, ADR supersession chains, FBS + epic delivery, frontmatter validity, and open-items governance, backend-aware (markdown ledger or GitHub Issues): stale local-section relic sweep, ledger schema compliance, source-location provenance + resolution, closure drift, stale open items, github form/slug integrity per rules/open-items-governance.md. Report-only with a proposed fix per finding. Triggers on: metamodel audit, audit the stack, check docs health, validate dependencies, broken links, audit artefact compliance, open items governance, closure drift, schema compliance."
+description: "Audit the strategic-architecture documentation stack across 19 dimensions: stack progress, folder placement, internal + external links, ID cross-references + integrity, dependency enforcement, _TODO_ density, mandatory sections, methodology pointers, confidence distribution, expiry + staleness, orphaned files, research sync, ADR supersession chains, FBS + epic delivery, frontmatter validity, capability/product slug integrity, and open-items governance, backend-aware (markdown ledger or GitHub Issues): stale local-section relic sweep, ledger schema compliance, source-location provenance + resolution, closure drift, stale open items, github form/slug integrity per rules/open-items-governance.md. Report-only with a proposed fix per finding. Triggers on: metamodel audit, audit the stack, check docs health, validate dependencies, broken links, audit artefact compliance, open items governance, closure drift, schema compliance."
 version: "1.2.0"
 user-invocable: true
 allow_implicit_invocation: true
@@ -63,7 +63,7 @@ Ask the user the following 4 questions in a single message with lettered options
 
 ```text
 1. Audit scope?
-   A. Full docs/ tree — all 18 check categories (default)
+   A. Full docs/ tree — all 19 check categories (default)
    B. Business architecture layer only (docs/business/)
    C. Product specs layer only (docs/product-specs/, docs/plans/)
    D. Discovery layer only (docs/discovery/ — ideation, interviews, workshops)
@@ -88,7 +88,7 @@ Ask the user the following 4 questions in a single message with lettered options
 If the user gives "Other" or pushes back, ask one follow-up to clarify, then proceed.
 
 **Process:**
-1. Run the bash detection patterns for each of the 18 check categories (see `references/check-catalogue.md`).
+1. Run the bash detection patterns for each of the 19 check categories (see `references/check-catalogue.md`).
 2. Collect all findings; tag each with severity (Error / Warning / Info).
 3. Build executive summary counts.
 4. Fill the report template (see `references/template.md`).
@@ -255,7 +255,7 @@ If the project uses a different reports root (`reports/`, `docs/reports/`), use 
 
 Three files in `references/`:
 - **`references/template.md`** — full markdown report template with all 18 section skeletons.
-- **`references/check-catalogue.md`** — for each of the 18 checks: bash detection pattern, interpretation rules, severity assignment, proposed fix template. Includes the `IDEA-NNNN` ID pattern (Check 5) and `docs/discovery/ideation/IDEA-*.md` mandatory-section rules (Check 9) introduced with the `discovery-` skill family.
+- **`references/check-catalogue.md`** — for each of the 19 checks: bash detection pattern, interpretation rules, severity assignment, proposed fix template. Includes the `IDEA-NNNN` ID pattern (Check 5) and `docs/discovery/ideation/IDEA-*.md` mandatory-section rules (Check 9) introduced with the `discovery-` skill family, and the capability/product slug integrity check (Check 19).
 - **`references/methodology-references.md`** — rationale for each check category (link rot research, BABOK traceability discipline, Lean UX hypothesis expiry, SCIP staleness cadence).
 
 ---

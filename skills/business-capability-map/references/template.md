@@ -18,6 +18,8 @@ ID.
 - L2 = sub-capabilities, **only** when an L1 has ≥5 genuinely distinct sub-domains.
 - No features, no functionalities, no code paths, no tool names — those live in the FBS.
 
+**Canonical slug (third identifier):** every L0 domain and L1 capability carries a `` `slug: <handle>` `` code-line immediately under its heading — a stable, readable, short (recommended ≤ 20 chars) kebab-case handle that tooling depends on (commit scopes, anchors, config keys). It sits alongside the ID (`C-N.M`) and display name as a first-class identifier: **globally unique** across the whole slug space (L0 domains + L1 capabilities in this map + products in the FBS share one flat namespace) and **stable** — renaming a slug is an ID-rename that breaks consumers, not a cosmetic edit. The `` `slug: …` `` line is a machine identifier, deliberately kept visually distinct from the `**Bolded.**` prose fields. See [`rules/artefact-types-registry.md` § Canonical slugs](https://github.com/VictorHueni/homemade-claude-kit/tree/main/rules/artefact-types-registry.md).
+
 **Companion documents:**
 - Personas: [link to 01a-personas.md if exists]
 - FBS: [link to functional-breakdown-structure if exists]
@@ -89,9 +91,13 @@ templated without strategic loss).*
 
 ## C1 · [L0 item 1 name]
 
+`slug: [l0-domain-slug]`
+
 *Brief description of this L0 item — what unifies the capabilities below it.*
 
 ### C1.1 · [Capability name]
+
+`slug: [capability-slug]`
 
 **Definition:** [1–2 sentence outcome statement. Business language. Example:
 "Provides the ability to register, validate, and maintain customer master
@@ -126,6 +132,8 @@ per legal entity."]
 
 ### C1.2 · [Capability name]
 
+`slug: [capability-slug]`
+
 **Definition:** _TODO_
 
 **Business object:** _TODO_
@@ -142,11 +150,17 @@ per legal entity."]
 
 ## C2 · [L0 item 2 name]
 
+`slug: [l0-domain-slug]`
+
 ### C2.1 · [Capability name]
+
+`slug: [capability-slug]`
 
 [Fill following the C1.1 pattern.]
 
 ### C2.3 · [Capability name with L2 sub-capabilities]
+
+`slug: [capability-slug]`
 
 **Definition:** _TODO_
 
@@ -168,15 +182,21 @@ into L1 or move feature-grain detail into the FBS.*
 
 ##### C2.3.1 · [Sub-capability name]
 
+`slug: [capability-slug]`
+
 **Definition:** _TODO_
 
 ##### C2.3.2 · [Sub-capability name]
+
+`slug: [capability-slug]`
 
 **Definition:** _TODO_
 
 ---
 
 ## C3 · [L0 item 3 name]
+
+`slug: [l0-domain-slug]`
 
 [Fill following the C1 pattern.]
 

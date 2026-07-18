@@ -41,6 +41,7 @@ An FBS is good when a reader can answer, without ambiguity:
 
 | Question | Where it lives |
 |---|---|
+| **What is the product's stable tooling handle?** | Per-product `` `slug: <handle>` `` code-line (third identifier — globally unique with BC Map slugs) |
 | **What is the organising axis (L0)?** | §L0 axis declaration (inherited from BC Map) |
 | **Which capabilities does the product cover (L1)?** | §Per-capability sections — soft-linked to BC Map by ID |
 | **What functionalities realise each capability?** | Per-capability functionality table |
@@ -229,6 +230,27 @@ The three tests synthesise the following primary sources:
 
 ---
 
+## Product canonical slug — the third identifier
+
+Every **product** carries a canonical **`slug`** alongside its display name — a **stable + readable + short** kebab handle that tooling depends on (commit scopes today; anchors, config keys, code-module names tomorrow). **The FBS is the canonical home for product slugs.** The canonical definition + invariants live in [`rules/artefact-types-registry.md` § Canonical slugs](../../rules/artefact-types-registry.md).
+
+**Placement + format (exact — a generator parses it):** a backtick-wrapped code-line on its own line, immediately under the heading it names:
+- the FBS **H1** (`# {{product_or_scope}} — Functional Breakdown Structure`) → the overall product/scope slug;
+- for a **product-family FBS** (L0 axis = product/service family), each L0 product section heading (`## CN · {Product}`) → that product's slug.
+
+The line's full content is `` `slug: <handle>` `` — one space after the colon, kebab handle, wrapped in backticks.
+
+**Invariants:**
+- **Kebab-case**, recommended **≤ 20 characters** (`[a-z0-9]` words joined by single hyphens).
+- **Globally unique** across one flat namespace shared with the BC Map's L0 domain + L1 capability slugs — no product slug may collide with any capability slug (a commit-scope allowlist must be unambiguous). Scan before assigning: `grep -RohE '`slug: [a-z0-9-]+`' docs/product-specs/07a-fbs.md docs/business/03a-capability-map.md 2>/dev/null | sort`.
+- **Mandatory** — the FBS H1 must carry one; it cannot be left blank.
+- **Stable** — renaming is an **ID-rename** (breaks pinned consumers), never cosmetic. Propagate to all consumers and log in the changelog.
+- **Consistency:** when a product is also an L0 item in the BC Map (product axis), its slug MUST be byte-identical in both docs — it is the same identifier.
+
+**Assisted authoring:** auto-propose `slugify(product-name)`; if it exceeds 20 chars, flag it and suggest a shorter, still-meaningful handle. Show the author to accept or shorten; it is mandatory.
+
+---
+
 ## The three modes of operation
 
 ### Mode 1 — Scaffold
@@ -238,7 +260,7 @@ The three tests synthesise the following primary sources:
 **Output:** ONE file in `docs/product-specs/` (or project-chosen folder):
 - `FBS.md` — hub document with intro, kit-link methodology pointer, L0 axis declaration, ASCII tree placeholder, empty per-capability sections.
 
-Source from `references/template.md`. Substitute `{{product_or_scope}}` and `{{L0_axis_label}}` placeholders. Do NOT invent functionalities in scaffold mode.
+Source from `references/template.md`. Substitute `{{product_or_scope}}` and `{{L0_axis_label}}` placeholders, and assign the **product slug** under the H1 (`{{product-slug}}`): auto-propose `slugify(product-name)`, flag > 20 chars with a shorter suggestion, confirm it does not collide with any BC Map capability slug. It is mandatory even in scaffold mode. Do NOT invent functionalities in scaffold mode.
 
 **Do NOT** ship a project-side `methodology-references.md`. The canonical bibliography lives in the skill at `references/methodology-references.md` and is linked from the project doc's header.
 
@@ -248,7 +270,7 @@ Source from `references/template.md`. Substitute `{{product_or_scope}}` and `{{L
 
 **Process:**
 1. **Read the BC Map** at `docs/business/03a-capability-map.md`. If absent, warn and ask whether to proceed with manual capability-list entry (degrades discipline — the FBS becomes the source of truth for capability names instead of soft-linking).
-2. **Import L0 + L1 wholesale** — every L0 item from the BC Map becomes an L0 section in the FBS; every L1 capability becomes a `### C-N.M · {Name}` sub-section.
+2. **Import L0 + L1 wholesale** — every L0 item from the BC Map becomes an L0 section in the FBS; every L1 capability becomes a `### C-N.M · {Name}` sub-section. **Product-family case** (L0 axis = product/service family): each L0 item *is* a product — carry its `` `slug: <handle>` `` line onto the FBS L0 section heading, byte-identical to the BC Map's L0 slug (same identifier). The FBS does not re-mint capability slugs; those stay owned by the BC Map.
 3. **Render the ASCII tree** at the top of the FBS, mirroring the BC Map structure but adding a functionality-count placeholder per capability:
    ```
    {{product}}
@@ -480,6 +502,7 @@ Before declaring the work done:
 
 - [ ] Folder exists or was created.
 - [ ] `FBS.md` exists with intro + L0 axis + ASCII tree + per-capability sections (scaffold mode).
+- [ ] Product slug present — `` `slug: <handle>` `` under the H1 (and under each L0 product section for a product-family FBS); well-formed kebab (≤ 20 chars) and **globally unique** across the FBS product slugs + BC Map L0/L1 slugs (one flat namespace).
 - [ ] Methodology pointer in `FBS.md` header links to the kit's canonical bibliography.
 - [ ] L0 / L1 imported from BC Map (or manual entry flagged in changelog).
 - [ ] Each functionality has ID (`C-N.M.F01` pattern), name, status; optional VS-stage / code paths populated where applicable.

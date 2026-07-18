@@ -137,6 +137,38 @@ is revisited if per-instance explosion ships (issue #54).
 | `release_notes` | `Release Notes` |
 | `arc42_section` | `Architecture Documentation` |
 
+## Canonical slugs
+
+Three artefact concepts — the **L0 capability domain**, the **L1 capability**, and the **product** — carry a **canonical `slug`** as a *third* first-class identifier, alongside the business ID (`C-N.M`) and the display name. It exists because the two existing identifiers each fail a different tooling need: the ID is stable but cryptic; the display name is readable but long and unstable. The slug is the missing combination — **stable + readable + short** — and is the handle downstream tooling actually pins to (commit scopes today via `gen-commit-scopes.py`; open to code-module names, URL/anchor segments, and config keys).
+
+**Where each slug is declared (canonical home):**
+
+| Concept | Business ID | Canonical home | Placement |
+|---|---|---|---|
+| L0 capability domain | `C-N` | `docs/business/03a-capability-map.md` | code-line under the `## CN · Name` heading |
+| L1 capability | `C-N.M` | `docs/business/03a-capability-map.md` | code-line under the `### CN.M · Name` heading |
+| Product | — (FBS root / PBS layer) | `docs/product-specs/07a-fbs.md` | code-line under the H1; and under each `## CN · Product` L0 section for a product-family FBS |
+
+**Format (exact — a generator's regex reads it).** A backtick-wrapped code-line on its own line, immediately under the entity's heading and before any prose field:
+
+```
+### C1.2 · Catalog Maintenance
+`slug: catalog-maintenance`
+```
+
+The line's full content is `` `slug: <handle>` `` — literal backticks, `slug:`, one space, then the kebab handle. The backtick-wrapping keeps it visually distinct from an artefact's `**Bolded.**` prose fields: it is a machine identifier, not strategic prose. Parser-facing form: a line matching `` ^\s*`slug:\s*([a-z0-9]+(?:-[a-z0-9]+)*)`\s*$ ``.
+
+**Invariants (these make the slug an *identifier*, not a label):**
+
+1. **Kebab-case, recommended ≤ 20 chars** — lowercase `[a-z0-9]` words joined by single hyphens; no leading/trailing/double hyphens.
+2. **Globally unique across one flat namespace.** All L0 domain slugs, all L1 capability slugs, and all product slugs share a single slug space and must be collectively unique — a flat commit-scope allowlist (and any other consumer keyed by bare slug) cannot tolerate ambiguity. The one sanctioned repeat is the *same* product appearing as both a BC Map L0 item (product axis) and an FBS L0 product section: the slug is byte-identical in both places because it is the *same* identifier, not a collision.
+3. **Mandatory** — every L0 domain, every L1 capability, and every product carries one; it is never left blank. Authoring is *assisted*: the minting skill auto-proposes `slugify(display-name)` and the author accepts or shortens; a proposal > 20 chars is flagged with a shorter suggestion.
+4. **Stable — renaming a slug is an ID-rename, not a cosmetic edit.** It breaks every consumer that pinned the old handle (commit-scope allowlists, anchors, config keys). Change it only deliberately, propagate to all consumers, and record it in the artefact's changelog. Treat it with the same permanence as `C-N.M`.
+
+**Cross-doc handle.** Because the slug is stable and readable it is the preferred human-facing anchor/handle when referencing a capability or product from tooling and prose that does not want the cryptic `C-N.M`. The ID-based [cross-doc linking rule](metamodel-reference.md#cross-doc-id-conventions) remains canonical for doc-to-doc markdown links; the slug is the tooling handle.
+
+Uniqueness + well-formedness + presence are enforced by `util-metamodel-audit` Check 19.
+
 ## Maintenance coupling
 
 | What changed | Update |
@@ -144,4 +176,5 @@ is revisited if per-instance explosion ships (issue #54).
 | New type, or a change to its id_format / path / layout / skill / interval | this file (the type's row) |
 | New type, or a change to its `okf_type` display name | this file — the [OKF `type` display names](#okf-type-display-names) table + `util-metamodel-audit` Check 17 `type` enum |
 | A type's semantics | the minting `SKILL.md` `## Canonical definition` |
+| Slug format, placement, or the global-uniqueness / stability invariants | this file's [Canonical slugs](#canonical-slugs) section + `util-metamodel-audit` Check 19 + the `business-capability-map` and `spec-functional-breakdown-structure` templates + `gen-commit-scopes.py` (the generator that consumes the slug) |
 | Build order / dependencies / ER | [`metamodel.md`](metamodel.md) |

@@ -2,6 +2,8 @@
 
 # {{product_or_scope}} — Functional Breakdown Structure
 
+`slug: {{product-slug}}`
+
 This document is the functionality registry for {{product_or_scope}}: a
 canonical, status-tracked enumeration of what the product does, organised
 by the capabilities defined in the [Business Capability
@@ -25,6 +27,8 @@ soft-links to value-stream stages.
 - FBS does NOT contain feature specs / acceptance criteria — see PRDs.
 - FBS does NOT contain roadmap timelines / dates / milestones — see the roadmap doc.
 - FBS does NOT contain operational metrics / cycle times — see process docs.
+
+**Product canonical slug (third identifier):** the `` `slug: <handle>` `` code-line under the H1 above is the **product's** canonical slug — a stable, readable, short (≤ 20 chars) kebab handle that tooling depends on (commit scopes, anchors, config keys), alongside the display name. **The FBS is the canonical home for product slugs.** It shares one flat, globally-unique namespace with the BC Map's L0 domain + L1 capability slugs — no product slug may collide with any capability slug. Renaming it is an **ID-rename** (breaks consumers), not a cosmetic edit. For a **product-family FBS** (L0 axis = product/service family — the L0 items *are* products), add a `` `slug: <handle>` `` line under each L0 product section heading too; when those same products are L0 items in the BC Map, the slug MUST be byte-identical across both docs (same identifier). See [`rules/artefact-types-registry.md` § Canonical slugs](https://github.com/VictorHueni/homemade-claude-kit/tree/main/rules/artefact-types-registry.md).
 
 **Companion documents:**
 - Business Capability Map: [link to ../../business/03a-capability-map.md if exists]

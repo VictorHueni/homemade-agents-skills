@@ -633,6 +633,8 @@ Artefact-type id_formats are defined in the structural registry [`artefact-types
 
 so that future renames (description text) don't break the link as long as the ID is stable.
 
+**Canonical slug — the third identifier (capabilities + products).** Beyond the ID (`C-N.M`) and display name, every L0 capability domain, L1 capability, and product carries a **canonical `slug`** — a stable, readable, short kebab handle that tooling pins to (commit scopes, anchors, config keys). It is declared as a `` `slug: <handle>` `` code-line under the entity's heading (L0/L1 in the capability map; product in the FBS), is **globally unique across one flat namespace** shared by all three concepts, and is **stable** (renaming it is an ID-rename). The authoritative definition, format, invariants, and canonical-home table live in [`artefact-types-registry.md` § Canonical slugs](artefact-types-registry.md#canonical-slugs); uniqueness is audited by `util-metamodel-audit` Check 19. Use the ID-based linking rule above for markdown doc-to-doc links; use the slug as the tooling handle.
+
 ---
 
 ## Canonical output paths

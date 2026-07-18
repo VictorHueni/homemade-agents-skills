@@ -1,6 +1,6 @@
 # Check Catalogue — util-metamodel-audit
 
-For each of the 16 checks: bash detection pattern, interpretation rules, severity, and proposed fix template. Claude reads this file during audit execution to know exactly how to run each check.
+For each of the 19 checks: bash detection pattern, interpretation rules, severity, and proposed fix template. Claude reads this file during audit execution to know exactly how to run each check.
 
 ---
 
@@ -1227,3 +1227,94 @@ canonical slug fields. The form `id:` keys are the binding contract (Invariant I
 All sub-checks are read-only; none write to `docs/project-control/open-items/`, to any
 artefact, or to GitHub. Findings always route to the operator for action through
 `util-open-items`.
+
+---
+
+## Check 19 — Capability / product slug integrity
+
+**What:** verifies the **canonical `slug`** (the third identifier, alongside `C-N.M` and the display name — see [`rules/artefact-types-registry.md` § Canonical slugs](../../../rules/artefact-types-registry.md#canonical-slugs)) is **present**, **well-formed**, and **globally unique** across one flat namespace. Three concepts carry a slug: every L0 capability domain (`## CN · …`) and L1 capability (`### CN.M · …`) in `docs/business/03a-capability-map.md`, and every product (the H1, plus each L0 product section of a product-family FBS) in `docs/product-specs/07a-fbs.md`.
+
+**Slug line contract:** a backtick-wrapped code-line on its own line, directly under the entity heading — `` `slug: <handle>` `` — parseable as `` ^\s*`slug:\s*([a-z0-9]+(?:-[a-z0-9]+)*)`\s*$ ``. Well-formed = kebab-case, `[a-z0-9]` words joined by single hyphens, no leading/trailing/double hyphens; recommended **≤ 20 chars**.
+
+> **Wrapper-safe by construction.** All three blocks drive `awk` directly over the two
+> known files — no `grep`/`find` inside loops and **no process substitution** (`<(…)`),
+> which the interactive shell's wrapped `grep` mishandles (see the IMPORTANT note in Check 17).
+> The slug-line recogniser matches loosely (`` `slug:…` ``) and validates the captured value,
+> so a malformed value (uppercase, underscores) is reported as `MALFORMED`, not silently
+> mistaken for a missing slug.
+
+**Detection — 19a: capability-map presence + malformed + length.** Every `## CN · …` (L0) and
+`### CN.M · …` (L1) heading must be followed — within 2 lines, skipping blanks — by a
+well-formed slug code-line:
+```bash
+capmap="docs/business/03a-capability-map.md"
+[ -f "$capmap" ] && awk '
+  function chk(line, head,   s) {
+    s=line; sub(/^[[:space:]]*`slug:[[:space:]]*/,"",s); sub(/`[[:space:]]*$/,"",s)
+    if (s=="")                              { printf "MALFORMED SLUG (empty): %s (%s)\n", FILENAME, head; return }
+    if (s !~ /^[a-z0-9]+(-[a-z0-9]+)*$/)    printf "MALFORMED SLUG \"%s\": %s (%s)\n", s, FILENAME, head
+    else if (length(s) > 20)                printf "SLUG >20 CHARS \"%s\" (%d): %s (%s)\n", s, length(s), FILENAME, head
+  }
+  function flush() { if (pend!="" && !seen) printf "MISSING SLUG: %s heading \"%s\"\n", FILENAME, pend }
+  /^##+[[:space:]]+C[0-9]/                  { flush(); pend=$0; seen=0; gap=0; next }
+  pend!="" {
+    if ($0 ~ /^[[:space:]]*$/)                     { gap++; if(gap>2){flush();pend=""}; next }
+    if ($0 ~ /^[[:space:]]*`slug:.*`[[:space:]]*$/) { seen=1; chk($0,pend); pend=""; next }
+    gap++; if(gap>2){flush();pend=""}
+  }
+  END { flush() }
+' "$capmap"
+```
+
+**Detection — 19b: FBS H1 product slug (mandatory).** The FBS root product carries a slug
+under the H1, before the first `## ` section:
+```bash
+fbs="docs/product-specs/07a-fbs.md"
+[ -f "$fbs" ] && awk '
+  /^#[[:space:]]/ && !h1 { h1=1; want=1; next }
+  want {
+    if ($0 ~ /^##[[:space:]]/)                     { print "MISSING PRODUCT SLUG: " FILENAME " (no slug under H1)"; want=0; next }
+    if ($0 ~ /^[[:space:]]*`slug:.*`[[:space:]]*$/) {
+      s=$0; sub(/^[[:space:]]*`slug:[[:space:]]*/,"",s); sub(/`[[:space:]]*$/,"",s)
+      if (s !~ /^[a-z0-9]+(-[a-z0-9]+)*$/)          print "MALFORMED PRODUCT SLUG \"" s "\": " FILENAME
+      else if (length(s)>20)                        printf "PRODUCT SLUG >20 CHARS \"%s\" (%d): %s\n", s, length(s), FILENAME
+      want=0
+    }
+  }
+  END { if (want) print "MISSING PRODUCT SLUG: " FILENAME " (no slug under H1)" }
+' "$fbs"
+```
+
+**Detection — 19c: global uniqueness (one flat namespace across both files).** Emit
+`(slug, heading-id)` pairs and flag any well-formed slug that names **> 1 distinct entity**.
+Keying on the heading ID lets the one sanctioned repeat through — the same product appearing
+as both a BC Map L0 item (product axis) and an FBS L0 section shares the same C-ID, so it is
+ONE identifier, not a collision:
+```bash
+capmap="docs/business/03a-capability-map.md"; fbs="docs/product-specs/07a-fbs.md"
+for f in "$capmap" "$fbs"; do
+  [ -f "$f" ] || continue
+  awk '
+    /^#[[:space:]]/          { id="H1" }
+    /^##+[[:space:]]+C[0-9]/ { id=$2 }   # e.g. "C1" or "C1.2"
+    /^[[:space:]]*`slug:.*`[[:space:]]*$/ {
+      s=$0; sub(/^[[:space:]]*`slug:[[:space:]]*/,"",s); sub(/`[[:space:]]*$/,"",s)
+      if (s ~ /^[a-z0-9]+(-[a-z0-9]+)*$/) print s "\t" id
+    }
+  ' "$f"
+done | sort -u | awk -F'\t' '{c[$1]++} END{for(s in c) if(c[s]>1) print "DUPLICATE SLUG (>1 entity): " s}'
+```
+
+**Interpretation:**
+- `MISSING SLUG` / `MISSING PRODUCT SLUG` → a mandatory slug is absent. **Error.**
+- `MALFORMED SLUG` → not valid kebab-case. **Error.**
+- `SLUG >20 CHARS` → over the recommended ceiling. **Warning** (recommendation, not a hard limit).
+- `DUPLICATE SLUG (>1 entity)` → two different domains/capabilities/products share a slug — the flat commit-scope namespace is ambiguous. **Error.**
+
+**Severity:** Error (missing · malformed · duplicate) · Warning (> 20 chars).
+
+**Proposed fix template:**
+- Missing: "Add a `` `slug: <handle>` `` code-line under `{heading}` in `{file}` — run `business-capability-map` (fill) or `spec-functional-breakdown-structure` for an assisted `slugify(name)` proposal. The slug is a mandatory third identifier (`rules/artefact-types-registry.md` § Canonical slugs)."
+- Malformed: "Fix slug `{slug}` in `{file}` to kebab-case (`[a-z0-9]` words joined by single hyphens)."
+- Over length: "Shorten slug `{slug}` in `{file}` to ≤ 20 chars while keeping it meaningful."
+- Duplicate: "Slug `{slug}` names two different entities across the capability map + FBS. Rename one — this is an ID-rename: update every consumer that pinned it (commit-scope allowlist, anchors) and log it in the changelog."

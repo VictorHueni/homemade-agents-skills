@@ -32,6 +32,7 @@ A BC Map is good when a reader can answer, without ambiguity:
 |---|---|
 | **What is the organising axis (L0)?** | §L0 axis declaration + rationale |
 | **What does the business do at L0?** | §Global overview (ASCII tree) + §Capability index (table) |
+| **What is the stable tooling handle for a domain / capability?** | Per-heading `` `slug: <handle>` `` code-line (third identifier, globally unique) |
 | **What does each L1 capability mean precisely?** | §L1 capability definitions (one block per L1) |
 | **Which capabilities are strategic differentiators vs commodity?** | Strategic Importance column + per-capability field |
 | **What is each capability NOT?** | Per-capability §Boundaries field (anti-overlap discipline) |
@@ -101,8 +102,9 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
 6. **Apply the anti-overlap test:** no two capabilities should overlap in scope. Each capability appears once and only once in the map (Cutter's "redundancy" mistake).
 7. **Decide L2 per L1:** only break out L2 if an L1 has ≥5 genuinely distinct sub-capabilities. Default is no L2.
 8. **Render the ASCII tree** + populate the **Capability Index table** with: ID · Name · L0 parent · Strategic Importance · One-line definition. Initial Strategic Importance can be `_TODO_` — it's a deliberate exercise.
+9. **Assign a canonical slug to every L0 domain and L1 capability** (see "Canonical slug — the third identifier"). Auto-propose `slugify(name)`, flag any proposal > 20 chars with a shorter suggestion, and confirm each with the author — the slug is mandatory. Write the `` `slug: <handle>` `` code-line immediately under each L0 (`## CN · …`) and L1 (`### CN.M · …`) heading. Before assigning, scan existing slugs across the map **and** the FBS to guarantee global uniqueness.
 
-**Do NOT fully fill each capability definition in structure mode.** The tree + index are the planning artifact; full per-capability blocks are mode 3.
+**Do NOT fully fill each capability definition in structure mode.** The tree + index + slugs are the planning artifact; full per-capability blocks are mode 3.
 
 ### Mode 3 — Fill capability definitions
 
@@ -111,6 +113,7 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
 **Process:**
 1. **Pick the capability ID** the user wants filled (e.g., `C3.2`), or batch-fill an L0 branch.
 2. **For each capability, fill the canonical block** (see `references/template.md`):
+   - **Slug** — the `` `slug: <handle>` `` code-line directly under the heading. If missing (older map), assign one now: auto-propose `slugify(name)`, flag > 20 chars with a shorter suggestion, confirm global uniqueness across the map + FBS. Mandatory. See "Canonical slug — the third identifier".
    - **Name** (already in the tree — restate for navigability)
    - **Definition** — 1–2 sentence outcome statement. Business language, no jargon. Start with the verb "Provides…" or "Enables…" or the noun phrase + active outcome.
    - **Business object** — the entity the capability operates on (Customer, Order, Claim, Drug, Risk, Asset…). One noun.
@@ -177,6 +180,31 @@ IDs follow the `C-N.M` format — the same ID must be used consistently across e
 | L2 (rare) | `C{N}.{M}.{K}` | `C1.1.1`, `C3.4.2` |
 
 **Assignment rule:** scan existing IDs in the capability map (`grep "C[0-9]" docs/business/03a-capability-map.md`) before assigning. Take the next integer at each level. IDs are permanent once assigned — never renumber, even if a capability is deprecated. L2 is only added when an L1 has ≥5 genuinely distinct sub-capabilities.
+
+---
+
+## Canonical slug — the third identifier
+
+Every **L0 domain** and **L1 capability** carries a canonical **`slug`** alongside its ID (`C-N.M`) and display name. Where the ID is stable-but-cryptic and the name is readable-but-long-and-unstable, the slug is the missing third: **stable + readable + short** — the handle tooling actually depends on (commit scopes today; anchors, config keys, and code-module names tomorrow). The canonical definition + invariants live in [`rules/artefact-types-registry.md` § Canonical slugs](../../rules/artefact-types-registry.md).
+
+**Placement + format (exact — a generator parses it):** a backtick-wrapped code-line on its own line, immediately under the entity's heading, before any prose field:
+
+```
+### C1.2 · Catalog Maintenance
+`slug: catalog-maintenance`
+
+**Definition.** …
+```
+
+The line's full content is `` `slug: <handle>` `` — a single space after the colon, the kebab handle, wrapped in backticks. It is deliberately visually distinct from the `**Bolded.**` prose fields because it is a machine identifier, not strategic prose.
+
+**Invariants (these make it an identifier, not a label):**
+- **Kebab-case**, recommended **≤ 20 characters** (`[a-z0-9]` words joined by single hyphens; no leading/trailing/double hyphens).
+- **Globally unique** across one flat namespace shared by *all* L0 domains, *all* L1 capabilities in this map, **and** all products in the FBS — a commit-scope allowlist must be unambiguous. Before assigning, scan existing slugs across both docs: `grep -RohE '`slug: [a-z0-9-]+`' docs/business/03a-capability-map.md docs/product-specs/07a-fbs.md 2>/dev/null | sort`.
+- **Mandatory** — every L0 and L1 heading must carry one; it cannot be left blank.
+- **Stable** — renaming a slug is an **ID-rename** (it breaks every consumer that pinned the old handle: commit-scope allowlists, anchors, config keys), never a cosmetic edit. Change it only deliberately, propagate to all consumers, and record it in the changelog.
+
+**Assisted authoring:** in structure/fill mode, auto-propose `slugify(display-name)` (lowercase, strip accents, non-alphanumerics → hyphen, collapse repeats). Show the author the proposal to accept or shorten; it is mandatory. **If the proposed slug exceeds 20 characters, flag it and suggest a shorter, still-meaningful handle** (e.g. `customer-data` for "Customer Data Management", not the 24-char `customer-data-management`).
 
 ---
 
@@ -368,6 +396,8 @@ Before declaring the work done:
 - [ ] ASCII tree + Capability Index table populated (structure mode).
 - [ ] L0 count: 3–8. L1 count per L0: 5–12. L1 total: ≤25.
 - [ ] Every capability passes the noun test, tech-independence test, anti-overlap test.
+- [ ] Every L0 domain and L1 capability carries a `` `slug: <handle>` `` code-line under its heading (mandatory; structure / fill mode).
+- [ ] All slugs are well-formed kebab-case (recommended ≤ 20 chars) and **globally unique** across the map's L0 + L1 slugs *and* the FBS product slugs (one flat namespace).
 - [ ] Per-capability blocks filled with Definition + Business object + Strategic importance + Outcomes + Boundaries (fill mode).
 - [ ] Soft-links populated only when target artefact exists.
 - [ ] No features / functionalities / code paths leaked into the BC Map (scope discipline).
