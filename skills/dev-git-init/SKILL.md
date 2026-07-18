@@ -1,6 +1,6 @@
 ---
 name: dev-git-init
-description: 'Scaffold the deterministic git enforcement stack for a Node or Python project — husky/pre-commit hooks, commitlint/commitizen with Conventional Commits, gitleaks, .gitignore + .gitattributes + .editorconfig, CONTRIBUTING.md, GitHub PR template + CODEOWNERS + 3 issue templates, CI workflows, scripts/setup-branch-protection.sh; on squash-merge strategies also a PR-title lint check, squash-title setting, and a capability scope-enum. Two modes: audit (read-only) and scaffold (3-question Q&A: stack · branching strategy · reviewer model). Uniformly skip-if-exists. Emits install + branch-protection commands; never executes them. Post-scaffold prompt asks whether to record decisions as an ADR via arch-adr. Triggers on: scaffold git, git init, set up git hooks, install husky, install commitlint, install commitizen, set up commit conventions, PR title lint, commit scope enum, branch protection, git workflow setup, dev workflow setup, repo conventions, scaffold contributing.'
+description: 'Scaffold the deterministic git enforcement stack for a Node or Python project — husky/pre-commit hooks, commitlint/commitizen with Conventional Commits, gitleaks, .gitignore + .gitattributes + .editorconfig, CONTRIBUTING.md, GitHub PR template + CODEOWNERS + 3 issue templates, CI workflows, scripts/setup-branch-protection.sh, Dependabot config; on squash-merge strategies also a PR-title lint check, squash-title setting, and a capability scope-enum. Two modes: audit (read-only) and scaffold (3-question Q&A: stack · branching strategy · reviewer model). Uniformly skip-if-exists. Emits install + branch-protection commands; never executes them. Post-scaffold prompt asks whether to record decisions as an ADR via arch-adr. Triggers on: scaffold git, git init, set up git hooks, install husky, install commitlint, install commitizen, set up commit conventions, PR title lint, commit scope enum, branch protection, git workflow setup, dev workflow setup, repo conventions, scaffold contributing, scaffold dependabot.'
 version: "2.0.0"
 status: active
 last_reviewed: 2026-05-28
@@ -33,10 +33,11 @@ Both layers exist; the AI-skill layer is purely a *compliance helper* on top —
 - **CI workflows:** always scaffolded. Opt-out is `rm -rf .github/workflows`.
 - **`.gitignore` on conflict:** skip-if-exists like every other file. Operator manually merges missing patterns.
 - **No `--force` mode:** to overwrite an existing file, `rm` it and re-run.
+- **Dependency freshness:** a `.github/dependabot.yml` is always scaffolded (a base slot). It is the freshness mechanism that makes pinning safe — pin actions/dependencies for immutability, Dependabot to keep the pins current. Neither works alone; a stale pin with no watcher is strictly worse than a floating tag.
 
 **Three choices preserved** (genuinely vary across projects):
 
-- **Q1 — Stack:** pnpm / npm / yarn / Python (4 options)
+- **Q1 — Stack + package manager:** pnpm / npm / yarn (Node) · pip-family / uv (Python) (5 options — the package manager pins the exact Dependabot ecosystem; see §Q1 → Dependabot ecosystem)
 - **Q2 — Branching strategy + merge mode:** trunk-based + squash / GitLab Flow / GitFlow (3 options)
 - **Q3 — Reviewer model:** solo founder admin-bypass / mutual peer / CODEOWNERS-driven (3 options — **no default; operator must make an explicit governance choice**)
 
@@ -70,19 +71,22 @@ Both layers exist; the AI-skill layer is purely a *compliance helper* on top —
 | 12 | `.github/ISSUE_TEMPLATE/*` | `bug.md` + `feature.md` + `docs.md` (3 files) | Both |
 | 13 | `.github/workflows/*` | `lint-build.yml` + `typecheck.yml` + `test.yml` + `gitleaks.yml` (4 files) | Both (runtime + commands differ) |
 | 14 | `scripts/setup-branch-protection.sh` | (file) | Both |
-| 15 *(conditional — Q2 squash-merge)* | PR-title lint workflow | `.github/workflows/pr-title-lint.yml` | Both (Node runs commitlint, Python runs `cz check`) |
-| 16 *(conditional — capability map/FBS present)* | Capability scope-enum bundle | `scripts/gen-commit-scopes.py` + `.commit-scopes.json` + `.github/workflows/scope-enum-drift.yml` + the `scope-enum` line wired into the slot-4 commit-linter config | Both |
+| 15 | `.github/dependabot.yml` | (file) | Both (language ecosystem differs per Q1; `docker` / `docker-compose` blocks emitted only when detected) |
+| 16 *(conditional — Q2 squash-merge)* | PR-title lint workflow | `.github/workflows/pr-title-lint.yml` | Both (Node runs commitlint, Python runs `cz check`) |
+| 17 *(conditional — capability map/FBS present)* | Capability scope-enum bundle | `scripts/gen-commit-scopes.py` + `.commit-scopes.json` + `.github/workflows/scope-enum-drift.yml` + the `scope-enum` line wired into the slot-4 commit-linter config | Both |
 
-**16 logical slots — 14 base + 2 conditional.** Node projects fill slots 1–3 with husky; Python fills the same 3 slots with `.pre-commit-config.yaml`. Slots 15–16 apply only when their condition holds (see below); everything else is the same across stacks.
+**17 logical slots — 15 base + 2 conditional.** Node projects fill slots 1–3 with husky; Python fills the same 3 slots with `.pre-commit-config.yaml`. Slots 16–17 apply only when their condition holds (see below); everything else is the same across stacks.
 
 **Conditional-slot rules:**
-- **Slot 15 (PR-title lint)** is scaffolded only when **Q2 squash-merges** (option A or B). For GitFlow (Q2=C) it is **N/A** — a merge-commit repo lints every branch commit, so the PR title is not the landed subject.
-- **Slot 16 (scope-enum bundle)** is scaffolded only when a capability map (`docs/business/03a-capability-map.md`) or FBS (`docs/product-specs/07a-fbs.md`) exists. Absent both, it is **N/A** and scopes fall back to free area/module names (`auth`, `api`, `infra`, `deps`).
-- Slot 16's `scope-enum` line only lands if the slot-4 commit-linter config was *also* scaffolded this run (skip-if-exists means a pre-existing config is untouched — the closing report then tells the operator to add the line manually).
+- **Slot 16 (PR-title lint)** is scaffolded only when **Q2 squash-merges** (option A or B). For GitFlow (Q2=C) it is **N/A** — a merge-commit repo lints every branch commit, so the PR title is not the landed subject.
+- **Slot 17 (scope-enum bundle)** is scaffolded only when a capability map (`docs/business/03a-capability-map.md`) or FBS (`docs/product-specs/07a-fbs.md`) exists. Absent both, it is **N/A** and scopes fall back to free area/module names (`auth`, `api`, `infra`, `deps`).
+- Slot 17's `scope-enum` line only lands if the slot-4 commit-linter config was *also* scaffolded this run (skip-if-exists means a pre-existing config is untouched — the closing report then tells the operator to add the line manually).
+
+**Slot 15 (Dependabot config) is a base slot** — always scaffolded, every repo benefits. It always emits a `github-actions` block (dir `/`, weekly, one grouped PR) plus the language ecosystem from Q1 (`npm` / `pip` / `uv`, dir `/`, monthly, 7-day cooldown, minor+patch grouped); `docker` and/or `docker-compose` blocks are appended **only when a `Dockerfile` / compose file is detected** (never emit empty blocks). `target-branch` is the integration branch derived from Q2. See §`.github/dependabot.yml`, §Q1 → Dependabot ecosystem, and [`references/dependabot-config.md`](references/dependabot-config.md).
 
 What the skill does **NOT** write:
 - `lint-staged` config (Node) or per-language lint runners — varies too much within each ecosystem; deferred to follow-up per-stack skills
-- A second PR-title type-list Action like `amannn/action-semantic-pull-request` — the PR-title lint (slot 15) reuses the **same** commitlint/commitizen config as the commit-msg hook, so there is one vocabulary and nothing to hand-sync
+- A second PR-title type-list Action like `amannn/action-semantic-pull-request` — the PR-title lint (slot 16) reuses the **same** commitlint/commitizen config as the commit-msg hook, so there is one vocabulary and nothing to hand-sync
 - ADRs directly — closing report invokes `arch-adr` via the post-scaffold prompt
 - `package.json` / `pyproject.toml` script entries — operator adds via the emitted install command
 - `.claude/*.yaml` config — classical configs above ARE the source of truth
@@ -111,9 +115,10 @@ Run first whenever the project already has any of the stack components.
 #   - commitlint.config.{js,mjs} / .commitlintrc.{yaml,json} (Node) OR pyproject.toml [tool.commitizen] (Python) = 1 slot (any one variant)
 #   - .github/ISSUE_TEMPLATE/{bug,feature,docs}.md = 1 slot (3 files)
 #   - .github/workflows/{lint-build,typecheck,test,gitleaks}.yml = 1 slot (4 files)
-#   - .github/workflows/pr-title-lint.yml = slot 15 (conditional — Q2 squash-merge)
-#   - scripts/gen-commit-scopes.py + .commit-scopes.json + scope-enum-drift.yml = slot 16 (conditional — capability map/FBS)
-#   Loop checks ~23 paths; audit denominator is 14 base + up to 2 conditional slots.
+#   - .github/dependabot.yml = slot 15 (base — always)
+#   - .github/workflows/pr-title-lint.yml = slot 16 (conditional — Q2 squash-merge)
+#   - scripts/gen-commit-scopes.py + .commit-scopes.json + scope-enum-drift.yml = slot 17 (conditional — capability map/FBS)
+#   Loop checks ~24 paths; audit denominator is 15 base + up to 2 conditional slots.
 for f in \
   .husky/commit-msg .husky/pre-commit .husky/pre-push \
   .pre-commit-config.yaml \
@@ -126,15 +131,16 @@ for f in \
   .github/ISSUE_TEMPLATE/bug.md .github/ISSUE_TEMPLATE/feature.md .github/ISSUE_TEMPLATE/docs.md \
   .github/workflows/lint-build.yml .github/workflows/typecheck.yml .github/workflows/test.yml .github/workflows/gitleaks.yml \
   scripts/setup-branch-protection.sh \
+  .github/dependabot.yml \
   .github/workflows/pr-title-lint.yml \
   scripts/gen-commit-scopes.py .commit-scopes.json .github/workflows/scope-enum-drift.yml; do
   [ -e "$f" ] && echo "✅ $f" || echo "⬜ $f"
 done
 
-# Conditions that decide whether slots 15–16 are applicable (vs N/A):
+# Conditions that decide whether slots 16–17 are applicable (vs N/A):
 [ -f docs/business/03a-capability-map.md ] || [ -f docs/product-specs/07a-fbs.md ] \
-  && echo "capability map / FBS present → slot 16 applies" \
-  || echo "no capability map / FBS → slot 16 N/A (area/module scopes)"
+  && echo "capability map / FBS present → slot 17 applies" \
+  || echo "no capability map / FBS → slot 17 N/A (area/module scopes)"
 
 # Also check pyproject.toml for [tool.commitizen] section (Python path)
 [ -f pyproject.toml ] && grep -q '^\[tool\.commitizen\]' pyproject.toml \
@@ -148,11 +154,11 @@ Also detect:
 - **Default branch:** assumed `main`. Operator may override via Q-skip with `--default-branch <name>` flag. Detection is intentionally not chained — assumption is cheaper, override is one flag.
 - **Repo platform:** `git remote get-url origin` (github.com / gitlab.com / bitbucket.org)
 
-**Counting convention for the audit report below:** the denominator is **14 base slots + up to 2 conditional slots (15–16)**, one per row in the §Output catalogue. Each grouped row counts as one slot regardless of how many files it expands to (issue templates = 3 files / 1 slot; workflows = 4 files / 1 slot; commitlint config variants count toward the single commit-linter slot; the scope-enum bundle = 3+ files / 1 slot). Mark a slot as **in place** when at least one file in the family exists. For slots 1–3 the rule is: if `.pre-commit-config.yaml` exists (Python), it fills all three; otherwise check each `.husky/*` file (Node). **Conditional slots** are reported as **N/A** (not counted in the denominator) when their condition does not hold: slot 15 is N/A unless the repo squash-merges; slot 16 is N/A unless a capability map / FBS exists. The invariant is: **in-place + missing + N/A = 16**.
+**Counting convention for the audit report below:** the denominator is **15 base slots + up to 2 conditional slots (16–17)**, one per row in the §Output catalogue. Each grouped row counts as one slot regardless of how many files it expands to (issue templates = 3 files / 1 slot; workflows = 4 files / 1 slot; commitlint config variants count toward the single commit-linter slot; the scope-enum bundle = 3+ files / 1 slot). Mark a slot as **in place** when at least one file in the family exists. For slots 1–3 the rule is: if `.pre-commit-config.yaml` exists (Python), it fills all three; otherwise check each `.husky/*` file (Node). Slot 15 (`.github/dependabot.yml`) is base — always counted. **Conditional slots** are reported as **N/A** (not counted in the denominator) when their condition does not hold: slot 16 is N/A unless the repo squash-merges; slot 17 is N/A unless a capability map / FBS exists. The invariant is: **in-place + missing + N/A = 17**.
 
 ### Step 2 — report
 
-Report format (in-place + missing + N/A must always sum to 16):
+Report format (in-place + missing + N/A must always sum to 17):
 
 ```
 ## Audit — git enforcement stack
@@ -160,10 +166,10 @@ Report format (in-place + missing + N/A must always sum to 16):
 **Stack detected:** Node + pnpm (pnpm-lock.yaml present)
 **Default branch:** main (assumed; override via --default-branch if wrong)
 **Platform:** github.com (<owner>/<repo>)
-**Merge mode (from CONTRIBUTING.md / assumed Q2):** squash-merge → slot 15 applies
-**Capability map / FBS:** present → slot 16 applies
+**Merge mode (from CONTRIBUTING.md / assumed Q2):** squash-merge → slot 16 applies
+**Capability map / FBS:** present → slot 17 applies
 
-**In place (6 of 16):**
+**In place (6 of 17):**
 - ✅ .gitignore
 - ✅ CONTRIBUTING.md
 - ✅ .github/PULL_REQUEST_TEMPLATE.md
@@ -171,7 +177,7 @@ Report format (in-place + missing + N/A must always sum to 16):
 - ✅ .github/ISSUE_TEMPLATE/{bug, feature, docs}.md  (1 slot — 3 files)
 - ✅ scripts/setup-branch-protection.sh
 
-**Missing (10 of 16):**
+**Missing (11 of 17):**
 - ⬜ .husky/commit-msg
 - ⬜ .husky/pre-commit
 - ⬜ .husky/pre-push
@@ -180,21 +186,22 @@ Report format (in-place + missing + N/A must always sum to 16):
 - ⬜ .gitattributes
 - ⬜ .editorconfig
 - ⬜ .github/workflows/{lint-build, typecheck, test, gitleaks}.yml  (1 slot — 4 files)
-- ⬜ .github/workflows/pr-title-lint.yml  (slot 15 — squash-merge repo)
-- ⬜ scope-enum bundle: gen-commit-scopes.py + .commit-scopes.json + scope-enum-drift.yml  (slot 16 — 3 files)
+- ⬜ .github/dependabot.yml  (slot 15 — base)
+- ⬜ .github/workflows/pr-title-lint.yml  (slot 16 — squash-merge repo)
+- ⬜ scope-enum bundle: gen-commit-scopes.py + .commit-scopes.json + scope-enum-drift.yml  (slot 17 — 3 files)
 
-**N/A (0 of 16):**  (slots 15–16 both applicable here)
+**N/A (0 of 17):**  (slots 16–17 both applicable here)
 
-**Next action:** run `scaffold` mode to fill the missing 10 components.
+**Next action:** run `scaffold` mode to fill the missing 11 components.
 The 6 in-place components will be skipped automatically (manual rm + re-run to overwrite).
 ```
 
 When a conditional slot does not apply, report it under **N/A** instead of Missing, e.g. for a GitFlow (Q2=C) repo with no capability map:
 
 ```
-**N/A (2 of 16):**
-- ▫️ .github/workflows/pr-title-lint.yml  (slot 15 — repo is not squash-merge)
-- ▫️ scope-enum bundle  (slot 16 — no capability map / FBS)
+**N/A (2 of 17):**
+- ▫️ .github/workflows/pr-title-lint.yml  (slot 16 — repo is not squash-merge)
+- ▫️ scope-enum bundle  (slot 17 — no capability map / FBS)
 ```
 
 **Docs-only project variant** — when stack detection returns `none / docs-only`, the **Next action** changes:
@@ -220,11 +227,12 @@ End audit mode.
 Three questions upfront. User responds like `1A, 2A, 3` — and for Q3 you MUST wait for an explicit answer (there is no default).
 
 ```
-1. Stack?
+1. Stack + package manager? (pins the exact Dependabot ecosystem — see the map below)
    A. pnpm (Node) — recommended for new Node projects
    B. npm (Node)
    C. yarn (Node)
-   D. python + pre-commit framework
+   D. Python, pip-family (pip / pip-tools / poetry / setuptools — requirements.txt or pyproject.toml resolved by pip)
+   E. Python, uv (pyproject.toml + uv.lock)
 
 2. Branching strategy + merge mode?
    A. Trunk-based + squash-merge — recommended for solo + small teams + continuous deploy
@@ -239,7 +247,21 @@ Three questions upfront. User responds like `1A, 2A, 3` — and for Q3 you MUST 
 
 If the operator declines to answer Q3 or asks for a recommendation, **do not pick on their behalf** — re-explain the governance trade-off and re-ask. Q3 is the one decision that has too much downstream consequence (branch protection rules, PR auto-assignment, founder admin-bypass policy) to default.
 
-**Q2 also drives the merge-hygiene layer — no extra question.** If the answer is **2A or 2B (squash-merge)**, the scaffold list gains slot 15 (`pr-title-lint.yml`) and the closing report emits the `squash_merge_commit_title = PR_TITLE` command; if a capability map / FBS is also detected (Step 1) it gains slot 16 (the scope-enum bundle). If the answer is **2C (GitFlow, merge-commits)**, both are skipped as N/A — read [`references/scope-enforcement.md`](references/scope-enforcement.md) for why.
+#### Q1 → Dependabot ecosystem
+
+Q1 captures the package manager precisely so slot 15's language ecosystem is exact. The Node managers all map to Dependabot's single `npm` ecosystem (which covers `package-lock.json` / `yarn.lock` / `pnpm-lock.yaml`); Python splits into the two Dependabot Python ecosystems — `pip` (requirements/pyproject resolved by pip, pip-tools, poetry, setuptools) and `uv` (its own ecosystem, reads `pyproject.toml` + `uv.lock`):
+
+| Q1 | Package manager | Dependabot `package-ecosystem` |
+|---|---|---|
+| A | pnpm (Node) | `npm` |
+| B | npm (Node) | `npm` |
+| C | yarn (Node) | `npm` |
+| D | Python, pip-family | `pip` |
+| E | Python, uv | `uv` |
+
+**D and E differ ONLY at slot 15.** For every other slot they are the same "Python" path — both use `.pre-commit-config.yaml` (slots 1–3), the `pyproject.toml [tool.commitizen]` linter (slot 4), the Python `.gitignore`, and the Python CI-workflow variants. The pip-vs-uv split exists purely to name the Dependabot ecosystem correctly; wherever a template says "Python" or "Q1 = D/E", treat D and E identically.
+
+**Q2 also drives the merge-hygiene layer — no extra question.** If the answer is **2A or 2B (squash-merge)**, the scaffold list gains slot 16 (`pr-title-lint.yml`) and the closing report emits the `squash_merge_commit_title = PR_TITLE` command; if a capability map / FBS is also detected (Step 1) it gains slot 17 (the scope-enum bundle). If the answer is **2C (GitFlow, merge-commits)**, both are skipped as N/A — read [`references/scope-enforcement.md`](references/scope-enforcement.md) for why.
 
 ### Step 1 — detect existing project state
 
@@ -249,8 +271,10 @@ Also capture:
 - **Owner for CODEOWNERS catch-all:** `gh repo view --json owner -q .owner.login 2>/dev/null || git config user.name`
 - **Repo full name:** `gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null` or parse from `git remote get-url origin`
 - **Whether an ADR for git branching strategy already exists:** `grep -l -i "branching strategy\|merge mode" docs/architecture/decisions/adr-*.md 2>/dev/null` — if it returns a match, the post-scaffold ADR prompt (Step 4) will be skipped and the closing report will note the existing ADR.
-- **Capability map / FBS (drives slot 16):** `[ -f docs/business/03a-capability-map.md ] || [ -f docs/product-specs/07a-fbs.md ]` — if either exists, slot 16 (scope-enum bundle) applies; otherwise it is N/A and CONTRIBUTING.md documents area/module scopes.
-- **Squash-merge (drives slots 15–16):** derived from Q2 (2A/2B = squash → slots apply; 2C = merge-commit → N/A). No detection needed — the operator's Q2 answer is authoritative.
+- **Capability map / FBS (drives slot 17):** `[ -f docs/business/03a-capability-map.md ] || [ -f docs/product-specs/07a-fbs.md ]` — if either exists, slot 17 (scope-enum bundle) applies; otherwise it is N/A and CONTRIBUTING.md documents area/module scopes.
+- **Squash-merge (drives slots 16–17):** derived from Q2 (2A/2B = squash → slots apply; 2C = merge-commit → N/A). No detection needed — the operator's Q2 answer is authoritative.
+- **Dockerfile / compose presence (drives slot 15's optional blocks):** `find . -iname 'Dockerfile' -not -path '*/node_modules/*' -not -path '*/.git/*' | head -1` and `find . \( -iname 'docker-compose*.y*ml' -o -iname 'compose.y*ml' \) -not -path '*/node_modules/*' -not -path '*/.git/*' | head -1`. A Dockerfile hit → append a `docker` block to `dependabot.yml`; a compose hit → append a `docker-compose` block. No hit → omit that block entirely (never emit an empty ecosystem). Direct the block's `directory:` at `/` unless the detected file sits in a subdir, in which case use that subdir.
+- **Integration branch (drives slot 15's `target-branch`):** derived from Q2 — the same integration-branch concept `dev-release-init` reads. **2A (trunk-based)** → `main` (default branch == integration branch); **2B (GitLab Flow, develop integration)** or **2C (GitFlow)** → the promotion/integration branch (e.g. `develop`). If a promotion flow is chosen but the integration branch name is unknown, confirm it with the operator rather than inventing one. This value substitutes `{{integration_branch}}` in the template.
 
 ### Step 2 — confirm scope
 
@@ -261,21 +285,22 @@ Echo back the scoped plan with the answer summary at the top:
 
 **Answers:** Q1=A (pnpm), Q2=A (trunk-based + squash), Q3=solo founder + admin bypass
 
-**Will scaffold (8 missing slots):**
+**Will scaffold (9 missing slots):**
 - .husky/commit-msg, .husky/pre-commit, .husky/pre-push
 - commitlint.config.js
 - .gitleaks.toml
 - .gitattributes
 - .editorconfig
 - .github/workflows/{lint-build, typecheck, test, gitleaks}.yml
+- .github/dependabot.yml (slot 15 — base; github-actions + npm ecosystem, target-branch: main)
 
 **Will skip (6 already exist — manual rm + re-run to overwrite):**
 - .gitignore, CONTRIBUTING.md, .github/PULL_REQUEST_TEMPLATE.md, .github/CODEOWNERS,
   .github/ISSUE_TEMPLATE/{bug, feature, docs}.md, scripts/setup-branch-protection.sh
 
 **Also scaffold (conditional):**
-- [Q2=A/B squash] .github/workflows/pr-title-lint.yml (slot 15)
-- [capability map/FBS present] scripts/gen-commit-scopes.py + .commit-scopes.json + .github/workflows/scope-enum-drift.yml + commitlint scope-enum line (slot 16)
+- [Q2=A/B squash] .github/workflows/pr-title-lint.yml (slot 16)
+- [capability map/FBS present] scripts/gen-commit-scopes.py + .commit-scopes.json + .github/workflows/scope-enum-drift.yml + commitlint scope-enum line (slot 17)
 
 **Will emit (not execute):**
 - pnpm install command for husky + commitlint + gitleaks
@@ -298,11 +323,13 @@ For each file in the scoped scaffold list, write the appropriate template from �
 - File doesn't exist + parent dir exists → create file
 - **To overwrite an existing file:** the operator deletes it and re-runs. No `--force` flag exists.
 
-**Slot 15 (PR-title lint)** — when Q2 squash-merges: write `.github/workflows/pr-title-lint.yml` (Node or Python variant per Q1). Skip entirely for Q2=C.
+**Slot 15 (Dependabot config)** — always (base slot): write `.github/dependabot.yml` from the §`.github/dependabot.yml` template. Substitute `{{lang_ecosystem}}` per the Q1 → Dependabot ecosystem map (`npm` / `pip` / `uv`) and `{{integration_branch}}` per the Q2-derived integration branch. Append the `docker` block only if a Dockerfile was detected, and the `docker-compose` block only if a compose file was detected (Step 1) — never emit an empty ecosystem. Skip-if-exists like every file.
 
-**Slot 16 (scope-enum bundle)** — when a capability map / FBS was detected in Step 1:
+**Slot 16 (PR-title lint)** — when Q2 squash-merges: write `.github/workflows/pr-title-lint.yml` (Node or Python variant per Q1). Skip entirely for Q2=C.
+
+**Slot 17 (scope-enum bundle)** — when a capability map / FBS was detected in Step 1:
 1. Copy the generator into the target repo: `cp ~/.claude/skills/dev-git-init/scripts/gen-commit-scopes.py scripts/gen-commit-scopes.py` (skip-if-exists like every file).
-2. Generate the committed enum: `python3 scripts/gen-commit-scopes.py --out .commit-scopes.json`. If it exits 2 (no sources readable after all), abort slot 16 and fall back to area/module scopes.
+2. Generate the committed enum: `python3 scripts/gen-commit-scopes.py --out .commit-scopes.json`. If it exits 2 (no sources readable after all), abort slot 17 and fall back to area/module scopes.
 3. Write `.github/workflows/scope-enum-drift.yml`.
 4. Wire the `scope-enum` line into the slot-4 commit-linter config **only if that config was scaffolded this same run** (a pre-existing `commitlint.config.js` is skip-if-exists, so the closing report instead tells the operator to add the line by hand).
 
@@ -350,6 +377,7 @@ On `n`: the closing report omits the ADR step.
 - ✅ .github/workflows/typecheck.yml
 - ✅ .github/workflows/test.yml
 - ✅ .github/workflows/gitleaks.yml (full-history scan)
+- ✅ .github/dependabot.yml (github-actions weekly + <npm|pip|uv> monthly w/ 7-day cooldown; target-branch: <integration-branch>; [+ docker / docker-compose blocks when a Dockerfile / compose file was detected])
 [If Q2 squash-merges:]
 - ✅ .github/workflows/pr-title-lint.yml (required check — same vocabulary as the commit-msg hook)
 [If capability map / FBS present:]
@@ -388,10 +416,17 @@ On `n`: the closing report omits the ADR step.
 
 3. Commit the scaffold:
 
-   git add .husky/ commitlint.config.js .gitleaks.toml .editorconfig .gitattributes .github/workflows/
+   git add .husky/ commitlint.config.js .gitleaks.toml .editorconfig .gitattributes .github/workflows/ .github/dependabot.yml
    git commit -m "chore(repo): scaffold git enforcement stack via dev-git-init"
 
 4. Push and open the first PR to trigger CI workflows (so status check names register with GitHub).
+
+4a. Dependabot arming (no command to run — a timing note): GitHub reads
+    `.github/dependabot.yml` from the DEFAULT branch only. On a trunk-based repo
+    (default branch == integration branch) it arms as soon as this scaffold lands
+    on the default branch. On a promotion flow it arms only after the next
+    integration→main promotion — NOT on the merge into the integration branch.
+    Confirm the config is live under Insights → Dependency graph → Dependabot.
 
 5. Apply branch protection (once workflows have run at least once):
 
@@ -487,7 +522,7 @@ fi
 
 `chmod +x .husky/pre-push`.
 
-### `.pre-commit-config.yaml` *(Python only — Q1 = D)*
+### `.pre-commit-config.yaml` *(Python only — Q1 = D/E)*
 
 ```yaml
 # https://pre-commit.com
@@ -910,7 +945,100 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### `.github/workflows/pr-title-lint.yml` *(slot 15 — only when Q2 squash-merges)*
+### `.github/dependabot.yml` *(slot 15 — base, always scaffolded)*
+
+The dependency-freshness config. Always emits the `github-actions` block plus the language ecosystem from Q1; the `docker` / `docker-compose` blocks are appended **only when detected** (Step 1) — never emit an empty ecosystem. Substitute `{{lang_ecosystem}}` (`npm` / `pip` / `uv`, per §Q1 → Dependabot ecosystem) and `{{integration_branch}}` (per the Q2-derived integration branch). Full rationale — arming gotcha, ecosystem map, group/cooldown policy, integration-branch resolution — lives in [`references/dependabot-config.md`](references/dependabot-config.md).
+
+**Base template (always — `github-actions` + language ecosystem):**
+
+```yaml
+# Dependabot dependency-freshness config.
+#
+# WHY: pinned actions and locked dependencies never float, so a scheduled bump
+# PR is the only thing that moves them. Dependabot is the freshness mechanism
+# that makes pinning safe — pin for immutability, Dependabot to keep the pins
+# current. A stale pin with no watcher is strictly worse than a floating tag.
+#
+# ARMING GOTCHA: GitHub reads this file from the DEFAULT branch only. On a
+# promotion flow (feature -> integration branch -> main), the config therefore
+# arms on the next integration->main promotion, NOT on the merge into the
+# integration branch. On a trunk-based repo (default branch == integration
+# branch == main) it arms immediately.
+#
+# target-branch: Dependabot opens its PRs against the integration branch so
+# they get the same CI gate as any other PR. Resolved from the branching model
+# (Q2): `main` for trunk-based; the integration branch for a promotion flow.
+
+version: 2
+updates:
+  # Pinned actions never float, so a scheduled bump is the only way they move —
+  # weekly, no cooldown, one grouped PR (all update-types) to keep noise low.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "{{integration_branch}}"
+    open-pull-requests-limit: 5
+    schedule:
+      interval: "weekly"
+    groups:
+      actions-all:
+        patterns:
+          - "*"
+
+  # Language dependencies: monthly cadence, 7-day cooldown (a supply-chain
+  # detection buffer on fresh releases), minor+patch grouped into one PR;
+  # majors intentionally fall OUTSIDE the group and arrive as individual PRs so
+  # a breaking bump is reviewed on its own. {{lang_ecosystem}} = npm | pip | uv.
+  - package-ecosystem: "{{lang_ecosystem}}"
+    directory: "/"
+    target-branch: "{{integration_branch}}"
+    open-pull-requests-limit: 5
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    groups:
+      minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+```
+
+**Docker block — append ONLY when a `Dockerfile` was detected:**
+
+```yaml
+  # Dockerfile base images. The `docker` ecosystem parses Dockerfiles only.
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "{{integration_branch}}"
+    open-pull-requests-limit: 5
+    schedule:
+      interval: "weekly"
+    groups:
+      docker-all:
+        patterns:
+          - "*"
+```
+
+**Compose block — append ONLY when a `docker-compose*.yml` / `compose.yml` was detected:**
+
+```yaml
+  # Compose-pinned images. Compose files have their own `docker-compose`
+  # ecosystem — the `docker` ecosystem above does NOT parse them.
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    target-branch: "{{integration_branch}}"
+    open-pull-requests-limit: 5
+    schedule:
+      interval: "weekly"
+    groups:
+      compose-all:
+        patterns:
+          - "*"
+```
+
+Set each block's `directory:` to `/` unless the detected file lives in a subdirectory, in which case point it there.
+
+### `.github/workflows/pr-title-lint.yml` *(slot 16 — only when Q2 squash-merges)*
 
 Validates the PR title against the **same** Conventional-Commits vocabulary as the local commit-msg hook — because a squash-merge makes the PR title the landed commit subject the hook never sees. The title is passed via `env:` (never inline `${{ }}` in `run:`) for template-injection hardening. `name: PR Title Lint` is the stable branch-protection context — keep it stable.
 
@@ -969,7 +1097,7 @@ jobs:
         run: pipx run --spec commitizen==3.20.0 cz check --message "$PR_TITLE"
 ```
 
-**Advisory scope-enum step** *(append to the job above — only scaffolded when slot 16 is active)*. Warns (does not fail) when the title's scope is outside `.commit-scopes.json`; bypassed by the `cross-cutting` label. To harden to blocking once the vocabulary settles, swap `::warning::` for `::error::` and add `exit 1`.
+**Advisory scope-enum step** *(append to the job above — only scaffolded when slot 17 is active)*. Warns (does not fail) when the title's scope is outside `.commit-scopes.json`; bypassed by the `cross-cutting` label. To harden to blocking once the vocabulary settles, swap `::warning::` for `::error::` and add `exit 1`.
 
 ```yaml
       - name: Advisory — PR-title scope in capability enum
@@ -990,7 +1118,7 @@ jobs:
           PY
 ```
 
-### `.github/workflows/scope-enum-drift.yml` *(slot 16 — only when a capability map / FBS exists)*
+### `.github/workflows/scope-enum-drift.yml` *(slot 17 — only when a capability map / FBS exists)*
 
 Re-runs the generator and diffs against the committed `.commit-scopes.json` — the same regen-and-diff pattern as an `openapi.bundled.yaml` / `requirements.lock` drift-gate. Fails when the capability map / FBS changed without a regen.
 
@@ -1024,13 +1152,13 @@ jobs:
           fi
 ```
 
-### `scripts/gen-commit-scopes.py` *(slot 16 generator — bundled with the skill)*
+### `scripts/gen-commit-scopes.py` *(slot 17 generator — bundled with the skill)*
 
 Not inlined here — the canonical script ships at `~/.claude/skills/dev-git-init/scripts/gen-commit-scopes.py`. Step 3 copies it into the target repo's `scripts/`. It reads `docs/business/03a-capability-map.md` + `docs/product-specs/07a-fbs.md` (both optional), derives a slug per product and per L0 capability domain, appends the fixed buckets `platform, infra, ci, deps, chore`, and writes byte-stable JSON. Exit 2 = no sources → degrade to area/module scopes.
 
-### `commitlint.config.js` scope-enum wiring *(slot 16 — Node, added to the slot-4 config)*
+### `commitlint.config.js` scope-enum wiring *(slot 17 — Node, added to the slot-4 config)*
 
-When slot 16 is active **and** `commitlint.config.js` is scaffolded this run, add one rule so the allowlist is enforced natively on both the commit-msg hook and the PR-title lint:
+When slot 17 is active **and** `commitlint.config.js` is scaffolded this run, add one rule so the allowlist is enforced natively on both the commit-msg hook and the PR-title lint:
 
 ```js
     'scope-enum': [2, 'always', require('./.commit-scopes.json').scopes],
@@ -1140,16 +1268,17 @@ gitleaks for all: `brew install gitleaks` (macOS) · `scoop install gitleaks` (W
 - [ ] Step 2 scope summary echoed with answers + scaffold list + skip list; operator confirmed
 - [ ] Every written file exists at its target path; existing files skipped silently
 - [ ] All `.husky/*`, `.sh`, and `.py` files are executable (`chmod +x` applied)
-- [ ] Slot 15 (`pr-title-lint.yml`) scaffolded iff Q2 squash-merges; PR title bound via `env:`, not inline
-- [ ] Slot 16 (generator + `.commit-scopes.json` + drift-gate + scope-enum wiring) scaffolded iff a capability map / FBS exists; generator exit 2 handled as graceful fallback
+- [ ] Slot 15 (`.github/dependabot.yml`) scaffolded (base — always); `{{lang_ecosystem}}` set per Q1, `{{integration_branch}}` per Q2; docker/docker-compose blocks appended only when detected
+- [ ] Slot 16 (`pr-title-lint.yml`) scaffolded iff Q2 squash-merges; PR title bound via `env:`, not inline
+- [ ] Slot 17 (generator + `.commit-scopes.json` + drift-gate + scope-enum wiring) scaffolded iff a capability map / FBS exists; generator exit 2 handled as graceful fallback
 - [ ] Step 4 ADR prompt asked (unless skipped per existing-ADR detection)
 - [ ] Closing report lists scaffolded vs skipped + emits install command for the chosen Q1 stack + (if Q2 squash) the `squash_merge_commit_title=PR_TITLE` command + arming-order note + conditional ADR step per Step 4 answer
 
 **Audit mode:**
 
-- [ ] Detection loop run; all 14 base + up to 2 conditional slots checked
+- [ ] Detection loop run; all 15 base + up to 2 conditional slots checked
 - [ ] Stack + default branch + repo platform + capability-map/FBS presence detected; docs-only branch handled if no stack
-- [ ] Report shows in-place / missing / N/A split summing to 16
+- [ ] Report shows in-place / missing / N/A split summing to 17
 - [ ] Next-action recommendation given
 
 ---
