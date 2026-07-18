@@ -22,7 +22,7 @@ This skill guides you through creating a high-quality, structured implementation
 1. **Deconstruct Requirement:** Read the PRD or feature request. Identify the core architectural components and the order of operations.
 2. **Define Summary:** State the purpose, reference the source PRD, and list the guiding principles (e.g., isolation, small steps, test gates).
 3. **Draft Increments:** Break the implementation into small, coherent increments. Each increment MUST be a standalone changeset with a test gate.
-4. **Define Delivery Rules:** Include project-wide constraints (e.g., "one increment per commit", "no live API keys").
+4. **Define Delivery Rules:** Include project-wide constraints (e.g., "one increment per commit", "no live API keys"), and **declare the `Commit scope:`** — resolve it from the source PRD's product/capability (`P-NN` → product slug, `C-N.M` → capability slug) so the ralph loop and `dev-git-commit` emit a capability scope, not the plan number. See [Commit & PR scope vocabulary](../../rules/git-and-tools.md).
 5. **Group into Milestones:** Create a table grouping increments into logical, standalone delivery chunks.
 6. **Save the Plan:** Save the completed plan to `docs/plans/active/{NNNN}_exec_{slug}.md`. The `{NNNN}` MUST match the ID of the corresponding PRD.
 
@@ -84,8 +84,9 @@ Exit criteria:
 ## Delivery Rules
 
 1. One increment per commit.
-2. Each increment must be independently runnable and reversible.
-3. [Other standard rules...]
+2. **Commit scope:** `[capability/product slug]` — the scope every increment's commit uses, derived from the PRD's product/capability (`P-NN` → product slug, or `C-N.M` → capability slug). The ralph loop and `dev-git-commit` read this; the plan + increment ref goes in a `Refs: Plan-NNNN increment XX` trailer, **never** the scope. See [Commit & PR scope vocabulary](../../rules/git-and-tools.md).
+3. Each increment must be independently runnable and reversible.
+4. [Other standard rules...]
 
 ## Milestone Chunks (Standalone Delivery Groups)
 
