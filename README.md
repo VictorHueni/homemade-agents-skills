@@ -42,9 +42,11 @@ A personal Claude Code toolkit — composable skills for business architecture, 
 | `ops-` | `ops-bug-rca` | Root cause analysis |
 | `dev-` | `dev-stack-guide` | Per-technology developer guide + MCP discovery — `docs/dev-guides/{tech-slug}.md` |
 | `dev-` | `dev-getting-started` | Project onboarding guide — `docs/dev-guides/getting-started.md` |
+| `dev-` | `dev-git-init` | Scaffold git enforcement stack — hooks · commitlint · PR-title lint · scope-enum · branch protection |
 | `dev-` | `dev-git-commit` | Conventional commit generation |
 | `dev-` | `dev-pr` | Pull request creation |
 | `dev-` | `dev-git-worktree` | Isolated git worktrees |
+| `dev-` | `dev-release-init` | Scaffold release automation (release-please config + manifest + workflow); consumes dev-git-init's clean history, feeds `com-release-note` |
 | `agent-` | `agent-config` | Guide — scaffold/review/improve `CLAUDE.md` + `AGENTS.md` |
 | `agent-` | `agent-grill-me` | Verify (inner loop) — Socratic stress-test of a PRD / plan |
 | `agent-` | `agent-peer-review` | Verify (outer loop) — PRD / plan review by severity |

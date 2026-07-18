@@ -1,0 +1,37 @@
+name: release-please
+
+# Release automation. Runs on every push to the release branch and maintains one
+# standing release PR (the accumulator). Cutting a release is the deliberate act of
+# merging that PR — release-please then finalises CHANGELOG.md, bumps the version
+# source(s), tags vX.Y.Z, and publishes the GitHub Release.
+#
+# The release PR is opened by the default GITHUB_TOKEN, whose pushes do NOT trigger
+# other workflows — so the release PR receives no required-check runs and must be
+# admin-merged (see references/release-lessons.md §3). This is intentional: every
+# underlying change was already gate-validated when its own feature PR merged.
+on:
+  push:
+    branches: [{{integration_branch}}]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: release-please-{{integration_branch}}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    steps:
+      # Repo policies that require SHA-pinned actions: replace @v4 with a full
+      # 40-char commit SHA (e.g. @<sha> # v4.4.1). Keep it current on upgrades.
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target-branch: {{integration_branch}}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

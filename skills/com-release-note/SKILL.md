@@ -158,6 +158,7 @@ Open items about this skill's own evolution go to the kit's central ledger (`doc
 - `templates/release-note-template.md` · `templates/github-release-body-template.md` — the two outputs
 - `references/curation-methodology.md` — principles, boundaries, worked recipe
 - `rules/artefact-frontmatter.md` · `rules/artefact-types-registry.md` — `Release Notes` frontmatter + registry
+- `dev-release-init` — the upstream release-automation skill that produces the `CHANGELOG.md` + tags this note curates
 - `com-slide-deck`, `com-artefact-viz` — sibling `com-` communication skills
 
 ## Closing report to the user
