@@ -116,7 +116,7 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
    - **Slug** — the `` `slug: <handle>` `` code-line directly under the heading. If missing (older map), assign one now: auto-propose `slugify(name)`, flag > 20 chars with a shorter suggestion, confirm global uniqueness across the map + FBS. Mandatory. See "Canonical slug — the third identifier".
    - **Name** (already in the tree — restate for navigability)
    - **Definition** — 1–2 sentence outcome statement. Business language, no jargon. Start with the verb "Provides…" or "Enables…" or the noun phrase + active outcome.
-   - **Business object** — the entity the capability operates on (Customer, Order, Claim, Drug, Risk, Asset…). One noun.
+   - **Business object** — the entity the capability operates on (Customer, Order, Claim, Invoice, Risk, Asset…). One noun.
    - **Strategic importance** — `Differentiator` / `Necessary` / `Commodity` (high / medium / low). Include a one-line rationale.
    - **Outcomes** — 2–4 bullets describing what the capability produces or enables. Outcome-oriented, not activity-oriented.
    - **Boundaries** — 2–3 bullets describing what the capability does NOT cover (anti-overlap discipline; helps the reader understand the edges).

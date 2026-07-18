@@ -629,7 +629,7 @@ Artefact-type id_formats are defined in the structural registry [`artefact-types
 
 **Cross-doc linking rule:** any artefact that references another should use the ID + name + relative path:
 
-> `[C3.2 KOGU prior-authorisation classification](../03a-capability-map.md#c32)` 
+> `[C3.2 payment-fraud classification](../03a-capability-map.md#c32)` 
 
 so that future renames (description text) don't break the link as long as the ID is stable.
 

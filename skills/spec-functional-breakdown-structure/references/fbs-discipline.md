@@ -210,7 +210,7 @@ to the BC Map.
 | ❌ Long-form definition | ✅ Navigability one-liner |
 |---|---|
 | "Customer Onboarding provides the ability to register, validate, and maintain customer master data across the customer lifecycle, ensuring a single authoritative record per legal entity." | "Onboarding capability — register & validate customer records." |
-| (10-line BC Map definition) | "PM-flagged drug visibility for insurer-context users." |
+| (10-line BC Map definition) | "Flagged-record visibility for reviewer-context users." |
 
 The full definition stays in the BC Map; the FBS one-liner is the
 working-memory reminder.
