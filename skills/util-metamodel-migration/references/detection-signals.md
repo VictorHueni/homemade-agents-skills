@@ -41,6 +41,7 @@ A file whose name matches one of these patterns is likely the artefact type list
 | `IDEA-[0-9][0-9][0-9][0-9]-*.md` or `*idea*.md` outside canonical | Discovery idea | `discovery-idea` | `docs/discovery/ideation/IDEA-NNNN-{slug}.md` |
 | `interview-*.md` or `research-synthesis-*.md` or `research-plan-*.md` outside canonical | Discovery research | `discovery-research` | `docs/discovery/interviews/` |
 | `workshop-*.md` or `workshop-synthesis-*.md` outside canonical | Discovery workshop | `discovery-workshop` | `docs/discovery/workshops/` |
+| `*release-note*.md` or `*release-notes*.md` (outside `docs/communication/release-notes/`; NOT root `CHANGELOG.md`) | Release notes | `com-release-note` | `docs/communication/release-notes/{slug}.md` (or an existing `docs/release-notes/`) |
 | `workspace.dsl` (Structurizr DSL) anywhere | C4 workspace | `arch-structurizr` | `docs/architecture/c4/workspace.dsl` |
 | `*.dsl` outside `docs/architecture/c4/` that contains `workspace "..."` | Misplaced Structurizr DSL | `arch-structurizr` | `docs/architecture/c4/workspace.dsl` |
 | `render.sh` containing `structurizr/structurizr` reference outside `docs/architecture/c4/` | Misplaced render pipeline | `arch-structurizr` | `docs/architecture/c4/render.sh` |
@@ -83,6 +84,7 @@ A folder whose name matches one of these patterns, AND is not already at the can
 | `dev-guides/` or `developer-guides/` or `stack-guides/` not at `docs/dev-guides/` | Developer guides | `dev-stack-guide` / `dev-getting-started` | `find docs -type d \( -iname "dev-guide*" -o -iname "developer-guide*" -o -iname "stack-guide*" \) \| grep -v "docs/dev-guides"` |
 | `c4/` or `structurizr/` not at `docs/architecture/c4/` | C4 workspace foundation | `arch-structurizr` | `find docs -type d \( -iname "c4" -o -iname "structurizr" \) \| grep -v "docs/architecture/c4"` |
 | `arc42/` not at `docs/architecture/arc42/` | arc42 markdown sections | `arch-c4` | `find docs -type d -iname "arc42" \| grep -v "docs/architecture/arc42"` |
+| `release-notes/` or `release-note/` not at `docs/communication/release-notes/` | `com-release-note` | `docs/communication/release-notes/` (an existing top-level `docs/release-notes/` is honoured, not flagged) | `find docs -type d -iname "release-note*" \| grep -vE "docs/communication/release-notes\|docs/release-notes"` |
 
 ---
 
@@ -120,6 +122,7 @@ Read only `head -50 {file}`. Check for these high-signal headings. A content sig
 | `# 5. Building Block View` with `arc42 §5` reference or `## 5.1 Whitebox Overall System` + `Domain aggregates implemented` column | `arch-c4` (arc42 §5 markdown) |
 | `# 7. Deployment View` with `arc42 §7` reference or `Mapping of building blocks to infrastructure` heading | `arch-c4` (arc42 §7 markdown) |
 | `SYS-[0-9]{2}`, `CON-[0-9]{2}`, `CMP-[0-9]{2}`, or `DN-[0-9]{2}` patterns in markdown | `arch-c4` (C4 IDs minted) |
+| `## v[0-9]+\.[0-9]+\.[0-9]+` heading with `## What.s new` nearby, or `type: Release Notes` in frontmatter | `com-release-note` (release notes) |
 
 ---
 

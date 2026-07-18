@@ -53,7 +53,7 @@ Skill folder name + `name:` frontmatter field must follow this exact pattern:
 | `dev-` | *(no doc folder — developer workflow utility)* | `dev-git-commit`, `dev-pr`, `dev-git-worktree`, `dev-stack-guide`, `dev-getting-started` |
 | `agent-` | *(no doc folder — Agent-Centric Development Cycle)* | Guide → Verify → Solve loop around agent code-gen (mints no IDs): `agent-config` (Guide — `CLAUDE.md`/`AGENTS.md`), `agent-grill-me` + `agent-peer-review` (Verify — stress-test / review specs), `agent-ralph-loop` (Solve — autonomous execution). Orchestrates *how the agent builds*, distinct from the `qa-` *tests* that verify the product. |
 | `ux-` | `docs/ux/` (design + experience layer — project visual source of truth + UX artefacts; tokens consumed by the `com-` presentation layer; cross-cutting) | `ux-design-system` (→ `docs/ux/design-system.md` + `tokens.css`) |
-| `com-` | `docs/communication/` (subfolders per artefact type, e.g. `slides/`) | `com-slide-deck` (→ `docs/communication/slides/{slug}/`) |
+| `com-` | `docs/communication/` (subfolders per artefact type, e.g. `slides/`) | `com-slide-deck` (→ `docs/communication/slides/{slug}/`), `com-artefact-viz`, `com-release-note` (→ `docs/communication/release-notes/`) |
 | `util-` | *(no doc folder — housekeeping)* | `util-docs-audit`, `util-toolkit-doctor` |
 
 **Why this matters:** when you (or Claude) see a skill name, the prefix immediately tells you (a) which folder its output goes into, or (b) that it's a non-doc utility. No ambiguity.

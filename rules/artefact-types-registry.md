@@ -80,6 +80,7 @@ changes the emitted `type:` and the audit's accepted enum.
 | `research_note` | `discovery-research` | — | one-per-artefact | `docs/discovery/interviews/{slug}.md` | `90d` | — | _TBD_ |
 | `workshop_note` | `discovery-workshop` | — | one-per-artefact | `docs/discovery/workshops/{slug}.md` | `90d` | — | _TBD_ |
 | `design_system` | `ux-design-system` | — | one-per-artefact | `docs/ux/design-system.md` | `180d` | — | _TBD_ |
+| `release_notes` | `com-release-note` | — | one-per-artefact | `docs/communication/release-notes/{slug}.md` | `90d` | — | _TBD_ |
 | `arc42_section` | `arch-arc42` | — | one-per-artefact | `docs/architecture/arc42/{nn}-{slug}.md` | `180d` | — | _TBD_ |
 
 > **Supporting doc-types (2026-07-01).** The rows above `runbook`…`arc42_section` are doc-producing skills that mint **no business ID** (`id_format` `—`) but write `docs/**` markdown that OKF requires to carry a `type`. They were added to the registry when the OKF baseline made `type` mandatory for every concept document. They are not steps in the linear build order (see `metamodel.md` supporting-skills list). **`arc42_section` (KISS):** all eight arc42 section files share the one display name `Architecture Documentation`, disambiguated by the section number in their `title` (and by the `CST-NN`/`SCN-NN`/`CC-NN`/`RSK-NN` sub-IDs they mint); `arch-arc42` owns the frontmatter even for §3/§5/§7 where `arch-c4` fills the DSL-derived tables (ADR-0004).
@@ -133,6 +134,7 @@ is revisited if per-instance explosion ships (issue #54).
 | `research_note` | `Research Note` |
 | `workshop_note` | `Workshop Note` |
 | `design_system` | `Design System` |
+| `release_notes` | `Release Notes` |
 | `arc42_section` | `Architecture Documentation` |
 
 ## Maintenance coupling

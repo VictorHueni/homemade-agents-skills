@@ -764,7 +764,7 @@ command find docs -name "*.md" ! -name 'README.md' ! -name 'index.md' ! -name 'l
   #     A value outside the set is tolerated by OKF but flagged (unregistered).
   type_val=$(fm type)
   if [ -n "$type_val" ]; then
-    okf_types="Product Vision|Persona|Business Model Canvas|Business Model Canvas Block|Business Capability|Value Stream|Value Stream Stage|Business Objective|Key Result|Business Process|Quantitative Model|Competitor Profile|Bounded Context|Glossary Term|Functionality|Domain Model|Aggregate|Entity|Value Object|Domain Event|Interface Contract|Epic|CLI Surface Contract|CLI Command|Quality Attribute|Use Case|Product Requirements Document|Implementation Plan|Architecture Decision Record|Architecture Research Note|Idea|Runbook|Bug RCA|Stack Guide|Getting Started Guide|Research Note|Workshop Note|Design System|Architecture Documentation"
+    okf_types="Product Vision|Persona|Business Model Canvas|Business Model Canvas Block|Business Capability|Value Stream|Value Stream Stage|Business Objective|Key Result|Business Process|Quantitative Model|Competitor Profile|Bounded Context|Glossary Term|Functionality|Domain Model|Aggregate|Entity|Value Object|Domain Event|Interface Contract|Epic|CLI Surface Contract|CLI Command|Quality Attribute|Use Case|Product Requirements Document|Implementation Plan|Architecture Decision Record|Architecture Research Note|Idea|Runbook|Bug RCA|Stack Guide|Getting Started Guide|Research Note|Workshop Note|Design System|Release Notes|Architecture Documentation"
     echo "$type_val" | command grep -qxE "($okf_types)" || {
       echo "UNREGISTERED type '${type_val}' (warn): $f"
       findings=$((findings + 1))

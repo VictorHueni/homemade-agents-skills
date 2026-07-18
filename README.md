@@ -52,6 +52,7 @@ A personal Claude Code toolkit — composable skills for business architecture, 
 | `ux-` | `ux-design-system` | Project visual source of truth — `docs/ux/design-system.md` → `tokens.css` (themes the `com-` layer) |
 | `com-` | `com-slide-deck` | HTML slide deck builder |
 | `com-` | `com-artefact-viz` | Interactive HTML views of artefacts (capability map · FBS · roadmap · BMC) |
+| `com-` | `com-release-note` | Curated stakeholder release notes from changelog + commit/PR history + FBS + capability map |
 | `util-` | `util-metamodel-scaffold` | Canonical docs/ folder tree + index.md + CLAUDE.md wiring |
 | `util-` | `util-metamodel-audit` | Artefact stack health check |
 | `util-` | `util-metamodel-migration` | Docs folder migration report |
