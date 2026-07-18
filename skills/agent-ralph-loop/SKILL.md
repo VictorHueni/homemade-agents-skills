@@ -107,17 +107,29 @@ Each entry in `progress.txt` follows this format:
 
 ## Commit Convention
 
-Use conventional commits with the plan ID as scope:
+Use conventional commits with a **meaningful scope** — the capability or product the increment advances, **not** the plan number. The plan ID and increment are preserved in a trailer, so the audit trail is never lost.
 
 ```text
-feat|fix|refactor(NNNN): increment XX — [title]
+<type>(<scope>): <increment title>
+
+Refs: Plan-<NNNN> increment <XX>
 ```
 
-Examples:
+**Resolving `<scope>` (first match wins):**
 
-- `feat(0001): increment 01 — create database schema`
-- `fix(0001): increment 03 — fix validation edge case`
-- `refactor(0001): increment 05 — extract shared utilities`
+1. **Plan-declared scope** — if the plan's Delivery Rules declare a `Commit scope:` (set by `plan-implementation` from the PRD's product/capability), use it verbatim.
+2. **Derived from traceability** — else read the plan's PRD §0 Architecture Traceability and use the product (`P-NN` → slug) or capability (`C-N.M` → slug) the plan delivers.
+3. **Fallback (no metamodel)** — else use the plan's own feature slug (the `{slug}` in `NNNN_exec_{slug}.md`). **Never fall back to the bare plan number as the scope.**
+
+`<type>` is `feat` / `fix` / `refactor` / etc. per the change. The `Refs:` trailer keeps the plan + increment greppable and survives squash-merge in the commit body.
+
+Examples (scopes are illustrative — use your project's real capability/product names):
+
+- `feat(billing): word-level diff on plan terms` + trailer `Refs: Plan-0042 increment 03`
+- `fix(search): correct ranking at the tie-break` + trailer `Refs: Plan-0042 increment 05`
+- `refactor(platform): extract shared retry helper` + trailer `Refs: Plan-0042 increment 07`
+
+> **Why:** the scope drives the automated changelog and the stakeholder release note (`com-release-note`). A capability/product scope makes both legible to a non-technical reader and near-mechanical to curate; a bare plan number makes them opaque. This mirrors the canonical [Commit & PR scope vocabulary](../../rules/git-and-tools.md) convention that `dev-git-commit`, `dev-pr`, and `plan-implementation` also follow. Mechanical enforcement is tracked in kit issue #64.
 
 ## Completion Detection
 

@@ -35,7 +35,7 @@ Follow the Iteration Protocol exactly:
 5. Verify every exit criterion holds; if not, treat as test gate failure and retry.
 6. Mark the increment `done`.
 7. If `PRD Mode` is `with-prd`, update PRD checkboxes, user story statuses, and the top-level PRD `**Status:**` (see SKILL.md step 8 for the exact rules).
-8. Commit using the convention: `feat|fix|refactor(NNNN): increment XX — title`.
+8. Commit with a conventional message whose scope is the plan's **capability/product** (declared `Commit scope:`, else derived from the PRD §0 traceability, else the plan's feature slug — **never the bare plan number**): `<type>(<scope>): <increment title>`, plus a `Refs: Plan-<NNNN> increment <XX>` trailer. See SKILL.md §Commit Convention.
 9. Append to `progress.txt`.
 
 ### Step 4: Signal completion
