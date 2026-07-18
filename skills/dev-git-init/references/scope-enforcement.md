@@ -47,22 +47,15 @@ Three pieces, all owned here because `dev-git-init` owns both surfaces the enum 
 
 ### Generate
 
-`scripts/gen-commit-scopes.py` (pure stdlib, read-only) reads the capability map (`docs/business/03a-capability-map.md`) and FBS (`docs/product-specs/07a-fbs.md`) and derives the allowlist. **Scope altitude is the capability, not the product:** every capability maps to one product in the FBS, so a capability scope encodes Product → Capability (the subject line then carries the functionality) — the full hierarchy — whereas a product-only scope would skip the capability floor. Product slugs are emitted too (for genuinely cross-capability product work), and the fixed buckets `platform, infra, ci, deps, chore` are appended. Output is a byte-stable `.commit-scopes.json`:
+`scripts/gen-commit-scopes.py` (pure stdlib, read-only) reads the capability map (`docs/business/03a-capability-map.md`) and FBS (`docs/product-specs/07a-fbs.md`) and harvests their **first-class canonical slugs** — the `` `slug: <handle>` `` code-line each L0 domain, L1 capability, and product declares under its heading. Those slugs are the source of truth (owned by the capability map + FBS, defined in [`artefact-types-registry.md` § Canonical slugs], and audited for presence + global-uniqueness + format by `util-metamodel-audit` Check 19). The allowlist is every declared slug + the fixed buckets `platform, infra, ci, deps, chore`. Output is a byte-stable `.commit-scopes.json`:
 
 ```json
-{ "scopes": ["billing", "checkout", "search", "platform", "infra", "ci", "deps", "chore"], "sources": ["docs/business/03a-capability-map.md"] }
+{ "scopes": ["billing", "catalog", "catalog-maintenance", "checkout", "platform", "infra", "ci", "deps", "chore"], "sources": ["docs/business/03a-capability-map.md"] }
 ```
 
-Slug derivation: kebab-case of the name, connective stopwords dropped, a leading product-family word common to every product name stripped (so "Acme Billing" → `billing`).
+Because slugs are short (≤20 chars), kebab, and globally unique *by construction upstream*, the generator does not derive or shorten them — it just reads them. A developer scopes a commit at whichever declared altitude fits: a capability (`catalog-maintenance`), a whole product (`billing`), or an L0 domain (`catalog`); all are legible and all resolve to a Product → Capability home via the FBS. A malformed slug (non-kebab) is reported to stderr and skipped rather than silently emitted.
 
-**Short capability slugs — the `scope:` alias.** A verbose capability name would produce an unusable slug (`prior-authorization-clinical-decision-support`, 45 chars). Declare a short alias *in that capability's block* in the capability map and the generator emits the alias instead:
-
-```
-### C6.1 · Prior Authorization / Clinical Decision Support
-scope: prior-auth
-```
-
-→ emits `prior-auth`. This is **author-once and drift-gated** — the alias lives in the capability map (the source of truth), never in the emitted JSON. When a capability has no alias and its slug exceeds ~20 chars, the generator prints a stderr **warning** suggesting one; the enum is still written (a long slug is usable, just awkward to type), so the warning is a nudge, not a failure. The optional per-capability `scope:` field is a `business-capability-map` convention — see that skill for where it lives in a capability block.
+**Degradation — no first-class slugs yet.** On a repo whose capability map predates the slug convention (no `` `slug:` `` lines at all), the generator falls back to slugifying capability / product *names* and prints a nudge to add first-class slugs (plus an over-length warning per name that exceeds ~20 chars). The fix is always upstream — declare the slugs in the capability map / FBS — never hand-edit the emitted JSON, which the drift-gate forbids.
 
 ### Check
 
