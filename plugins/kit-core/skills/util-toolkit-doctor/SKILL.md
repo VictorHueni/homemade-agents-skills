@@ -32,13 +32,37 @@ The script is read-only. It checks:
 - **Init mode**: dotfiles repo line says `NOT INITIALIZED`. Machine is fresh — go to "Init mode" below.
 - **Audit mode**: dotfiles repo exists. Walk findings and apply the auto-fix policy.
 
+## Step 2b — Plugin-layout & adapter checks (kit ADR-0006)
+
+Beyond the gather script, verify the packaging surfaces:
+
+1. **Plugin layout**: kit repo has `.claude-plugin/marketplace.json` (JSON-valid) and skills
+   under `plugins/*/skills/*` — a `skills/` or `commands/` dir at the kit root is pre-move
+   residue; flag it.
+2. **Stale old-layout links**: symlinks in `~/.claude/skills`, `~/.codex/skills`, or
+   `~/.agents/skills` whose target contains `/skills/` directly under the kit root (not
+   `/plugins/`) are stale — auto-fix via `install.sh` (re-points them).
+3. **Adapter marker blocks**: `~/.codex/AGENTS.md` and `~/.config/opencode/AGENTS.md` each
+   contain exactly one `BEGIN homemade-claude-kit adapter` block; zero → install.sh never
+   ran the generator; two+ → corrupted merge, propose regeneration.
+4. **MCP consistency**: every `enabled: true` server in the kit's `mcp/registry.json`
+   appears in `~/.codex/config.toml`'s marker block and in `opencode.json`'s `mcp` key, and
+   each `owning_set`'s `plugins/<set>/.mcp.json` exists; any mismatch → re-run
+   `scripts/gen-mcp.py` (plugins + harness).
+5. **Dual-channel conflict (Claude)**: if the Claude Code config shows the kit's marketplace
+   installed AND `~/.claude/skills` contains kit symlinks, the same skills are served twice.
+   STOP and propose-confirm: name both channels and ask which to remove (marketplace
+   channel → delete the kit symlinks from `~/.claude/skills` only, keeping `~/.codex` +
+   `~/.agents`; symlink channel → uninstall the marketplace). One channel per machine.
+
 ## Step 3 — Apply auto-fix policy
 
 ### ✓ Safe to auto-fix without asking
 
 | Finding | Fix |
 |---------|-----|
-| Symlink drift in `~/.claude/skills/` or `~/.claude/commands/` (real dirs, broken symlinks, wrong-target symlinks) | `~/projects/homemade-claude-kit/install.sh` |
+| Symlink drift in `~/.claude/skills/` or `~/.claude/commands/` (real dirs, broken symlinks, wrong-target symlinks, stale old-layout targets) | `~/projects/homemade-claude-kit/install.sh` |
+| Adapter marker block missing or MCP fragments out of sync with `mcp/registry.json` | `install.sh` (global run regenerates both) |
 | Kit repo missing AND dotfiles healthy | `chezmoi apply` (triggers the on-change hook to clone the kit) |
 | Either repo **clean** AND **behind origin** with **0 commits ahead** | `git -C <repo> pull --ff-only` |
 | Chezmoi has only deployed-state drift (`chezmoi status` shows changes) AND source is clean | `chezmoi apply` |
@@ -52,6 +76,7 @@ After any auto-fix, re-run the diagnostic and confirm the issue is gone before r
 | **Uncommitted local changes** in dotfiles or kit repo | Show `git status --short` + `git diff --stat`. Propose: (a) `/commit` then push, (b) stash, (c) discard (require explicit "yes discard"). Wait for the user. |
 | **Local commits ahead of origin** in either repo | Propose `git push`. Don't push without confirmation — pushing is a shared-state action. |
 | **Diverged branches** (both ahead and behind) | Propose `git pull --rebase` (preferred) or merge. Ask which. Never force-push. |
+| **Dual-channel conflict** (marketplace + kit symlinks both serving Claude) | See Step 2b check 5 — name both channels, ask which to remove. Never delete either without confirmation. |
 | **Missing prerequisites** (`chezmoi`, `git`, `gh`) | Tell the user how to install on their platform. Do not attempt to install yourself. |
 | **SSH to github.com fails** | Tell the user to run `gh auth login` or set up an SSH key. Do not generate keys yourself. |
 
