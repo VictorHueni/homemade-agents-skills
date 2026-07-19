@@ -16,7 +16,7 @@ review_interval: 30d
 
 This plan transforms `homemade-claude-kit` from a Claude-oriented symlink bundle into a harness-portable toolkit with three properties:
 
-1. **Toggleable sets** — skills grouped into coherent plugin sets that can be activated or deactivated at will: natively via a Claude Code plugin marketplace, via `permission.skill` globs in OpenCode, and via installer symlink profiles in Codex.
+1. **Toggleable sets, harness-natively** — skills grouped into coherent plugin sets; toggling is delegated to each harness's own idiom rather than a kit-side activation layer: Claude via the plugin marketplace (`/plugin` enable/disable, carrying each set's MCP servers), OpenCode via documented `permission.skill` deny-globs (one line per set thanks to prefix naming), Codex via documented symlink-glob removal. The kit ships **no activation state** — a `--sets` state layer was considered and deliberately deferred (YAGNI; can be added later as a pure addition if manual toggling proves recurrent).
 2. **A distributable metamodel** — the artefact/metamodel rules repackaged as a self-contained `metamodel` skill (SKILL.md is the one format all three harnesses read natively), referenced **by skill name** from every doc-producing skill ("read the `metamodel` skill's `references/…`"), with the flat-install sibling path (`../metamodel/`) as a locating hint — name-first is the only convention that resolves in both the flat-symlink channel and the Claude marketplace channel, where plugins live in separate subtrees. The bare, category-less name is a documented convention exception (the category registry is itself part of the metamodel). The skill absorbs `util-metamodel-audit`, `util-metamodel-scaffold`, and `util-metamodel-migration` as **Audit / Scaffold / Migrate modes**, so lifecycle operations read the skill's own references and structural-fact duplication becomes impossible by construction. Per clew [ADR-0008](https://github.com/VictorHueni/clew/blob/main/docs/architecture/decisions/adr-0008-clew-canonical-source-of-truth-for-metamodel.md), the structural references are an **interim hand-authored projection**; clew's future `clew metamodel export` (Phase 4) becomes their generator.
 3. **Generated per-harness adapters** — thin, installer-generated stubs carry the ambient wiring each harness needs: Claude `paths:`-scoped pointer rules, AGENTS.md routing blocks for Codex/OpenCode, and MCP declarations emitted from one registry into the three native formats (`.mcp.json` / `config.toml` / `opencode.json`).
 
@@ -44,9 +44,10 @@ Scope:
 
 1. Record the target layout: `.claude-plugin/marketplace.json` + `plugins/<set>/` with per-set `plugin.json`, skills, commands, and `.mcp.json`.
 2. Record the set composition (proposed: `kit-core`, `strategy`, `domain-modeling`, `product-spec`, `architecture`, `dev-flow`, `agent-loop`, `delivery-comms`, `ops`, `docs-hygiene`) with membership rationale.
-3. Record the activation contract per harness: Claude = marketplace enable/disable; OpenCode = generated `permission.skill` deny-globs per disabled set; Codex = installer symlink profiles (`install.sh --sets`).
-4. Record what deliberately does not port (Claude plugin bundle format, hooks) and why buy-vs-build resolved to installer-owned adapters over rulesync/Ruler for the user-global layer.
-5. Record the flattening contract: `install.sh` projects `plugins/*/skills/*` into one flat directory per harness, so plugin structure is invisible outside Claude — and therefore **skill names must be globally unique across all plugins** (the naming convention's category prefixes guarantee this; the constraint becomes explicit here).
+3. Record the activation contract: **toggling is harness-native; the kit ships no activation state.** Claude = marketplace enable/disable (per-plugin `.mcp.json` makes MCP follow); OpenCode = documented `permission.skill` deny-glob snippet; Codex = documented symlink-glob removal (with the reinstall-restores caveat). Record the deferred `--sets` alternative with its revisit trigger (recurrent manual re-toggling) and the one-channel-per-machine rule for Claude (marketplace *or* kit symlinks, never both — doctor warns).
+4. Record the adapter-generator guardrails: generators live behind `scripts/gen-*` interfaces (swappable for rulesync if maintenance grows), with explicit revisit triggers — per-target rule variants, a fourth harness, or content conversion rather than wiring generation.
+5. Record what deliberately does not port (Claude plugin bundle format, hooks) and why buy-vs-build resolved to installer-owned adapters over rulesync/Ruler for the user-global layer.
+6. Record the flattening contract: `install.sh` projects `plugins/*/skills/*` into one flat directory per harness, so plugin structure is invisible outside Claude — and therefore **skill names must be globally unique across all plugins** (the naming convention's category prefixes guarantee this; the constraint becomes explicit here).
 
 Primary files:
 
@@ -60,7 +61,7 @@ Test gate:
 Exit criteria:
 
 1. The full plugin-set membership (all current skills + 2 commands assigned) is enumerated with no orphans.
-2. The three activation mechanisms are specified precisely enough to implement increments 08–13 without further design decisions.
+2. The layout, adapters, and harness-native toggle idioms are specified precisely enough to implement increments 08–13 without further design decisions.
 
 ### Increment 02: ADR-0007 — Metamodel Distribution as a Skill
 
@@ -286,37 +287,13 @@ Exit criteria:
 1. Symlink installation works from the new layout for `~/.claude`, `~/.codex`, `~/.agents` and project targets.
 2. Stale links from the pre-move layout are pruned automatically.
 
-### Increment 10: Set Activation Profiles (`--sets`)
+### Increment 10: AGENTS.md Adapter Generation
 
 **Status:** pending
 
 Scope:
 
-1. Add `install.sh --sets <csv>|--all-sets` with persisted state in `var/enabled-sets` (gitignored); default = all sets; `kit-core` cannot be disabled.
-2. Symlink only enabled sets' skills/commands; prune links of disabled sets on re-run.
-
-Primary files:
-
-1. `install.sh`
-2. `.gitignore`
-
-Test gate:
-
-1. `./install.sh --sets kit-core,dev-flow /tmp/kit-test2 && test ! -e /tmp/kit-test2/.claude/skills/business-vision && test -L /tmp/kit-test2/.claude/skills/dev-git-commit`
-2. `./install.sh --sets kit-core,dev-flow,strategy /tmp/kit-test2 && test -L /tmp/kit-test2/.claude/skills/business-vision`
-
-Exit criteria:
-
-1. Toggling a set on/off via re-run adds/prunes exactly that set's links in all skill targets.
-2. State survives re-runs without flags (chezmoi hook compatibility).
-
-### Increment 11: AGENTS.md Adapter Generation
-
-**Status:** pending
-
-Scope:
-
-1. Add a generator step to `install.sh`: render `templates/agents-adapter.md` (metamodel routing paragraph + enabled-set summary + concatenated harness-agnostic rules) into a marker-delimited block of `~/.codex/AGENTS.md` and the OpenCode global instructions file, creating files if absent, replacing only the marked block otherwise.
+1. Add a generator step to `install.sh`: render `templates/agents-adapter.md` (metamodel routing paragraph + concatenated harness-agnostic behavioural rules) into a marker-delimited block of `~/.codex/AGENTS.md` and the OpenCode global instructions file, creating files if absent, replacing only the marked block otherwise. The block is static — no activation state exists to reflect.
 
 Primary files:
 
@@ -333,61 +310,39 @@ Exit criteria:
 1. Codex/OpenCode sessions receive the metamodel routing + behavioural rules without any Claude-specific mechanism.
 2. User content outside the markers is never touched.
 
-### Increment 12: MCP Registry and Per-Harness Generation
+### Increment 11: MCP Registry and Per-Harness Generation
 
 **Status:** pending
 
 Scope:
 
-1. Create `mcp/registry.json`: server name → command/transport/env + owning set(s), seeded with the ADR-0006 selection (e.g. GitHub → `dev-flow`, PlantUML/Structurizr → `architecture`, Playwright → `delivery-comms`).
-2. Generate per-set `plugins/<set>/.mcp.json` (Claude), a `[mcp_servers.*]` TOML fragment for `~/.codex/config.toml` (marker-delimited), and an `mcp` JSON fragment for OpenCode, filtered to enabled sets.
+1. Create `mcp/registry.json`: server name → command/transport/env + owning set, seeded with the ADR-0006 selection (e.g. GitHub → `dev-flow`, PlantUML/Structurizr → `architecture`, Playwright → `delivery-comms`).
+2. Generate per-set `plugins/<set>/.mcp.json` (committed — this is what makes Claude's marketplace toggle carry each set's MCP servers with it), a full-registry `[mcp_servers.*]` TOML fragment for `~/.codex/config.toml` (marker-delimited), and a full-registry `mcp` JSON fragment for OpenCode. No filtering — Codex/OpenCode receive the whole registry; trimming is a manual edit like any other toggle.
 
 Primary files:
 
 1. `mcp/registry.json`
-2. `install.sh` (or `scripts/gen-mcp.py` invoked by it)
+2. `install.sh` (or `scripts/gen-mcp.py` invoked by it — generators stay behind a swappable script interface per ADR-0006's revisit triggers)
 3. `plugins/*/.mcp.json` (generated, committed for marketplace consumers)
 
 Test gate:
 
 1. `python3 -c "import json;json.load(open('mcp/registry.json'))"`
-2. `HOME=/tmp/kit-home ./install.sh --sets kit-core,dev-flow && rg -n "mcp_servers" /tmp/kit-home/.codex/config.toml`
-3. Disable `dev-flow`, re-run: GitHub server absent from generated fragments.
+2. `HOME=/tmp/kit-home ./install.sh && rg -n "mcp_servers" /tmp/kit-home/.codex/config.toml`
+3. Regenerate after a registry edit: change propagates to all three formats; marker block count stays 1.
 
 Exit criteria:
 
 1. One registry drives all three declaration formats; no hand-maintained per-harness MCP config remains.
-2. MCP servers follow set activation.
+2. Disabling a plugin in Claude removes its MCP servers there (marketplace-native); Codex/OpenCode carry the full registry.
 
-### Increment 13: OpenCode Set-Toggle Fragment
-
-**Status:** pending
-
-Scope:
-
-1. Generate the `permission.skill` deny-glob block for disabled sets (prefix patterns, e.g. `"business-*": "deny"`) into the OpenCode global config, marker-delimited, per enabled-set state.
-2. Document the mechanism + manual override in the adapter template.
-
-Primary files:
-
-1. `install.sh` (generator step)
-2. `templates/agents-adapter.md`
-
-Test gate:
-
-1. `HOME=/tmp/kit-home ./install.sh --sets kit-core,dev-flow && python3 -c "import json;c=json.load(open('/tmp/kit-home/.config/opencode/opencode.json'));assert c['permission']['skill'].get('business-*')=='deny'"`
-
-Exit criteria:
-
-1. Disabling a set in one place (`--sets`) deactivates it in all three harnesses through their native mechanisms.
-
-### Increment 14: Toolkit Doctor Learns the New Layout
+### Increment 12: Toolkit Doctor Learns the New Layout
 
 **Status:** pending
 
 Scope:
 
-1. Update `util-toolkit-doctor` checks: plugin layout paths, `var/enabled-sets` state, marker blocks present in adapter files, MCP fragments consistent with registry + state, stale pre-move symlinks flagged.
+1. Update `util-toolkit-doctor` checks: plugin layout paths, marker blocks present in adapter files, MCP fragments consistent with the registry, stale pre-move symlinks flagged, and the **dual-channel warning** — marketplace installed *and* kit symlinks present in `~/.claude/skills` on the same machine → warn and name which channel to remove.
 
 Primary files:
 
@@ -395,20 +350,21 @@ Primary files:
 
 Test gate:
 
-1. `rg -n "enabled-sets|marketplace.json|AGENTS.md" plugins/kit-core/skills/util-toolkit-doctor/ | wc -l` — ≥ 3
+1. `rg -n "marketplace.json|AGENTS.md|dual-channel|~/.claude/skills" plugins/kit-core/skills/util-toolkit-doctor/ | wc -l` — ≥ 3
 
 Exit criteria:
 
-1. Doctor detects and explains: missing set state, drifted adapter blocks, orphaned old-layout links.
+1. Doctor detects and explains: drifted adapter blocks, orphaned old-layout links, and the marketplace/symlink dual-channel conflict.
 
-### Increment 15: README Rewrite and Open-Item Filing
+### Increment 13: README Rewrite, Toggle Idioms, and Open-Item Filing
 
 **Status:** pending
 
 Scope:
 
-1. Rewrite `README.md` around the three-harness story: plugin-set table (replacing the flat skill index grouping), install paths per harness (marketplace vs `install.sh --sets`), adapter/MCP generation overview.
-2. File open items (GitHub backend, per ADR-0002/0003): (a) clew cross-repo — close OI-0030 with the registry YAML schema from ADR-0007 (canonical `metamodel.yaml` clew-side; kit file a verbatim projection copy) and amend the Phase-4 export scope to the multi-projection set (registry YAML + `metamodel/references/` + AGENTS.md stubs); (b) revisit issue #53 (kit-as-OKF-bundle) against the new layout; (c) any deferred set-membership disputes from ADR-0006 review.
+1. Rewrite `README.md` around the three-harness story: plugin-set table (replacing the flat skill index grouping), install paths per harness (marketplace for Claude vs `install.sh` symlinks), adapter/MCP generation overview.
+2. Document the **manual toggle idiom per harness** (the activation story, per ADR-0006): Claude — `/plugin` enable/disable (carries the set's MCP); OpenCode — the `permission.skill` deny-glob snippet to paste (`"business-*": "deny"`, one line per set thanks to prefix naming); Codex — symlink glob removal (`rm ~/.codex/skills/{business,discovery}-*`) with the stated caveat that any `install.sh` re-run (incl. the chezmoi hook) restores them.
+3. File open items (GitHub backend, per ADR-0002/0003): (a) clew cross-repo — close OI-0030 with the registry YAML schema from ADR-0007 (canonical `metamodel.yaml` clew-side; kit file a verbatim projection copy) and amend the Phase-4 export scope to the multi-projection set (registry YAML + `metamodel/references/` + AGENTS.md stubs); (b) revisit issue #53 (kit-as-OKF-bundle) against the new layout; (c) any deferred set-membership disputes from ADR-0006 review; (d) **the deferred activation layer** — if manual Codex toggling proves recurrent, a `--sets` state layer can be added as a pure addition in a future plan (record the trigger: "re-deleting the same globs weekly").
 
 Primary files:
 
@@ -417,12 +373,12 @@ Primary files:
 
 Test gate:
 
-1. `rg -n "plugins/|--sets|marketplace" README.md | wc -l` — ≥ 3
+1. `rg -n "plugins/|permission.skill|marketplace" README.md | wc -l` — ≥ 3
 2. `rg -n "skills/business-vision|^\\| .util-. \\|" README.md | wc -l` — 0 stale pre-move paths
 
 Exit criteria:
 
-1. README install instructions reproduce a working three-harness setup from scratch.
+1. README install instructions reproduce a working three-harness setup from scratch, including how to toggle a set in each harness.
 2. All deferred work is in the ledger with source anchors into this plan.
 
 ## Delivery Rules
@@ -441,5 +397,5 @@ Exit criteria:
 | M1: Decisions | 01–02 | pending | Both ADRs active; layout + boundaries approved | `rg -l "status: active" docs/architecture/decisions/adr-000[67]*.md` | User-approved ADR pair | `docs(packaging): …` |
 | M2: Metamodel skill | 03–07 | pending | Metamodel distributable as one self-contained skill with Audit/Scaffold/Migrate modes; rules = Claude stubs; zero duplicate structural facts | Increment 05 + 06 gates green; PRD smoke test through name-first references | Skills resolve metamodel by skill name in all three harnesses; mode smoke tests pass | `feat(packaging): …` |
 | M3: Marketplace | 08–09 | pending | Kit consumable as a Claude plugin marketplace with per-set toggling; symlink install unaffected | Increment 08 gate 4 + increment 09 idempotency gate | Marketplace add + set toggle verified manually | `feat(packaging): …` |
-| M4: Cross-harness | 10–13 | pending | One `--sets` state drives skills, rules routing, and MCP in Claude, Codex, and OpenCode | Increment 13 gate (single toggle, three harnesses) | Set disable propagates to all harness-native configs | `feat(packaging): …` |
-| M5: Close-out | 14–15 | pending | Doctor + README match reality; deferred work in the ledger | Increment 15 gates | Fresh-machine setup reproducible from README | `docs(packaging): …` |
+| M4: Adapters | 10–11 | pending | Codex/OpenCode receive rules routing + MCP from generated, marker-delimited blocks; one MCP registry drives all three formats | Increment 10 + 11 idempotency gates | Adapter blocks correct and idempotent; user content untouched | `feat(packaging): …` |
+| M5: Close-out | 12–13 | pending | Doctor + README match reality (incl. per-harness toggle idioms); deferred work in the ledger | Increment 13 gates | Fresh-machine setup + toggling reproducible from README | `docs(packaging): …` |
