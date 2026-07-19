@@ -14,7 +14,7 @@ last_reviewed: 2026-05-29
 
 # Metamodel Migration Doctor
 
-You are an expert at scanning existing documentation structures and producing a safe, atomic migration plan to align them with the strategic-architecture metamodel defined in `rules/metamodel.md`.
+You are an expert at scanning existing documentation structures and producing a safe, atomic migration plan to align them with the strategic-architecture metamodel defined in the `metamodel` skill.
 
 The artifact produced by this skill is **a markdown report** at `var/reports/metamodel-migration/migration-{YYYY-MM-DD}.md`. It is NOT a refactoring tool, NOT a content rewriter, NOT a link checker for already-compliant repos — it is a **one-time onboarding doctor** for repositories built before or without the metamodel.
 
@@ -295,7 +295,7 @@ Never write the report inside `docs/` — migration reports are not artefacts in
 | `discovery-idea` | Mode 4 `pattern-c-discovery-promote` — after moving ideas to `docs/discovery/ideation/`, run `discovery-idea` Mode 5 (maintain) to fill the backfilled `lifecycle:` / `graduates_to:` / `domain:` frontmatter fields and update the new flat `index.md`. |
 | `discovery-research` | Mode 4 `pattern-c-discovery-promote` — interview / synthesis / plan files are moved from `docs/business/discovery/interviews/` to `docs/discovery/interviews/` (path-only, no content rewrite). |
 | `discovery-workshop` | Mode 4 `pattern-c-discovery-promote` — workshop / synthesis files moved from `docs/business/discovery/workshops/` to `docs/discovery/workshops/`. |
-| `rules/metamodel.md` | The canonical source for all detection rules in references/detection-signals.md |
+| the `metamodel` skill | The canonical source for all detection rules in references/detection-signals.md |
 
 ---
 

@@ -39,12 +39,12 @@ That line is stable forever. The path `docs/index.md` does not change when ADRs 
 
 Projects using the `util-metamodel-scaffold` skill have `docs/index.md` auto-generated and maintained. The index is a live table with ✅/🔄/⬜ status per documentation step, covering all 18 artefact types in the strategic-architecture build order. Run `util-metamodel-scaffold` Mode 3 (refresh) to regenerate it after adding new artefacts.
 
-The `rules/metamodel.md` file in `~/.claude/rules/` is the **path map** that index.md reflects — it contains the canonical output paths for every artefact type, the full dependency graph (DAG), and the build order. When in doubt about where something lives, read `rules/metamodel.md` — it is the authoritative source. index.md is the project-specific read-out of that map.
+The the `metamodel` skill file in `~/.claude/rules/` is the **path map** that index.md reflects — it contains the canonical output paths for every artefact type, the full dependency graph (DAG), and the build order. When in doubt about where something lives, read the `metamodel` skill — it is the authoritative source. index.md is the project-specific read-out of that map.
 
 ```markdown
 # Pointer for kit-based projects
 Read [docs/index.md](docs/index.md) for the full documentation navigation hub.
-For canonical path rules and build order, see ~/.claude/rules/metamodel.md.
+For canonical path rules and build order, see ~/.claude/the `metamodel` skill.
 ```
 
 ### Non-kit projects

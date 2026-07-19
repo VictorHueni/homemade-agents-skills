@@ -223,4 +223,4 @@ Run this mentally — don't print into the file:
 - [ ] Cluster size honest (`N out of N interviews` — no inflation).
 - [ ] Per-artefact updates table filled with specific § references.
 - [ ] Confidence-shift column populated.
-- [ ] §Open Items captured per canonical schema (actionable unresolved work for the next wave, with `Source anchor` + `Source heading` provenance); empty is acceptable. See `rules/open-items-governance.md`.
+- [ ] §Open Items captured per canonical schema (actionable unresolved work for the next wave, with `Source anchor` + `Source heading` provenance); empty is acceptable. See the `metamodel` skill's `references/open-items-governance.md`.

@@ -127,7 +127,7 @@ Tell the user:
 - File path
 - Which existing runbooks were updated with cross-links
 - Any `<PLACEHOLDER>` values left in the draft that need the user's input to fill
-- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 ### 9. File Open Items to the central ledger
 
@@ -141,7 +141,7 @@ first ([ADR-0005](https://github.com/VictorHueni/homemade-claude-kit/blob/main/d
 Cite the runbook as `Source artefact` with `Source anchor` + `Source heading`
 pointing back to the originating runbook step — e.g. `#step-3` + "Step 3 —
 Restore from backup" (per
-[`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md)).
+the `metamodel` skill's `references/open-items-governance.md`).
 
 - **File nothing when there's nothing to file.** A runbook whose procedure is
   fully executable and whose troubleshooting catalogue is complete needs no

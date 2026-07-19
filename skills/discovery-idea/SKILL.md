@@ -53,7 +53,7 @@ Every idea file declares a `graduates_to:` field naming the downstream skill tha
 
 ## Frontmatter schema
 
-Every file opens with the canonical artefact frontmatter from `rules/artefact-frontmatter.md`, extended with three idea-specific fields:
+Every file opens with the canonical artefact frontmatter from the `metamodel` skill's `references/artefact-frontmatter.md`, extended with three idea-specific fields:
 
 ```yaml
 ---
@@ -83,7 +83,7 @@ target_id: _TBD_     # filled when lifecycle = graduated (e.g. PRD-0007, OBJ-03,
 - `graduates_to` MUST be set by end of Refine mode. `_TBD_` is allowed only during initial capture.
 - `target_id` is `_TBD_` until graduation actually happens; then it holds the minted downstream ID (e.g., `PRD-0007`).
 
-**Review interval default:** `90d` (per `rules/artefact-frontmatter.md`).
+**Review interval default:** `90d` (per the `metamodel` skill's `references/artefact-frontmatter.md`).
 
 ---
 
@@ -349,7 +349,7 @@ there is no separate sync step.
 
 ### 6. Lifecycle: supersession
 
-Standard artefact frontmatter applies (per `rules/artefact-frontmatter.md`):
+Standard artefact frontmatter applies (per the `metamodel` skill's `references/artefact-frontmatter.md`):
 
 - `status: superseded` + `superseded_by: <path>` when a refined variant replaces an earlier idea
 - `lifecycle: abandoned` is **orthogonal** to `status` — used when the idea is dropped without a replacement, not when it's replaced by another
@@ -391,7 +391,7 @@ Worth knowing because it tells you when the skill is being misused. These artefa
 
 `docs/discovery/ideation/index.md` is an **OKF reserved sub-folder index** — a directory
 listing, not an artefact concept document — so it is **frontmatter-free** (no artefact block;
-per `rules/artefact-frontmatter.md` §Reserved files). The listing is the body:
+per the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files). The listing is the body:
 
 ```markdown
 # Discovery — Ideation Index
@@ -422,7 +422,7 @@ Sort: `refining` → `ready` → `captured` → `graduated` → `abandoned` (act
 
 ## Checklist before saving
 
-- [ ] Frontmatter complete per `rules/artefact-frontmatter.md` + idea-specific fields (`idea_id`, `domain`, `lifecycle`, `graduates_to`, `target_id`)
+- [ ] Frontmatter complete per the `metamodel` skill's `references/artefact-frontmatter.md` + idea-specific fields (`idea_id`, `domain`, `lifecycle`, `graduates_to`, `target_id`)
 - [ ] `IDEA-NNNN` is the next available ID, 4-digit zero-padded; filename matches `IDEA-NNNN-{slug}.md`
 - [ ] `## Problem statement` is HMW-framed and names a specific user/stakeholder
 - [ ] If `lifecycle ≥ ready`: §Variations, §Direction, §Assumption audit, §Recommended direction, §Not doing are all non-empty

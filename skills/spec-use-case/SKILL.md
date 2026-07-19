@@ -183,9 +183,9 @@ Ask 2–4 questions max, single message, lettered options. Don't run a wizard.
 
 ## Output frontmatter
 
-Open every generated **use-case file** (`uc-NN-*.md`) with the standard OKF-superset artefact frontmatter — `type: Use Case` (its `okf_type` in `rules/artefact-types-registry.md`), plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`. Run `git config user.name` for `owner`. `status: draft` on creation. Default `review_interval: 180d` (use cases are stable behavioural specs). Full schema: `rules/artefact-frontmatter.md` — do not restate it inline. Note: `index.md` is an **OKF reserved file** — frontmatter-free (a directory listing, not a concept doc).
+Open every generated **use-case file** (`uc-NN-*.md`) with the standard OKF-superset artefact frontmatter — `type: Use Case` (its `okf_type` in the `metamodel` skill's `references/artefact-types-registry.yaml`), plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`. Run `git config user.name` for `owner`. `status: draft` on creation. Default `review_interval: 180d` (use cases are stable behavioural specs). Full schema: the `metamodel` skill's `references/artefact-frontmatter.md` — do not restate it inline. Note: `index.md` is an **OKF reserved file** — frontmatter-free (a directory listing, not a concept doc).
 
-Unresolved questions (undecided business rules, deferred extensions) are filed directly to the central ledger via `util-open-items` — no local Open Items section (ADR-0005). Cite the use-case file as `Source artefact`. Schema and lifecycle: `rules/open-items-governance.md`.
+Unresolved questions (undecided business rules, deferred extensions) are filed directly to the central ledger via `util-open-items` — no local Open Items section (ADR-0005). Cite the use-case file as `Source artefact`. Schema and lifecycle: the `metamodel` skill's `references/open-items-governance.md`.
 
 ---
 

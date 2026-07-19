@@ -307,6 +307,6 @@ Known risks and technical debt items that have not yet been addressed. Each risk
 - [ ] (`runtime`) `SCN-NN` minted here; figure pulled via a declared-figure dependency block (source `arch-c4` or `arch-uml`), not hand-drawn; step table matches the diagram steps
 - [ ] (`runtime`/`cross-cutting`) any embedded figure uses the `<!-- arch-figure … -->` block; figure path resolves or is a `_TODO_` soft-reference
 - [ ] §11 distinguishes `architectural` risk from `technical-debt`; does NOT attempt to be an exhaustive debt ledger
-- [ ] Output file has standard frontmatter (see `rules/artefact-frontmatter.md`)
+- [ ] Output file has standard frontmatter (see the `metamodel` skill's `references/artefact-frontmatter.md`)
 - [ ] Any unresolved work found while writing this section was filed directly via `util-open-items` (no local Open Items section — ADR-0005)
 - [ ] Closing report delivered

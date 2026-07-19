@@ -201,7 +201,7 @@ When asked to review an ADR:
 - Keep the narrative factual and concise.
 - Prefer complete ADR drafts over outlines unless the user asks for an outline.
 - If inputs are incomplete and user wants speed, draft with explicit `[ASSUMPTION]` markers and list required confirmations at the end.
-- All ADR files use the OKF-superset frontmatter block defined in `rules/artefact-frontmatter.md` (incl. `type: Architecture Decision Record`). The MADR templates already include it — do not omit or reorder fields.
+- All ADR files use the OKF-superset frontmatter block defined in the `metamodel` skill's `references/artefact-frontmatter.md` (incl. `type: Architecture Decision Record`). The MADR templates already include it — do not omit or reorder fields.
 
 ## References
 

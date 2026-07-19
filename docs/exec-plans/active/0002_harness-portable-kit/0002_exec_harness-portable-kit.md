@@ -32,7 +32,7 @@ Principles:
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
 **Overall Status:** in-progress
-**Current Increment:** 05
+**Current Increment:** 06
 
 ## Increment Plan
 
@@ -155,7 +155,7 @@ Exit criteria:
 
 ### Increment 05: Repoint Skill Cross-References to the Sibling Path
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

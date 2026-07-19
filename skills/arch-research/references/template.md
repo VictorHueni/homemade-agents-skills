@@ -70,7 +70,7 @@ LAST VERIFIED DATE
 - **{{ADR-NNNN}}:** {{how this finding shapes option preference — e.g. "Eliminates Option D (database-per-tenant) as over-engineering given INV nFADP Art. 8 'appropriate measures' standard does not mandate physical isolation"}}
 - **{{ADR-MMMM}}:** {{...}}
 
-<!-- Unresolved gaps for this question are NOT captured here. They are consolidated into the document-level §Open Items section at the bottom of the file, with `Source anchor = #q1` and `Source heading = "Q1 — {{restated question}}"` so each row remains traceable to its originating question. See rules/open-items-governance.md §1 + §4. -->
+<!-- Unresolved gaps for this question are NOT captured here. They are consolidated into the document-level §Open Items section at the bottom of the file, with `Source anchor = #q1` and `Source heading = "Q1 — {{restated question}}"` so each row remains traceable to its originating question. See the `metamodel` skill's `references/open-items-governance.md` §1 + §4. -->
 
 ---
 

@@ -26,7 +26,7 @@ don't have the repo (tarball/zip OKF bundles).
 **reserved file** — a per-directory update history. It carries **no frontmatter**. OKF prescribes
 its shape: a flat list of **date-grouped entries, newest first**; ISO 8601 `## YYYY-MM-DD`
 headings; prose bullets with a leading bold action word (`**Creation**`/`**Update**`/`**Deprecation**`).
-See [`rules/artefact-frontmatter.md`](../../rules/artefact-frontmatter.md) §Reserved files.
+See the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files.
 
 ## Why git-derived (and why on-demand, not a hook)
 

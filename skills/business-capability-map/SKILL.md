@@ -185,7 +185,7 @@ IDs follow the `C-N.M` format — the same ID must be used consistently across e
 
 ## Canonical slug — the third identifier
 
-Every **L0 domain** and **L1 capability** carries a canonical **`slug`** alongside its ID (`C-N.M`) and display name. Where the ID is stable-but-cryptic and the name is readable-but-long-and-unstable, the slug is the missing third: **stable + readable + short** — the handle tooling actually depends on (commit scopes today; anchors, config keys, and code-module names tomorrow). The canonical definition + invariants live in [`rules/artefact-types-registry.md` § Canonical slugs](../../rules/artefact-types-registry.md).
+Every **L0 domain** and **L1 capability** carries a canonical **`slug`** alongside its ID (`C-N.M`) and display name. Where the ID is stable-but-cryptic and the name is readable-but-long-and-unstable, the slug is the missing third: **stable + readable + short** — the handle tooling actually depends on (commit scopes today; anchors, config keys, and code-module names tomorrow). The canonical definition + invariants live in the `metamodel` skill's `references/artefact-types-registry.yaml` § Canonical slugs (the `metamodel` skill's `references/artefact-types-registry.yaml`).
 
 **Placement + format (exact — a generator parses it):** a backtick-wrapped code-line on its own line, immediately under the entity's heading, before any prose field:
 
@@ -210,7 +210,7 @@ The line's full content is `` `slug: <handle>` `` — a single space after the c
 
 ## Output structure — the fixed template
 
-- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 The skill produces ONE markdown file at `docs/business/03a-capability-map.md` with this fixed structure (full template in `references/template.md`):
 
@@ -251,7 +251,7 @@ Intro paragraph:
 Open items: no local section (ADR-0005). File unresolved work directly to the central
 ledger via `util-open-items`, citing this map as `Source artefact` with `Source anchor` =
 the capability ID (e.g. `#c1`, `#c12`) and `Source heading` = the full capability heading.
-Schema + lifecycle: `rules/open-items-governance.md`.
+Schema + lifecycle: the `metamodel` skill's `references/open-items-governance.md`.
 
 Changelog
 ```

@@ -325,7 +325,7 @@ These skeletons are **shared with `arch-arc42`** (it owns the narrative; `arch-c
 - [ ] View key follows the canonical pattern (see modes table above)
 - [ ] SVG rendered and committed under `docs/architecture/c4/views/`
 - [ ] Generated content written **only** inside `arch-c4:start/end` markers; no narrative authored (that is `arch-arc42`'s)
-- [ ] arc42 markdown file exists at canonical path and has standard frontmatter (see `rules/artefact-frontmatter.md`)
+- [ ] arc42 markdown file exists at canonical path and has standard frontmatter (see the `metamodel` skill's `references/artefact-frontmatter.md`)
 - [ ] Every container/component row in arc42 §5 carries the `Domain aggregates implemented` field
 - [ ] (`runtime` mode) Every step in the `dynamic` view block has a step-number annotation; no orphan relationships
 - [ ] (`runtime` mode) Used a `SCN-NN` minted by `arch-arc42`; rendered the SVG and handed the path to `arch-arc42` (wrote no §6 markdown)

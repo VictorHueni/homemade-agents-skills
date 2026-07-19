@@ -4,7 +4,7 @@ Reference for `util-open-items triage` mode. Triage proposes changes; it never m
 the source artefact or the ledger silently. Every triage finding is operator-reviewable.
 
 The lifecycle, schema, and taxonomy live in
-[`rules/open-items-governance.md`](../../rules/open-items-governance.md). This file is the
+the `metamodel` skill's `references/open-items-governance.md`. This file is the
 day-to-day playbook for keeping the central ledger at
 `docs/project-control/open-items/open-items.md` healthy.
 
@@ -183,7 +183,7 @@ The report is read-only; acting on the proposals is always operator-driven throu
 
 ## 9. Cadence
 
-Recommended invocation cadence (per `rules/open-items-governance.md` §6 review cycle):
+Recommended invocation cadence (per the `metamodel` skill's `references/open-items-governance.md` §6 review cycle):
 
 - **Weekly** for active development phases — keeps the backlog visible and prevents
   silent drift.

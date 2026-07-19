@@ -1,6 +1,6 @@
 <!-- OKF reserved sub-folder index (docs/product-specs/use-cases/index.md): a directory
      listing, not an artefact concept document — frontmatter-free per
-     rules/artefact-frontmatter.md §Reserved files. The registry is the body below. -->
+     the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files. The registry is the body below. -->
 
 # {{product_or_scope}} — Use Case Registry
 

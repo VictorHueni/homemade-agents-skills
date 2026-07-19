@@ -191,7 +191,7 @@ or design-system change is needed.
 
 Planned enhancements, deferred refinements, and decisions for this skill are
 tracked as central-only rows in the kit's ledger at
-`docs/project-control/open-items/open-items.md` (per `rules/open-items-governance.md`
+`docs/project-control/open-items/open-items.md` (per the `metamodel` skill's `references/open-items-governance.md`
 §9) — not in this folder. This skill resolves `OI-0010` (cross-skill web
 visualisations).
 
@@ -201,4 +201,4 @@ visualisations).
 - `references/viz-discipline.md` — design principles and boundaries (what this skill is NOT).
 - `ux-design-system/SKILL.md` — the shared design system; its `docs/ux/tokens.css` is auto-detected as the theme.
 - `com-slide-deck/SKILL.md` — sibling HTML builder; share its `design/styles.css` via `--design-system`.
-- `rules/skill-creation-sync.md` · `rules/artefact-frontmatter.md` · `rules/diagramming-mermaid.md`.
+- `rules/skill-creation-sync.md` · the `metamodel` skill's `references/artefact-frontmatter.md` · `rules/diagramming-mermaid.md`.

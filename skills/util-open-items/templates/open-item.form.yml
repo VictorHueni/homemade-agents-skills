@@ -4,7 +4,7 @@
 # `.github/ISSUE_TEMPLATE/open-item.yml` in a repo ONLY when that repo adopts the github
 # backend (see util-open-items/SKILL.md §Backends). It is not installed automatically.
 #
-# Invariant I1 (rules/open-items-governance.md §5.3): every field `id:` below MUST equal the
+# Invariant I1 (the `metamodel` skill's `references/open-items-governance.md` §5.3): every field `id:` below MUST equal the
 # canonical slug so util-metamodel-audit can read an issue body through the same slug map it
 # uses for a markdown ledger row. Do not rename an `id:` — rename the label instead.
 #

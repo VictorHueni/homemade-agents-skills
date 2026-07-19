@@ -313,7 +313,7 @@ Narrative discussion section — unresolved scope debates, persona edge cases, o
 
 The PRD carries no local Open Items section ([ADR-0005](https://github.com/VictorHueni/homemade-claude-kit/blob/main/docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)). Unresolved work is filed
 directly to the central ledger via `util-open-items`. Schema and lifecycle are governed by
-[`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md) — do not restate the schema here.
+the `metamodel` skill's `references/open-items-governance.md` — do not restate the schema here.
 
 **Rules:**
 
@@ -383,7 +383,7 @@ Invoke as: "File the open item for `docs/product-specs/prds/prd-NNNN-{feature}.m
 - **Location:** `docs/product-specs/prds/`
 - **Filename:** `prd-NNNN-{feature}.md` (e.g., `prd-0001-semester-schedule-generation.md`)
 - **ID format:** `PRD-NNNN` — 4-digit zero-padded integer. Determine by running `find docs/product-specs/prds/ -name "prd-*.md" | sort` and taking max NNNN + 1. First PRD is `PRD-0001`.
-- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 ---
 
@@ -403,4 +403,4 @@ Before saving the PRD:
 - [ ] Success metrics anchored to persona context and value-stream pain index
 - [ ] Saved to `docs/product-specs/prds/prd-NNNN-{feature}.md`
 - [ ] FBS promotion instructions provided (⬜ → 🔄 for committed functionalities)
-- [ ] Any unresolved work identified while drafting was filed directly via `util-open-items` per `rules/open-items-governance.md` (no local section — ADR-0005)
+- [ ] Any unresolved work identified while drafting was filed directly via `util-open-items` per the `metamodel` skill's `references/open-items-governance.md` (no local section — ADR-0005)

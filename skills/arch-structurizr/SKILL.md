@@ -112,7 +112,7 @@ Bump the pinned Docker image version in `render.sh`, re-render all existing view
 
 - `arch-c4` (companion skill) — edits `workspace.dsl`, runs `render.sh`, embeds SVGs into arc42 markdown. Always check that `arch-structurizr init` has run first.
 - `arch-adr` — infra ADRs (Docker base image policy, render-tool choice) may reference this skill's pin table.
-- `rules/metamodel.md` — supporting-skills list entry + canonical paths for `docs/architecture/c4/`.
+- the `metamodel` skill — supporting-skills list entry + canonical paths for `docs/architecture/c4/`.
 
 ## Optional — Structurizr MCP server
 

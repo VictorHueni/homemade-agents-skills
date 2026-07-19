@@ -5,7 +5,7 @@ so an operator (or a future agent invocation) can reproduce the mechanics of `sy
 without reverse-engineering them from the live ledger.
 
 The schema, taxonomy, and lifecycle live in
-[`rules/open-items-governance.md`](../../rules/open-items-governance.md). This file is a
+the `metamodel` skill's `references/open-items-governance.md`. This file is a
 copy-pasteable template, not an independent definition.
 
 ---
@@ -174,4 +174,4 @@ The `sync` mode refuses to act on:
   confirmation rather than silently creating a second row.
 
 When refusing, the skill prints the refusal reason + the conflicting row + a pointer to
-the relevant section of `rules/open-items-governance.md`. It never partially files a row.
+the relevant section of the `metamodel` skill's `references/open-items-governance.md`. It never partially files a row.

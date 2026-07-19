@@ -177,7 +177,7 @@ Once a research note is Frozen (Mode 4), its Implications section reflects what 
 Before declaring a Mode 2 Fill complete, verify silently:
 
 - [ ] All N questions in §Questions index have matching H2 sections
-- [ ] Each H2 has its 4 sub-sections (Context · Sources consulted · Finding · Implication for ADRs). Per-Q gaps are consolidated into the document-level §Open Items section per [`rules/open-items-governance.md`](../../rules/open-items-governance.md) — no `###` open-gap subsection under any Q.
+- [ ] Each H2 has its 4 sub-sections (Context · Sources consulted · Finding · Implication for ADRs). Per-Q gaps are consolidated into the document-level §Open Items section per the `metamodel` skill's `references/open-items-governance.md` — no `###` open-gap subsection under any Q.
 - [ ] Document-level §Open Items table present with the canonical schema (OI-ID · Type · Summary · Source anchor · Source heading · Resolution path · Priority · Status · Owner · Due / Review date · Tracker ref). Per-Q rows preserve provenance via `Source anchor = #qN` + `Source heading = "Qn — restated question"`.
 - [ ] Every Sources table has the full column set (Source · URL · Type · Last verified · Confidence · Quote)
 - [ ] No source row missing `Last verified` date

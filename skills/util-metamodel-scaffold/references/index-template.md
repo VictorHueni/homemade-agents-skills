@@ -5,7 +5,7 @@ This file contains:
 2. The bash detection commands Claude runs before generating the `index.md`
    (one per canonical artefact path).
 
-**OKF reserved file.** `index.md` is an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) reserved filename — a directory listing for progressive disclosure, **not** an artefact concept document. It therefore does **not** carry the standard artefact frontmatter block (`title`/`status`/`owner`/`last_reviewed`/`review_interval`). The **root** `docs/index.md` carries a minimal frontmatter block declaring only `okf_version`; any **sub-folder** `index.md` a skill emits is entirely frontmatter-free. See `rules/artefact-frontmatter.md` §Reserved files.
+**OKF reserved file.** `index.md` is an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) reserved filename — a directory listing for progressive disclosure, **not** an artefact concept document. It therefore does **not** carry the standard artefact frontmatter block (`title`/`status`/`owner`/`last_reviewed`/`review_interval`). The **root** `docs/index.md` carries a minimal frontmatter block declaring only `okf_version`; any **sub-folder** `index.md` a skill emits is entirely frontmatter-free. See the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files.
 
 ---
 

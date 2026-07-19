@@ -147,7 +147,7 @@ Bump the pinned Docker image version in `render.sh`, then re-render all diagrams
 - `spec-use-case` — its UML use-case diagrams are rendered by `arch-uml` through this pipeline.
 - `domain-model` — class / state-machine / ER diagrams for the domain are rendered here.
 - `rules/diagramming-mermaid.md` — the Mermaid-first policy; this skill is the sanctioned exception for rich UML rendered to SVG.
-- `rules/metamodel.md` — supporting-skills list entry + canonical path `docs/architecture/diagrams/`.
+- the `metamodel` skill — supporting-skills list entry + canonical path `docs/architecture/diagrams/`.
 
 ## Optional — PlantUML MCP server
 

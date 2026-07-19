@@ -376,7 +376,7 @@ This is **not** retro archaeology — reconstructing a full historical tag seque
 
 ## Follow-up work
 
-Open items about this skill's own evolution go to the kit's central ledger (`docs/project-control/open-items/`) per `rules/open-items-governance.md`, never in a local section here.
+Open items about this skill's own evolution go to the kit's central ledger (`docs/project-control/open-items/`) per the `metamodel` skill's `references/open-items-governance.md`, never in a local section here.
 
 ## See also
 

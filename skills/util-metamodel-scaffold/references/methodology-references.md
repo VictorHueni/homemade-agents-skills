@@ -97,5 +97,5 @@ after every stack step.
 |---|---|
 | Git documentation — gitignore(5) | `.gitkeep` convention and universal-tree rationale |
 | `util-open-items/SKILL.md` | Project-control scope boundary |
-| `rules/open-items-governance.md` | Control-plane initialisation requirements |
+| the `metamodel` skill's `references/open-items-governance.md` | Control-plane initialisation requirements |
 | `util-metamodel-audit/references/methodology-references.md` | Report-only / suggest-only discipline |

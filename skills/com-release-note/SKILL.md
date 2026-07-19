@@ -119,7 +119,7 @@ Use ID + name + relative path for any in-repo link, so description renames don't
 
 ## Output structure
 
-Open the committed note with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name **`Release Notes`** from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval: 90d`). Run `git config user.name` for `owner`; `status: draft` on scaffold, `active` on approval. Full schema: `rules/artefact-frontmatter.md`. The GitHub Release body carries **no** frontmatter (it is not an OKF concept doc).
+Open the committed note with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name **`Release Notes`** from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval: 90d`). Run `git config user.name` for `owner`; `status: draft` on scaffold, `active` on approval. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`. The GitHub Release body carries **no** frontmatter (it is not an OKF concept doc).
 
 ```
 docs/communication/release-notes/{version}-{slug}.md   ← committed note (OKF frontmatter)
@@ -151,13 +151,13 @@ The judgement calls — stakeholder voice vs commit voice, curate-don't-dump, ci
 
 ## Follow-up work
 
-Open items about this skill's own evolution go to the kit's central ledger (`docs/project-control/open-items/`) per `rules/open-items-governance.md`, never in a local section here.
+Open items about this skill's own evolution go to the kit's central ledger (`docs/project-control/open-items/`) per the `metamodel` skill's `references/open-items-governance.md`, never in a local section here.
 
 ## See also
 
 - `templates/release-note-template.md` · `templates/github-release-body-template.md` — the two outputs
 - `references/curation-methodology.md` — principles, boundaries, worked recipe
-- `rules/artefact-frontmatter.md` · `rules/artefact-types-registry.md` — `Release Notes` frontmatter + registry
+- the `metamodel` skill's `references/artefact-frontmatter.md` · the `metamodel` skill's `references/artefact-types-registry.yaml` — `Release Notes` frontmatter + registry
 - `dev-release-init` — the upstream release-automation skill that produces the `CHANGELOG.md` + tags this note curates
 - `com-slide-deck`, `com-artefact-viz` — sibling `com-` communication skills
 

@@ -78,7 +78,7 @@ Upstream: [docs.arc42.org/section-3](https://docs.arc42.org/section-3/).
 
 ## Acceptance criteria — when §3 is "done"
 
-- [ ] `docs/architecture/arc42/03-context.md` exists with standard frontmatter (see `rules/artefact-frontmatter.md`)
+- [ ] `docs/architecture/arc42/03-context.md` exists with standard frontmatter (see the `metamodel` skill's `references/artefact-frontmatter.md`)
 - [ ] §3.1 Business Context contains the embedded `systemContext.svg` + a table with ≥1 row per communication partner
 - [ ] §3.2 Technical Context contains a channels + protocols table (one row per relationship)
 - [ ] At least one Tier-1 persona appears as an actor (P-NN); if no persona file exists, document why

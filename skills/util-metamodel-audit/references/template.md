@@ -207,7 +207,7 @@ Copy this skeleton to `var/reports/metamodel-audit/stack-audit-{YYYY-MM-DD}.md` 
 
 ## §18 Open items governance
 
-Sub-checks against `rules/open-items-governance.md`. Sections kept even when empty so
+Sub-checks against the `metamodel` skill's `references/open-items-governance.md`. Sections kept even when empty so
 readers can see the check ran. 18d is retired (ADR-0005) and always reports "Retired".
 
 ### §18a Stale local-section relic sweep

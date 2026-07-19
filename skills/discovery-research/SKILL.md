@@ -123,7 +123,7 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
      - BMC blocks: which blocks promote from `Assumed` to `Tested` (or get demoted)
      - Model assumptions: which inputs recalibrate (e.g., recovery rate 50% → 65%)
      - Competitive landscape: which competitor claims gain evidence
-   - **Open items** — actionable unresolved work surfaced by the wave (what wasn't answered for next-wave research, decisions deferred, follow-up execution items) filed directly to the central ledger via `util-open-items` (per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md); no local section — ADR-0005). Each row carries `Source anchor` + `Source heading` pointing into the synthesis (e.g. Per-hypothesis verdict, Theme cluster N). File nothing if nothing actionable remains.
+   - **Open items** — actionable unresolved work surfaced by the wave (what wasn't answered for next-wave research, decisions deferred, follow-up execution items) filed directly to the central ledger via `util-open-items` (per the `metamodel` skill's `references/open-items-governance.md`; no local section — ADR-0005). Each row carries `Source anchor` + `Source heading` pointing into the synthesis (e.g. Per-hypothesis verdict, Theme cluster N). File nothing if nothing actionable remains.
    - **Confidence summary** — count of claims now Validated vs Tested vs still Assumed
 
 ### Mode 4 — Research plan (optional)
@@ -288,7 +288,7 @@ the central ledger via `util-open-items` — there is no local section to author
 - **File as you go.** Each row carries `Source anchor` + `Source heading` pointing back
   into the originating sub-section of the synthesis (Per-hypothesis verdict, Theme
   cluster, Per-artefact updates needed, etc.), citing the synthesis/plan file as `Source
-  artefact`, so it navigates back cleanly (per `rules/open-items-governance.md` §4 + §5).
+  artefact`, so it navigates back cleanly (per the `metamodel` skill's `references/open-items-governance.md` §4 + §5).
 - **File nothing when there's nothing to file.**
 - **Mode coverage.** File after Mode 3 Synthesise (the primary mode that surfaces
   unresolved next-wave research, deferred decisions, and execution items) and Mode 4
@@ -325,6 +325,6 @@ Before declaring the work done:
 - [ ] §What to do after has file-targeted next steps.
 - [ ] Synthesis (mode 3) names every artefact update needed by § reference.
 - [ ] Confidence ratings present.
-- [ ] Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
+- [ ] Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 - [ ] No project-specific terms baked in (kit version).
 - [ ] Closing report delivered.

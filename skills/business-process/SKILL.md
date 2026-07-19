@@ -104,7 +104,7 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
 2. Read project context to pre-fill what is knowable: persona IDs for actors, capability IDs for enabling systems, upstream / downstream process slugs.
 3. Fill the template end-to-end — pre-fill known content; mark the rest `_TODO_`.
 4. Seed §8 KPIs with concrete starter rows matched to the process type (see §8 KPI patterns below).
-5. File open items directly to the central ledger via `util-open-items` ONLY for actionable unresolved work (e.g. a known doc-gap with a real resolution path, a deferred decision blocking a downstream ADR). Do not file scaffold `_TODO_` placeholders — they are different per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md) §2. File nothing when nothing is actionable.
+5. File open items directly to the central ledger via `util-open-items` ONLY for actionable unresolved work (e.g. a known doc-gap with a real resolution path, a deferred decision blocking a downstream ADR). Do not file scaffold `_TODO_` placeholders — they are different per the `metamodel` skill's `references/open-items-governance.md` §2. File nothing when nothing is actionable.
 6. Update the processes index if the project has one.
 
 **Do NOT:**
@@ -129,7 +129,7 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
 
 ## Output structure — the fixed template
 
-- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 The skill produces ONE markdown file at `{processes folder}/proc-NN-{slug}.md` with this fixed structure (full template in `references/template.md`):
 
@@ -333,7 +333,7 @@ When the user asks you to produce a process doc but the conversation has been ab
 | Activities per actor in §6 | 5–15 | Practitioner |
 | KPIs in §8 | 3–8 (minimum 3 mandatory) | Practitioner — fewer = narrative, not process |
 | Decision points in §7 | 1–6 | Practitioner — more signals the process should be split |
-| Open items filed on first scaffold | 0 (nothing to file yet; placeholder-only filings are forbidden per `rules/open-items-governance.md` §2) | Governance contract |
+| Open items filed on first scaffold | 0 (nothing to file yet; placeholder-only filings are forbidden per the `metamodel` skill's `references/open-items-governance.md` §2) | Governance contract |
 
 **If any number exceeds the recommended range, reconsider:**
 - Too many actors (>6) → the process spans too many organisational boundaries; split into sub-processes or use a higher-level coordinator actor.
@@ -387,7 +387,7 @@ central ledger via `util-open-items` — there is no local section to author fir
 - **File as you go.** Each row carries `Source anchor` + `Source heading` pointing into
   the originating sub-section (e.g. `#7-decisions` + "§7 Decision points + business
   rules"), citing this process doc as `Source artefact` (per
-  `rules/open-items-governance.md` §4 + §5).
+  the `metamodel` skill's `references/open-items-governance.md` §4 + §5).
 - **File nothing when there's nothing to file.** Inline `_TODO_` placeholders in §8 KPIs
   or elsewhere are scaffold debt — they MUST NOT be filed to the ledger.
 - **Mode coverage.** File after Mode 2 Fill and after Mode 3 Update when those modes

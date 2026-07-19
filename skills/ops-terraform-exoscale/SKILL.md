@@ -135,4 +135,4 @@ Confirm that what a human actually applied matches what the config/plan intended
 
 Kit-development follow-ups for this skill live in the kit's own ledger at
 `docs/project-control/open-items/open-items.md` (`OI-0001` expand native checks, `OI-0002`
-evaluate Checkov) — not in this SKILL.md, per `rules/open-items-governance.md` §9.
+evaluate Checkov) — not in this SKILL.md, per the `metamodel` skill's `references/open-items-governance.md` §9.

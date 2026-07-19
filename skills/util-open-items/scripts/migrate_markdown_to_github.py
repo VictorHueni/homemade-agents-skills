@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """One-way markdown -> github migration for the open-items central plane.
 
-Implements Invariant I2 (rules/open-items-governance.md §5.3): migration is performed once,
+Implements Invariant I2 (the `metamodel` skill's `references/open-items-governance.md` §5.3): migration is performed once,
 markdown -> github only, and MUST emit a persisted OI-NNNN -> #N map so back-references
 survive the identifier re-mint. There is NO reverse path and NO concurrent two-way sync.
 

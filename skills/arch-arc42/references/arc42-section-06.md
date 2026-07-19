@@ -88,7 +88,7 @@ The Structurizr vNext renderer renders dynamic views as numbered sequence-style 
 
 ## Acceptance criteria — when §6 is "done"
 
-- [ ] `docs/architecture/arc42/06-runtime-view.md` exists with standard frontmatter (see `rules/artefact-frontmatter.md`)
+- [ ] `docs/architecture/arc42/06-runtime-view.md` exists with standard frontmatter (see the `metamodel` skill's `references/artefact-frontmatter.md`)
 - [ ] At least 2 scenarios are documented (happy path + one non-trivial error or cross-cutting path)
 - [ ] Each scenario has: title, `SCN-NN` ID, brief motivation, rendered SVG, step table
 - [ ] Step table row count matches the number of annotated steps in the DSL dynamic view

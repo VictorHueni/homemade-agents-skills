@@ -117,9 +117,9 @@ contract is what makes the design system the single lever for re-theming.
 ## Output frontmatter
 
 `docs/ux/design-system.md` opens with the standard OKF-superset artefact
-frontmatter — `type: Design System` (its `okf_type` in `rules/artefact-types-registry.md`),
+frontmatter — `type: Design System` (its `okf_type` in the `metamodel` skill's `references/artefact-types-registry.yaml`),
 plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`,
-`review_interval`; default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
+`review_interval`; default `review_interval: 180d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 `tokens.css` is a generated machine artefact (no frontmatter) — author durable
 changes in the `.md`, not the `.css`.
@@ -141,11 +141,11 @@ changes in the `.md`, not the `.css`.
 Planned enhancements for this skill — and the deferred unification of
 `com-slide-deck`'s `styles.css` onto this shared `tokens.css` — are tracked as
 central-only rows in `docs/project-control/open-items/open-items.md` (per
-`rules/open-items-governance.md` §9), not in this folder.
+the `metamodel` skill's `references/open-items-governance.md` §9), not in this folder.
 
 ## See also
 
 - `references/token-contract.md` — the canonical `:root` variable schema.
 - `references/discipline.md` — principles and boundaries.
 - `com-artefact-viz/SKILL.md` · `com-slide-deck/SKILL.md` — the consumers.
-- `rules/skill-creation-sync.md` · `rules/artefact-frontmatter.md`.
+- `rules/skill-creation-sync.md` · the `metamodel` skill's `references/artefact-frontmatter.md`.

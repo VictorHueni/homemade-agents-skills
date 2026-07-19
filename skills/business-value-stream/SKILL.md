@@ -182,7 +182,7 @@ Ask 2–4 questions max, single message, lettered options where possible. Don't 
 
 ## Output structure — the fixed template
 
-- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 The skill produces ONE markdown file at `docs/business/04a-value-streams.md` with this fixed structure (full template in `references/template.md`):
 
@@ -212,7 +212,7 @@ Intro paragraph:
 Open items: no local section (ADR-0005). File unresolved work directly to the central
 ledger via `util-open-items`, citing this artefact as `Source artefact` with `Source
 anchor` = the stream or stage ID (e.g. `#vs-1`, `#vs-1-3`) and `Source heading` = the full
-heading text. Schema + lifecycle: `rules/open-items-governance.md`.
+heading text. Schema + lifecycle: the `metamodel` skill's `references/open-items-governance.md`.
 
 Changelog
 ```

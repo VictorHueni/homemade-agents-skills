@@ -8,7 +8,7 @@ be rejected as out-of-enum.
 
 Primary source — first-class canonical slugs. Each L0 domain, L1 capability, and
 product declares a ```slug: <handle>``` code-line under its heading (owned by the
-capability map + FBS; see ``rules/artefact-types-registry.md`` § Canonical slugs,
+capability map + FBS; see the `metamodel` skill's `references/artefact-types-registry.yaml` § Canonical slugs,
 audited for presence + global-uniqueness + kebab format by ``util-metamodel-audit``
 Check 19). Slugs are short, kebab, and globally unique *by construction upstream*,
 so the generator just harvests them — it never derives or shortens. A developer

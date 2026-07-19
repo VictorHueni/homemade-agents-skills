@@ -139,7 +139,7 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
    - **Follow-up commitments** (with owners + dates)
    - **Updates to upstream artefacts** (BMC blocks promoted, personas refined, value-stream stages added, etc.)
    - **What went well / what to change** for next workshop
-   - **Open items** — actionable unresolved work surfaced during the workshop (questions the room could not close, decisions deferred, follow-ups for the next wave) filed directly to the central ledger via `util-open-items` (per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md); no local section — ADR-0005). Each row carries `Source anchor` + `Source heading` pointing into the synthesis (Decisions made, Follow-up commitments, etc.). File nothing if nothing actionable remains.
+   - **Open items** — actionable unresolved work surfaced during the workshop (questions the room could not close, decisions deferred, follow-ups for the next wave) filed directly to the central ledger via `util-open-items` (per the `metamodel` skill's `references/open-items-governance.md`; no local section — ADR-0005). Each row carries `Source anchor` + `Source heading` pointing into the synthesis (Decisions made, Follow-up commitments, etc.). File nothing if nothing actionable remains.
    - **Cross-link to series file** if applicable
 
 ---
@@ -301,7 +301,7 @@ central ledger via `util-open-items` — there is no local section to author fir
 - **File as you go.** Each row carries `Source anchor` + `Source heading` pointing back
   into the originating sub-section of the synthesis (Decisions made, Follow-up
   commitments, Updates to upstream artefacts, etc.), citing the synthesis file as `Source
-  artefact` (per `rules/open-items-governance.md` §4 + §5).
+  artefact` (per the `metamodel` skill's `references/open-items-governance.md` §4 + §5).
 - **File nothing when there's nothing to file.**
 - **Mode coverage.** File after Mode 4 Workshop synthesis (the only mode that surfaces
   open items). Mode 1 Scaffold, Mode 2 Plan a single workshop, and Mode 3 Plan a workshop
@@ -341,6 +341,6 @@ Before declaring the work done:
 - [ ] §Post-workshop actions table (when × action × owner).
 - [ ] §Facilitation tips section pulled from Kaner / Liberating Structures.
 - [ ] Diamond stage balance check: ≥1 convergent exercise per session (workshops without convergence don't decide).
-- [ ] Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
+- [ ] Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 - [ ] No project-specific terms baked in (kit version).
 - [ ] Closing report delivered.

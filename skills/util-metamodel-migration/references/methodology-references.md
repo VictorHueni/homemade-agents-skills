@@ -64,4 +64,4 @@ This is why §4 proposes "run this skill" rather than a `git mv`.
 | Git mv + sed pattern | Standard approach for atomic file moves with link repair in markdown repos |
 | Python os.path.relpath() | Reliable relative path computation across operating systems |
 | util-metamodel-audit design (this kit) | Report-only discipline, proposed fix column, severity tiers |
-| rules/metamodel.md (this kit) | Canonical paths and skill-to-folder mappings used in detection-signals.md |
+| the `metamodel` skill (this kit) | Canonical paths and skill-to-folder mappings used in detection-signals.md |

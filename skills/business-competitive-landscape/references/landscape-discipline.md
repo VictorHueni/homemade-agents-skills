@@ -343,7 +343,7 @@ Rationale:
 - Competitive intel evolves continuously and most "open" items are *evidence-freshness*
   questions, not the four governance categories (`doc-gap` / `decision-gap` /
   `execution-item` / `tech-debt`) defined in
-  [`rules/open-items-governance.md`](../../rules/open-items-governance.md) §2.
+  the `metamodel` skill's `references/open-items-governance.md` §2.
 - The artefact already enforces `Source:` + `Last verified:` on every claim, which acts
   as a per-claim freshness ledger that the central `docs/project-control/open-items/`
   ledger would only duplicate.

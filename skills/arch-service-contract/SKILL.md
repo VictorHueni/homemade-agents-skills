@@ -279,7 +279,7 @@ Before declaring the work done:
 
 - [ ] `docs/architecture/interfaces/` folder exists.
 - [ ] `docs/architecture/interfaces/{bc-slug}.md` exists for the target BC.
-- [ ] Standard artefact frontmatter present (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for owner. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: `rules/artefact-frontmatter.md`.
+- [ ] Standard artefact frontmatter present (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for owner. Set `status: draft` on initial scaffold. Default `review_interval: 180d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 - [ ] Every CTR-NN entry maps to a `BC-NN.AGG-NN`, `BC-NN.ENT-NN`, or `BC-NN.EVT-NN`.
 - [ ] No verb in REST resource paths (exception: `/actions/{verb}`).
 - [ ] All collection endpoints have a pagination envelope.

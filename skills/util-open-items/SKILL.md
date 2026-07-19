@@ -23,7 +23,7 @@ there is no per-artefact local section to author first
 ([ADR-0005](../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)).
 
 The canonical contract — section name, schema, taxonomy, lifecycle, central-plane rules —
-lives in [`rules/open-items-governance.md`](../rules/open-items-governance.md). This skill
+lives in the `metamodel` skill's `references/open-items-governance.md`. This skill
 is the operating manual that turns the contract into repeatable mechanics. When the rule
 and this file diverge, the rule wins; this skill must then be reconciled.
 
@@ -101,7 +101,7 @@ those are scaffold debt, audited by `util-metamodel-audit` Check 8, and are not 
 This skill exposes seven modes — six steady-state operations plus a one-time `migrate`
 cutover (Mode 7, `markdown → github`). Each mode reads or writes
 `docs/project-control/open-items/open-items.md` and respects the lifecycle in
-`rules/open-items-governance.md` §3.
+the `metamodel` skill's `references/open-items-governance.md` §3.
 
 ### Mode 1 — `sync`
 
@@ -321,7 +321,7 @@ Every filed ledger row preserves three coordinates back to its origin:
 | `Source heading`  | Full heading text the anchor resolves to (e.g. `Stage 2: Onboarding`).        |
 
 The pair `(Source anchor, Source heading)` is the provenance contract from
-[`rules/open-items-governance.md`](../rules/open-items-governance.md) §4. Both halves are
+the `metamodel` skill's `references/open-items-governance.md` §4. Both halves are
 required because:
 
 - The anchor is the stable jump target — surviving heading edits.
@@ -452,7 +452,7 @@ MUST NOT touch any artefact body — there is no local section for it to write b
 
 ## See also
 
-- [`rules/open-items-governance.md`](../rules/open-items-governance.md) — canonical
+- the `metamodel` skill's `references/open-items-governance.md` — canonical
   contract; the rule wins on every conflict.
 - [`docs/project-control/open-items/README.md`](../docs/project-control/open-items/README.md) —
   operator orientation for the central control plane.

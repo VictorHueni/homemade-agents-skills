@@ -46,7 +46,7 @@ A getting-started guide is good when a brand-new developer can run through it to
    - §Prerequisites: detected language + runtime (e.g. "Node.js ≥ {version from package.json `engines`}")
    - §Coding agent setup: if `CLAUDE.md` and/or `.mcp.json` exist, note them
 5. Leave all undetectable sections as `_TODO_` with a comment explaining what to fill.
-6. Apply standard artefact frontmatter per `rules/artefact-frontmatter.md`.
+6. Apply standard artefact frontmatter per the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 **Do NOT in Scaffold mode:**
 - Invent commands that haven't been detected from project files.

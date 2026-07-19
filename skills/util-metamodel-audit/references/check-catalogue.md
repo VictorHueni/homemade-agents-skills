@@ -680,12 +680,12 @@ echo "Bounded contexts: $bc_count | Domain models: $dm_count"
 
 **What:** verifies that every `docs/**/*.md` file opens with the standard artefact frontmatter block and that all required fields are present, valid, and consistent; and that the OKF reserved `index.md` files are correct — the root declares `okf_version`, and no `index.md` is stale (older than an artefact in its subtree, since a frontmatter-free index is not covered by the `review_interval` staleness check).
 
-**Schema (canonical — defined in `rules/artefact-frontmatter.md`, an OKF v0.1 superset):**
+**Schema (canonical — defined in the `metamodel` skill's `references/artefact-frontmatter.md`, an OKF v0.1 superset):**
 - Always present, hard-required: `type` (OKF-required), `title`, `status`, `owner`, `last_reviewed`, `review_interval`
 - Always present, OKF-recommended (Warning if missing during adoption): `description`, `tags`, `timestamp`
 - Conditional: `resource` present only when the artefact has an external asset; `superseded_by` required when `status: superseded`; `supersedes` present only on documents created to replace another
 - Valid `status` values: `draft`, `active`, `superseded`, `deprecated`
-- `type` value: must equal a canonical `okf_type` display name from `rules/artefact-types-registry.md` (a value outside the set is tolerated by OKF but flagged Warning — "unregistered type")
+- `type` value: must equal a canonical `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml` (a value outside the set is tolerated by OKF but flagged Warning — "unregistered type")
 - **Reserved files** (`index.md`, `log.md`) are exempt from the artefact block; the root `docs/index.md` must instead declare `okf_version`
 
 **Detection:**
@@ -714,7 +714,7 @@ echo "=== Check 17: Frontmatter validity — starting ==="
 
 # Exempt: README.md (tool/folder/vendor nav) + the OKF reserved files index.md
 # and log.md (directory-navigation / history aids, NOT concept documents — per
-# rules/artefact-frontmatter.md they carry no artefact frontmatter). The root
+# the `metamodel` skill's `references/artefact-frontmatter.md` they carry no artefact frontmatter). The root
 # docs/index.md is checked separately for okf_version below. Names are
 # case-sensitive.
 command find docs -name "*.md" ! -name 'README.md' ! -name 'index.md' ! -name 'log.md' ! \( $EXCLUDED \) 2>/dev/null | sort | while IFS= read -r f; do
@@ -760,7 +760,7 @@ command find docs -name "*.md" ! -name 'README.md' ! -name 'index.md' ! -name 'l
 
   # 2b. type must be a non-empty canonical okf_type display name. The enum below
   #     mirrors the "OKF type display names" table in
-  #     rules/artefact-types-registry.md — keep in sync when a type is added.
+  #     the `metamodel` skill's `references/artefact-types-registry.yaml` — keep in sync when a type is added.
   #     A value outside the set is tolerated by OKF but flagged (unregistered).
   type_val=$(fm type)
   if [ -n "$type_val" ]; then
@@ -894,9 +894,9 @@ done
 - Stale `index.md` (an artefact in its subtree was committed more recently) → Warning
 
 **Proposed fix template:**
-- Missing block: "Add standard frontmatter to `{file}` using `rules/artefact-frontmatter.md` schema (OKF superset). Run `git config user.name` for owner."
-- Missing `type`: "Add `type: <okf_type>` to `{file}` — use the artefact's display name from the OKF type table in `rules/artefact-types-registry.md`."
-- Unregistered type: "Change `type:` in `{file}` to a canonical `okf_type` display name, or register the new type in `rules/artefact-types-registry.md` + this check's enum."
+- Missing block: "Add standard frontmatter to `{file}` using the `metamodel` skill's `references/artefact-frontmatter.md` schema (OKF superset). Run `git config user.name` for owner."
+- Missing `type`: "Add `type: <okf_type>` to `{file}` — use the artefact's display name from the OKF type table in the `metamodel` skill's `references/artefact-types-registry.yaml`."
+- Unregistered type: "Change `type:` in `{file}` to a canonical `okf_type` display name, or register the new type in the `metamodel` skill's `references/artefact-types-registry.yaml` + this check's enum."
 - Missing field: "Add `{field}:` to the frontmatter of `{file}`."
 - Invalid status: "Set `status:` in `{file}` to one of: `draft`, `active`, `superseded`, `deprecated`."
 - Missing `superseded_by`: "Add `superseded_by: <path-to-replacement>` to `{file}` frontmatter."
@@ -910,7 +910,7 @@ done
 
 **What:** verifies that the central ledger — `docs/project-control/open-items/open-items.md`
 under `markdown`, or GitHub Issues under `github` — conforms to
-`rules/open-items-governance.md`. Since [ADR-0005](../../../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)
+the `metamodel` skill's `references/open-items-governance.md`. Since [ADR-0005](../../../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)
 retired the per-artefact local `## Open Items` section, there is only one surface to check —
 no local-vs-ledger reconciliation is possible or needed.
 
@@ -973,12 +973,12 @@ rg -n '§Open Issues|Open Issues' docs/ business-* arch-* spec-* domain-* 2>/dev
 
 **Proposed fix template:** "Delete the local `## Open Items` table in `{file}` — file its
 rows directly to the central ledger via `util-open-items` if they are not already there,
-then remove the table (`rules/open-items-governance.md` §1, ADR-0005)."
+then remove the table (the `metamodel` skill's `references/open-items-governance.md` §1, ADR-0005)."
 
 ### Sub-check 18b — Ledger schema compliance
 
 **What:** the ledger table (and every archive bucket) uses the canonical column order and
-column names from §4 of `rules/open-items-governance.md`. Columns must not be removed or
+column names from §4 of the `metamodel` skill's `references/open-items-governance.md`. Columns must not be removed or
 reordered; additional informational columns are permitted only **after** `Tracker ref`.
 
 **Detection:**
@@ -1046,7 +1046,7 @@ done
 **Proposed fix template:** "Populate `Source anchor` and `Source heading` for row
 `{OI-ID}` in `{file}` (use `_central-only_` only when the row has no in-artefact origin), or
 fix `Source artefact` — it currently points at a file that no longer exists (§4 of
-`rules/open-items-governance.md`)."
+the `metamodel` skill's `references/open-items-governance.md`)."
 
 **github variant** (requires `gh` auth). Read the same fields from the issue body and check
 `source_artefact` resolves:
@@ -1074,7 +1074,7 @@ verifying a row's `Source artefact` actually exists — is now covered by 18c.
 ### Sub-check 18e — Closure drift
 
 **What:** rows whose `Status` is `closed` or `dropped` must carry a non-`_TBD_`
-`Tracker ref`. Closure must be evidenced (§3 of `rules/open-items-governance.md`).
+`Tracker ref`. Closure must be evidenced (§3 of the `metamodel` skill's `references/open-items-governance.md`).
 
 **Detection:**
 
@@ -1232,7 +1232,7 @@ artefact, or to GitHub. Findings always route to the operator for action through
 
 ## Check 19 — Capability / product slug integrity
 
-**What:** verifies the **canonical `slug`** (the third identifier, alongside `C-N.M` and the display name — see [`rules/artefact-types-registry.md` § Canonical slugs](../../../rules/artefact-types-registry.md#canonical-slugs)) is **present**, **well-formed**, and **globally unique** across one flat namespace. Three concepts carry a slug: every L0 capability domain (`## CN · …`) and L1 capability (`### CN.M · …`) in `docs/business/03a-capability-map.md`, and every product (the H1, plus each L0 product section of a product-family FBS) in `docs/product-specs/07a-fbs.md`.
+**What:** verifies the **canonical `slug`** (the third identifier, alongside `C-N.M` and the display name — see the `metamodel` skill's `references/artefact-types-registry.yaml` § Canonical slugs (the `metamodel` skill's `references/artefact-types-registry.yaml`)) is **present**, **well-formed**, and **globally unique** across one flat namespace. Three concepts carry a slug: every L0 capability domain (`## CN · …`) and L1 capability (`### CN.M · …`) in `docs/business/03a-capability-map.md`, and every product (the H1, plus each L0 product section of a product-family FBS) in `docs/product-specs/07a-fbs.md`.
 
 **Slug line contract:** a backtick-wrapped code-line on its own line, directly under the entity heading — `` `slug: <handle>` `` — parseable as `` ^\s*`slug:\s*([a-z0-9]+(?:-[a-z0-9]+)*)`\s*$ ``. Well-formed = kebab-case, `[a-z0-9]` words joined by single hyphens, no leading/trailing/double hyphens; recommended **≤ 20 chars**.
 
@@ -1314,7 +1314,7 @@ done | sort -u | awk -F'\t' '{c[$1]++} END{for(s in c) if(c[s]>1) print "DUPLICA
 **Severity:** Error (missing · malformed · duplicate) · Warning (> 20 chars).
 
 **Proposed fix template:**
-- Missing: "Add a `` `slug: <handle>` `` code-line under `{heading}` in `{file}` — run `business-capability-map` (fill) or `spec-functional-breakdown-structure` for an assisted `slugify(name)` proposal. The slug is a mandatory third identifier (`rules/artefact-types-registry.md` § Canonical slugs)."
+- Missing: "Add a `` `slug: <handle>` `` code-line under `{heading}` in `{file}` — run `business-capability-map` (fill) or `spec-functional-breakdown-structure` for an assisted `slugify(name)` proposal. The slug is a mandatory third identifier (the `metamodel` skill's `references/artefact-types-registry.yaml` § Canonical slugs)."
 - Malformed: "Fix slug `{slug}` in `{file}` to kebab-case (`[a-z0-9]` words joined by single hyphens)."
 - Over length: "Shorten slug `{slug}` in `{file}` to ≤ 20 chars while keeping it meaningful."
 - Duplicate: "Slug `{slug}` names two different entities across the capability map + FBS. Rename one — this is an ID-rename: update every consumer that pinned it (commit-scope allowlist, anchors) and log it in the changelog."

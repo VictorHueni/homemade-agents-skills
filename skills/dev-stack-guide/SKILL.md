@@ -95,7 +95,7 @@ Single message. Users respond like `1A, 2B, 3A`:
 
    **f. Anti-patterns** — read "pitfalls", "common mistakes", "migration guide", or "FAQ" sections. Blog posts are supplemental only; official source preferred.
 
-4. Write research scratch to `docs/dev-guides/research/{tech-slug}-research.md`. Apply standard artefact frontmatter per `rules/artefact-frontmatter.md`. Add the extra fields below:
+4. Write research scratch to `docs/dev-guides/research/{tech-slug}-research.md`. Apply standard artefact frontmatter per the `metamodel` skill's `references/artefact-frontmatter.md`. Add the extra fields below:
 
 ```yaml
 ---
@@ -169,7 +169,7 @@ Content if found; "none found" with search date if not.
 1. Read research scratch `docs/dev-guides/research/{tech-slug}-research.md`.
 2. If Step 0 answer 1A: scan relevant project files (config, source files using the tech) to extract local conventions (file structure, naming patterns, client initialisation style, etc.).
 3. Write `docs/dev-guides/{tech-slug}.md` using the template in [`templates/guide-template.md`](templates/guide-template.md).
-4. Apply standard frontmatter per `rules/artefact-frontmatter.md`, plus:
+4. Apply standard frontmatter per the `metamodel` skill's `references/artefact-frontmatter.md`, plus:
    - `verified-for: {tech}@{version}` (from research scratch)
    - `docs-url: {url}` (from research scratch)
 5. **§Core patterns:** 5–10 named, self-contained patterns. Each needs: When to use · Code example · One-sentence rationale. Source each pattern from the research scratch.

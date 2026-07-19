@@ -232,7 +232,7 @@ The three tests synthesise the following primary sources:
 
 ## Product canonical slug — the third identifier
 
-Every **product** carries a canonical **`slug`** alongside its display name — a **stable + readable + short** kebab handle that tooling depends on (commit scopes today; anchors, config keys, code-module names tomorrow). **The FBS is the canonical home for product slugs.** The canonical definition + invariants live in [`rules/artefact-types-registry.md` § Canonical slugs](../../rules/artefact-types-registry.md).
+Every **product** carries a canonical **`slug`** alongside its display name — a **stable + readable + short** kebab handle that tooling depends on (commit scopes today; anchors, config keys, code-module names tomorrow). **The FBS is the canonical home for product slugs.** The canonical definition + invariants live in the `metamodel` skill's `references/artefact-types-registry.yaml` § Canonical slugs (the `metamodel` skill's `references/artefact-types-registry.yaml`).
 
 **Placement + format (exact — a generator parses it):** a backtick-wrapped code-line on its own line, immediately under the heading it names:
 - the FBS **H1** (`# {{product_or_scope}} — Functional Breakdown Structure`) → the overall product/scope slug;
@@ -378,14 +378,14 @@ Intro paragraph:
 Open items: no local section (ADR-0005). File unresolved work directly to the central
 ledger via `util-open-items`, citing this FBS as `Source artefact` with `Source anchor` =
 the capability or functionality ID (e.g. `#c21`, `#c21f03`) and `Source heading` = the
-full heading text. Schema + lifecycle: `rules/open-items-governance.md`.
+full heading text. Schema + lifecycle: the `metamodel` skill's `references/open-items-governance.md`.
 
 Changelog
 ```
 
 **Section count is fixed; ordering is fixed.** The ASCII tree + per-capability sections are mandatory.
 
-- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 ---
 

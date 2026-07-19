@@ -26,7 +26,7 @@ that an OKF consumer (or a human, or another agent) uses for progressive disclos
 **reserved file** — a per-directory listing, not an artefact concept document. It carries **no
 artefact frontmatter**; only the **bundle root** `docs/index.md` carries `okf_version`. OKF
 prescribes no body schema, so this skill defines a **consistent table** the generator always
-emits (see [`rules/artefact-frontmatter.md`](../../rules/artefact-frontmatter.md) §Reserved files).
+emits (see the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files).
 
 ## Boundary vs `util-metamodel-scaffold`
 

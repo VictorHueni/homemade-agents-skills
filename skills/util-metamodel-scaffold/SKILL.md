@@ -19,7 +19,7 @@ Initialise the canonical `docs/` folder tree, generate a live `docs/index.md` na
 hub, and wire a stack pointer into `CLAUDE.md`. Run this skill once at the start of every
 new project — before any artefact-producing skill is invoked.
 
-The canonical folder tree and artefact paths are defined in `rules/metamodel.md`. This
+The canonical folder tree and artefact paths are defined in the `metamodel` skill. This
 skill operationalises that definition: it creates the directories, documents them in an
 index.md snapshot, and tells the agent where to look. It does NOT create artefact content
 — that is the job of the `business-*`, `discovery-*`, `domain-*`, `spec-*`, `arch-*`,
@@ -244,7 +244,7 @@ check_status() {
 **index.md frontmatter:** `index.md` is an OKF reserved file, **not** an artefact concept
 document, so it does **not** carry the standard artefact frontmatter block. The bundle-root
 `docs/index.md` carries only the OKF version declaration:
-- `okf_version: "0.1"` — the sole frontmatter field (per `rules/artefact-frontmatter.md` §Reserved files)
+- `okf_version: "0.1"` — the sole frontmatter field (per the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files)
 - any sub-folder `index.md` a skill emits is entirely frontmatter-free
 - freshness is shown in the body (`> **Last refreshed:**`), refreshed by Mode 3 in seconds
 
@@ -272,7 +272,7 @@ Mirrors the wire-mode pattern from `business-vision`.
 
    - **Index:** [`docs/index.md`](docs/index.md) — live artefact status table; run
      `util-metamodel-scaffold` Mode 3 to refresh.
-   - **Build order:** `rules/metamodel.md` — 16 steps (Vision → Implementation plans), start at Step 0 (`business-vision`); the `discovery-*` family (idea, research, workshop) is cross-cutting and runs alongside any step.
+   - **Build order:** the `metamodel` skill — 16 steps (Vision → Implementation plans), start at Step 0 (`business-vision`); the `discovery-*` family (idea, research, workshop) is cross-cutting and runs alongside any step.
    - **Audit:** run `util-metamodel-audit` for full health checks
    - **Scaffolded:** {YYYY-MM-DD}
 
@@ -292,7 +292,7 @@ Mirrors the wire-mode pattern from `business-vision`.
 
    - **Index:** [`docs/index.md`](docs/index.md) — live artefact status table; run
      `util-metamodel-scaffold` Mode 3 to refresh.
-   - **Build order:** `rules/metamodel.md` — 16 steps (Vision → Implementation plans), start at Step 0 (`business-vision`); the `discovery-*` family (idea, research, workshop) is cross-cutting and runs alongside any step.
+   - **Build order:** the `metamodel` skill — 16 steps (Vision → Implementation plans), start at Step 0 (`business-vision`); the `discovery-*` family (idea, research, workshop) is cross-cutting and runs alongside any step.
    - **Audit:** run `util-metamodel-audit` for full health checks
    - **Scaffolded:** {YYYY-MM-DD}
 
@@ -357,7 +357,7 @@ Before declaring the work done:
 - [ ] `.gitignore` checked; result surfaced in closing report.
 - [ ] `docs/index.md` written (Modes 1 + 3) with `last_reviewed` set to today, or skipped with acknowledgement (Mode 2).
 - [ ] `docs/index.md` contains a row for every canonical step.
-- [ ] `docs/index.md` is the OKF bundle root: frontmatter contains only `okf_version: "0.1"` (no artefact frontmatter block, per `rules/artefact-frontmatter.md` §Reserved files).
+- [ ] `docs/index.md` is the OKF bundle root: frontmatter contains only `okf_version: "0.1"` (no artefact frontmatter block, per the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files).
 - [ ] CLAUDE.md updated / created (Mode 1 with option 2A) or skipped with acknowledgement.
 - [ ] No artefact content files created — folders + `.gitkeep` + index.md + control-plane stubs only.
 - [ ] Closing report delivered with next-step recommendation.

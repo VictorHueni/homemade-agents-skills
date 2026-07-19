@@ -6,7 +6,7 @@ selects the backend **without ever being copied into a project's `docs/`**.
 
 ## Authority boundary
 
-- **`rules/open-items-governance.md` owns the abstract model** — the §4 schema, §2 taxonomy,
+- **the `metamodel` skill's `references/open-items-governance.md` owns the abstract model** — the §4 schema, §2 taxonomy,
   §3 lifecycle, and the §5.3 backend abstraction + invariants. It is backend-independent and
   user-global.
 - **This reference owns the `github` serialization** — how the abstract model maps onto
@@ -189,7 +189,7 @@ relationships are mutually exclusive, enforced by the `backend:` setting, not th
 
 ## See also
 
-- `rules/open-items-governance.md` §4–§5 — the abstract model + backend abstraction (owner).
+- the `metamodel` skill's `references/open-items-governance.md` §4–§5 — the abstract model + backend abstraction (owner).
 - `util-open-items/references/template.md` — the `markdown`-backend ledger skeleton.
 - `adr-0002` (in a consuming repo's `docs/architecture/decisions/`, e.g. the kit) — the
   decision this mapping implements.

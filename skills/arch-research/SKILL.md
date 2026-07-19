@@ -95,7 +95,7 @@ Ask the user the following 4 questions in a single message with lettered options
    - Populate §Sources consulted table (one row per source, with the answers from Q3 + Q4 governing depth + verification).
    - Write §Finding (1–3 paragraphs, falsifiable, honest about uncertainty).
    - Populate §Implication for ADRs (cite by ADR number + section).
-   - File any unresolved gaps for this question directly to the central ledger via `util-open-items` (per [`rules/open-items-governance.md`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/rules/open-items-governance.md)). Each row carries `Source anchor = #qN` and `Source heading = "Qn — restated question"`; do NOT add a per-Q open-gap subsection (no `###` heading inside the Q for this purpose) or a local table — there is no local surface (ADR-0005).
+   - File any unresolved gaps for this question directly to the central ledger via `util-open-items` (per the `metamodel` skill's `references/open-items-governance.md`). Each row carries `Source anchor = #qN` and `Source heading = "Qn — restated question"`; do NOT add a per-Q open-gap subsection (no `###` heading inside the Q for this purpose) or a local table — there is no local surface (ADR-0005).
 3. Fill the §Findings summary table (one row per Q).
 4. Consolidate §Sources section (deduplicated by URL).
 5. Add Changelog entry.
@@ -190,7 +190,7 @@ Frontmatter block (Status / Date / Author / Last verified / Feeds ADRs / Superse
 §Changelog (dated rows)
 ```
 
-- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from `rules/artefact-types-registry.md`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: `rules/artefact-frontmatter.md`.
+- Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 90d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
 ---
 
@@ -298,7 +298,7 @@ central ledger via `util-open-items` — there is no local section to author fir
 - **File as you go.** The moment a question's gap is identified, file it with
   `Source anchor = #qN` + `Source heading = "Qn — restated question"` so the ledger row
   navigates back into the originating question, surviving heading edits and anchor
-  renames (per `rules/open-items-governance.md` §4 + §5).
+  renames (per the `metamodel` skill's `references/open-items-governance.md` §4 + §5).
 - **File nothing when there's nothing to file.** If a mode pass surfaces no unresolved
   gaps, do not invoke `util-open-items` at all.
 - **Mode coverage.** File after Mode 2 Fill (new gaps surface) and Mode 3 Refresh (new
@@ -335,7 +335,7 @@ Before declaring the work done:
 - [ ] Header has Status / Date / Author / Last verified / Feeds ADRs (Superseded by may be empty).
 - [ ] §Questions index lists every Q numbered.
 - [ ] Every Q section has its 4 sub-sections (Context / Sources consulted / Finding / Implication for ADRs). Per-Q gaps are filed directly to the central ledger — no `###` open-gap subsection per question, no local table.
-- [ ] Every open item filed for this note carries `Source anchor = #qN` and `Source heading = "Qn — restated question"` per `rules/open-items-governance.md`.
+- [ ] Every open item filed for this note carries `Source anchor = #qN` and `Source heading = "Qn — restated question"` per the `metamodel` skill's `references/open-items-governance.md`.
 - [ ] §Sources consulted tables have: URL · Type · Last verified · Confidence · Quote (no missing columns).
 - [ ] No confidence inflation (consultancy blogs not rated above ★★).
 - [ ] No citation without quote.

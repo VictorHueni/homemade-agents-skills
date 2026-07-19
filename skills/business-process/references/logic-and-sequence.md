@@ -86,7 +86,7 @@ Adapt to process type per the SKILL.md "Common KPI patterns" guidance.
 
 ### §11 — Open Items
 
-**Why:** the document-level canonical Open Items section per [`rules/open-items-governance.md`](../../rules/open-items-governance.md) §1. Captures only **actionable unresolved work** for the process: `doc-gap` / `decision-gap` / `execution-item` / `tech-debt`. Each row uses the canonical schema (OI-ID · Type · Summary · Source anchor · Source heading · Resolution path · Priority · Status · Owner · Due / Review date · Tracker ref).
+**Why:** the document-level canonical Open Items section per the `metamodel` skill's `references/open-items-governance.md` §1. Captures only **actionable unresolved work** for the process: `doc-gap` / `decision-gap` / `execution-item` / `tech-debt`. Each row uses the canonical schema (OI-ID · Type · Summary · Source anchor · Source heading · Resolution path · Priority · Status · Owner · Due / Review date · Tracker ref).
 
 **Discipline:** inline `_TODO_` markers in the body are scaffold debt, NOT open items. Do not mirror them into §11. Empty is acceptable — `_None at present._` is the correct initial state when no actionable unresolved work exists yet. Skills MAY append a `§` column AFTER `Tracker ref` for intra-doc navigation; canonical columns must not be reordered or removed.
 
