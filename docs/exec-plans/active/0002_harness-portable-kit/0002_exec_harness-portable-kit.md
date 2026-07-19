@@ -32,7 +32,7 @@ Principles:
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
 **Overall Status:** in-progress
-**Current Increment:** 03 (blocked on ADR approval — delivery rule 4)
+**Current Increment:** 04
 
 ## Increment Plan
 
@@ -94,7 +94,7 @@ Exit criteria:
 
 ### Increment 03: Scaffold the `metamodel` Skill
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
