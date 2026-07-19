@@ -28,7 +28,7 @@ Principles:
 2. Every increment has an explicit test gate.
 3. Decisions land as ADRs before any layout change (increments 01–02 gate everything after).
 4. Content moves before layout moves — paths change once (metamodel skill before plugin folder restructure).
-5. Ownership follows clew ADR-0008: the kit never becomes the structural metamodel source of truth; no parallel validator, no kit-side `registry.yaml`.
+5. Ownership follows clew ADR-0008: the kit never becomes the structural metamodel source of truth; no parallel validator. The skill's registry ships as **YAML** (`references/artefact-types-registry.yaml`) — but as a verbatim *projection* of clew's structural SoT in the schema `clew metamodel export` will emit (the schema decision doubles as clew OI-0030's answer), never as an independent authoring surface: new artefact types are authored clew-side first.
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
 **Overall Status:** pending
@@ -72,7 +72,8 @@ Scope:
 3. Record the consolidation: `util-metamodel-audit`, `util-metamodel-scaffold`, `util-metamodel-migration` retire as standalone skills and become modes; merged skill carries `impact: "medium"` (Scaffold's Wire step writes `CLAUDE.md`); their future is thin wrappers over `clew audit` / `clew init` / `clew migrate`.
 4. Record the sibling-path reference convention (`../metamodel/references/…`) replacing `rules/…` references in skills, and why it resolves identically in all three harnesses.
 5. Record the `rules/` split: metamodel rules shrink to Claude `paths:`-scoped pointer stubs; harness-agnostic behavioural rules (`working-style`, `git-and-tools`, `writing-citations`, `diagramming-mermaid`, `frontend-nuxt`) stay and later feed AGENTS.md generation.
-6. Cross-reference clew ADR-0008: structural references are an interim hand-authored projection, flipped to `clew metamodel export` output at clew Phase 4; the kit builds no parallel enforcement.
+6. Record the registry format decision: the artefact-type registry converts from a markdown table to `references/artefact-types-registry.yaml` — row data, not prose; deterministic parsing for the Audit/Scaffold/Migrate modes; projection-shaped for `clew metamodel export`. The YAML schema is designed once as clew OI-0030's answer (canonical `metamodel.yaml` clew-side; the skill's file a verbatim copy with a provenance header). Prose contracts (`artefact-frontmatter.md`, `open-items-governance.md`) stay markdown.
+7. Cross-reference clew ADR-0008: structural references are an interim hand-authored projection, flipped to `clew metamodel export` output at clew Phase 4; the kit builds no parallel enforcement.
 
 Primary files:
 
@@ -96,15 +97,16 @@ Exit criteria:
 Scope:
 
 1. Create `skills/metamodel/SKILL.md`: body = the build-order spine from `rules/metamodel.md`; frontmatter description triggers on stack-level intents ("build the documentation stack", build-order/ID-format/artefact-placement questions) — not on per-artefact intents owned by producing skills.
-2. Move `rules/metamodel-reference.md`, `rules/artefact-types-registry.md`, `rules/artefact-frontmatter.md`, `rules/open-items-governance.md` verbatim into `skills/metamodel/references/`.
-3. Label structural sections "generated projection (future — clew ADR-0008 Phase 4); do not hand-edit to diverge from clew `docs/metamodel/`".
-4. Keep the frontmatter description under the 1024-character Codex loader limit.
+2. Move `rules/metamodel-reference.md`, `rules/artefact-frontmatter.md`, `rules/open-items-governance.md` verbatim into `skills/metamodel/references/`.
+3. Convert `rules/artefact-types-registry.md` to `skills/metamodel/references/artefact-types-registry.yaml`: one entry per artefact type (`okf_type`, `display_name`, `minting_skill`, `id_format`, `layout`, `default_path`, `review_interval`, `property_schema_ref`, `notes`), schema per ADR-0007 (= clew OI-0030's answer); provenance header comment naming clew as canonical owner. Prose conditionals stay in `artefact-frontmatter.md`.
+4. Label structural content "generated projection (future — clew ADR-0008 Phase 4); do not hand-edit to diverge from clew `docs/metamodel/`".
+5. Keep the frontmatter description under the 1024-character Codex loader limit.
 
 Primary files:
 
 1. `skills/metamodel/SKILL.md`
 2. `skills/metamodel/references/metamodel-reference.md`
-3. `skills/metamodel/references/artefact-types-registry.md`
+3. `skills/metamodel/references/artefact-types-registry.yaml`
 4. `skills/metamodel/references/artefact-frontmatter.md`
 5. `skills/metamodel/references/open-items-governance.md`
 
@@ -112,12 +114,14 @@ Test gate:
 
 1. `test -f skills/metamodel/SKILL.md && ls skills/metamodel/references/ | wc -l`
 2. `ruby -e 'require "yaml"; d = YAML.load_file("skills/metamodel/SKILL.md")["description"]; abort("too long") if d.length > 1024'`
-3. `./install.sh --quiet && test -L ~/.claude/skills/metamodel`
+3. `python3 -c "import yaml; r = yaml.safe_load(open('skills/metamodel/references/artefact-types-registry.yaml')); assert all('id_format' in t or t.get('singleton') for t in r['artefact_types'])"`
+4. Registry fidelity: entry count in the YAML equals the row count of the source markdown table; spot-check three types (`prd`, `adr`, `implementation_plan`) field-by-field.
+5. `./install.sh --quiet && test -L ~/.claude/skills/metamodel`
 
 Exit criteria:
 
 1. The skill is self-contained: no reference inside `skills/metamodel/` points outside its own folder.
-2. Moved reference content is byte-identical to the source rules (frontmatter `paths:` blocks stripped).
+2. Moved markdown reference content is byte-identical to the source rules (frontmatter `paths:` blocks stripped); every registry row survives the YAML conversion with no field loss.
 
 ### Increment 04: Reduce Metamodel Rules to Claude Pointer Stubs
 
@@ -177,7 +181,7 @@ Exit criteria:
 
 Scope:
 
-1. Add `references/modes/audit.md`, `references/modes/scaffold.md`, `references/modes/migrate.md` to the `metamodel` skill, porting the procedures from `util-metamodel-audit`, `util-metamodel-scaffold`, `util-metamodel-migration`; rewrite each so path/ID/dependency checks and the canonical tree derive at run time from the skill's own `references/artefact-types-registry.md` rows — no hardcoded per-artefact commands.
+1. Add `references/modes/audit.md`, `references/modes/scaffold.md`, `references/modes/migrate.md` to the `metamodel` skill, porting the procedures from `util-metamodel-audit`, `util-metamodel-scaffold`, `util-metamodel-migration`; rewrite each so path/ID/dependency checks and the canonical tree derive at run time by parsing `references/artefact-types-registry.yaml` (one-liner `python3 -c "import yaml; …"` per check family) — no hardcoded per-artefact commands.
 2. Extend `metamodel/SKILL.md` with a mode-dispatch section (Reference · Audit · Scaffold · Migrate) and fold the mode trigger phrases into the frontmatter description (still ≤ 1024 chars); set `impact: "medium"` (Scaffold's Wire step writes `CLAUDE.md`).
 3. Delete `skills/util-metamodel-audit/`, `skills/util-metamodel-scaffold/`, `skills/util-metamodel-migration/` (installer prune removes their symlinks).
 4. Repoint every reference to the three retired skills across `skills/`, `commands/`, and `rules/` at the corresponding mode.
@@ -194,7 +198,7 @@ Test gate:
 
 1. `ls skills/metamodel/references/modes/ | wc -l` — 3; `test ! -d skills/util-metamodel-audit && test ! -d skills/util-metamodel-scaffold && test ! -d skills/util-metamodel-migration`
 2. `rg -n "util-metamodel-(audit|scaffold|migration)" skills/ rules/ commands/ | wc -l` — 0
-3. `rg -n "artefact-types-registry" skills/metamodel/references/modes/ | wc -l` — ≥ 3 (modes derive from the registry)
+3. `rg -n "artefact-types-registry.yaml" skills/metamodel/references/modes/ | wc -l` — ≥ 3 (every mode derives from the YAML registry)
 4. `ruby -e 'require "yaml"; d = YAML.load_file("skills/metamodel/SKILL.md")["description"]; abort("too long") if d.length > 1024'`
 5. `./install.sh --quiet && test ! -e ~/.claude/skills/util-metamodel-audit`
 
@@ -403,7 +407,7 @@ Exit criteria:
 Scope:
 
 1. Rewrite `README.md` around the three-harness story: plugin-set table (replacing the flat skill index grouping), install paths per harness (marketplace vs `install.sh --sets`), adapter/MCP generation overview.
-2. File open items (GitHub backend, per ADR-0002/0003): (a) clew cross-repo — amend OI-0030 with the multi-projection export requirement (kit registry markdown + `metamodel/references/` + AGENTS.md stubs); (b) revisit issue #53 (kit-as-OKF-bundle) against the new layout; (c) any deferred set-membership disputes from ADR-0006 review.
+2. File open items (GitHub backend, per ADR-0002/0003): (a) clew cross-repo — close OI-0030 with the registry YAML schema from ADR-0007 (canonical `metamodel.yaml` clew-side; kit file a verbatim projection copy) and amend the Phase-4 export scope to the multi-projection set (registry YAML + `metamodel/references/` + AGENTS.md stubs); (b) revisit issue #53 (kit-as-OKF-bundle) against the new layout; (c) any deferred set-membership disputes from ADR-0006 review.
 
 Primary files:
 
