@@ -31,14 +31,14 @@ Principles:
 5. Ownership follows clew ADR-0008: the kit never becomes the structural metamodel source of truth; no parallel validator. The skill's registry ships as **YAML** (`references/artefact-types-registry.yaml`) — but as a verbatim *projection* of clew's structural SoT in the schema `clew metamodel export` will emit (the schema decision doubles as clew OI-0030's answer), never as an independent authoring surface: new artefact types are authored clew-side first.
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
-**Overall Status:** pending
-**Current Increment:** --
+**Overall Status:** in-progress
+**Current Increment:** 02
 
 ## Increment Plan
 
 ### Increment 01: ADR-0006 — Plugin Packaging & Cross-Harness Activation
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -257,7 +257,7 @@ Test gate:
 1. `python3 -c "import json;json.load(open('.claude-plugin/marketplace.json'))"`
 2. `for p in plugins/*/; do python3 -c "import json;json.load(open('$p/.claude-plugin/plugin.json'))" || echo "FAIL $p"; done`
 3. `test $(find plugins/*/skills -maxdepth 1 -mindepth 1 -type d | wc -l) -eq $(ls -d plugins/*/skills/*/ | wc -l) && test ! -d skills`
-4. `find plugins -name SKILL.md | wc -l` — equals post-consolidation skill count (57: 59 original − 3 retired + `metamodel`)
+4. `find plugins -name SKILL.md | wc -l` — equals post-consolidation skill count (56: 58 original − 3 retired + `metamodel`)
 
 Exit criteria:
 
