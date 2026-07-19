@@ -1,0 +1,3 @@
+Plan-0002 progress log
+======================
+2026-07-19  Plan authored (draft). Awaiting review; M1 (ADR pair) requires explicit approval before M2 starts.
