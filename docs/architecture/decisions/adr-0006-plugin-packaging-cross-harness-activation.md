@@ -1,6 +1,6 @@
 ---
 title: Plugin Packaging & Cross-Harness Activation
-status: draft
+status: active
 owner: Victor Hueni
 last_reviewed: 2026-07-19
 review_interval: 180d
