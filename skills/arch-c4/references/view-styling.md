@@ -34,7 +34,7 @@ If you add a new tag:
 1. Add it to `arch-structurizr/references/dsl-conventions.md` §4 (tag conventions table).
 2. Add a style rule to the `styles { ... }` block in `workspace.dsl`.
 3. Add a row to this file's standard taxonomy table.
-4. Update the kit's `util-metamodel-audit` Check 9 if applicable.
+4. Update the kit's the `metamodel` skill's Audit mode Check 9 if applicable.
 
 ---
 

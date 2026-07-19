@@ -32,7 +32,7 @@ Principles:
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
 **Overall Status:** in-progress
-**Current Increment:** 06
+**Current Increment:** 07
 
 ## Increment Plan
 
@@ -179,7 +179,7 @@ Exit criteria:
 
 ### Increment 06: Fold Audit / Scaffold / Migrate into Modes
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

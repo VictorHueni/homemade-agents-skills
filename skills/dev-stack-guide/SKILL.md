@@ -244,7 +244,7 @@ Content if found; "none found" with search date if not.
 
 3. **Generic §Project conventions.** Boilerplate text instead of real project scan. Fix: Mode 2 Step 0 answer 1A triggers a codebase scan.
 
-4. **Stale guide without refresh.** `verified-for:` ≥ 90 days old. Fix: `review_interval: 90d` triggers `util-metamodel-audit` Check 10 staleness flag — run Mode 3.
+4. **Stale guide without refresh.** `verified-for:` ≥ 90 days old. Fix: `review_interval: 90d` triggers the `metamodel` skill's Audit mode Check 10 staleness flag — run Mode 3.
 
 5. **Pattern count creep.** More than 10 core patterns = the guide is two guides (e.g. separate `nextjs` and `nextjs-supabase`). Fix: split when patterns no longer share the same mental model.
 

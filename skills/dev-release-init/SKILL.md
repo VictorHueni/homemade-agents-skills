@@ -372,7 +372,7 @@ This is **not** retro archaeology — reconstructing a full historical tag seque
 - **Invokes `arch-adr`** via the Step 4 post-scaffold prompt (operator runs separately): records the Axis 1 + Axis 2 decisions as a release-versioning ADR.
 - **Invokes `ops-runbook`** (suggested, operator runs separately): captures the release ritual (admin-merge → build → promote → deploy) as an operator runbook, or a CONTRIBUTING.md section.
 - **Independent of `dev-git-commit`, `dev-pr`, `dev-git-worktree`, `agent-ralph-loop`** — they operate alongside the release pipeline without depending on its scaffolding state.
-- **Detected by `util-metamodel-audit`** indirectly — the optional ADR (if created via Step 4) is checked for frontmatter validity and ID conventions.
+- **Detected by the `metamodel` skill's Audit mode** indirectly — the optional ADR (if created via Step 4) is checked for frontmatter validity and ID conventions.
 
 ## Follow-up work
 

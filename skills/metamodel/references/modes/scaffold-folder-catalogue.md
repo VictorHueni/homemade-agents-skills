@@ -1,10 +1,21 @@
-# Folder Catalogue — util-metamodel-scaffold
+# Folder Catalogue — the Scaffold mode
 
 The single canonical folder list. Claude reads this file during scaffold execution to know
 which `mkdir -p` commands to run. Every project gets the full tree — empty folders cost
 nothing and the audit checks for files, not folders.
 
 All paths are relative to the project root. `{docs_root}` defaults to `docs/`.
+
+**Registry derivation (read first).** The authoritative folder set is the directory part of
+every `default_path` in this skill's `references/artefact-types-registry.yaml` — derive it:
+
+```bash
+python3 -c "import yaml,os;print('\n'.join(sorted({os.path.dirname(t['default_path']) for t in yaml.safe_load(open('<metamodel-skill-dir>/references/artefact-types-registry.yaml'))['artefact_types'] if t['default_path']})))"
+```
+
+The literal list below is a convenience snapshot plus non-registry extras (c4/arc42
+foundations, project-control, dev-guides/research). On disagreement, the registry wins —
+and a new registry entry's folder is scaffolded even before this snapshot is updated.
 
 ---
 

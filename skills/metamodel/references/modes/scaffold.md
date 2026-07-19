@@ -1,35 +1,24 @@
----
-name: util-metamodel-scaffold
-description: "Initialise the canonical docs/ folder tree for a new project, generate a live index.md navigation hub in docs/, and wire a stack pointer into CLAUDE.md. Always creates the full canonical tree — every folder costs nothing empty and the audit checks files, not folders. Triggers on: scaffold the docs, initialise the project, set up the docs folder, create the documentation structure, create the folder structure, init metamodel, build the doc tree, scaffold docs, start the documentation."
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-25
-review_interval: 180d
-user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
-metadata:
-  category: "utility"
-  complexity: "low"
----
+# Scaffold mode — metamodel skill
 
-# Metamodel Scaffold
+> Lifecycle mode of the `metamodel` skill (consolidated from the retired standalone scaffold skill — kit ADR-0007).
+> The canonical folder tree derives from `default_path` values in `../artefact-types-registry.yaml`.
+> NOTE: the Wire step writes to the project's `CLAUDE.md` — this is why the skill carries `impact: medium`.
 
 Initialise the canonical `docs/` folder tree, generate a live `docs/index.md` navigation
 hub, and wire a stack pointer into `CLAUDE.md`. Run this skill once at the start of every
 new project — before any artefact-producing skill is invoked.
 
-The canonical folder tree and artefact paths are defined in the `metamodel` skill. This
+The canonical folder tree and artefact paths are defined in this skill. This
 skill operationalises that definition: it creates the directories, documents them in an
 index.md snapshot, and tells the agent where to look. It does NOT create artefact content
 — that is the job of the `business-*`, `discovery-*`, `domain-*`, `spec-*`, `arch-*`,
 `ops-*`, and `com-*` skills.
 
 **Always the full tree.** Empty folders cost nothing — git ignores them until a file
-lands, and `util-metamodel-audit` checks for files, not folders. There is no variant
+lands, and the Audit mode checks for files, not folders. There is no variant
 selection: every project gets the same structure, and only fills what it needs.
 
-**Complement to `util-metamodel-migration`:** migration restructures an existing docs/
+**Complement to the Migrate mode:** migration restructures an existing docs/
 folder that predates the metamodel. Scaffold initialises a fresh structure. Run scaffold
 on new projects; run migration on existing ones.
 
@@ -71,13 +60,13 @@ If `{docs_root}` already contains markdown files, warn the user:
 > canonical folders and **overwrite `docs/index.md`** with a fresh status snapshot.
 > Existing artefact files are NOT touched.
 > If the folder structure needs restructuring (files in wrong locations), run
-> `util-metamodel-migration` instead. Continue with scaffold? (Y/N)"
+> the Migrate mode instead. Continue with scaffold? (Y/N)"
 
-If the user says N, stop and suggest `util-metamodel-migration` Mode 1.
+If the user says N, stop and suggest the Migrate mode Mode 1.
 If the user says Y, proceed.
 
 **Process:**
-1. Read the full folder list from `references/folder-catalogue.md`.
+1. Read the full folder list from `scaffold-folder-catalogue.md`.
 2. For each folder in the list: `mkdir -p {folder}`.
 3. Place a `.gitkeep` in every empty leaf folder so the tree is git-trackable.
 4. Create the `docs/project-control/open-items/` control plane — see §Project-control scaffold.
@@ -88,8 +77,8 @@ If the user says Y, proceed.
    ```
    Record the result; surface it in the closing report.
 6. Detect the current status of each canonical artefact path (bash — same logic as
-   `util-metamodel-audit` Check 1) and generate `docs/index.md` from
-   `references/index-template.md`.
+   the Audit mode Check 1) and generate `docs/index.md` from
+   `scaffold-index-template.md`.
 7. If the user chose to wire CLAUDE.md (Step 0 option 2A): apply the stack pointer update
    (see §CLAUDE.md update rules below).
 
@@ -113,7 +102,7 @@ separately, or a hub doc already exists.
 No Step 0 questions needed beyond docs root.
 
 **Process:**
-1. Read folder list from `references/folder-catalogue.md`.
+1. Read folder list from `scaffold-folder-catalogue.md`.
 2. `mkdir -p` each folder; place `.gitkeep` in empty leaf folders.
 3. Create the `docs/project-control/open-items/` control plane if absent.
 4. Report: folders created / folders already existed.
@@ -130,7 +119,7 @@ example).
 
 **Process:**
 1. Detect docs root (check for existing `docs/index.md` or default to `docs/`).
-2. Re-run the status detection bash commands from `references/index-template.md §Detection`.
+2. Re-run the status detection bash commands from `scaffold-index-template.md §Detection`.
 3. Update the `> **Last refreshed:**` line in the body to today's date before writing (the reserved `index.md` carries no `last_reviewed` frontmatter field — only the root `okf_version`).
 4. Overwrite `docs/index.md` with the refreshed status snapshot.
 5. Report: N steps now ✅ / N steps 🔄 / N steps ⬜.
@@ -141,7 +130,7 @@ Does NOT create folders or touch CLAUDE.md.
 
 ## Folder creation — bash pattern
 
-From `references/folder-catalogue.md`:
+From `scaffold-folder-catalogue.md`:
 
 ```bash
 # Create the full canonical tree in one pass
@@ -217,7 +206,7 @@ Run at the end of Mode 1 (step 5). If `var/reports/` is not in `.gitignore`:
 The index.md is a **point-in-time snapshot** — a navigation hub with live status detected
 at the moment the skill runs. It is not a truly dynamic dashboard; run Mode 3 to refresh.
 
-Full template and detection commands in `references/index-template.md`.
+Full template and detection commands in `scaffold-index-template.md`.
 
 **Status detection per step:**
 
@@ -244,7 +233,7 @@ check_status() {
 **index.md frontmatter:** `index.md` is an OKF reserved file, **not** an artefact concept
 document, so it does **not** carry the standard artefact frontmatter block. The bundle-root
 `docs/index.md` carries only the OKF version declaration:
-- `okf_version: "0.1"` — the sole frontmatter field (per the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files)
+- `okf_version: "0.1"` — the sole frontmatter field (per this skill's `references/artefact-frontmatter.md` §Reserved files)
 - any sub-folder `index.md` a skill emits is entirely frontmatter-free
 - freshness is shown in the body (`> **Last refreshed:**`), refreshed by Mode 3 in seconds
 
@@ -271,9 +260,9 @@ Mirrors the wire-mode pattern from `business-vision`.
    This project uses the homemade-claude-kit strategic-architecture metamodel.
 
    - **Index:** [`docs/index.md`](docs/index.md) — live artefact status table; run
-     `util-metamodel-scaffold` Mode 3 to refresh.
-   - **Build order:** the `metamodel` skill — 16 steps (Vision → Implementation plans), start at Step 0 (`business-vision`); the `discovery-*` family (idea, research, workshop) is cross-cutting and runs alongside any step.
-   - **Audit:** run `util-metamodel-audit` for full health checks
+     the Scaffold mode Mode 3 to refresh.
+   - **Build order:** this skill — 16 steps (Vision → Implementation plans), start at Step 0 (`business-vision`); the `discovery-*` family (idea, research, workshop) is cross-cutting and runs alongside any step.
+   - **Audit:** run the Audit mode for full health checks
    - **Scaffolded:** {YYYY-MM-DD}
 
    Before doing any documentation work: read `docs/index.md` to know which steps are
@@ -291,9 +280,9 @@ Mirrors the wire-mode pattern from `business-vision`.
    This project uses the homemade-claude-kit strategic-architecture metamodel.
 
    - **Index:** [`docs/index.md`](docs/index.md) — live artefact status table; run
-     `util-metamodel-scaffold` Mode 3 to refresh.
-   - **Build order:** the `metamodel` skill — 16 steps (Vision → Implementation plans), start at Step 0 (`business-vision`); the `discovery-*` family (idea, research, workshop) is cross-cutting and runs alongside any step.
-   - **Audit:** run `util-metamodel-audit` for full health checks
+     the Scaffold mode Mode 3 to refresh.
+   - **Build order:** this skill — 16 steps (Vision → Implementation plans), start at Step 0 (`business-vision`); the `discovery-*` family (idea, research, workshop) is cross-cutting and runs alongside any step.
+   - **Audit:** run the Audit mode for full health checks
    - **Scaffolded:** {YYYY-MM-DD}
 
    Before doing any documentation work: read `docs/index.md` to know which steps are
@@ -339,9 +328,9 @@ for a single-feature engagement, or `business-capability-map` for an existing sy
 
 ## Reference materials
 
-- **`references/folder-catalogue.md`** — complete folder list with `mkdir -p` commands.
-- **`references/index-template.md`** — index.md skeleton and per-step status detection bash commands.
-- **`references/methodology-references.md`** — rationale for the single universal tree, `.gitkeep` discipline, control-plane scope (`docs/project-control/`), and `.gitignore` policy.
+- **`scaffold-folder-catalogue.md`** — complete folder list with `mkdir -p` commands.
+- **`scaffold-index-template.md`** — index.md skeleton and per-step status detection bash commands.
+- **`scaffold-methodology.md`** — rationale for the single universal tree, `.gitkeep` discipline, control-plane scope (`docs/project-control/`), and `.gitignore` policy.
 
 ---
 
@@ -357,7 +346,7 @@ Before declaring the work done:
 - [ ] `.gitignore` checked; result surfaced in closing report.
 - [ ] `docs/index.md` written (Modes 1 + 3) with `last_reviewed` set to today, or skipped with acknowledgement (Mode 2).
 - [ ] `docs/index.md` contains a row for every canonical step.
-- [ ] `docs/index.md` is the OKF bundle root: frontmatter contains only `okf_version: "0.1"` (no artefact frontmatter block, per the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files).
+- [ ] `docs/index.md` is the OKF bundle root: frontmatter contains only `okf_version: "0.1"` (no artefact frontmatter block, per this skill's `references/artefact-frontmatter.md` §Reserved files).
 - [ ] CLAUDE.md updated / created (Mode 1 with option 2A) or skipped with acknowledgement.
 - [ ] No artefact content files created — folders + `.gitkeep` + index.md + control-plane stubs only.
 - [ ] Closing report delivered with next-step recommendation.

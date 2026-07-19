@@ -1,11 +1,11 @@
-# index.md Template (OKF bundle root) — util-metamodel-scaffold
+# index.md Template (OKF bundle root) — the Scaffold mode
 
 This file contains:
 1. The full `index.md` skeleton that the skill writes to `docs/index.md` (the OKF bundle root).
 2. The bash detection commands Claude runs before generating the `index.md`
    (one per canonical artefact path).
 
-**OKF reserved file.** `index.md` is an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) reserved filename — a directory listing for progressive disclosure, **not** an artefact concept document. It therefore does **not** carry the standard artefact frontmatter block (`title`/`status`/`owner`/`last_reviewed`/`review_interval`). The **root** `docs/index.md` carries a minimal frontmatter block declaring only `okf_version`; any **sub-folder** `index.md` a skill emits is entirely frontmatter-free. See the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files.
+**OKF reserved file.** `index.md` is an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) reserved filename — a directory listing for progressive disclosure, **not** an artefact concept document. It therefore does **not** carry the standard artefact frontmatter block (`title`/`status`/`owner`/`last_reviewed`/`review_interval`). The **root** `docs/index.md` carries a minimal frontmatter block declaring only `okf_version`; any **sub-folder** `index.md` a skill emits is entirely frontmatter-free. See this skill's `references/artefact-frontmatter.md` §Reserved files.
 
 ---
 
@@ -116,8 +116,8 @@ okf_version: "0.1"
 
 > **Scaffolded:** {YYYY-MM-DD} · **Last refreshed:** {YYYY-MM-DD}
 >
-> Run `util-metamodel-scaffold` Mode 3 to refresh status.
-> Run `util-metamodel-audit` Mode 2 for a full progress snapshot.
+> Run the Scaffold mode Mode 3 to refresh status.
+> Run the Audit mode Mode 2 for a full progress snapshot.
 >
 > This is the OKF bundle root `index.md` (reserved file — no artefact frontmatter).
 
@@ -173,10 +173,10 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 
 | Tool | Purpose | Cadence |
 |---|---|---|
-| `util-metamodel-audit` Mode 1 | Full 18-check health audit | Monthly (active) / Quarterly (maintenance) |
-| `util-metamodel-audit` Mode 2 | Progress snapshot | Before sprint planning |
-| `util-metamodel-audit` Mode 4 | Freshness check | Before research waves or presentations |
-| `util-metamodel-scaffold` Mode 3 | Refresh this index.md | After completing any stack step |
+| the Audit mode Mode 1 | Full 18-check health audit | Monthly (active) / Quarterly (maintenance) |
+| the Audit mode Mode 2 | Progress snapshot | Before sprint planning |
+| the Audit mode Mode 4 | Freshness check | Before research waves or presentations |
+| the Scaffold mode Mode 3 | Refresh this index.md | After completing any stack step |
 
 ---
 

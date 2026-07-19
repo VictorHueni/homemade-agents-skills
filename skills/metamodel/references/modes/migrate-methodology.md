@@ -1,4 +1,4 @@
-# Methodology References — util-metamodel-migration
+# Methodology References — the Migrate mode
 
 Internal reference. Not copied to projects. Explains the rationale behind the skill's design decisions.
 
@@ -39,13 +39,13 @@ This pattern is analogous to database migrations: each migration is a transactio
 
 The skill has no way to know whether a detected "misplacement" is intentional. A team might have `docs/runbooks/` instead of `docs/ops/runbooks/` because they have a different convention or because a specific tool expects that path. Auto-fixing would break their setup.
 
-Report-only with atomic blocks gives the team full control: they review each finding, decide whether to apply it, and run the commands themselves. This is the same philosophy as `util-metamodel-audit`.
+Report-only with atomic blocks gives the team full control: they review each finding, decide whether to apply it, and run the commands themselves. This is the same philosophy as the Audit mode.
 
 ---
 
 ## Why DDD candidates don't get git mv commands?
 
-The domain layer (`docs/domain/`) requires specific document structure (BC-NN IDs, GT-NN IDs, aggregate definitions, etc.) that the domain skills scaffold. Moving a raw `glossary.md` to `docs/domain/glossary/glossary.md` without running `domain-glossary` would place an unstructured file at the canonical path — which would then FAIL the util-metamodel-audit mandatory-sections check.
+The domain layer (`docs/domain/`) requires specific document structure (BC-NN IDs, GT-NN IDs, aggregate definitions, etc.) that the domain skills scaffold. Moving a raw `glossary.md` to `docs/domain/glossary/glossary.md` without running `domain-glossary` would place an unstructured file at the canonical path — which would then FAIL the the Audit mode mandatory-sections check.
 
 The correct migration sequence for DDD candidates:
 1. Run the domain skill in scaffold + seed mode (it reads the existing file and imports its content)
@@ -63,5 +63,5 @@ This is why §4 proposes "run this skill" rather than a `git mv`.
 | Information retrieval precision/recall theory | Tiered detection confidence model |
 | Git mv + sed pattern | Standard approach for atomic file moves with link repair in markdown repos |
 | Python os.path.relpath() | Reliable relative path computation across operating systems |
-| util-metamodel-audit design (this kit) | Report-only discipline, proposed fix column, severity tiers |
-| the `metamodel` skill (this kit) | Canonical paths and skill-to-folder mappings used in detection-signals.md |
+| the Audit mode design (this kit) | Report-only discipline, proposed fix column, severity tiers |
+| this skill (this kit) | Canonical paths and skill-to-folder mappings used in detection-signals.md |

@@ -80,7 +80,7 @@ def parse_ledger(path: Path) -> list[dict]:
 
 
 def issue_body(row: dict) -> str:
-    """Form-structured body so util-metamodel-audit 18g (slug/field integrity) passes."""
+    """Form-structured body so the metamodel skill's Audit mode 18g (slug/field integrity) passes."""
     return "\n".join([
         f"### Type\n{row['type']}\n",
         f"### Priority\n{row['priority']}\n",

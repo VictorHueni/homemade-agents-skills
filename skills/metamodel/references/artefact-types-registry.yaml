@@ -18,7 +18,7 @@
 #   frontmatter_conditionals  per-type fields beyond the universal supersedes/superseded_by; [] when none
 #   property_schema_ref  property-model reference (TBD until clew defines it)
 #
-# Maintenance coupling: new/changed row -> this file + util-metamodel-audit type enum;
+# Maintenance coupling: new/changed row -> this file + the metamodel skill's Audit mode type enum;
 # semantics -> minting SKILL.md `## Canonical definition`; build order/ER -> SKILL.md spine
 # + references/metamodel-reference.md.
 

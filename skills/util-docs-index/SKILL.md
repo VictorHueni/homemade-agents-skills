@@ -28,9 +28,9 @@ artefact frontmatter**; only the **bundle root** `docs/index.md` carries `okf_ve
 prescribes no body schema, so this skill defines a **consistent table** the generator always
 emits (see the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files).
 
-## Boundary vs `util-metamodel-scaffold`
+## Boundary vs the `metamodel` skill's Scaffold mode
 
-- **`util-metamodel-scaffold` Mode 3** owns the **bundle-root stack-progress dashboard** (the
+- **the `metamodel` skill's Scaffold mode Mode 3** owns the **bundle-root stack-progress dashboard** (the
   ✅/🔄/⬜ table keyed to the metamodel build steps). Prefer it for `docs/index.md`.
 - **This skill** produces a **generic per-folder listing with per-doc summaries** for **any
   folder** — sub-folders (`docs/domain/`, `docs/architecture/decisions/`, …) and non-metamodel
@@ -90,7 +90,7 @@ The bundle root additionally opens with `---\nokf_version: "0.1"\n---`.
 ## Idempotency & enforcement hooks
 
 - **Re-runs are byte-stable** — safe to run repeatedly; only real doc changes cause a diff.
-- `--check` is the mode a **pre-commit hook** or **`util-metamodel-audit`** uses to detect a
+- `--check` is the mode a **pre-commit hook** or **the `metamodel` skill's Audit mode** uses to detect a
   stale index without mutating anything (exit 1 = would change).
 
 ## Checklist

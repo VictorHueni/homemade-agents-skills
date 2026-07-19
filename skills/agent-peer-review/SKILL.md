@@ -75,7 +75,7 @@ Use all lenses, then emphasize the highest-risk areas:
 
 A peer review is a **working record, not a spine `docs/` artefact** — the `agent-*` family mints no IDs and writes no catalogued `docs/` documents (it orchestrates *how the agent builds*, not *what the product is*). So the review does **not** carry the OKF artefact-frontmatter block: no registered `type`, no `review_interval`, no the `metamodel` skill's `references/artefact-types-registry.yaml` lookup. Registering a `peer_review` type would miscategorise a transient review as a first-class artefact and force it into the audit's spine.
 
-Default output location: `var/reports/<feature>/` (a feature-named subfolder, per the skill-output convention) — e.g. `var/reports/<feature>/<target-slug>-peer-review.md`. This path is outside `docs/`, so `util-metamodel-audit` never sweeps it, which is correct: a review is regenerable and not part of the knowledge graph.
+Default output location: `var/reports/<feature>/` (a feature-named subfolder, per the skill-output convention) — e.g. `var/reports/<feature>/<target-slug>-peer-review.md`. This path is outside `docs/`, so the `metamodel` skill's Audit mode never sweeps it, which is correct: a review is regenerable and not part of the knowledge graph.
 
 Open with a **light plain-markdown header** (no YAML frontmatter block): an H1 title, then a one-line metadata line — target reviewed (path), date, reviewer (`git config user.name`), and the one-line verdict.
 

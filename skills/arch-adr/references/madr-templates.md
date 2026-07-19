@@ -159,4 +159,4 @@ status: active
 supersedes: docs/architecture/decisions/adr-0002-use-postgresql.md
 ```
 
-`util-metamodel-audit` enforces both: flags any ADR body that still contains a `## Status` heading, and verifies that `superseded_by` / `supersedes` paths resolve to existing files with the expected counterpart status.
+the `metamodel` skill's Audit mode enforces both: flags any ADR body that still contains a `## Status` heading, and verifies that `superseded_by` / `supersedes` paths resolve to existing files with the expected counterpart status.

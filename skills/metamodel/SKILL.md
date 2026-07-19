@@ -1,13 +1,13 @@
 ---
 name: metamodel
-description: "Canonical metamodel of the strategic-architecture documentation stack: the 19-artefact build order, the artefact-type registry (ID formats, canonical paths, review intervals, OKF type names), the artefact frontmatter schema, and open-items governance. Every doc-producing kit skill reads this skill's references; consult it directly for stack-level work. Triggers on: build the documentation stack, do the strategic docs, start the project documentation, documentation plan, build order, what artefact comes next, where does an artefact live, which ID format, artefact frontmatter, docs folder structure."
+description: "Canonical metamodel of the strategic-architecture documentation stack: the 19-artefact build order, the artefact-type registry (ID formats, canonical paths, review intervals, OKF type names), the artefact frontmatter schema, and open-items governance — plus the stack lifecycle as modes: Audit (health check), Scaffold (canonical folder tree + CLAUDE.md wiring), Migrate (bring existing docs onto the metamodel). Every doc-producing kit skill reads this skill's references; consult it directly for stack-level work. Triggers on: build the documentation stack, do the strategic docs, start the project documentation, documentation plan, build order, what artefact comes next, where does an artefact live, which ID format, artefact frontmatter, docs folder structure, audit my docs stack, metamodel audit, artefact stack health, scaffold the docs folder, docs folder setup, migrate my docs, docs migration report."
 version: "1.0.0"
 status: active
 last_reviewed: 2026-07-19
 review_interval: 180d
 user-invocable: true
 allow_implicit_invocation: true
-impact: "low"
+impact: "medium"
 metadata:
   category: "metamodel"
   complexity: "high"
@@ -40,6 +40,22 @@ metamodel — every doc-producing skill resolves structural facts through it (by
 When the user says *"build the documentation stack"*, *"do the strategic docs"*, *"start the
 project documentation"*, or *"follow the architecture plan"* — this skill is the authoritative
 reference for **what to build, in what order, and where to put it**.
+
+## Modes (lifecycle operations)
+
+Beyond the default **Reference** use (answering stack-level questions, guiding build-order
+work), this skill owns three lifecycle modes. Pick by intent; each mode's full procedure is
+its file under `references/modes/`:
+
+| Mode | Intent signals | Procedure | What it does |
+|---|---|---|---|
+| **Audit** | "audit my docs stack", "artefact stack health", "metamodel audit", "governance drift" | [`references/modes/audit.md`](references/modes/audit.md) (+ [`audit-check-catalogue.md`](references/modes/audit-check-catalogue.md), [`audit-report-template.md`](references/modes/audit-report-template.md)) | Report-only health check of a project's docs stack — 19 checks derived from the registry: placement, IDs, links, dependencies, frontmatter, open-items governance |
+| **Scaffold** | "scaffold the docs folder", "set up the documentation tree", "docs folder setup" | [`references/modes/scaffold.md`](references/modes/scaffold.md) (+ [`scaffold-folder-catalogue.md`](references/modes/scaffold-folder-catalogue.md), [`scaffold-index-template.md`](references/modes/scaffold-index-template.md)) | Creates the canonical `docs/` tree + root `index.md`; the Wire step writes `CLAUDE.md` (the reason this skill carries `impact: medium`) |
+| **Migrate** | "migrate my docs", "bring existing docs onto the metamodel", "docs migration report" | [`references/modes/migrate.md`](references/modes/migrate.md) (+ [`migrate-detection-signals.md`](references/modes/migrate-detection-signals.md), [`migrate-path-migration-v2.md`](references/modes/migrate-path-migration-v2.md)) | Report-first migration of an existing docs tree onto the canonical layout — three-tier detection, ≥2-tier agreement before proposing moves |
+
+All three modes parse `references/artefact-types-registry.yaml` at run time for structural
+facts — none carries its own copy. Their long-term future is thin wrappers over the clew CLI
+(`clew audit` / `clew init` / `clew migrate`), per clew ADR-0008.
 
 ---
 

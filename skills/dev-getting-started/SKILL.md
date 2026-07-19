@@ -182,7 +182,7 @@ For each guide section, read the relevant files above and emit:
 
 5. **No coding agent setup section.** `CLAUDE.md` and `.mcp.json` exist but the guide doesn't mention them. Fix: always check for these files and document the agent setup — it's one of the most valuable parts of the guide for AI-assisted development.
 
-6. **Stale after project evolution.** Guide was filled once and never refreshed. Fix: `review_interval: 180d` triggers `util-metamodel-audit` Check 10 staleness flag — run Mode 3.
+6. **Stale after project evolution.** Guide was filled once and never refreshed. Fix: `review_interval: 180d` triggers the `metamodel` skill's Audit mode Check 10 staleness flag — run Mode 3.
 
 ---
 

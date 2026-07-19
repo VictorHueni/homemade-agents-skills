@@ -5,7 +5,7 @@
 # backend (see util-open-items/SKILL.md §Backends). It is not installed automatically.
 #
 # Invariant I1 (the `metamodel` skill's `references/open-items-governance.md` §5.3): every field `id:` below MUST equal the
-# canonical slug so util-metamodel-audit can read an issue body through the same slug map it
+# canonical slug so the metamodel skill's Audit mode can read an issue body through the same slug map it
 # uses for a markdown ledger row. Do not rename an `id:` — rename the label instead.
 #
 # Field partition: this form carries ONLY the authoring-time fields

@@ -1,4 +1,4 @@
-# Methodology References — util-metamodel-scaffold
+# Methodology References — the Scaffold mode
 
 Internal reference. Not copied to projects. Explains the rationale behind the skill's
 design decisions.
@@ -12,7 +12,7 @@ strategy-only / single-feature), where each variant would create a different sub
 folders. The variant model was dropped for two reasons:
 
 1. **Empty folders are free.** Git ignores empty directories until a file lands in them.
-   `util-metamodel-audit` checks for *files*, not *folders* — an empty
+   the Audit mode checks for *files*, not *folders* — an empty
    `docs/ops/runbooks/` on a single-feature project produces no audit findings and no
    noise. The cost of having extra empty directories is exactly zero.
 
@@ -70,8 +70,8 @@ in a pull request, or because they lack a separate CI artefact store. Auto-modif
 `.gitignore` would silently remove that option.
 
 The skill surfaces the suggestion as a one-liner in the closing report. The operator makes
-the choice. This is the same philosophy as the report-only discipline in `util-metamodel-audit`
-and `util-metamodel-migration`: surface findings, let the operator act.
+the choice. This is the same philosophy as the report-only discipline in the Audit mode
+and the Migrate mode: surface findings, let the operator act.
 
 ---
 
@@ -82,7 +82,7 @@ and `util-metamodel-migration`: surface findings, let the operator act.
 document — so it carries no artefact frontmatter block (the bundle-root `docs/index.md` carries
 only `okf_version`). It is a generated snapshot that becomes stale the moment any stack step
 changes status, but its freshness is not policed by the artefact `review_interval` staleness
-check; instead the body shows `> **Last refreshed:**` and `util-metamodel-audit` Check 17
+check; instead the body shows `> **Last refreshed:**` and the Audit mode Check 17
 verifies the root `index.md` exists and declares `okf_version`.
 
 Mode 3 regenerates `index.md` in seconds. The cost of refreshing is negligible; the cost of
@@ -97,5 +97,5 @@ after every stack step.
 |---|---|
 | Git documentation — gitignore(5) | `.gitkeep` convention and universal-tree rationale |
 | `util-open-items/SKILL.md` | Project-control scope boundary |
-| the `metamodel` skill's `references/open-items-governance.md` | Control-plane initialisation requirements |
-| `util-metamodel-audit/references/methodology-references.md` | Report-only / suggest-only discipline |
+| this skill's `references/open-items-governance.md` | Control-plane initialisation requirements |
+| the Audit mode/scaffold-methodology.md` | Report-only / suggest-only discipline |

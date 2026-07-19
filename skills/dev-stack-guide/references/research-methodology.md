@@ -85,7 +85,7 @@ Anti-patterns sourced from Tier 4 community sources (blog posts, Reddit) must be
 ## Version pinning strategy
 
 - **`verified-for:` in frontmatter** — always the exact stable version at research time (e.g. `supabase@2.39.8`, `spring-boot@3.2.5`). Not a range, not `^version`.
-- **`review_interval: 90d`** — triggers `util-metamodel-audit` Check 10 staleness flag. Refresh cadence:
+- **`review_interval: 90d`** — triggers the `metamodel` skill's Audit mode Check 10 staleness flag. Refresh cadence:
   - Actively maintained tech with monthly releases: 60d
   - Stable tech with quarterly releases: 90d (default)
   - Foundational tech with annual releases: 180d

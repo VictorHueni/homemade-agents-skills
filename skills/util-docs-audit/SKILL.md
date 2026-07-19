@@ -23,10 +23,10 @@ This skill is intentionally **generic**. It looks at file-level signals — stal
 That separation is deliberate. Stack-aware governance lives in dedicated tools:
 
 - **This skill (`util-docs-audit`)** — generic doc rot only: stale, outdated, dead docs. **Not a stack-governance tracker.** It does not enforce the open-items schema, does not verify ledger provenance, does not flag closure drift, and does not check metamodel build-order placement.
-- **`util-metamodel-audit`** — report-only stack-aware compliance audit: central-ledger schema compliance, source-anchor / source-heading provenance, closure drift, dependency enforcement, ID integrity. Authoritative for any check that depends on the `metamodel` skill's `references/open-items-governance.md` or the `metamodel` skill.
+- **the `metamodel` skill's Audit mode** — report-only stack-aware compliance audit: central-ledger schema compliance, source-anchor / source-heading provenance, closure drift, dependency enforcement, ID integrity. Authoritative for any check that depends on the `metamodel` skill's `references/open-items-governance.md` or the `metamodel` skill.
 - **`util-open-items`** — operational CRUD for the central living ledger at `docs/project-control/open-items/`: sync, triage, close, drop, archive, report. The only sanctioned writer of the ledger.
 
-If a user asks "are my open items in sync with the ledger?" or "is my docs structure metamodel-compliant?" — route to `util-metamodel-audit`. If they ask "fix this open item" or "roll up open items" — route to `util-open-items`. This skill stays out of those workflows so the two governance tools remain the single source of truth for stack-aware checks.
+If a user asks "are my open items in sync with the ledger?" or "is my docs structure metamodel-compliant?" — route to the `metamodel` skill's Audit mode. If they ask "fix this open item" or "roll up open items" — route to `util-open-items`. This skill stays out of those workflows so the two governance tools remain the single source of truth for stack-aware checks.
 
 ## How It Works
 

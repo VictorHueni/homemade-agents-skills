@@ -191,6 +191,6 @@ Recommended invocation cadence (per the `metamodel` skill's `references/open-ite
 - **Per milestone** as a hard checkpoint — every milestone exit should run triage and
   resolve all `escalate`-class findings before moving on.
 
-`util-metamodel-audit` complements triage by reporting governance drift (missing
+the `metamodel` skill's Audit mode complements triage by reporting governance drift (missing
 sections, schema violations, broken provenance) at a slower cadence (monthly or
 quarterly). Triage handles operational health; audit handles structural compliance.

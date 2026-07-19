@@ -92,7 +92,7 @@ Invoke `util-open-items` whenever:
 - Someone wants a snapshot of governance health → run `report`.
 
 Do NOT invoke this skill to mutate `_TODO_` scaffold placeholders in artefact bodies —
-those are scaffold debt, audited by `util-metamodel-audit` Check 8, and are not open items.
+those are scaffold debt, audited by the `metamodel` skill's Audit mode Check 8, and are not open items.
 
 ---
 
@@ -329,7 +329,7 @@ required because:
 
 Governance-only items (raised directly at the central plane with no artefact home) carry
 `_central-only_` in `Source heading`, an empty `Source anchor`, and an empty
-`Source artefact`. `util-metamodel-audit` does not flag these as orphans (per the README
+`Source artefact`. the `metamodel` skill's Audit mode does not flag these as orphans (per the README
 in `docs/project-control/open-items/`).
 
 ---
@@ -426,7 +426,7 @@ The `open-items.md` / `archive/` paths above apply to the **`markdown` backend**
 this skill writes no repo file at all in that case.
 
 This skill MUST NOT write to any other path. In particular it MUST NOT mutate
-`util-metamodel-audit` reports (those are produced by a separate report-only skill) and
+the `metamodel` skill's Audit mode reports (those are produced by a separate report-only skill) and
 MUST NOT touch any artefact body — there is no local section for it to write back to
 (ADR-0005). A producing skill MAY add its own optional backlink to an artefact it generates
 (governance §1), but `util-open-items` itself never edits artefact content.
@@ -456,5 +456,5 @@ MUST NOT touch any artefact body — there is no local section for it to write b
   contract; the rule wins on every conflict.
 - [`docs/project-control/open-items/README.md`](../docs/project-control/open-items/README.md) —
   operator orientation for the central control plane.
-- `util-metamodel-audit/references/check-catalogue.md` — governance-drift audit (report
+- `the `metamodel` skill's `references/modes/audit-check-catalogue.md`` — governance-drift audit (report
   only; never mutates).

@@ -8,7 +8,7 @@ impossible to audit governance health or roll up live open work across the stack
 This rule is the **single source of truth** for that contract. Every skill that emits
 unresolved work and every audit that verifies it must conform to the schema and lifecycle
 defined here. `util-docs-audit` stays generic (file-level rot) and is out of scope;
-stack-aware governance lives in `util-metamodel-audit` and the dedicated `util-open-items`
+stack-aware governance lives in the `metamodel` skill's Audit mode and the dedicated `util-open-items`
 skill.
 
 ---
@@ -58,7 +58,7 @@ either belongs elsewhere (product backlog, defect tracker) or has been mis-class
 Inline `_TODO_` placeholders inside an artefact body (a stub heading, an unfinished
 sentence, a missing diagram) are **not** open items. They are scaffold debt: they signal an
 incomplete first draft of the document itself. `_TODO_` density is measured by
-`util-metamodel-audit` Check 8 and is reported separately.
+the `metamodel` skill's Audit mode Check 8 and is reported separately.
 
 Open items capture **work that remains after the artefact is internally complete** —
 unanswered questions, deferred decisions, follow-ups, debt. Skills must not file
@@ -200,7 +200,7 @@ valid and use this provenance form:
 - `Source artefact` = the owning folder/skill or scope marker (e.g. `ops-terraform-exoscale/`),
   or `(cross-cutting)` when no single location applies.
 
-`util-metamodel-audit` MUST NOT flag central-only rows as orphaned or as provenance-drift
+the `metamodel` skill's Audit mode MUST NOT flag central-only rows as orphaned or as provenance-drift
 findings. All other §4 column rules (valid `Type`, lifecycle `Status`, `_TBD_`-until-terminal
 `Tracker ref`, ISO date) apply unchanged.
 
@@ -254,9 +254,9 @@ The live ledger never silently deletes rows — archival is explicit and dated.
 | :---------------------------- | :---------------------------------------------------------------------------------------------------------- |
 | `util-docs-audit`             | Generic file-level rot (stale, outdated, dead). **Not** an open-items governance tracker.                   |
 | `util-open-items`             | Maintains the central plane — sync, triage, close, archive, report — honouring the configured backend (§5.3). Living ledger CRUD.         |
-| `util-metamodel-audit`        | Report-only. Verifies central-ledger/issue rows conform to the §4 schema, that `Source artefact` / `Source anchor` resolve to a real file/heading, and that closure evidence is present — reading whichever backend is configured via the canonical field slugs (§5.3). Never mutates the ledger. |
+| the `metamodel` skill's Audit mode        | Report-only. Verifies central-ledger/issue rows conform to the §4 schema, that `Source artefact` / `Source anchor` resolve to a real file/heading, and that closure evidence is present — reading whichever backend is configured via the canonical field slugs (§5.3). Never mutates the ledger. |
 
-`util-metamodel-audit` is the only place that flags governance drift on the central ledger
+the `metamodel` skill's Audit mode is the only place that flags governance drift on the central ledger
 (schema compliance, dangling provenance, closure evidence). It must not mutate the ledger;
 remediation is always operator-driven via `util-open-items`.
 
@@ -325,5 +325,5 @@ Restated:
 - `util-open-items/references/github-backend.md` — the operator skill's worked backend-mapping reference (canonical field slugs, identity translation, status decomposition); the §5.3 worked example. Travels with the skill — never copied into a project's `docs/`.
 - `docs/project-control/open-items/open-items.md` — the kit's own ledger: kit-dev open items (per §9) **and** the merged skill backlog (candidate skills + structural decisions). Shipped history under `archive/`.
 - `util-open-items/SKILL.md` — operating manual for the living ledger.
-- `util-metamodel-audit/references/check-catalogue.md` — exact audit checks for governance
+- `the `metamodel` skill's `references/modes/audit-check-catalogue.md`` — exact audit checks for governance
   drift, schema compliance, and provenance.

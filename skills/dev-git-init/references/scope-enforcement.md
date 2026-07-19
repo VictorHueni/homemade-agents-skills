@@ -47,7 +47,7 @@ Three pieces, all owned here because `dev-git-init` owns both surfaces the enum 
 
 ### Generate
 
-`scripts/gen-commit-scopes.py` (pure stdlib, read-only) reads the capability map (`docs/business/03a-capability-map.md`) and FBS (`docs/product-specs/07a-fbs.md`) and harvests their **first-class canonical slugs** — the `` `slug: <handle>` `` code-line each L0 domain, L1 capability, and product declares under its heading. Those slugs are the source of truth (owned by the capability map + FBS, defined in [`artefact-types-registry.md` § Canonical slugs], and audited for presence + global-uniqueness + format by `util-metamodel-audit` Check 19). The allowlist is every declared slug + the fixed buckets `platform, infra, ci, deps, chore`. Output is a byte-stable `.commit-scopes.json`:
+`scripts/gen-commit-scopes.py` (pure stdlib, read-only) reads the capability map (`docs/business/03a-capability-map.md`) and FBS (`docs/product-specs/07a-fbs.md`) and harvests their **first-class canonical slugs** — the `` `slug: <handle>` `` code-line each L0 domain, L1 capability, and product declares under its heading. Those slugs are the source of truth (owned by the capability map + FBS, defined in [`artefact-types-registry.md` § Canonical slugs], and audited for presence + global-uniqueness + format by the `metamodel` skill's Audit mode Check 19). The allowlist is every declared slug + the fixed buckets `platform, infra, ci, deps, chore`. Output is a byte-stable `.commit-scopes.json`:
 
 ```json
 { "scopes": ["billing", "catalog", "catalog-maintenance", "checkout", "platform", "infra", "ci", "deps", "chore"], "sources": ["docs/business/03a-capability-map.md"] }

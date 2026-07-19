@@ -194,7 +194,7 @@ sequenceDiagram
 
 **Why these KPIs:** {one paragraph explaining what monitoring these together tells the operator — operational health vs. structural drift vs. compliance risk}.
 
-> ⚠️ **`current value` of `_TODO_`** is a scaffold placeholder, not an open item. It is detected separately by `util-metamodel-audit` Check 8. Only add a row to §11 §Open Items when the missing measurement requires actionable follow-up (e.g. a scheduled extract, an interview, a tracker-resolvable decision-gap) — see the `metamodel` skill's `references/open-items-governance.md` §2.
+> ⚠️ **`current value` of `_TODO_`** is a scaffold placeholder, not an open item. It is detected separately by the `metamodel` skill's Audit mode Check 8. Only add a row to §11 §Open Items when the missing measurement requires actionable follow-up (e.g. a scheduled extract, an interview, a tracker-resolvable decision-gap) — see the `metamodel` skill's `references/open-items-governance.md` §2.
 
 ---
 

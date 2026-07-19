@@ -9,7 +9,7 @@ be rejected as out-of-enum.
 Primary source — first-class canonical slugs. Each L0 domain, L1 capability, and
 product declares a ```slug: <handle>``` code-line under its heading (owned by the
 capability map + FBS; see the `metamodel` skill's `references/artefact-types-registry.yaml` § Canonical slugs,
-audited for presence + global-uniqueness + kebab format by ``util-metamodel-audit``
+audited for presence + global-uniqueness + kebab format by `the `metamodel` skill's Audit mode`
 Check 19). Slugs are short, kebab, and globally unique *by construction upstream*,
 so the generator just harvests them — it never derives or shortens. A developer
 scopes at whichever declared altitude fits (capability, product, or L0 domain);
@@ -80,7 +80,7 @@ _ALIAS_SCAN_LINES = 12
 
 # First-class canonical slug: `` `slug: <kebab>` `` on its own line under an L0 / L1 /
 # product heading (owned by the capability map + FBS; see artefact-types-registry.md
-# § Canonical slugs, enforced by util-metamodel-audit Check 19). Recognised loosely,
+# § Canonical slugs, enforced by the metamodel skill's Audit mode Check 19). Recognised loosely,
 # then validated as kebab, so a malformed value is reported rather than silently missed.
 _SLUG_DECL = re.compile(r"^\s*`slug:\s*(.+?)\s*`\s*$")
 _KEBAB = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")

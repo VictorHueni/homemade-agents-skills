@@ -1,8 +1,17 @@
-# Detection Signals — util-metamodel-migration
+# Detection Signals — the Migrate mode
 
 Internal Claude reference. Never copied to projects. Update this file when the metamodel gains new artefacts.
 
 The three-tier detection system. A finding requires ≥2 tiers to agree before being reported with a fix block. Single-tier matches are flagged Low confidence.
+
+**Registry derivation (read first).** The "Canonical path" values in the tables below are
+informational snapshots — the **authoritative** canonical path and ID format for every
+artefact type is its entry in this skill's `references/artefact-types-registry.yaml`. At
+run time: (1) resolve each detected type's destination by parsing the registry, never by
+trusting the column; (2) additionally derive a baseline Tier-1 signal for EVERY registry
+entry from its `default_path` filename pattern and `id_format` — so a newly registered
+artefact type is detected even before a curated heuristic row exists here. The curated
+rows below add fuzzy-name intelligence (synonyms, legacy names) the registry cannot carry.
 
 ---
 
@@ -12,7 +21,7 @@ A file whose name matches one of these patterns is likely the artefact type list
 
 | Filename pattern (glob) | Likely artefact type | Canonical skill | Canonical path |
 |---|---|---|---|
-| `INDEX.md` (any depth under `docs/`) | Legacy bundle/folder index | `util-metamodel-scaffold` | Rename to `index.md` (OKF reserved file); strip artefact frontmatter; root keeps only `okf_version` — see `okf-index-rename` in `path-migration-v2.md` |
+| `INDEX.md` (any depth under `docs/`) | Legacy bundle/folder index | the Scaffold mode | Rename to `index.md` (OKF reserved file); strip artefact frontmatter; root keeps only `okf_version` — see `okf-index-rename` in `path-migration-v2.md` |
 | `*_prd_*.md` or `*-prd-*.md` | PRD | `spec-prd` | `docs/product-specs/prds/prd-NNNN-{feature}.md` |
 | `uc-[0-9][0-9]-*.md` or `*use-case*.md` | Use case | `spec-use-case` | `docs/product-specs/use-cases/uc-NN-{slug}.md` |
 | `[0-9][0-9][0-9][0-9]-*.md` or `[0-9][0-9][0-9][0-9]_*.md` in a decisions-like folder | ADR | `arch-adr` | `docs/architecture/decisions/adr-NNNN-{topic}.md` |

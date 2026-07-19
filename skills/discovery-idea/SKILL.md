@@ -270,7 +270,7 @@ Triggers: `abandon IDEA-NNNN`, `drop idea`, `kill idea`.
 
 ### Mode 5 — Maintain (lifecycle: graduated → review)
 
-Triggers: monthly cadence; user runs the maintenance pass; `util-metamodel-audit` Check 12 flags overdue review.
+Triggers: monthly cadence; user runs the maintenance pass; the `metamodel` skill's Audit mode Check 12 flags overdue review.
 
 1. For each idea where `lifecycle: graduated`, verify the `target_id` artefact still exists at the recorded path.
 2. If the downstream artefact has been superseded, set this idea's `status: superseded` + `superseded_by: <path>`.
@@ -289,7 +289,7 @@ Source signals that *generate* ideas. Not modeled as foreign keys (the source is
 
 - `discovery-research` interview synthesis surfaces a hunch → captured as `IDEA-NNNN`
 - `discovery-workshop` output produces several candidate directions → each captured
-- `util-metamodel-audit` flags a gap requiring ideation (e.g. an `Assumed` claim with no evidence) → captured
+- the `metamodel` skill's Audit mode flags a gap requiring ideation (e.g. an `Assumed` claim with no evidence) → captured
 - An open item of type `decision-gap` in any artefact may spawn a new idea
 - External signals: customer messages, competitive moves, individual hunches
 
@@ -383,7 +383,7 @@ Worth knowing because it tells you when the skill is being misused. These artefa
 | `business-process` | Graduation target for `process` domain ideas. |
 | `spec-functional-breakdown-structure` | Graduation target when an idea is "add this functionality `C-N.M.FXX` to an existing capability". |
 | `util-open-items` | Files open items surfaced during Refine directly to `docs/project-control/open-items/open-items.md` (or GitHub Issues) with canonical `OI-NNNN` IDs — no local section (ADR-0005). |
-| `util-metamodel-audit` | Reports on stale `ready` ideas, missing `graduates_to`, and dead `target_id` links. |
+| the `metamodel` skill's Audit mode | Reports on stale `ready` ideas, missing `graduates_to`, and dead `target_id` links. |
 
 ---
 

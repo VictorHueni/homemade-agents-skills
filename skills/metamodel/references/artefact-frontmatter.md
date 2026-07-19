@@ -9,7 +9,7 @@ Every markdown file produced by a kit skill under `docs/` must open with this YA
 - Any file literally named `README.md` (case-sensitive) at any depth under `docs/` is exempt. READMEs are tool-, folder-, or vendor-level navigation aids whose lifecycle does not match the artefact review cadence. Adding artefact frontmatter to a README implies strategic content it does not carry and forces a noisy `review_interval`. Examples that stay frontmatter-free: a notebook's runtime `analysis/README.md`, a vendored package's `README.md`, a folder-level "what lives here" `README.md`.
 - `index.md` and `log.md` are **OKF reserved files** (see §Reserved files below) — they are directory-navigation / history aids, **not** artefact concept documents, and are exempt from the artefact frontmatter block. The **root** `docs/index.md` is the sole exception: it carries a minimal frontmatter block containing only `okf_version` (see below).
 
-> **Migration note (INDEX.md → index.md).** The kit previously produced an uppercase `INDEX.md` navigation hub that *required* artefact frontmatter. As of the OKF baseline, that hub is the lowercase OKF-reserved **`index.md`** (frontmatter-free, except the root's `okf_version`). Its rich nav content (the ✅/🔄/⬜ stack-progress table) lives in the file **body**. `util-metamodel-scaffold` produces `index.md`; any legacy `INDEX.md` is migrated with `git mv INDEX.md index.md` + frontmatter strip.
+> **Migration note (INDEX.md → index.md).** The kit previously produced an uppercase `INDEX.md` navigation hub that *required* artefact frontmatter. As of the OKF baseline, that hub is the lowercase OKF-reserved **`index.md`** (frontmatter-free, except the root's `okf_version`). Its rich nav content (the ✅/🔄/⬜ stack-progress table) lives in the file **body**. the `metamodel` skill's Scaffold mode produces `index.md`; any legacy `INDEX.md` is migrated with `git mv INDEX.md index.md` + frontmatter strip.
 
 ```yaml
 ---
@@ -44,7 +44,7 @@ Per OKF v0.1, two filenames are reserved across every directory of a bundle. The
 | `index.md` | Optional per-directory listing enabling **progressive disclosure** as an agent walks the tree. Body is free-form (the kit uses it for the folder's nav hub / stack-progress table). | **None**, except the **root** `docs/index.md`, which carries only `okf_version: "0.1"`. |
 | `log.md` | Optional chronological change history for a directory. | None. |
 
-- **Every folder under `docs/` may carry an `index.md`** (and optionally a `log.md`). At minimum the bundle root `docs/index.md` exists (produced by `util-metamodel-scaffold`).
+- **Every folder under `docs/` may carry an `index.md`** (and optionally a `log.md`). At minimum the bundle root `docs/index.md` exists (produced by the `metamodel` skill's Scaffold mode).
 - **Version declaration:** only the root `docs/index.md` declares the bundle's target OKF version:
 
 ```yaml

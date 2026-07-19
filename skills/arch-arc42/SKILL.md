@@ -54,7 +54,7 @@ Five modes covering the arc42 sections **arc42 owns as prose**. They are read-he
 
 - `source` is `arch-c4` (path under `../c4/views/`) **or** `arch-uml` (path under `../diagrams/views/`).
 - §6 uses `scenario=SCN-NN` (+ optional `realises=UC-NN`); §8 uses `concept=CC-NN`.
-- **Soft-reference:** the figure need not exist yet — scaffold the block with a `_TODO_` path; `util-metamodel-audit` *warns* on a missing/orphaned figure or an unresolved upstream ID, it does not block (per ADR-0004).
+- **Soft-reference:** the figure need not exist yet — scaffold the block with a `_TODO_` path; the `metamodel` skill's Audit mode *warns* on a missing/orphaned figure or an unresolved upstream ID, it does not block (per ADR-0004).
 - `arch-arc42` never renders a diagram itself — it requests `arch-c4 runtime` (dynamic view) or `arch-uml sequence|class|state|er` to produce the SVG, then embeds it.
 
 ---

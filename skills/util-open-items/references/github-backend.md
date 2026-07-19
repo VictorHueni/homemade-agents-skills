@@ -95,7 +95,7 @@ partition; the lifecycle partition is native GitHub.
 ### 3a. Field-slug map (Invariant I1)
 
 Issue-Form field `id:` ≡ canonical slug (e.g. `id: source_heading`, not `id: heading`). This
-is what lets `util-metamodel-audit` parse an issue body exactly as it parses a ledger row.
+is what lets the `metamodel` skill's Audit mode parse an issue body exactly as it parses a ledger row.
 
 ### 3b. Identity translation (Invariant I2)
 
@@ -155,7 +155,7 @@ flowchart TD
     SYNC -->|"backend: markdown"| MD["Central ledger open-items.md + archive"]
     SYNC -->|"backend: github"| GH["GitHub Issues + Project"]
     MD -.->|"one-way migration + OI-NNNN to N map"| GH
-    AUDIT["util-metamodel-audit<br/>(reads either via the slug map)"]
+    AUDIT["the metamodel skill's Audit mode<br/>(reads either via the slug map)"]
     MD --> AUDIT
     GH --> AUDIT
 ```

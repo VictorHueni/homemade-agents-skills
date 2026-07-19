@@ -1,18 +1,8 @@
----
-name: util-metamodel-audit
-description: "Audit the strategic-architecture documentation stack across 19 dimensions: stack progress, folder placement, internal + external links, ID cross-references + integrity, dependency enforcement, _TODO_ density, mandatory sections, methodology pointers, confidence distribution, expiry + staleness, orphaned files, research sync, ADR supersession chains, FBS + epic delivery, frontmatter validity, capability/product slug integrity, and open-items governance, backend-aware (markdown ledger or GitHub Issues): stale local-section relic sweep, ledger schema compliance, source-location provenance + resolution, closure drift, stale open items, github form/slug integrity per the `metamodel` skill's `references/open-items-governance.md`. Report-only with a proposed fix per finding. Triggers on: metamodel audit, audit the stack, check docs health, validate dependencies, broken links, audit artefact compliance, open items governance, closure drift, schema compliance."
-version: "1.2.0"
-user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
-metadata:
-  category: "utility"
-  complexity: "high"
-status: active
-last_reviewed: 2026-07-03
----
+# Audit mode — metamodel skill
 
-# Stack Audit
+> Lifecycle mode of the `metamodel` skill (consolidated from the retired standalone audit skill — kit ADR-0007).
+> Structural facts (paths, ID regexes, okf_type enum) derive at run time from
+> `../artefact-types-registry.yaml` — parse it, never restate it.
 
 You are an expert at auditing strategic-architecture documentation stacks — systematically checking that the 16-step artefact stack (Vision → Implementation plans, including sub-steps 2b, 2c, 4.5, 7b) is complete, internally consistent, and free of broken links, stale content, or dependency violations. The discovery layer (`docs/discovery/{ideation,interviews,workshops}/`) is cross-cutting and audited alongside the stack — its artefacts are not numbered steps but participate in every check (frontmatter validity, Open Items governance, ID cross-references for `IDEA-NNNN`, etc.).
 
@@ -88,10 +78,10 @@ Ask the user the following 4 questions in a single message with lettered options
 If the user gives "Other" or pushes back, ask one follow-up to clarify, then proceed.
 
 **Process:**
-1. Run the bash detection patterns for each of the 19 check categories (see `references/check-catalogue.md`).
+1. Run the bash detection patterns for each of the 19 check categories (see `audit-check-catalogue.md`).
 2. Collect all findings; tag each with severity (Error / Warning / Info).
 3. Build executive summary counts.
-4. Fill the report template (see `references/template.md`).
+4. Fill the report template (see `audit-report-template.md`).
 5. Save to `var/reports/metamodel-audit/stack-audit-{YYYY-MM-DD}.md`.
 
 ### Mode 2 — Progress snapshot
@@ -119,7 +109,7 @@ If the user gives "Other" or pushes back, ask one follow-up to clarify, then pro
 
 **Process:**
 1. Run checks §8 (_TODO_ density), §11 (confidence distribution), §12 (expiry + staleness), §14 (research sync).
-2. Run the **stale-index sub-check of §17** — flag any `index.md` older than an artefact in its subtree (see the "Stale-index check" block in `references/check-catalogue.md` Check 17). This is the one freshness signal a frontmatter-free `index.md` would otherwise miss between full audits.
+2. Run the **stale-index sub-check of §17** — flag any `index.md` older than an artefact in its subtree (see the "Stale-index check" block in `audit-check-catalogue.md` Check 17). This is the one freshness signal a frontmatter-free `index.md` would otherwise miss between full audits.
 3. Output a freshness dashboard: `File | Completeness % | Confidence (A/T/V) | Age (days) | Flags`, with a row per stale index.
 4. Save to `var/reports/metamodel-audit/freshness-{YYYY-MM-DD}.md`.
 
@@ -133,7 +123,7 @@ github-only form/slug integrity sub-check (18g).
 
 **Process:**
 1. Detect the backend (`docs/project-control/open-items/backend.yml`, default `markdown`),
-   then run the sub-checks of Check 18 — see `references/check-catalogue.md`. 18a and 18c
+   then run the sub-checks of Check 18 — see `audit-check-catalogue.md`. 18a and 18c
    are backend-independent; 18e–18f have a markdown and a github variant; 18b is
    `markdown`-only; 18g is github-only; 18d is retired (ADR-0005).
 2. Output findings grouped by sub-check.
@@ -145,7 +135,7 @@ github-only form/slug integrity sub-check (18g).
 
 ## The 18 check categories
 
-Full detection patterns and bash commands in `references/check-catalogue.md`. Brief descriptions here:
+Full detection patterns and bash commands in `audit-check-catalogue.md`. Brief descriptions here:
 
 | # | Category | What it detects | Severity |
 |---|---|---|---|
@@ -166,13 +156,13 @@ Full detection patterns and bash commands in `references/check-catalogue.md`. Br
 | 15 | **ADR chains** | One-sided supersession links (ADR-A supersedes ADR-B but ADR-B has no back-link) | Warning |
 | 16 | **Delivery progress** | FBS ✅/🔄/⬜ counts; epic ↔ PRD linkage completeness | Info |
 | 17 | **Frontmatter validity** | Missing frontmatter block, missing required fields, invalid `status`, broken supersession links | Error / Warning |
-| 18 | **Open items governance** | Six sub-checks against the `metamodel` skill's `references/open-items-governance.md`: stale local-section relic sweep (no artefact may carry a local `## Open Items` table per ADR-0005; legacy heading variants forbidden), ledger schema compliance (canonical column order), source-location provenance + resolution (`Source anchor` + `Source heading` populated; `Source artefact` resolves to a real file), tracker sync coverage (retired, ADR-0005 — see 18c), closure drift (`closed`/`dropped` rows must carry a non-`_TBD_` `Tracker ref`), stale open items (`open`/`in-progress`/`blocked` rows past `Due / Review date`) | Error / Warning |
+| 18 | **Open items governance** | Six sub-checks against this skill's `references/open-items-governance.md`: stale local-section relic sweep (no artefact may carry a local `## Open Items` table per ADR-0005; legacy heading variants forbidden), ledger schema compliance (canonical column order), source-location provenance + resolution (`Source anchor` + `Source heading` populated; `Source artefact` resolves to a real file), tracker sync coverage (retired, ADR-0005 — see 18c), closure drift (`closed`/`dropped` rows must carry a non-`_TBD_` `Tracker ref`), stale open items (`open`/`in-progress`/`blocked` rows past `Due / Review date`) | Error / Warning |
 
 ---
 
 ## Report structure — the fixed template
 
-Full template in `references/template.md`. Top-level structure:
+Full template in `audit-report-template.md`. Top-level structure:
 
 ```
 <!-- audit-version: 1.0 | generated: YYYY-MM-DD | scope: {scope} | mode: {mode} -->
@@ -254,9 +244,9 @@ If the project uses a different reports root (`reports/`, `docs/reports/`), use 
 ## Reference materials
 
 Three files in `references/`:
-- **`references/template.md`** — full markdown report template with all 18 section skeletons.
-- **`references/check-catalogue.md`** — for each of the 19 checks: bash detection pattern, interpretation rules, severity assignment, proposed fix template. Includes the `IDEA-NNNN` ID pattern (Check 5) and `docs/discovery/ideation/IDEA-*.md` mandatory-section rules (Check 9) introduced with the `discovery-` skill family, and the capability/product slug integrity check (Check 19).
-- **`references/methodology-references.md`** — rationale for each check category (link rot research, BABOK traceability discipline, Lean UX hypothesis expiry, SCIP staleness cadence).
+- **`audit-report-template.md`** — full markdown report template with all 18 section skeletons.
+- **`audit-check-catalogue.md`** — for each of the 19 checks: bash detection pattern, interpretation rules, severity assignment, proposed fix template. Includes the `IDEA-NNNN` ID pattern (Check 5) and `docs/discovery/ideation/IDEA-*.md` mandatory-section rules (Check 9) introduced with the `discovery-` skill family, and the capability/product slug integrity check (Check 19).
+- **`audit-methodology.md`** — rationale for each check category (link rot research, BABOK traceability discipline, Lean UX hypothesis expiry, SCIP staleness cadence).
 
 ---
 
@@ -281,7 +271,7 @@ Before declaring the work done:
 - [ ] Every section present in report, even if "No findings."
 - [ ] Executive summary counts accurate.
 - [ ] Every finding row has a non-blank "Proposed fix."
-- [ ] Severity correctly assigned per `references/check-catalogue.md`.
+- [ ] Severity correctly assigned per `audit-check-catalogue.md`.
 - [ ] No project file modified — report-only discipline maintained.
 - [ ] Report saved to `var/reports/metamodel-audit/` (if output = file).
 - [ ] Closing report delivered to user.

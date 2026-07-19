@@ -1,4 +1,4 @@
-# Migration Report Template — util-metamodel-migration
+# Migration Report Template — the Migrate mode
 
 Copy this skeleton to `var/reports/metamodel-migration/migration-{YYYY-MM-DD}.md`.
 
@@ -23,7 +23,7 @@ Copy this skeleton to `var/reports/metamodel-migration/migration-{YYYY-MM-DD}.md
 | **Total atomic fix blocks** | **{N}** |
 | Files with inbound links affected | {N} |
 
-**Estimated effort:** {N} copy-paste operations. Apply §1 blocks first (highest risk — inbound links). Then §2 renames. Then §3 mkdir. Run `util-metamodel-audit` after to verify compliance.
+**Estimated effort:** {N} copy-paste operations. Apply §1 blocks first (highest risk — inbound links). Then §2 renames. Then §3 mkdir. Run the Audit mode after to verify compliance.
 
 **Top 3 highest-risk migrations** (most inbound links):
 1. `{file}` — {N} inbound links
@@ -122,12 +122,12 @@ Folders and files that are valid project documentation but have no equivalent me
 | Field | Value |
 |---|---|
 | Generated | {YYYY-MM-DD HH:MM} |
-| Skill version | util-metamodel-migration v1.0.0 |
+| Skill version | the Migrate mode v1.0.0 |
 | Docs root | `{root}` |
 | Mode | {full / structure / inventory} |
 | Files scanned | {N} |
 | Directories scanned | {N} |
 | Report path | `var/reports/metamodel-migration/migration-{YYYY-MM-DD}.md` |
 
-**Next step:** after applying all atomic fix blocks, run `util-metamodel-audit` Mode 1 to verify full metamodel compliance.
+**Next step:** after applying all atomic fix blocks, run the Audit mode Mode 1 to verify full metamodel compliance.
 ```

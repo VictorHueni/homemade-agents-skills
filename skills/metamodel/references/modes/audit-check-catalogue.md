@@ -1,45 +1,45 @@
-# Check Catalogue — util-metamodel-audit
+# Check Catalogue — Audit mode
 
 For each of the 19 checks: bash detection pattern, interpretation rules, severity, and proposed fix template. Claude reads this file during audit execution to know exactly how to run each check.
+
+**Registry derivation (read first).** Structural facts — canonical paths, ID regexes, the
+`okf_type` enum — are NEVER hardcoded in this catalogue. Derive them at the start of every
+audit run by parsing this skill's `references/artefact-types-registry.yaml`:
+
+```bash
+python3 - <<'EOF'
+import yaml
+r = yaml.safe_load(open('<metamodel-skill-dir>/references/artefact-types-registry.yaml'))
+for t in r['artefact_types']:
+    print(f"{t['type']}\t{t['id_format'] or '-'}\t{t['default_path'] or '(inherits '+t.get('parent','?')+')'}\t{t['okf_type']}\t{t['review_interval']}")
+EOF
+```
+
+A check below that says "derive from the registry" iterates these rows. Sub-element and
+diagram IDs (`SYS-NN`, `SCN-NN`, BMC block IDs, …) are NOT registry types — their curated
+table lives in Check 5 and is sourced from this skill's `references/metamodel-reference.md`
+§ Cross-doc ID conventions. A handful of non-artefact foundations (`workspace.dsl`,
+`render.sh`, committed C4 SVGs) are likewise curated inline where a check needs them.
 
 ---
 
 ## Check 1 — Stack progress
 
-**What:** verifies which of the 11 canonical output paths exist.
+**What:** verifies which of the canonical output paths exist.
 
-**Detection:**
+**Detection — derive from the registry.** For every registry entry with a non-null
+`default_path`, resolve the template to a `find` probe: literal paths become exact-name
+finds (`docs/VISION.md` → `find docs -maxdepth 1 -name "VISION.md"`); templated paths
+(`{slug}`, `{nn}`, `{nnnn}`, `{bc-slug}`, `{date}`, `{feature}`, `{topic}`, `{tech-slug}`)
+become glob probes in the template's directory (`docs/product-specs/prds/prd-{nnnn}-{feature}.md`
+→ `find docs/product-specs/prds -name "prd-*.md" | head -1`). Entries with
+`layout: inherits-from-parent` are covered by their parent's probe. Map each probe back to
+its build-order step via the spine table in this skill's `SKILL.md`.
+
+**Plus the curated non-registry foundations** (not artefact types; keep in sync manually):
 ```bash
-# Run for each step — adapt path per step number
-find docs -maxdepth 1 -name "VISION.md" 2>/dev/null                              # Step 0
-find docs/business -maxdepth 1 -name "01a-personas.md" 2>/dev/null
-find docs -maxdepth 4 \( -name "business-model-canvas.md" -o -name "lean-canvas.md" \) 2>/dev/null
-find docs/business -maxdepth 1 -name "03a-capability-map.md" 2>/dev/null
-find docs/business -maxdepth 1 -name "04a-value-streams.md" 2>/dev/null
-find docs/business -maxdepth 1 -name "04b-objectives.md" 2>/dev/null          # Step 4.5
-find docs/business/05a-processes -name "proc-*.md" 2>/dev/null | head -1
-find docs/business/06a-models -name "qm-*.md" 2>/dev/null | head -1
-find docs/product-specs -maxdepth 1 -name "07a-fbs.md" 2>/dev/null
-find docs/plans -maxdepth 1 -name "delivery-roadmap.md" 2>/dev/null   # Step 8
-find docs/product-specs -maxdepth 1 -name "09a-quality-attributes.md" 2>/dev/null
-find docs/product-specs/use-cases -name "uc-*.md" 2>/dev/null | head -1          # Step 9.5
-find docs/product-specs/prds -name "prd-*.md" 2>/dev/null | head -1
-find docs/plans/active -maxdepth 1 -name "*_exec_*.md" 2>/dev/null | head -1
-find docs/domain -maxdepth 1 -name "02b-bounded-contexts.md" 2>/dev/null           # Step 2b
-find docs/domain -maxdepth 1 -name "02c-glossary.md" 2>/dev/null                  # Step 2c
-find docs/domain/07b-models -name "*.md" 2>/dev/null | head -1             # Step 7b (per BC)
-find docs/architecture/interfaces -name "*.md" ! -name "cli-*.md" 2>/dev/null | head -1  # Step 7c (service contract, per BC)
-find docs/architecture/interfaces -name "cli-*.md" 2>/dev/null | head -1                  # CLI contract (supporting skill, per tool)
 find docs/architecture/c4 -name "workspace.dsl" 2>/dev/null                       # arch-structurizr foundation
 find docs/architecture/c4/views -name "*.svg" 2>/dev/null | head -1               # arch-c4 rendered views (committed)
-find docs/architecture/arc42 -name "02-constraints.md" 2>/dev/null               # arch-arc42 constraints mode
-find docs/architecture/arc42 -name "03-context.md" 2>/dev/null                    # arch-c4 context mode
-find docs/architecture/arc42 -name "04-solution-strategy.md" 2>/dev/null          # arch-arc42 solution-strategy mode
-find docs/architecture/arc42 -name "05-building-blocks.md" 2>/dev/null            # arch-c4 container + component modes
-find docs/architecture/arc42 -name "06-runtime-view.md" 2>/dev/null               # arch-c4 runtime mode
-find docs/architecture/arc42 -name "07-deployment.md" 2>/dev/null                 # arch-c4 deployment mode
-find docs/architecture/arc42 -name "08-cross-cutting-concepts.md" 2>/dev/null     # arch-arc42 cross-cutting mode
-find docs/architecture/arc42 -name "11-risks.md" 2>/dev/null                      # arch-arc42 risks mode
 ```
 
 **Status assignment:**
@@ -61,37 +61,23 @@ find docs/architecture/arc42 -name "11-risks.md" 2>/dev/null                    
 ```bash
 find docs -name "*.md" | while read f; do echo "$f"; done
 ```
-Then compare each path against the canonical map:
-- `VISION.md` → must be directly under `docs/` (not nested deeper — singleton)
-- `01a-personas.md` → must be at `docs/business/01a-personas.md` (flat file)
-- `02a-bmc.md` / `02a-lean-canvas.md` → must be at `docs/business/` (flat file)
-- `03a-capability-map.md` → must be at `docs/business/03a-capability-map.md` (flat file)
-- `04a-value-streams.md` → must be at `docs/business/04a-value-streams.md` (flat file)
-- `04b-objectives.md` → must be at `docs/business/04b-objectives.md` (flat file)
-- `*-process.md` → must be under `docs/business/05a-processes/`
-- `07a-fbs.md` → must be at `docs/product-specs/07a-fbs.md` (flat file)
-- `delivery-roadmap.md` → must be at `docs/plans/delivery-roadmap.md` (flat file)
-- `09a-quality-attributes.md` → must be at `docs/product-specs/09a-quality-attributes.md` (flat file)
-- `uc-*.md` → must be under `docs/product-specs/use-cases/` (one file per use case + `index.md`)
-- `prd-*.md` → must be under `docs/product-specs/prds/`
-- `IDEA-*.md` → must be under `docs/discovery/ideation/` (filename matches `IDEA-NNNN-{slug}.md`)
-- `interview-*.md`, `research-synthesis-*.md`, `research-plan-*.md` → must be under `docs/discovery/interviews/`
-- `workshop-*.md`, `workshop-synthesis-*.md` → must be under `docs/discovery/workshops/`
-- `*.md` under `docs/architecture/decisions/` → ADRs, correct
-- `{bc-slug}.md` (no `cli-` prefix) under `docs/architecture/interfaces/` → service contract (`arch-service-contract`), correct
-- `cli-{slug}.md` under `docs/architecture/interfaces/` → CLI contract (`arch-cli-contract`), correct
+Then compare each path against the canonical map, **derived from the registry**: for every
+entry with a non-null `default_path`, a file matching the template's filename pattern must
+sit exactly at the template's directory (literal templates → exact path; templated names →
+glob within the template's directory; `inherits-from-parent` entries are covered by the
+parent). Flag any `docs/**` markdown file that matches a registry filename pattern but sits
+outside its template directory, and any file under a registry-owned directory that matches
+no known pattern.
+
+**Curated non-registry placement rules** (foundations + convention files, keep in sync manually):
 - `*.md` under `docs/architecture/` but NOT in `decisions/`, `interfaces/`, `research/`, `c4/`, or `arc42/` → likely misplaced architecture file
 - `workspace.dsl` → must be at `docs/architecture/c4/workspace.dsl` (singleton — `arch-structurizr` foundation)
 - `render.sh` → must be at `docs/architecture/c4/render.sh` (executable; `arch-structurizr` writes; `chmod +x` expected)
 - `*.svg` under `docs/architecture/c4/views/` → committed C4 renders from `arch-c4`; correct
 - `*.puml` under `docs/architecture/c4/` (anywhere) → intermediate PlantUML export; should be gitignored, not committed
-- `02-constraints.md`, `04-solution-strategy.md`, `08-cross-cutting-concepts.md`, `11-risks.md` → must be under `docs/architecture/arc42/` (`arch-arc42` writes)
-- `03-context.md`, `05-building-blocks.md`, `06-runtime-view.md`, `07-deployment.md` → must be under `docs/architecture/arc42/` (`arch-c4` writes; one file per arc42 section)
 - `*.md` under `docs/architecture/arc42/` not matching the canonical eight (`02`, `03`, `04`, `05`, `06`, `07`, `08`, `11`) → likely misplaced
-- `getting-started.md` → must be at `docs/dev-guides/getting-started.md` (singleton — `dev-getting-started` skill)
-- `{tech-slug}.md` under `docs/dev-guides/` (no `research/` subfolder, not `getting-started.md`) → correct (`dev-stack-guide` output)
-- `{tech-slug}-research.md` under `docs/dev-guides/research/` → correct (`dev-stack-guide` research scratch)
-- `*.md` under `docs/dev-guides/` but NOT matching the above patterns → likely misplaced
+- `interview-*.md`, `research-synthesis-*.md`, `research-plan-*.md` → must be under `docs/discovery/interviews/`; `workshop-*.md`, `workshop-synthesis-*.md` → under `docs/discovery/workshops/`
+- `{tech-slug}-research.md` under `docs/dev-guides/research/` → correct (`dev-stack-guide` research scratch); other `*.md` under `docs/dev-guides/` must match a registry pattern
 
 **Severity:** Warning
 
@@ -155,31 +141,19 @@ grep -rn 'https\?://' docs/ --include="*.md" | grep -v 'Last verified'
 
 **What:** finds IDs referenced in one doc that have no definition in their owning artefact.
 
-**ID patterns and owning artefacts:**
+**ID patterns and owning artefacts — two sources:**
+
+1. **Artefact-type IDs — derive from the registry.** For every entry with a non-null
+   `id_format`, the ID pattern is `\b` + `id_format` + `\b` and the owning artefact is the
+   entry's `default_path` (for `inherits-from-parent` entries, the parent's `default_path`).
+   Never restate these rows here — iterate the registry.
+
+2. **Sub-element and diagram IDs — curated table** (NOT registry types; canonical source:
+   this skill's `references/metamodel-reference.md` § Cross-doc ID conventions; keep in sync
+   with it, not with the registry):
 
 | ID format | Regex | Owning artefact |
 |---|---|---|
-| `P-NN` | `\bP-[0-9]{2}\b` | `docs/business/01a-personas.md` |
-| `C-N.M` or `C1.1` | `\bC[0-9]+\.[0-9]+\b` | `docs/business/03a-capability-map.md` |
-| `VS-N` | `\bVS-[0-9]+\b` | `docs/business/04a-value-streams.md` |
-| `VS-N.M` | `\bVS-[0-9]+\.[0-9]+\b` | `docs/business/04a-value-streams.md` |
-| `C-N.M.FXX` | `\bC-[0-9]+\.[0-9]+\.F[0-9]+\b` | `docs/product-specs/07a-fbs.md` |
-| `BC-NN` | `\bBC-[0-9]{2}\b` | `docs/domain/02b-bounded-contexts.md` |
-| `BC-NN.GT-NN` | `\bBC-[0-9]{2}\.GT-[0-9]{2}\b` | `docs/domain/02c-glossary.md` |
-| `BC-NN.AGG-NN` | `\bBC-[0-9]{2}\.AGG-[0-9]{2}\b` | `docs/domain/07b-models/{bc-slug}.md` |
-| `BC-NN.ENT-NN` | `\bBC-[0-9]{2}\.ENT-[0-9]{2}\b` | `docs/domain/07b-models/{bc-slug}.md` |
-| `BC-NN.VO-NN` | `\bBC-[0-9]{2}\.VO-[0-9]{2}\b` | `docs/domain/07b-models/{bc-slug}.md` |
-| `BC-NN.EVT-NN` | `\bBC-[0-9]{2}\.EVT-[0-9]{2}\b` | `docs/domain/07b-models/{bc-slug}.md` |
-| `OBJ-NN` | `\bOBJ-[0-9]{2}\b` | `docs/business/04b-objectives.md` |
-| `KR-NN.M` | `\bKR-[0-9]{2}\.[0-9]\b` | `docs/business/04b-objectives.md` |
-| `E-NN` | `\bE-[0-9]{2}\b` | `docs/plans/delivery-roadmap.md` |
-| `QA-[A-Z]{2}[0-9]{2}` | `\bQA-[A-Z]{2}[0-9]{2}\b` | `docs/product-specs/09a-quality-attributes.md` |
-| `ADR-NNNN` | `\bADR-[0-9]{4}\b` | `docs/architecture/decisions/` |
-| `Research-NNNN` | `\bResearch-[0-9]{4}\b` | `docs/architecture/research/` |
-| `IDEA-NNNN` | `\bIDEA-[0-9]{4}\b` | `docs/discovery/ideation/` (filename prefix `IDEA-NNNN-{slug}.md`) |
-| `CO-NN` | `\bCO-[0-9]{2}\b` | `docs/business/01b-competitive-landscape/` |
-| `UC-NN` | `\bUC-[0-9]{2}\b` | `docs/product-specs/use-cases/` |
-| `PRD-NNNN` | `\bPRD-[0-9]{4}\b` | `docs/product-specs/prds/prd-*.md` |
 | `CS-N` | `\bCS-[0-9]+\b` | `docs/business/02a-bmc.md` |
 | `VP-N` | `\bVP-[0-9]+\b` | `docs/business/02a-bmc.md` |
 | `CH-N` | `\bCH-[0-9]+\b` | `docs/business/02a-bmc.md` |
@@ -188,11 +162,6 @@ grep -rn 'https\?://' docs/ --include="*.md" | grep -v 'Last verified'
 | `KA-N` | `\bKA-[0-9]+\b` | `docs/business/02a-bmc.md` |
 | `KP-N` | `\bKP-[0-9]+\b` | `docs/business/02a-bmc.md` |
 | `CT-N` | `\bCT-[0-9]+\b` | `docs/business/02a-bmc.md` |
-| `BC-NN.CTR-NN` | `\bBC-[0-9]{2}\.CTR-[0-9]{2}\b` | `docs/architecture/interfaces/{bc-slug}.md` |
-| `CTR-NN` | `\bCTR-[0-9]{2}\b` | `docs/architecture/interfaces/{slug}.md` (product-level) |
-| `BC-NN.CLI-NN` | `\bBC-[0-9]{2}\.CLI-[0-9]{2}\b` | `docs/architecture/interfaces/cli-{slug}.md` |
-| `CLI-NN` | `\bCLI-[0-9]{2}\b` | `docs/architecture/interfaces/cli-{slug}.md` (product-level) |
-| `CLI-NN.CMD-NN` | `\bCLI-[0-9]{2}\.CMD-[0-9]{2}\b` | `docs/architecture/interfaces/cli-{slug}.md` |
 | `SYS-NN` | `\bSYS-[0-9]{2}\b` | `docs/architecture/c4/workspace.dsl` (DSL identifier `SYS_NN` in `softwareSystem` block) |
 | `CON-NN` | `\bCON-[0-9]{2}\b` | `docs/architecture/c4/workspace.dsl` (DSL identifier `CON_NN` in `container` block) |
 | `CMP-NN` | `\bCMP-[0-9]{2}\b` | `docs/architecture/c4/workspace.dsl` (DSL identifier `CMP_NN` in `component` block) |
@@ -443,7 +412,7 @@ transitional relic swept by Check 18a instead.
 
 **Severity:** Error
 
-**Proposed fix template:** "Add missing section `{section}` to `{file}`. Template in `{skill} references/template.md §{N}`."
+**Proposed fix template:** "Add missing section `{section}` to `{file}`. Template in `{skill} audit-report-template.md §{N}`."
 
 ---
 
@@ -461,7 +430,7 @@ done
 
 **Severity:** Warning (doc created by hand, bypassing the skill; methodology drift risk)
 
-**Proposed fix template:** "Add the 2-line methodology pointer blockquote to `{file}` header. Copy from `~/.claude/skills/{skill}/references/methodology-references.md` first paragraph."
+**Proposed fix template:** "Add the 2-line methodology pointer blockquote to `{file}` header. Copy from `~/.claude/skills/{skill}/audit-methodology.md` first paragraph."
 
 ---
 
@@ -680,12 +649,12 @@ echo "Bounded contexts: $bc_count | Domain models: $dm_count"
 
 **What:** verifies that every `docs/**/*.md` file opens with the standard artefact frontmatter block and that all required fields are present, valid, and consistent; and that the OKF reserved `index.md` files are correct — the root declares `okf_version`, and no `index.md` is stale (older than an artefact in its subtree, since a frontmatter-free index is not covered by the `review_interval` staleness check).
 
-**Schema (canonical — defined in the `metamodel` skill's `references/artefact-frontmatter.md`, an OKF v0.1 superset):**
+**Schema (canonical — defined in this skill's `references/artefact-frontmatter.md`, an OKF v0.1 superset):**
 - Always present, hard-required: `type` (OKF-required), `title`, `status`, `owner`, `last_reviewed`, `review_interval`
 - Always present, OKF-recommended (Warning if missing during adoption): `description`, `tags`, `timestamp`
 - Conditional: `resource` present only when the artefact has an external asset; `superseded_by` required when `status: superseded`; `supersedes` present only on documents created to replace another
 - Valid `status` values: `draft`, `active`, `superseded`, `deprecated`
-- `type` value: must equal a canonical `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml` (a value outside the set is tolerated by OKF but flagged Warning — "unregistered type")
+- `type` value: must equal a canonical `okf_type` display name from this skill's `references/artefact-types-registry.yaml` (a value outside the set is tolerated by OKF but flagged Warning — "unregistered type")
 - **Reserved files** (`index.md`, `log.md`) are exempt from the artefact block; the root `docs/index.md` must instead declare `okf_version`
 
 **Detection:**
@@ -714,7 +683,7 @@ echo "=== Check 17: Frontmatter validity — starting ==="
 
 # Exempt: README.md (tool/folder/vendor nav) + the OKF reserved files index.md
 # and log.md (directory-navigation / history aids, NOT concept documents — per
-# the `metamodel` skill's `references/artefact-frontmatter.md` they carry no artefact frontmatter). The root
+# this skill's `references/artefact-frontmatter.md` they carry no artefact frontmatter). The root
 # docs/index.md is checked separately for okf_version below. Names are
 # case-sensitive.
 command find docs -name "*.md" ! -name 'README.md' ! -name 'index.md' ! -name 'log.md' ! \( $EXCLUDED \) 2>/dev/null | sort | while IFS= read -r f; do
@@ -759,12 +728,13 @@ command find docs -name "*.md" ! -name 'README.md' ! -name 'index.md' ! -name 'l
   done
 
   # 2b. type must be a non-empty canonical okf_type display name. The enum below
-  #     mirrors the "OKF type display names" table in
-  #     the `metamodel` skill's `references/artefact-types-registry.yaml` — keep in sync when a type is added.
+  #     is derived at run time from the okf_type fields of
+  #     this skill's `references/artefact-types-registry.yaml` — keep in sync when a type is added.
   #     A value outside the set is tolerated by OKF but flagged (unregistered).
   type_val=$(fm type)
   if [ -n "$type_val" ]; then
-    okf_types="Product Vision|Persona|Business Model Canvas|Business Model Canvas Block|Business Capability|Value Stream|Value Stream Stage|Business Objective|Key Result|Business Process|Quantitative Model|Competitor Profile|Bounded Context|Glossary Term|Functionality|Domain Model|Aggregate|Entity|Value Object|Domain Event|Interface Contract|Epic|CLI Surface Contract|CLI Command|Quality Attribute|Use Case|Product Requirements Document|Implementation Plan|Architecture Decision Record|Architecture Research Note|Idea|Runbook|Bug RCA|Stack Guide|Getting Started Guide|Research Note|Workshop Note|Design System|Release Notes|Architecture Documentation"
+    # Derive the enum from the registry — never hardcode display names here.
+    okf_types=$(python3 -c "import yaml;print('|'.join(t['okf_type'] for t in yaml.safe_load(open('<metamodel-skill-dir>/references/artefact-types-registry.yaml'))['artefact_types']))")
     echo "$type_val" | command grep -qxE "($okf_types)" || {
       echo "UNREGISTERED type '${type_val}' (warn): $f"
       findings=$((findings + 1))
@@ -860,7 +830,7 @@ command find docs -name 'index.md' ! \( $EXCLUDED \) 2>/dev/null | while IFS= re
     [ "$at" -gt "$newest" ] && { newest=$at; newest_f=$a; }
   done < <(command find "$dir" -name '*.md' ! -name 'index.md' ! -name 'log.md' ! -name 'README.md' ! \( $EXCLUDED \) 2>/dev/null)
   if [ -n "$newest_f" ] && [ "$newest" -gt "$idx_t" ]; then
-    echo "STALE INDEX: $idx — newer artefact committed since last refresh ($newest_f); regenerate via util-metamodel-scaffold Mode 3"
+    echo "STALE INDEX: $idx — newer artefact committed since last refresh ($newest_f); regenerate via the Scaffold mode Mode 3"
   fi
 done
 ```
@@ -894,15 +864,15 @@ done
 - Stale `index.md` (an artefact in its subtree was committed more recently) → Warning
 
 **Proposed fix template:**
-- Missing block: "Add standard frontmatter to `{file}` using the `metamodel` skill's `references/artefact-frontmatter.md` schema (OKF superset). Run `git config user.name` for owner."
-- Missing `type`: "Add `type: <okf_type>` to `{file}` — use the artefact's display name from the OKF type table in the `metamodel` skill's `references/artefact-types-registry.yaml`."
-- Unregistered type: "Change `type:` in `{file}` to a canonical `okf_type` display name, or register the new type in the `metamodel` skill's `references/artefact-types-registry.yaml` + this check's enum."
+- Missing block: "Add standard frontmatter to `{file}` using this skill's `references/artefact-frontmatter.md` schema (OKF superset). Run `git config user.name` for owner."
+- Missing `type`: "Add `type: <okf_type>` to `{file}` — use the artefact's display name from the OKF type table in this skill's `references/artefact-types-registry.yaml`."
+- Unregistered type: "Change `type:` in `{file}` to a canonical `okf_type` display name, or register the new type in this skill's `references/artefact-types-registry.yaml` + this check's enum."
 - Missing field: "Add `{field}:` to the frontmatter of `{file}`."
 - Invalid status: "Set `status:` in `{file}` to one of: `draft`, `active`, `superseded`, `deprecated`."
 - Missing `superseded_by`: "Add `superseded_by: <path-to-replacement>` to `{file}` frontmatter."
 - Dead target: "Update `superseded_by` / `supersedes` path in `{file}` — target file no longer exists at `{path}`."
-- Root index: "Create `docs/index.md` (OKF bundle root: `okf_version: \"0.1\"` frontmatter + navigation body) via `util-metamodel-scaffold`."
-- Stale index: "Regenerate `{index}` via `util-metamodel-scaffold` Mode 3 (refresh) — an artefact in its subtree (`{newest_file}`) changed after the index was last updated."
+- Root index: "Create `docs/index.md` (OKF bundle root: `okf_version: \"0.1\"` frontmatter + navigation body) via the Scaffold mode."
+- Stale index: "Regenerate `{index}` via the Scaffold mode Mode 3 (refresh) — an artefact in its subtree (`{newest_file}`) changed after the index was last updated."
 
 ---
 
@@ -910,7 +880,7 @@ done
 
 **What:** verifies that the central ledger — `docs/project-control/open-items/open-items.md`
 under `markdown`, or GitHub Issues under `github` — conforms to
-the `metamodel` skill's `references/open-items-governance.md`. Since [ADR-0005](../../../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)
+this skill's `references/open-items-governance.md`. Since [ADR-0005](../../../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)
 retired the per-artefact local `## Open Items` section, there is only one surface to check —
 no local-vs-ledger reconciliation is possible or needed.
 
@@ -973,12 +943,12 @@ rg -n '§Open Issues|Open Issues' docs/ business-* arch-* spec-* domain-* 2>/dev
 
 **Proposed fix template:** "Delete the local `## Open Items` table in `{file}` — file its
 rows directly to the central ledger via `util-open-items` if they are not already there,
-then remove the table (the `metamodel` skill's `references/open-items-governance.md` §1, ADR-0005)."
+then remove the table (this skill's `references/open-items-governance.md` §1, ADR-0005)."
 
 ### Sub-check 18b — Ledger schema compliance
 
 **What:** the ledger table (and every archive bucket) uses the canonical column order and
-column names from §4 of the `metamodel` skill's `references/open-items-governance.md`. Columns must not be removed or
+column names from §4 of this skill's `references/open-items-governance.md`. Columns must not be removed or
 reordered; additional informational columns are permitted only **after** `Tracker ref`.
 
 **Detection:**
@@ -1046,7 +1016,7 @@ done
 **Proposed fix template:** "Populate `Source anchor` and `Source heading` for row
 `{OI-ID}` in `{file}` (use `_central-only_` only when the row has no in-artefact origin), or
 fix `Source artefact` — it currently points at a file that no longer exists (§4 of
-the `metamodel` skill's `references/open-items-governance.md`)."
+this skill's `references/open-items-governance.md`)."
 
 **github variant** (requires `gh` auth). Read the same fields from the issue body and check
 `source_artefact` resolves:
@@ -1074,7 +1044,7 @@ verifying a row's `Source artefact` actually exists — is now covered by 18c.
 ### Sub-check 18e — Closure drift
 
 **What:** rows whose `Status` is `closed` or `dropped` must carry a non-`_TBD_`
-`Tracker ref`. Closure must be evidenced (§3 of the `metamodel` skill's `references/open-items-governance.md`).
+`Tracker ref`. Closure must be evidenced (§3 of this skill's `references/open-items-governance.md`).
 
 **Detection:**
 
@@ -1232,7 +1202,7 @@ artefact, or to GitHub. Findings always route to the operator for action through
 
 ## Check 19 — Capability / product slug integrity
 
-**What:** verifies the **canonical `slug`** (the third identifier, alongside `C-N.M` and the display name — see the `metamodel` skill's `references/artefact-types-registry.yaml` § Canonical slugs (the `metamodel` skill's `references/artefact-types-registry.yaml`)) is **present**, **well-formed**, and **globally unique** across one flat namespace. Three concepts carry a slug: every L0 capability domain (`## CN · …`) and L1 capability (`### CN.M · …`) in `docs/business/03a-capability-map.md`, and every product (the H1, plus each L0 product section of a product-family FBS) in `docs/product-specs/07a-fbs.md`.
+**What:** verifies the **canonical `slug`** (the third identifier, alongside `C-N.M` and the display name — see this skill's `references/artefact-types-registry.yaml` § Canonical slugs) is **present**, **well-formed**, and **globally unique** across one flat namespace. Three concepts carry a slug: every L0 capability domain (`## CN · …`) and L1 capability (`### CN.M · …`) in `docs/business/03a-capability-map.md`, and every product (the H1, plus each L0 product section of a product-family FBS) in `docs/product-specs/07a-fbs.md`.
 
 **Slug line contract:** a backtick-wrapped code-line on its own line, directly under the entity heading — `` `slug: <handle>` `` — parseable as `` ^\s*`slug:\s*([a-z0-9]+(?:-[a-z0-9]+)*)`\s*$ ``. Well-formed = kebab-case, `[a-z0-9]` words joined by single hyphens, no leading/trailing/double hyphens; recommended **≤ 20 chars**.
 
@@ -1314,7 +1284,7 @@ done | sort -u | awk -F'\t' '{c[$1]++} END{for(s in c) if(c[s]>1) print "DUPLICA
 **Severity:** Error (missing · malformed · duplicate) · Warning (> 20 chars).
 
 **Proposed fix template:**
-- Missing: "Add a `` `slug: <handle>` `` code-line under `{heading}` in `{file}` — run `business-capability-map` (fill) or `spec-functional-breakdown-structure` for an assisted `slugify(name)` proposal. The slug is a mandatory third identifier (the `metamodel` skill's `references/artefact-types-registry.yaml` § Canonical slugs)."
+- Missing: "Add a `` `slug: <handle>` `` code-line under `{heading}` in `{file}` — run `business-capability-map` (fill) or `spec-functional-breakdown-structure` for an assisted `slugify(name)` proposal. The slug is a mandatory third identifier (this skill's `references/artefact-types-registry.yaml` § Canonical slugs)."
 - Malformed: "Fix slug `{slug}` in `{file}` to kebab-case (`[a-z0-9]` words joined by single hyphens)."
 - Over length: "Shorten slug `{slug}` in `{file}` to ≤ 20 chars while keeping it meaningful."
 - Duplicate: "Slug `{slug}` names two different entities across the capability map + FBS. Rename one — this is an ID-rename: update every consumer that pinned it (commit-scope allowlist, anchors) and log it in the changelog."

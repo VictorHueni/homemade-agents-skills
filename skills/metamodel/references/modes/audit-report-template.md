@@ -124,7 +124,7 @@ Copy this skeleton to `var/reports/metamodel-audit/stack-audit-{YYYY-MM-DD}.md` 
 
 | File | Missing section | Required by | Proposed fix |
 |---|---|---|---|
-| `{file}` | `{section name}` | `{skill}` checklist | Add section using `{skill} references/template.md §{N}` |
+| `{file}` | `{section name}` | `{skill}` checklist | Add section using `{skill} audit-report-template.md §{N}` |
 
 ---
 
@@ -134,7 +134,7 @@ Copy this skeleton to `var/reports/metamodel-audit/stack-audit-{YYYY-MM-DD}.md` 
 
 | File | Issue | Proposed fix |
 |---|---|---|
-| `{file}` | Missing methodology blockquote in header | Add 2-line pointer from `{skill}/references/methodology-references.md` |
+| `{file}` | Missing methodology blockquote in header | Add 2-line pointer from `{skill}/audit-methodology.md` |
 
 ---
 
@@ -207,7 +207,7 @@ Copy this skeleton to `var/reports/metamodel-audit/stack-audit-{YYYY-MM-DD}.md` 
 
 ## §18 Open items governance
 
-Sub-checks against the `metamodel` skill's `references/open-items-governance.md`. Sections kept even when empty so
+Sub-checks against this skill's `references/open-items-governance.md`. Sections kept even when empty so
 readers can see the check ran. 18d is retired (ADR-0005) and always reports "Retired".
 
 ### §18a Stale local-section relic sweep
@@ -262,7 +262,7 @@ that replaced it.
 | Field | Value |
 |---|---|
 | Generated | {YYYY-MM-DD HH:MM} |
-| Skill version | util-metamodel-audit v1.0.0 |
+| Skill version | the Audit mode v1.0.0 |
 | Scope | {full / business / product-specs / custom} |
 | Mode | {full / progress / links / freshness / open-items} |
 | Files scanned | {N} |

@@ -92,7 +92,7 @@ A BBV component card might say "Claim Command Handler — Fastify route that tra
 
 ## The mandatory back-reference field
 
-Every C4 Component card in arc42 §5 carries a **`Domain aggregates implemented`** column listing `BC-NN.AGG-NN` IDs. This is the structural link from BBV → domain model. The kit's audit (Check 7 in `util-metamodel-audit`) will surface CMP-NN rows missing this column.
+Every C4 Component card in arc42 §5 carries a **`Domain aggregates implemented`** column listing `BC-NN.AGG-NN` IDs. This is the structural link from BBV → domain model. The kit's audit (Check 7 in the `metamodel` skill's Audit mode) will surface CMP-NN rows missing this column.
 
 The DSL field is `properties.implements`. Two valid forms:
 
