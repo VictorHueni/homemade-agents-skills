@@ -1,6 +1,6 @@
 ---
 paths:
-  - "skills/**"
+  - "plugins/**"
   - ".claude/skills/**"
 ---
 
@@ -10,7 +10,7 @@ How to create a new Claude skill, publish it to `homemade-claude-kit`, and make 
 
 ## Where new skills live
 
-New skills belong in `<KIT_DIR>/skills/<skill-name>/SKILL.md` (with optional `references/` and `scripts/` subdirs). All skill folders live under `skills/`; the repo root holds only `install.sh`, `README.md`, and the non-skill dirs `commands/`, `rules/`, `docs/`, `scripts/`, `var/`.
+New skills belong in `<KIT_DIR>/plugins/<set>/skills/<skill-name>/SKILL.md` (with optional `references/` and `scripts/` subdirs) — pick the plugin set from the ADR-0006 composition (`kit-core`, `strategy`, `domain-modeling`, `product-spec`, `architecture`, `dev-flow`, `agent-loop`, `delivery-comms`, `ops`, `docs-hygiene`). Skill names stay globally unique across all sets (the installer flattens them into one directory per harness). The repo root holds `install.sh`, `README.md`, `.claude-plugin/` (marketplace), and the non-skill dirs `plugins/`, `rules/`, `docs/`, `scripts/`, `mcp/`, `var/`.
 
 **Finding the kit:** `homemade-claude-kit` is always a sibling of the current project — the parent folder name varies by machine (`projets/` vs `projects/`). Derive it reliably from the current git root:
 
@@ -21,7 +21,7 @@ KIT_DIR="$(dirname "$(git rev-parse --show-toplevel)")/homemade-claude-kit"
 ## Standard skill structure
 
 ```
-<KIT_DIR>/skills/<skill-name>/
+<KIT_DIR>/plugins/<set>/skills/<skill-name>/
   SKILL.md              # required — YAML frontmatter + Claude-facing instructions
   references/           # optional — markdown content the skill loads on demand
   scripts/              # optional — runtime helpers
@@ -131,9 +131,9 @@ An exception is registered here + justified in an ADR, or it is a naming violati
 When you create or rename a skill, verify name consistency:
 
 ```bash
-for skill in skills/*/; do
+for skill in plugins/*/skills/*/; do
   skill_name="$(basename "${skill%/}")"
-  [ -f "$skill/SKILL.md" ] && name=$(grep "^name:" "$skill/SKILL.md" | sed -E 's/name: *//; s/^"//; s/"$//')
+  [ -f "$skill/SKILL.md" ] && name=$(grep -m1 "^name:" "$skill/SKILL.md" | sed -E 's/name: *//; s/^"//; s/"$//')
   [ "$skill_name" != "$name" ] && echo "MISMATCH: folder=$skill_name name=$name"
 done
 ```
@@ -314,9 +314,9 @@ surfaces may still need a touch:
 
 ```bash
 # 1. Naming consistency
-for skill in skills/*/; do
+for skill in plugins/*/skills/*/; do
   skill_name="$(basename "${skill%/}")"
-  [ -f "$skill/SKILL.md" ] && name=$(grep "^name:" "$skill/SKILL.md" | sed -E 's/name: *//; s/^"//; s/"$//')
+  [ -f "$skill/SKILL.md" ] && name=$(grep -m1 "^name:" "$skill/SKILL.md" | sed -E 's/name: *//; s/^"//; s/"$//')
   [ "$skill_name" != "$name" ] && echo "MISMATCH: folder=$skill_name name=$name"
 done
 # Should return zero lines (excluding non-skill folders like commands/, rules/)

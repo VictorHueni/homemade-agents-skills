@@ -36,9 +36,8 @@ success() {
 
 # Collect all skills (folders with SKILL.md)
 while IFS= read -r skill_dir; do
-  skill_name="${skill_dir#./}"
-  skill_name="${skill_name%/}"
-  skill_path="$REPO_ROOT/$skill_name"
+  skill_path="$REPO_ROOT/${skill_dir#./}"
+  skill_name="$(basename "$skill_dir")"
 
   [ ! -f "$skill_path/SKILL.md" ] && continue
 
@@ -115,7 +114,7 @@ while IFS= read -r skill_dir; do
 
   echo ""
 
-done < <(find . -maxdepth 1 -type d -name '*-*' | sort)
+done < <(find ./plugins -mindepth 3 -maxdepth 3 -type d -path '*/skills/*' | sort)
 
 echo "─────────────────────────────────────"
 echo ""

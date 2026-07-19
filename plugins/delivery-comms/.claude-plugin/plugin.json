@@ -1,0 +1,8 @@
+{
+  "name": "delivery-comms",
+  "description": "Delivery communication. HTML slide decks, artefact visualisations, stakeholder release notes, and the design system that themes them.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Victor Hueni"
+  }
+}

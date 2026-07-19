@@ -1,0 +1,63 @@
+{
+  "name": "homemade-claude-kit",
+  "owner": {
+    "name": "Victor Hueni",
+    "url": "https://github.com/VictorHueni"
+  },
+  "metadata": {
+    "description": "Personal toolkit: strategic-architecture documentation stack, metamodel, and developer workflow \u2014 56 skills in 10 toggleable sets.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "agent-loop",
+      "source": "./plugins/agent-loop",
+      "description": "Agent-centric development cycle. Guide (agent-config), Verify (grill-me, peer-review), Solve (ralph-loop) \u2014 plus the ralph-audit command."
+    },
+    {
+      "name": "architecture",
+      "source": "./plugins/architecture",
+      "description": "Architecture. ADRs, research notes, service/CLI contracts, Structurizr/C4, PlantUML/UML, and arc42 narrative."
+    },
+    {
+      "name": "delivery-comms",
+      "source": "./plugins/delivery-comms",
+      "description": "Delivery communication. HTML slide decks, artefact visualisations, stakeholder release notes, and the design system that themes them."
+    },
+    {
+      "name": "dev-flow",
+      "source": "./plugins/dev-flow",
+      "description": "Developer workflow. Git enforcement stack, conventional commits, PRs, worktrees, release automation, stack guides, onboarding \u2014 plus the branch-cleanup-audit command."
+    },
+    {
+      "name": "docs-hygiene",
+      "source": "./plugins/docs-hygiene",
+      "description": "Docs hygiene. Documentation freshness audit, OKF index/log generation, and the docs lint toolchain."
+    },
+    {
+      "name": "domain-modeling",
+      "source": "./plugins/domain-modeling",
+      "description": "Domain-driven design. Bounded contexts, ubiquitous-language glossary, and tactical domain models."
+    },
+    {
+      "name": "kit-core",
+      "source": "./plugins/kit-core",
+      "description": "Kit core \u2014 always enabled. The metamodel keystone skill (spine, YAML type registry, frontmatter schema, open-items contract, Audit/Scaffold/Migrate modes) plus the cross-cutting operators: open-items ledger, provenance, toolkit doctor."
+    },
+    {
+      "name": "ops",
+      "source": "./plugins/ops",
+      "description": "Operations. Runbooks, bug RCAs, and Exoscale Terraform automation."
+    },
+    {
+      "name": "product-spec",
+      "source": "./plugins/product-spec",
+      "description": "Product specs & planning. FBS, PRDs, quality attributes, use cases, delivery roadmap, and implementation plans."
+    },
+    {
+      "name": "strategy",
+      "source": "./plugins/strategy",
+      "description": "Business strategy & discovery. Vision, personas, canvases, capability map, value streams, objectives, processes, quantitative models, competitive landscape \u2014 plus discovery ideation, research, and workshops."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "agent-loop",
+  "description": "Agent-centric development cycle. Guide (agent-config), Verify (grill-me, peer-review), Solve (ralph-loop) \u2014 plus the ralph-audit command.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Victor Hueni"
+  }
+}
