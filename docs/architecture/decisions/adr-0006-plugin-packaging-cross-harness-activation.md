@@ -125,13 +125,12 @@ dual-channel conflict and names which to remove.
 | Tier | Server | Set | Notes |
 |---|---|---|---|
 | Always-on | Chrome DevTools (`chrome-devtools-mcp`, Google) | `dev-flow` | front-end debugging: console, network, performance |
-| Always-on | PostgreSQL — Postgres MCP Pro (`crystaldba/postgres-mcp`) | `dev-flow` | `--access-mode=restricted`; `DATABASE_URL` env indirection (per-project DB, user-global config). Anthropic's reference server is archived (July 2025, SQLi); PGDG ships none — revisit if an official server appears |
 | Always-on | Context7 | `dev-flow` | live library docs; no CLI equivalent |
 | Always-on | Playwright (`microsoft/playwright-mcp`) | `delivery-comms` | verify HTML decks/viz; demotion candidate if browser-server overlap with Chrome DevTools ever bites |
-| Opt-in (`enabled: false`) | Web search (Exa or Tavily) | `strategy` | harness search parity; API key |
-| Opt-in | GitHub (official) | `dev-flow` | `gh` CLI covers ~90% (CLI-first) |
+| Opt-in (`enabled: false`) | GitHub (official) | `dev-flow` | `gh` CLI covers ~90% (CLI-first) |
 | Opt-in | Terraform (HashiCorp) | `ops` | single-skill use |
-| Absent by design | PlantUML/Structurizr (Docker per `arch-plantuml/references/mcp-optional.md`) · filesystem/git/memory (harness-native) · **clew** (future `kit-core` entry once its MCP mode lands) | | |
+| Project-scoped (not in the user-global registry) | PostgreSQL — Postgres MCP Pro (`crystaldba/postgres-mcp`) | — | databases are per-project; declare in the project's own `.mcp.json` / `opencode.json` when it makes sense, `--access-mode=restricted` as the starting mode. (Codex caveat: `config.toml` is global-only — enable there deliberately.) Anthropic's reference server is archived (July 2025, SQLi); PGDG ships none — revisit if an official server appears |
+| Absent by design | Web search (harness-native search is relied on: Claude WebSearch, Codex built-in; OpenCode coverage varies by provider — accepted) · PlantUML/Structurizr (Docker per `arch-plantuml/references/mcp-optional.md`) · filesystem/git/memory (harness-native) · **clew** (future `kit-core` entry once its MCP mode lands) | | |
 
 - **Guardrails**: generators live behind `scripts/gen-*` interfaces, swappable for rulesync
   without touching the kit's contract. Revisit triggers for adopting rulesync: per-target
@@ -144,8 +143,8 @@ dual-channel conflict and names which to remove.
   full kit through formats they read natively; skills need zero conversion anywhere.
 - No state machinery, no dual-state reconciliation, no new dependencies; custom surface is
   ~80 lines of generation behind swappable interfaces.
-- MCP servers are declared once, propagated three ways, and curated (4 always-on, 3
-  documented opt-ins).
+- MCP servers are declared once, propagated three ways, and curated (3 always-on, 2
+  documented opt-ins, PostgreSQL as a documented project-scoped recipe).
 
 ### Negative Consequences
 

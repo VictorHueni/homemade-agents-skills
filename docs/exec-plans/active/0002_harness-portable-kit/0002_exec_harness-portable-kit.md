@@ -316,7 +316,7 @@ Exit criteria:
 
 Scope:
 
-1. Create `mcp/registry.json`: server name → command/transport/env + owning set, seeded with the ADR-0006 selection (e.g. GitHub → `dev-flow`, PlantUML/Structurizr → `architecture`, Playwright → `delivery-comms`).
+1. Create `mcp/registry.json`: server name → command/transport/env + owning set + `enabled` flag, seeded with the ADR-0006 selection (always-on: Chrome DevTools + Context7 → `dev-flow`, Playwright → `delivery-comms`; opt-in: GitHub → `dev-flow`, Terraform → `ops`; PostgreSQL is project-scoped by design and stays out of the user-global registry).
 2. Generate per-set `plugins/<set>/.mcp.json` (committed — this is what makes Claude's marketplace toggle carry each set's MCP servers with it), a full-registry `[mcp_servers.*]` TOML fragment for `~/.codex/config.toml` (marker-delimited), and a full-registry `mcp` JSON fragment for OpenCode. No filtering — Codex/OpenCode receive the whole registry; trimming is a manual edit like any other toggle.
 
 Primary files:
