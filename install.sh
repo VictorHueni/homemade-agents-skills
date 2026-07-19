@@ -239,6 +239,18 @@ for cmd_dir in "$SCRIPT_DIR"/plugins/*/commands; do
 done
 sync_files "$SCRIPT_DIR/rules"    "$RULES_TARGET"    "rule"    changed_rules    pruned_rules    unchanged_rules
 
+# ── Harness adapters (global installs only): AGENTS.md routing + behavioural rules
+# for Codex + OpenCode, marker-delimited so user content survives (kit ADR-0006 §4).
+if [[ -z "$TARGET_ROOT" ]] && command -v python3 >/dev/null 2>&1; then
+    if (( VERBOSE && !QUIET )); then
+        python3 "$SCRIPT_DIR/scripts/gen-agents-md.py" "$SCRIPT_DIR" \
+            "$HOME/.codex/AGENTS.md" "$HOME/.config/opencode/AGENTS.md"
+    else
+        python3 "$SCRIPT_DIR/scripts/gen-agents-md.py" "$SCRIPT_DIR" \
+            "$HOME/.codex/AGENTS.md" "$HOME/.config/opencode/AGENTS.md" > /dev/null
+    fi
+fi
+
 if (( !QUIET )); then
     total_changes=$(( changed_skills + pruned_skills + changed_commands + pruned_commands + changed_rules + pruned_rules ))
     if (( total_changes == 0 )); then

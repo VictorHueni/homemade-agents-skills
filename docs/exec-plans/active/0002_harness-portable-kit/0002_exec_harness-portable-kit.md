@@ -32,7 +32,7 @@ Principles:
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
 **Overall Status:** in-progress
-**Current Increment:** 10 (M3 complete pending manual marketplace verification)
+**Current Increment:** 11
 
 ## Increment Plan
 
@@ -289,7 +289,7 @@ Exit criteria:
 
 ### Increment 10: AGENTS.md Adapter Generation
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
