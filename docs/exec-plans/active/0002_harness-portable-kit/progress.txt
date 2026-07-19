@@ -3,3 +3,4 @@ Plan-0002 progress log
 2026-07-19  Plan authored (draft). Awaiting review; M1 (ADR pair) requires explicit approval before M2 starts.
 2026-07-19  Naming decided: bare `metamodel` (documented convention exception). Consolidation decided: audit/scaffold/migration become modes. Plan revised (increments 02, 03, 06, 07; counts + gates).
 2026-07-19  Registry format decided: YAML (references/artefact-types-registry.yaml), schema doubles as clew OI-0030 answer; clew stays canonical owner. Plan patched (principle 5, increments 02, 03, 06, 15).
+2026-07-19  Reference convention hardened: name-first ("the metamodel skill's references/<file>"), sibling path demoted to flat-install hint — bare ../metamodel/ fails across marketplace plugin subtrees and under physical .. resolution. ADR-0006 gains the flattening/global-name-uniqueness contract. Increments 01, 02, 05 + Summary/M2 patched.
