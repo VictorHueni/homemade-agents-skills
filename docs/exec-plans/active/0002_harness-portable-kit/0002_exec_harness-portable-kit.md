@@ -31,8 +31,8 @@ Principles:
 5. Ownership follows clew ADR-0008: the kit never becomes the structural metamodel source of truth; no parallel validator. The skill's registry ships as **YAML** (`references/artefact-types-registry.yaml`) — but as a verbatim *projection* of clew's structural SoT in the schema `clew metamodel export` will emit (the schema decision doubles as clew OI-0030's answer), never as an independent authoring surface: new artefact types are authored clew-side first.
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
-**Overall Status:** in-progress
-**Current Increment:** 13
+**Overall Status:** done (pending manual harness verifications)
+**Current Increment:** — all increments complete
 
 ## Increment Plan
 
@@ -358,7 +358,7 @@ Exit criteria:
 
 ### Increment 13: README Rewrite, Toggle Idioms, and Open-Item Filing
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
