@@ -148,7 +148,7 @@ sync_skills() {
     local target="$1"
     local -n _chg="$2" _prun="$3" _same="$4"
 
-    for skill_dir in "$SCRIPT_DIR"/skills/*/; do
+    for skill_dir in "$SCRIPT_DIR"/plugins/*/skills/*/; do
         local skill_name link desired resolved
         skill_name="$(basename "${skill_dir%/}")"
         [[ -f "$skill_dir/SKILL.md" ]] || continue
@@ -183,7 +183,7 @@ sync_skills() {
         else
             resolved=""
         fi
-        if [[ -L "$link" ]] && [[ "$resolved" == "$SCRIPT_DIR/"* ]] && [[ ! -d "$SCRIPT_DIR/skills/$skill_name" ]]; then
+        if [[ -L "$link" ]] && [[ "$resolved" == "$SCRIPT_DIR/"* ]] && ! compgen -G "$SCRIPT_DIR/plugins/*/skills/$skill_name" > /dev/null; then
             rm "$link"
             log_verbose "  ✗ pruned skill: $skill_name"
             _prun=$(( _prun + 1 ))
@@ -233,7 +233,10 @@ sync_skills "$AGENTS_SKILLS_TARGET" changed_skills pruned_skills unchanged_skill
 changed_commands=0; pruned_commands=0; unchanged_commands=0
 changed_rules=0;    pruned_rules=0;    unchanged_rules=0
 
-sync_files "$SCRIPT_DIR/commands" "$COMMANDS_TARGET" "command" changed_commands pruned_commands unchanged_commands
+for cmd_dir in "$SCRIPT_DIR"/plugins/*/commands; do
+    [[ -d "$cmd_dir" ]] || continue
+    sync_files "$cmd_dir" "$COMMANDS_TARGET" "command" changed_commands pruned_commands unchanged_commands
+done
 sync_files "$SCRIPT_DIR/rules"    "$RULES_TARGET"    "rule"    changed_rules    pruned_rules    unchanged_rules
 
 if (( !QUIET )); then
