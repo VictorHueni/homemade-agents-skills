@@ -32,7 +32,7 @@ Principles:
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
 **Overall Status:** in-progress
-**Current Increment:** 07
+**Current Increment:** 08 (M2 complete)
 
 ## Increment Plan
 
@@ -212,7 +212,7 @@ Exit criteria:
 
 ### Increment 07: Blast-Radius Housekeeping for the Metamodel Move
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

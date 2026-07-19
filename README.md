@@ -55,9 +55,7 @@ A personal Claude Code toolkit — composable skills for business architecture, 
 | `com-` | `com-slide-deck` | HTML slide deck builder |
 | `com-` | `com-artefact-viz` | Interactive HTML views of artefacts (capability map · FBS · roadmap · BMC) |
 | `com-` | `com-release-note` | Curated stakeholder release notes from changelog + commit/PR history + FBS + capability map |
-| `util-` | `util-metamodel-scaffold` | Canonical docs/ folder tree + index.md + CLAUDE.md wiring |
-| `util-` | `util-metamodel-audit` | Artefact stack health check |
-| `util-` | `util-metamodel-migration` | Docs folder migration report |
+| — | `metamodel` | **The keystone**: canonical metamodel of the docs stack — spine, YAML type registry, frontmatter schema, open-items contract — plus Audit / Scaffold / Migrate lifecycle modes (absorbs the former `util-metamodel-*` skills; bare name is a registered convention exception, kit ADR-0007) |
 | `util-` | `util-docs-audit` | Documentation freshness audit |
 | `util-` | `util-docs-lint` | Docs lint toolchain (dprint/Vale/lychee) — audit, enforce, CI |
 | `util-` | `util-docs-index` | OKF `index.md` generator — deterministic parse + concise per-doc summaries (idempotent) |
@@ -106,11 +104,11 @@ Cross-project conventions loaded automatically by Claude Code:
 
 | Rule file | Covers |
 |---|---|
-| `rules/artefact-frontmatter.md` | Standard frontmatter for all skill-produced docs |
-| `rules/skill-creation-sync.md` | Skill naming, frontmatter, cross-machine sync |
-| `rules/metamodel.md` | Artefact definitions, build order, ID conventions |
-| `rules/artefact-types-registry.md` | Per-type structural registry: id_format, file layout, default path, review interval, property-schema ref (structural half of clew ADR-0006) |
-| `rules/open-items-governance.md` | Cross-cutting open-items contract: central ledger as sole authoring surface, item taxonomy (`doc-gap`, `decision-gap`, `execution-item`, `tech-debt`), provenance fields (`Source anchor` + `Source heading`), and ledger location under `docs/project-control/open-items/` |
+| `rules/artefact-frontmatter.md` | **Pointer stub** → the `metamodel` skill's `references/artefact-frontmatter.md` (kit ADR-0007) |
+| `rules/skill-creation-sync.md` | Skill naming (incl. registered exceptions), reference convention, cross-machine sync, blast-radius procedure |
+| `rules/metamodel.md` | **Pointer stub** → the `metamodel` skill (spine, variants, references) |
+| `rules/artefact-types-registry.md` | **Pointer stub** → the `metamodel` skill's `references/artefact-types-registry.yaml` (clew-owned projection, clew ADR-0008) |
+| `rules/open-items-governance.md` | **Pointer stub** → the `metamodel` skill's `references/open-items-governance.md` |
 | `rules/git-and-tools.md` | Git discipline, Edit tool usage |
 | `rules/working-style.md` | Sequential plans, trust-but-verify |
 | `rules/diagramming-mermaid.md` | Mermaid diagram pitfalls |
