@@ -245,9 +245,11 @@ if [[ -z "$TARGET_ROOT" ]] && command -v python3 >/dev/null 2>&1; then
     if (( VERBOSE && !QUIET )); then
         python3 "$SCRIPT_DIR/scripts/gen-agents-md.py" "$SCRIPT_DIR" \
             "$HOME/.codex/AGENTS.md" "$HOME/.config/opencode/AGENTS.md"
+        python3 "$SCRIPT_DIR/scripts/gen-mcp.py" harness "$SCRIPT_DIR" "$HOME"
     else
         python3 "$SCRIPT_DIR/scripts/gen-agents-md.py" "$SCRIPT_DIR" \
             "$HOME/.codex/AGENTS.md" "$HOME/.config/opencode/AGENTS.md" > /dev/null
+        python3 "$SCRIPT_DIR/scripts/gen-mcp.py" harness "$SCRIPT_DIR" "$HOME" > /dev/null
     fi
 fi
 

@@ -32,7 +32,7 @@ Principles:
 6. Symlink installation must keep working at every increment — the marketplace is an additional distribution channel, not a replacement.
 
 **Overall Status:** in-progress
-**Current Increment:** 11
+**Current Increment:** 12 (M4 complete)
 
 ## Increment Plan
 
@@ -312,7 +312,7 @@ Exit criteria:
 
 ### Increment 11: MCP Registry and Per-Harness Generation
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
