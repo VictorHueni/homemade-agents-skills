@@ -1,5 +1,5 @@
 {
-  "description": "Single source of truth for the kit's MCP servers (kit ADR-0006 \u00a74). scripts/gen-mcp.py projects it into per-plugin .mcp.json (Claude marketplace), a marker block in ~/.codex/config.toml, and the mcp key of ~/.config/opencode/opencode.json. The enabled flag is committed configuration, not runtime state \u2014 flip it and re-run the generator.",
+  "description": "Single source of truth for the kit's MCP servers (kit ADR-0006 §4). scripts/gen-mcp.py projects it into per-plugin .mcp.json (Claude marketplace), a marker block in ~/.codex/config.toml, and the mcp key of ~/.config/opencode/opencode.json. The enabled flag is committed configuration, not runtime state — flip it and re-run the generator.",
   "servers": [
     {
       "name": "chrome-devtools",
@@ -13,7 +13,7 @@
           "chrome-devtools-mcp@latest"
         ]
       },
-      "notes": "Official Google server. Front-end debugging: console, network, performance traces, DOM \u2014 pairs with the frontend-nuxt rule's hydration/SSR pitfalls."
+      "notes": "Official Google server. Front-end debugging: console, network, performance traces, DOM — pairs with the frontend-nuxt rule's hydration/SSR pitfalls."
     },
     {
       "name": "context7",
@@ -56,7 +56,7 @@
     {
       "name": "terraform",
       "owning_set": "ops",
-      "enabled": true,
+      "enabled": false,
       "transport": {
         "type": "stdio",
         "command": "docker",
@@ -73,7 +73,7 @@
   "project_scoped_recipes": {
     "postgresql": {
       "server": "crystaldba/postgres-mcp (Postgres MCP Pro)",
-      "why_not_user_global": "Databases are per-project (ADR-0006): declare in the project's own .mcp.json / opencode.json when it makes sense. Codex caveat: config.toml is global-only \u2014 enable there deliberately.",
+      "why_not_user_global": "Databases are per-project (ADR-0006): declare in the project's own .mcp.json / opencode.json when it makes sense. Codex caveat: config.toml is global-only — enable there deliberately.",
       "claude_project_mcp_json": {
         "mcpServers": {
           "postgres": {
@@ -88,7 +88,7 @@
           }
         }
       },
-      "context": "Anthropic's reference server was archived July 2025 (SQLi); PGDG ships none \u2014 revisit if an official server appears."
+      "context": "Anthropic's reference server was archived July 2025 (SQLi); PGDG ships none — revisit if an official server appears."
     }
   }
 }
