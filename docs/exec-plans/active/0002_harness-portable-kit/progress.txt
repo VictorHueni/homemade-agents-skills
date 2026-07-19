@@ -9,3 +9,4 @@ Plan-0002 progress log
 2026-07-19  Increment 02 done: ADR-0007 drafted (status: draft). M1 complete pending user approval of both ADRs before increment 03 starts.
 2026-07-19  ADR-0006 review amendments: web-search MCP dropped (harness-native search relied on); PostgreSQL moved from user-global always-on to project-scoped recipe. Seed = 3 always-on + 2 opt-in.
 2026-07-19  Increment 03 done: skills/metamodel scaffolded — SKILL.md spine (desc 604 chars), 4 references, registry converted to YAML (40/40 rows, regexes compile). Two stale relative links fixed (changelog -> plain path, ADR-0005 -> GitHub URL); remaining ../ hits are cross-doc format examples, not real links. install.sh symlink verified.
+2026-07-19  Increment 04 done: 4 metamodel rules reduced to pointer stubs (paths: preserved, <40 lines each); metamodel-reference.md deleted; install.sh prunes its dead symlink.
