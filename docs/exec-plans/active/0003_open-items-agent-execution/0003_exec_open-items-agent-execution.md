@@ -68,8 +68,9 @@ Principles:
 6. The `ready-for-agent` label is trustworthy by construction — an issue may only carry it
    if acceptance criteria and code pointers are present.
 
-**Overall Status:** in-progress
-**Current Increment:** 13 (10–11 deferred: operator-gated, post-merge)
+**Overall Status:** in-progress — all file-work increments done; 10–11 remain
+(operator-gated, post-merge)
+**Current Increment:** 10 (post-merge)
 
 ## Increment Plan
 
@@ -494,7 +495,7 @@ Exit criteria:
 
 ### Increment 13: Rollout Guide + README Refresh
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -542,7 +543,7 @@ Exit criteria:
 | M2: Intake surface | 04–06 | done | New issues arrive label-complete and agent-parseable | Test issue filed via form arrives fully labelled | Zero manual label edits needed on a fresh filing | `feat(open-items): ...` |
 | M3: Tooling conformance | 07–09 | pending | Skill, audit, and scripts operate the new layer | Script dry-runs + rg checks | Adoption checklist self-sufficient; backfill validated dry-run | `feat(open-items): ...` |
 | M4: Kit-repo rollout | 10–11 | pending | Live queue backfilled and triaged; `ready-for-agent` trustworthy | `gh issue list` label assertions | No `needs-triage` remains; stale items dropped with rationale | operational commits + progress.txt log |
-| M5: Delegation + rollout | 12–13 | pending | Agents can validate readiness, dedupe/merge, and take/select issues; other repos can adopt | Dry-run `validate --queue` + `dedupe` + `next`, one real `take → PR` round-trip | One issue driven to merged PR by the skill; queue passes validate with zero unproposed drift | `feat(agent-loop): ...` / `docs(open-items): ...` |
+| M5: Delegation + rollout | 12–13 | done (live-queue gates deferred post-merge) | Agents can validate readiness, dedupe/merge, and take/select issues; other repos can adopt | Dry-run `validate --queue` + `dedupe` + `next`, one real `take → PR` round-trip | One issue driven to merged PR by the skill; queue passes validate with zero unproposed drift | `feat(agent-loop): ...` / `docs(open-items): ...` |
 
 ## File Open Items to the central ledger
 

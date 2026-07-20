@@ -135,3 +135,16 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             test gates (dry-run next/dedupe, real take round-trip) deferred to
             post-merge alongside increments 10-11.
             Next: increment 13 (rollout guide + README refresh).
+
+2026-07-20  Increment 13 DONE — docs/project-control/open-items/README.md rewritten
+            for the github backend: tracker-is-the-ledger orientation, 17-label
+            quick-reference, readiness state machine (mermaid), operating table
+            (file/triage/validate/dedupe/take/close/report), @claude Action noted as
+            optional automation, adoption checklist pointer, convert-and-triage
+            guidance for messy markdown lists (no bulk import; migration =
+            bankruptcy moment), contracts/history link index. open-items.md
+            migration banner updated (marker retired per ADR-0009). Gate: rg hits
+            present; zero live marker references.
+            All file-work increments (01-09, 12-13) complete. Remaining: 10-11
+            (operator-gated, post-merge — bootstrap --apply, backfill, triage
+            session, live delegation round-trip).
