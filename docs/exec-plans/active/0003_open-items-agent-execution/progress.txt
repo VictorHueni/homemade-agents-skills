@@ -28,3 +28,10 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             diagrams + scope + see-also updated. Gates: 24 rg hits; sole Project-field
             mention is the historical "retired" note.
             Next: increment 03 (governance rule touch).
+
+2026-07-20  Increment 03 DONE — governance rule §5.3 sanctions the optional
+            execution-layer slugs (size, readiness + content fields) as additive;
+            readiness declared orthogonal to lifecycle status; mechanics delegated to
+            the backend reference (ADR-0008). 11-line addition, no other section
+            touched. M1 (Contract) complete.
+            Next: increment 04 (label bootstrap script).

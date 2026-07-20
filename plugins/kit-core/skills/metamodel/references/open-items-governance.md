@@ -228,6 +228,17 @@ for the consolidated read-out. Whatever the backend, these invariants hold:
   (`Source artefact` + `Source anchor` + `Source heading`) under the canonical slugs, so
   central-only and artefact-originated items are distinguishable in any backend.
 
+**Optional execution-layer slugs.** A backend MAY carry additional, optional
+execution-layer slugs after the canonical set — currently `size` (one-PR effort bound) and
+`readiness` (delegation trust state: untriaged / safe for an agent to take / needs a
+human), plus agent-ready content fields (`references`, `acceptance_criteria`,
+`out_of_scope`) — under the same §4 "informational additions" clause. `readiness` is
+**orthogonal to lifecycle `status`** (§3): it qualifies an `open` item for delegation and
+never replaces or reorders the lifecycle. Serialization mechanics (label vocabulary,
+promotion rules, preconditions) belong to the backend reference
+(`util-open-items/references/github-backend.md`, per kit ADR-0008), never to this rule; a
+backend that omits the execution layer entirely remains conformant.
+
 A worked two-backend mapping (the kit's own `markdown` ledger plus an issue-tracker backend)
 is maintained as the reference model that operator tooling and the audit conform to; see
 §10.
