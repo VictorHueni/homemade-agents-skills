@@ -3,36 +3,48 @@
 # Canonical output template for the `github` backend of util-open-items. Copy this file to
 # `.github/ISSUE_TEMPLATE/open-item.yml` in a repo ONLY when that repo adopts the github
 # backend (see util-open-items/SKILL.md §Backends). It is not installed automatically.
+# PRECONDITION: run scripts/bootstrap_labels.sh --apply first — the `labels:` below are
+# silently skipped by GitHub if they do not exist in the repo.
 #
-# Invariant I1 (rules/open-items-governance.md §5.3): every field `id:` below MUST equal the
-# canonical slug so util-metamodel-audit can read an issue body through the same slug map it
-# uses for a markdown ledger row. Do not rename an `id:` — rename the label instead.
+# Invariant I1 (the `metamodel` skill's `references/open-items-governance.md` §5.3): every
+# field `id:` below MUST equal the canonical slug so the metamodel skill's Audit mode can
+# read an issue body through the same slug map it uses for a markdown ledger row. Do not
+# rename an `id:` — rename the label instead.
 #
-# Field partition: this form carries ONLY the authoring-time fields
-# (type, source_*, resolution_path, priority). The issue TITLE is `summary`. Lifecycle fields
-# (status, owner, review_date, tracker_ref, oi_id) are native GitHub primitives and are NOT
-# in this form — status is issue-state + Project Status field, owner is the assignee,
-# review_date is a Project date field, tracker_ref is the closing reference, oi_id is `#N`.
+# Field partition (references/github-backend.md §1): this form carries ONLY the
+# authoring-time fields (type, priority, size, source_*, resolution_path, references,
+# acceptance_criteria, out_of_scope). The issue TITLE is `summary` — no prefix (ADR-0008
+# §5; the `open-item` label carries the signal). Lifecycle fields (status, owner,
+# review_date, tracker_ref, oi_id) are native GitHub primitives. `readiness` is
+# triage-owned: this form applies the `needs-triage` creation default; promotion to
+# ready-for-agent / needs-human happens only via triage (ADR-0008 §3).
+#
+# The type/priority/size dropdown answers are mirrored to `type:` / `priority:` / `size:`
+# labels by the open-item labeler workflow on issues:opened (forms cannot set labels per
+# answer). Form `required:` gates only the web UI — gh/API filing bypasses it; the
+# util-open-items refusal rules are the authoritative gate (ADR-0008 §6).
 
 name: Open Item
 description: Record a governance open item (doc-gap, decision-gap, execution-item, or tech-debt).
-title: "[OI] "        # the rest of the title is the `summary` slug
-labels: ["open-item"]
-# projects: ["VictorHueni/<project-number>"]   # uncomment + set when the Project exists
+labels: ["open-item", "needs-triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        The issue **title** (after the `[OI]` prefix) is the open item's **summary** — one
-        self-contained sentence. Fill the fields below; lifecycle (status, owner, review
-        date, evidence) is managed via the issue state, assignee, Project fields, and the
-        closing reference — not here.
+        The issue **title** is the open item's **summary** — one self-contained sentence,
+        short and searchable (symptom statement for gaps, imperative outcome for
+        execution/debt items). No prefix.
+
+        Lifecycle (status, owner, review date, closure evidence) is managed via the issue
+        state, assignee, milestone, and the closing reference — not here. This issue
+        starts as `needs-triage`; it becomes `ready-for-agent` only once **References**
+        and **Acceptance criteria** below are filled and triage promotes it.
 
   - type: dropdown
     id: type
     attributes:
       label: Type
-      description: Exactly one taxonomy value (§2). Set the native Issue Type to match.
+      description: Exactly one taxonomy value (governance §2). Mirrored to a `type:` label.
       options:
         - doc-gap
         - decision-gap
@@ -45,11 +57,24 @@ body:
     id: priority
     attributes:
       label: Priority
+      description: "Mirrored to a `priority:` label — p0=critical, p1=high, p2=medium, p3=low."
       options:
-        - low
-        - medium
-        - high
         - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      description: One-PR effort bound, mirrored to a `size:` label. L = consider splitting before delegating to an agent.
+      options:
+        - S
+        - M
+        - L
     validations:
       required: true
 
@@ -88,3 +113,41 @@ body:
       placeholder: Open an ADR on token strategy / schedule into refactor epic E-07
     validations:
       required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: >-
+        Code pointers an executor needs — files, symbols, prior PRs, patterns to imitate,
+        doc links. Required before this item can be promoted to `ready-for-agent`
+        (strongly recommended now for execution-item / tech-debt).
+      placeholder: |
+        - plugins/kit-core/skills/util-open-items/SKILL.md (Mode 2)
+        - pattern to follow: scripts/bootstrap_labels.sh CLI conventions
+        - prior art: PR #4
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: >-
+        Observable pass/fail checklist, ending with a verification command an agent can
+        run. Required before promotion to `ready-for-agent`.
+      placeholder: |
+        - [ ] X behaves like Y under Z
+        - [ ] docs updated
+        - [ ] verify: bash scripts/foo.sh --dry-run exits 0
+    validations:
+      required: false
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: What must NOT be touched or changed while resolving this item (optional).
+      placeholder: Do not modify the markdown backend or the §4 canonical columns.
+    validations:
+      required: false

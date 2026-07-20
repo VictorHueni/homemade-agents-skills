@@ -56,7 +56,7 @@ Principles:
    if acceptance criteria and code pointers are present.
 
 **Overall Status:** in-progress
-**Current Increment:** 05
+**Current Increment:** 06
 
 ## Increment Plan
 
@@ -186,7 +186,7 @@ Exit criteria:
 
 ### Increment 05: Issue Form v2
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

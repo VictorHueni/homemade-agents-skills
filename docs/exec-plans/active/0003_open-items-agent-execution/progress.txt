@@ -40,3 +40,10 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             --force for the 17-label ADR-0008 §4 vocabulary; dry-run default is
             offline-safe (prints planned commands, no gh needed), --apply requires gh.
             Next: increment 05 (issue form v2).
+
+2026-07-20  Increment 05 DONE — issue form v2 (template + installed copy, identical):
+            size dropdown + references / acceptance_criteria / out_of_scope textareas
+            (ids = canonical slugs), needs-triage in auto-labels, [OI] title prefix
+            dropped, priority options now canonical critical..low. Gates: YAML parse
+            OK, all 10 slug ids present. Old projects: delta obsolete (ADR-0008).
+            Next: increment 06 (labeler workflow + config.yml).
