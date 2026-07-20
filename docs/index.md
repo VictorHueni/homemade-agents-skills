@@ -16,7 +16,7 @@ okf_version: "0.1"
 > star as a harness-agnostic toolkit) but no personas, BMC, or capability map of its own, so
 > Steps 1–10 below remain legitimately ⬜. What this repo actually dogfoods is the
 > **open-items governance system** (`docs/project-control/open-items/`, github backend) and
-> the **use-case registry** (`docs/product-specs/use-cases/`, 11 UCs). Its Architecture
+> the **use-case registry** (`docs/product-specs/use-cases/issues-management/`, 11 UCs). Its Architecture
 > Decision Records (9) and research notes (3) are also live and current.
 
 ---
@@ -41,9 +41,9 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | 7b | Domain Model | `domain-model` | ⬜ | [`docs/domain/07b-models/`](domain/07b-models/) | — |
 | 8 | Delivery Roadmap | `plan-delivery-roadmap` | ⬜ | [`docs/plans/delivery-roadmap.md`](plans/delivery-roadmap.md) | — |
 | 9 | Quality Attributes | `spec-quality-attributes` | ⬜ | [`docs/product-specs/09a-quality-attributes.md`](product-specs/09a-quality-attributes.md) | — |
-| 9.5 | Use Cases | `spec-use-case` | ✅ | [`docs/product-specs/use-cases/`](product-specs/use-cases/) (11 UCs, index in-folder) | 2026-07-20 |
+| 9.5 | Use Cases | `spec-use-case` | ✅ | [`docs/product-specs/use-cases/issues-management/`](product-specs/use-cases/issues-management/) (11 UCs, index in-folder) | 2026-07-20 |
 | 10 | PRDs | `spec-prd` | ⬜ | [`docs/product-specs/prds/`](product-specs/prds/) | — |
-| 11 | Implementation Plans | `plan-implementation` | ✅ | [`docs/plans/active/`](plans/active/) (3 plans: 0001, 0002, 0003, folder-per-plan with co-located `progress.txt`) | 2026-07-20 |
+| 11 | Implementation Plans | `plan-implementation` | ✅ | [`docs/plans/`](plans/) (folder-per-plan with co-located `progress.txt`): [`active/`](plans/active/) 0003 · [`completed/`](plans/completed/) 0001, 0002 | 2026-07-20 |
 
 **Summary:** ✅ 3 / 🔄 0 / ⬜ 13 of 16 artefact steps
 
@@ -56,8 +56,8 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | Artefact | Location | Status |
 |---|---|---|
 | Open-items ledger (github backend) | [`docs/project-control/open-items/`](project-control/open-items/) | ✅ live — 32 open issues on `VictorHueni/homemade-claude-kit`, ADR-0008/0009 label vocabulary |
-| Use-case registry | [`docs/product-specs/use-cases/`](product-specs/use-cases/) | ✅ 11 UCs (UC-01..UC-11) |
-| Implementation plans | [`docs/plans/active/`](plans/active/) | ✅ 3 active plans (migrated from the legacy `docs/exec-plans/` path 2026-07-20 — `var/reports/metamodel-migration/migration-2026-07-20.md`) |
+| Use-case registry | [`docs/product-specs/use-cases/issues-management/`](product-specs/use-cases/issues-management/) | ✅ 11 UCs (UC-01..UC-11) |
+| Implementation plans | [`docs/plans/active/`](plans/active/) · [`docs/plans/completed/`](plans/completed/) | ✅ 1 active (0003), 2 completed (0001, 0002) — folder-per-plan, migrated from the legacy `docs/exec-plans/` path 2026-07-20 |
 | Architecture Decision Records | [`docs/architecture/decisions/`](architecture/decisions/) | ✅ 9 ADRs |
 | Architecture Research notes | [`docs/architecture/research/`](architecture/research/) | ✅ 3 notes |
 
@@ -107,4 +107,4 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | `QA-XXNN` | Quality Attribute | `09a-quality-attributes.md` |
 | `PRD-NNNN` | PRD | `prds/prd-NNNN-{slug}.md` |
 | `ADR-NNNN` | Architecture Decision | `architecture/decisions/adr-NNNN-{slug}.md` |
-| `UC-NN` | Use Case | `use-cases/uc-NN-{slug}.md` |
+| `UC-NN` | Use Case | `use-cases/issues-management/uc-NN-{slug}.md` |
