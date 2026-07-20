@@ -56,7 +56,7 @@ Principles:
    if acceptance criteria and code pointers are present.
 
 **Overall Status:** in-progress
-**Current Increment:** 04
+**Current Increment:** 05
 
 ## Increment Plan
 
@@ -159,7 +159,7 @@ Exit criteria:
 
 ### Increment 04: Label Bootstrap Script
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

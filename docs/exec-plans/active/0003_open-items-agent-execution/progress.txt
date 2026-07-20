@@ -35,3 +35,8 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             the backend reference (ADR-0008). 11-line addition, no other section
             touched. M1 (Contract) complete.
             Next: increment 04 (label bootstrap script).
+
+2026-07-20  Increment 04 DONE — bootstrap_labels.sh: idempotent gh label create
+            --force for the 17-label ADR-0008 §4 vocabulary; dry-run default is
+            offline-safe (prints planned commands, no gh needed), --apply requires gh.
+            Next: increment 05 (issue form v2).
