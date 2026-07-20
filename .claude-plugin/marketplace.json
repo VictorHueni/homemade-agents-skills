@@ -12,7 +12,7 @@
     {
       "name": "agent-loop",
       "source": "./plugins/agent-loop",
-      "description": "Agent-centric development cycle. Guide (agent-config), Verify (grill-me, peer-review), Solve (ralph-loop) \u2014 plus the ralph-audit command."
+      "description": "Agent-centric development cycle. Guide (agent-config), Verify (grill-me, peer-review), Solve (ralph-loop, issue-loop) \u2014 plus the ralph-audit command."
     },
     {
       "name": "architecture",

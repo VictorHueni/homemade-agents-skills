@@ -117,3 +117,21 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             Gates: py_compile + --help x2, offline --selftest 5/5 (substitutes for the
             live dry-run — no gh/network in this sandbox; deferred to inc 10).
             Next: increment 10 (kit-repo backfill — operator-gated).
+
+2026-07-20  SEQUENCING — operator approved finishing 12+13 on the branch before the
+            operator-gated live increments: 10-11 need gh/network + the intake surface
+            only activates on the default branch, so they run post-merge.
+
+2026-07-20  Increment 12 DONE — new agent-issue-loop skill (agent-loop plugin,
+            impact high, implicit invocation off): Family A validate #N /
+            validate --queue (readiness reports + drafted briefs + demotion proposals,
+            read-only), Family B dedupe (identity-triple + semantic clustering,
+            operator-approved merges closing duplicates via the drop contract),
+            Family C take #N / next (gate -> claim state:in-progress -> plan ->
+            implement -> verify acceptance criteria + CLAUDE.md commands -> PR
+            "Closes #N"; blocked -> state:blocked + comment; refuses non-ready).
+            Per-family action budgets; boundary with util-open-items recorded.
+            plugin.json + marketplace description updated (v1.1.0). Live-queue
+            test gates (dry-run next/dedupe, real take round-trip) deferred to
+            post-merge alongside increments 10-11.
+            Next: increment 13 (rollout guide + README refresh).

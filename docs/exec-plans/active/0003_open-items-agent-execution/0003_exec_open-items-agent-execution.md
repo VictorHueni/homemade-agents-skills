@@ -69,7 +69,7 @@ Principles:
    if acceptance criteria and code pointers are present.
 
 **Overall Status:** in-progress
-**Current Increment:** 10
+**Current Increment:** 13 (10–11 deferred: operator-gated, post-merge)
 
 ## Increment Plan
 
@@ -419,7 +419,7 @@ Exit criteria:
 
 ### Increment 12: Delegation Skill — `agent-issue-loop` (three mode families)
 
-**Status:** pending
+**Status:** done (live-queue gates deferred to post-merge with 10–11)
 
 Scope:
 
