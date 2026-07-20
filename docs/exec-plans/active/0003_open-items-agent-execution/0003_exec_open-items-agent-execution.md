@@ -56,7 +56,7 @@ Principles:
    if acceptance criteria and code pointers are present.
 
 **Overall Status:** in-progress
-**Current Increment:** 02
+**Current Increment:** 03
 
 ## Increment Plan
 
@@ -104,7 +104,7 @@ Exit criteria:
 
 ### Increment 02: Normative Backend Reference Update (`github-backend.md`)
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

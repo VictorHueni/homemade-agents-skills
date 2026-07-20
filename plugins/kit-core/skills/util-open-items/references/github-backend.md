@@ -20,9 +20,12 @@ file is authoritative only for the `github` mapping.
 
 ## Scope
 
-Per `adr-0002`, the `github` backend is adopted for the **kit repo only** (dogfood before
-generalising). Other projects use the default `markdown` backend. `OI-0032` decides whether
-to generalise.
+Per `adr-0002`, the `github` backend is an **opt-in** backend selected per project via
+`backend.yml`; `markdown` stays the universal default (`adr-0003` declined to generalise).
+`adr-0008` amended this serialization: `priority` and the `in-progress`/`blocked` status
+decomposition live in **labels** (the originally-mapped Project v2 fields were never wired
+and are retired), and the backend gains an optional **execution layer** (`size`,
+`readiness`, agent-ready content fields) so coding agents can query and take issues.
 
 ---
 
@@ -36,6 +39,14 @@ this one slug set.
 oi_id · type · summary · source_artefact · source_anchor ·
 source_heading · resolution_path · priority · status · owner ·
 review_date · tracker_ref
+```
+
+**Optional execution-layer slugs** (`adr-0008`, additive per governance §4 — sanctioned
+informational additions after the canonical set; a backend that omits them is still
+conformant):
+
+```text
+size · readiness · references · acceptance_criteria · out_of_scope
 ```
 
 | Slug | §4 column | Domain |
@@ -53,13 +64,24 @@ review_date · tracker_ref
 | `review_date` | Due / Review date | ISO-8601 |
 | `tracker_ref` | Tracker ref | URL \| `_TBD_` (non-`_TBD_` required for terminal) |
 
+| Optional slug | Domain | Owner |
+| :--- | :--- | :--- |
+| `size` | `S` · `M` · `L` (one-PR effort bound) | filer |
+| `readiness` | `needs-triage` · `ready-for-agent` · `needs-human` | **triage only** (creation default: `needs-triage`) |
+| `references` | code pointers: files, symbols, prior PRs, patterns to imitate | filer |
+| `acceptance_criteria` | observable pass/fail checklist ending in a runnable check | filer |
+| `out_of_scope` | what must not be touched | filer (optional) |
+
 **Field partition** — drives the mapping below:
 
-- **Authoring-time** (`type`, `summary`, `source_*`, `resolution_path`, `priority`) → Issue
-  Type, title, and the **Issue Form**.
+- **Authoring-time** (`type`, `summary`, `source_*`, `resolution_path`, `priority`, `size`,
+  `references`, `acceptance_criteria`, `out_of_scope`) → title, labels, and the **Issue
+  Form**.
 - **Lifecycle** (`status`, `owner`, `review_date`, `tracker_ref`, `oi_id`) → **native GitHub
   primitives**. Never hand-typed into a body — which is why github closure is structurally
   enforced.
+- **Triage-owned** (`readiness` beyond its `needs-triage` default) → labels applied only by
+  a triage pass or operator, never by the filer (`adr-0008` §3).
 
 ---
 
@@ -77,16 +99,48 @@ it lands changes. One `OpenItem` ⇒ one **Issue**, projected into one **Project
 | `source_anchor` | Issue Form field `source_anchor` | `input` |
 | `source_heading` | Issue Form field `source_heading` | `input` (or `_central-only_`) |
 | `resolution_path` | Issue Form field `resolution_path` | `textarea` |
-| `priority` | **Project** single-select field | sortable / groupable |
-| `status` | Issue state **+** Project Status field **+** close reason | composite (§4) |
+| `priority` | **Label** `priority:p0..p3` | `critical`↔`p0` · `high`↔`p1` · `medium`↔`p2` · `low`↔`p3` (`adr-0008`; Project field retired unwired) |
+| `status` | Issue state **+** `state:` label **+** close reason | composite (§3c) |
 | `owner` | **Assignee** | native |
-| `review_date` | **Project** date field / Milestone | |
+| `review_date` | **Milestone** due date | Project date field retired per `adr-0008` |
 | `tracker_ref` | **Closing reference** (`Closes #N`, linked PR) | native; unfakeable |
-| read-out | **Project (v2) board view** | replaces `report`-mode table |
+| `size` | **Label** `size:S\|M\|L` | optional (execution layer) |
+| `readiness` | **Label** `needs-triage` \| `ready-for-agent` \| `needs-human` | optional (execution layer); triage-owned |
+| `references` | Issue Form field `references` | `textarea` |
+| `acceptance_criteria` | Issue Form field `acceptance_criteria` | `textarea` |
+| `out_of_scope` | Issue Form field `out_of_scope` | `textarea`, optional |
+| read-out | Filtered issue lists (labels) | Projects v2 board deferred to [#73](https://github.com/VictorHueni/homemade-claude-kit/issues/73) |
 | archive | **Closed issues** (searchable indefinitely) | `archive` mode is a no-op here |
 
 The **Issue Form** (`.github/ISSUE_TEMPLATE/open-item.yml`) carries only the authoring-time
-partition; the lifecycle partition is native GitHub.
+partition; the lifecycle partition is native GitHub; readiness is triage-owned.
+
+### 2b. Execution layer (`adr-0008`)
+
+The canonical label vocabulary — 17 labels across six mutually-exclusive axes (marker,
+`type:`, `priority:`, `size:`, readiness, `state:`), exact names/colors/descriptions in
+`adr-0008` §4 — is bootstrapped idempotently by `scripts/bootstrap_labels.sh` **before**
+any surface that names a label ships (forms silently skip nonexistent labels).
+
+Rules:
+
+- **One label per axis.** At most 4–5 labels apply to one issue (marker + type + priority
+  + size + one workflow label). Violations are audit findings.
+- **Readiness contract.** An issue MAY carry `ready-for-agent` only if
+  `acceptance_criteria` and `references` are non-empty and `size` is set. `needs-triage`
+  is the creation default (form- and `sync`-applied); promotion/routing to
+  `ready-for-agent`/`needs-human` happens only via a triage pass or operator approval.
+  Filing agents never self-promote.
+- **Label handover.** When work starts (`take`), `state:in-progress` replaces the
+  readiness label; `state:blocked` per §3 lifecycle. The closing flow removes
+  readiness/`state:` labels at terminal state; leftovers on closed issues are audit
+  hygiene findings, not drift.
+- **Queries.** The delegation queue is `label:open-item label:ready-for-agent`, picked by
+  highest `priority:` (tie-break: smallest `size:`). No body parsing anywhere in the
+  execution path.
+- **Validation home.** Form `validations.required` gates only the web UI; `gh`/API filing
+  bypasses forms, so `util-open-items` refusal rules are the authoritative gate
+  (`adr-0008` §6).
 
 ---
 
@@ -117,13 +171,13 @@ The migration is operated by **Mode 7 (`migrate`)** in `SKILL.md`, driven by
 
 ### 3c. Status decomposition (Invariant I3)
 
-| Canonical `status` | Issue state | Project Status field | Close reason |
+| Canonical `status` | Issue state | `state:` label | Close reason |
 | :--- | :--- | :--- | :--- |
-| `open` | open | (unset / "Open") | — |
-| `in-progress` | open | "In progress" | — |
-| `blocked` | open | "Blocked" | — |
-| `closed` | closed | — | completed |
-| `dropped` | closed | — | **not planned** |
+| `open` | open | (none) | — |
+| `in-progress` | open | `state:in-progress` | — |
+| `blocked` | open | `state:blocked` | — |
+| `closed` | closed | (removed at close) | completed |
+| `dropped` | closed | (removed at close) | **not planned** |
 
 `closed` / `dropped` require a non-`_TBD_` `tracker_ref` — automatic on `github` (you close
 *via* a reference); validated by `util-open-items` on `markdown`.
@@ -133,7 +187,9 @@ The migration is operated by **Mode 7 (`migrate`)** in `SKILL.md`, driven by
 ## 4. Invariants
 
 - **I1** — Issue-Form `id:` keys ≡ canonical slugs ≡ markdown column meanings. One field map,
-  both backends.
+  both backends. The optional execution slugs (`size`, `readiness`, `references`,
+  `acceptance_criteria`, `out_of_scope`) join the slug map as optional entries — same
+  contract, absence is conformant.
 - **I2** — Migration is one-way (`markdown → github`), once, with a persisted ID map; never
   concurrent. One backend per project.
 - **I3** — Terminal status requires evidence (`tracker_ref`); native on `github`, validated
@@ -153,7 +209,7 @@ flowchart TD
     SYNC["util-open-items: sync<br/>(adapter; backend: markdown or github)"]
     FIELDS -->|"direct authoring"| SYNC
     SYNC -->|"backend: markdown"| MD["Central ledger open-items.md + archive"]
-    SYNC -->|"backend: github"| GH["GitHub Issues + Project"]
+    SYNC -->|"backend: github"| GH["GitHub Issues + labels"]
     MD -.->|"one-way migration + OI-NNNN to N map"| GH
     AUDIT["the metamodel skill's Audit mode<br/>(reads either via the slug map)"]
     MD --> AUDIT
@@ -174,8 +230,9 @@ erDiagram
     }
     GITHUB_ISSUE {
         int    issue_number PK
-        string issue_type
-        string project_status
+        string type_label
+        string priority_label
+        string workflow_label "readiness or state axis"
     }
     OPEN_ITEM ||--o| MARKDOWN_ROW : "realized-as (backend markdown)"
     OPEN_ITEM ||--o| GITHUB_ISSUE : "realized-as (backend github)"
@@ -192,4 +249,5 @@ relationships are mutually exclusive, enforced by the `backend:` setting, not th
 - the `metamodel` skill's `references/open-items-governance.md` §4–§5 — the abstract model + backend abstraction (owner).
 - `util-open-items/references/template.md` — the `markdown`-backend ledger skeleton.
 - `adr-0002` (in a consuming repo's `docs/architecture/decisions/`, e.g. the kit) — the
-  decision this mapping implements.
+  decision this mapping implements; `adr-0003` — github stays opt-in; `adr-0008` — the
+  label-based serialization amendment + execution layer this file conforms to.

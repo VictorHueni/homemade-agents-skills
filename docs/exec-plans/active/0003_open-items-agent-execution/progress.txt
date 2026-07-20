@@ -18,3 +18,13 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             validation note. Plan gate amended: label budget restated as 17 total /
             <=5 per issue (was <=15 total).
             Next: increment 02 (github-backend.md conformance).
+
+2026-07-20  Increment 02 DONE — github-backend.md conforms to ADR-0008.
+            Serialization table: priority -> priority:p0..p3 label; review_date ->
+            Milestone (Project fields retired); optional slug rows added. New §2b
+            Execution layer (vocabulary pointer, one-label-per-axis, readiness
+            contract, label handover, query patterns, validation home). §3c status
+            decomposition via state: labels; I1 extended with optional slugs;
+            diagrams + scope + see-also updated. Gates: 24 rg hits; sole Project-field
+            mention is the historical "retired" note.
+            Next: increment 03 (governance rule touch).
