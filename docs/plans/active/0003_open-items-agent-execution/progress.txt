@@ -1,0 +1,150 @@
+Plan-0003 — Open-Items Agent-Execution Layer
+=============================================
+
+2026-07-20  Plan drafted (status: draft). Source: research notes 0001 + 0002
+            (docs/architecture/research/). Option A selected in conversation;
+            per-repo tracking, solo-now/team-later, all four agent flows.
+            Awaiting operator review of the plan before increment 01.
+
+Increments: 13 total, milestones M1-M5.
+Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
+
+2026-07-20  Increment 01 DONE — ADR-0008 written
+            (docs/architecture/decisions/adr-0008-open-items-agent-execution-labels.md).
+            Amends ADR-0002 serialization: priority + in-progress/blocked -> labels
+            (Project fields retired unwired); optional slugs size + readiness; readiness
+            contract (ready-for-agent requires acceptance_criteria + references + size);
+            17-label vocabulary with colors; [OI] title prefix dropped; API-bypass
+            validation note. Plan gate amended: label budget restated as 17 total /
+            <=5 per issue (was <=15 total).
+            Next: increment 02 (github-backend.md conformance).
+
+2026-07-20  Increment 02 DONE — github-backend.md conforms to ADR-0008.
+            Serialization table: priority -> priority:p0..p3 label; review_date ->
+            Milestone (Project fields retired); optional slug rows added. New §2b
+            Execution layer (vocabulary pointer, one-label-per-axis, readiness
+            contract, label handover, query patterns, validation home). §3c status
+            decomposition via state: labels; I1 extended with optional slugs;
+            diagrams + scope + see-also updated. Gates: 24 rg hits; sole Project-field
+            mention is the historical "retired" note.
+            Next: increment 03 (governance rule touch).
+
+2026-07-20  Increment 03 DONE — governance rule §5.3 sanctions the optional
+            execution-layer slugs (size, readiness + content fields) as additive;
+            readiness declared orthogonal to lifecycle status; mechanics delegated to
+            the backend reference (ADR-0008). 11-line addition, no other section
+            touched. M1 (Contract) complete.
+            Next: increment 04 (label bootstrap script).
+
+2026-07-20  Increment 04 DONE — bootstrap_labels.sh: idempotent gh label create
+            --force for the 17-label ADR-0008 §4 vocabulary; dry-run default is
+            offline-safe (prints planned commands, no gh needed), --apply requires gh.
+            Next: increment 05 (issue form v2).
+
+2026-07-20  Increment 05 DONE — issue form v2 (template + installed copy, identical):
+            size dropdown + references / acceptance_criteria / out_of_scope textareas
+            (ids = canonical slugs), needs-triage in auto-labels, [OI] title prefix
+            dropped, priority options now canonical critical..low. Gates: YAML parse
+            OK, all 10 slug ids present. Old projects: delta obsolete (ADR-0008).
+            Next: increment 06 (labeler workflow + config.yml).
+
+2026-07-20  Increment 06 DONE — open-item-labeler.yml (actions/github-script chosen
+            over Advanced Issue Labeler: no external dep, critical->p0 mapping, axis
+            exclusivity on edit; open-item scope guard, issues:write only) +
+            config.yml (blank_issues_enabled: false) + both template copies. Gates:
+            4x YAML parse, trigger/permissions/guard asserts, JS body syntax OK.
+            Live end-to-end labeler test deferred to increment 10 (needs bootstrap
+            --apply on GitHub first). M2 (Intake surface) complete.
+            Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).
+
+
+2026-07-20  REVISION (ADR-0009) — operator rejected the open-item marker + governance
+            type vocabulary as exotic. New contract: standard 6-value type axis
+            (bug/feature/task/docs/decision/tech-debt) with governance §2 mapping,
+            marker dropped (tracker = ledger), one issue form per type. Vocabulary now
+            18 labels / 5 axes. Contract docs conformed (ADR-0009, governance §1/§5.3,
+            github-backend.md §2/§2a/§2b); plan increments 07-12 re-worded. Increments
+            04-06 rework follows as a separate commit.
+
+2026-07-20  Increment 04-06 REWORKED (ADR-0009) — bootstrap_labels.sh now creates
+            the 18-label ADR-0009 §5 vocabulary (marker gone, 6 standard types);
+            single open-item form replaced by six per-type forms (bug/feature/task/
+            docs/decision/tech-debt) with static type labels + tailored required
+            fields; labeler drops the marker guard + type axis (priority/size only,
+            section-parse is the guard). Template copies updated. Gates: 18-label
+            dry-run, ADR §5 diff clean, 14x YAML parse, per-form label/required
+            asserts, workflow asserts, no marker references remain.
+            Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).
+
+2026-07-20  CONFORMANCE PASS (research 0003 + operator review) — fit-gap check of the
+            forms against 10 major OSS template sets. Applied: numeric filename
+            prefixes (1-bug..5-tech-debt, chooser order), substance-first field order
+            (Priority/Size moved last), decision type DROPPED (operator: decision work
+            = task whose deliverable is the ADR/decision record; no mainstream repo
+            ships a decision template) -> 5 types / 17 labels; dup-search checkbox
+            omission documented in form headers (agents search duplicates/dependencies
+            pre-filing per increments 07/12). ADR-0009 amended in place (same-day,
+            unreleased); backend ref + plan + bootstrap script conformed.
+            Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).
+
+2026-07-20  Increment 07 DONE — util-open-items SKILL.md v2.1.0: sync applies labels
+            atomically (type:<mapped>/priority/size/needs-triage) with a mandatory
+            duplicate AND dependency search before create (Relates to / Blocked by
+            links); new refusal: never ready-for-agent at filing. Triage v2: readiness
+            routing (promote/route/demote per ADR-0008 §3 precondition, drafts briefs
+            for near-misses), 90-day staleness -> propose drop, disposition-table
+            output. Adoption checklist rewritten (bootstrap -> 5 forms + config +
+            labeler -> CLAUDE.md verify commands -> backend.yml); behaviour table,
+            Mode 7 prose, references conformed to ADR-0009 (no Project, no marker).
+            Next: increment 08 (audit mode conformance).
+
+2026-07-20  Increment 08 DONE — audit catalogue Check 18 conforms to ADR-0009: github
+            sub-checks read type/priority/size/readiness/state from labels via the slug
+            map (type back through §2a); population = all issues (marker retired) with
+            provenance checks scoped by section presence; 18f moved off the retired
+            Project field to Milestone due date; new report-only 18h (trustworthy
+            ready-for-agent queue + closed-issue label hygiene) and 18i (axis
+            exclusivity). Next: increment 09 (migration + backfill scripts).
+
+2026-07-20  Increment 09 DONE — migrate_markdown_to_github.py v2: bootstraps the 17-label
+            vocabulary (parsed at runtime from bootstrap_labels.sh — single SoT), maps
+            ledger types per §2a (decision-gap + execution-item -> type:task), applies
+            type/priority/needs-triage at creation and state: labels for in-progress/
+            blocked rows; marker, [OI] prefix, and Issue-Types probing dropped. New
+            backfill_execution_labels.py: pre-ADR-0009 remap (old type labels, body-parsed
+            priority incl. legacy bold style, needs-triage default, marker strip,
+            optional --delete-retired-labels), dry-run default, idempotent --apply.
+            Gates: py_compile + --help x2, offline --selftest 5/5 (substitutes for the
+            live dry-run — no gh/network in this sandbox; deferred to inc 10).
+            Next: increment 10 (kit-repo backfill — operator-gated).
+
+2026-07-20  SEQUENCING — operator approved finishing 12+13 on the branch before the
+            operator-gated live increments: 10-11 need gh/network + the intake surface
+            only activates on the default branch, so they run post-merge.
+
+2026-07-20  Increment 12 DONE — new agent-issue-loop skill (agent-loop plugin,
+            impact high, implicit invocation off): Family A validate #N /
+            validate --queue (readiness reports + drafted briefs + demotion proposals,
+            read-only), Family B dedupe (identity-triple + semantic clustering,
+            operator-approved merges closing duplicates via the drop contract),
+            Family C take #N / next (gate -> claim state:in-progress -> plan ->
+            implement -> verify acceptance criteria + CLAUDE.md commands -> PR
+            "Closes #N"; blocked -> state:blocked + comment; refuses non-ready).
+            Per-family action budgets; boundary with util-open-items recorded.
+            plugin.json + marketplace description updated (v1.1.0). Live-queue
+            test gates (dry-run next/dedupe, real take round-trip) deferred to
+            post-merge alongside increments 10-11.
+            Next: increment 13 (rollout guide + README refresh).
+
+2026-07-20  Increment 13 DONE — docs/project-control/open-items/README.md rewritten
+            for the github backend: tracker-is-the-ledger orientation, 17-label
+            quick-reference, readiness state machine (mermaid), operating table
+            (file/triage/validate/dedupe/take/close/report), @claude Action noted as
+            optional automation, adoption checklist pointer, convert-and-triage
+            guidance for messy markdown lists (no bulk import; migration =
+            bankruptcy moment), contracts/history link index. open-items.md
+            migration banner updated (marker retired per ADR-0009). Gate: rg hits
+            present; zero live marker references.
+            All file-work increments (01-09, 12-13) complete. Remaining: 10-11
+            (operator-gated, post-merge — bootstrap --apply, backfill, triage
+            session, live delegation round-trip).
