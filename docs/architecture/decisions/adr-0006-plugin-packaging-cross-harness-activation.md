@@ -109,8 +109,13 @@ The kit ships **no activation state**. Toggling a set uses each harness's own id
 | Codex CLI | symlink-glob removal (`rm ~/.codex/skills/{business,discovery}-*`) — documented, with the caveat that any `install.sh` re-run restores | No — manual |
 
 **One channel per machine (Claude):** a machine consumes the kit via the marketplace *or*
-via `~/.claude/skills` symlinks, never both — `util-toolkit-doctor` warns on the
-dual-channel conflict and names which to remove.
+via `~/.claude/skills` symlinks, never both. The choice is recorded once with
+`install.sh --claude-channel <marketplace|symlink>` (persisted in `var/claude-channel`,
+per-clone/per-machine, gitignored, default `symlink`); in `marketplace` mode every installer
+run — including flag-less chezmoi re-runs — skips and prunes the Claude skills/commands
+links while leaving `~/.codex`, `~/.agents`, rules, adapters, and MCP generation untouched.
+This is a binary channel fact, not per-set activation state (the deferred Option 2 stays
+deferred). `util-toolkit-doctor` warns on a dual-channel conflict and names the remedy.
 
 ### 4. Adapters & MCP: thin, generated, guarded
 

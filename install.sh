@@ -16,6 +16,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VERBOSE=0
 QUIET=0
 TARGET_ROOT=""
+CLAUDE_CHANNEL_FLAG=""
+CLAUDE_CHANNEL_FILE="$SCRIPT_DIR/var/claude-channel"
 
 usage() {
     cat <<'EOF'
@@ -26,6 +28,14 @@ Usage:
 Options:
   -v, --verbose  Print per-item actions.
   -q, --quiet    Suppress normal output; only errors are shown.
+  --claude-channel <marketplace|symlink>
+                 Record how THIS machine serves skills/commands to Claude Code
+                 (persisted in var/claude-channel; read by every later run, incl.
+                 flag-less chezmoi runs). "marketplace": the kit is consumed via
+                 /plugin — skip ~/.claude/skills + ~/.claude/commands and prune
+                 kit-owned links there (one channel per machine, kit ADR-0006 §3).
+                 "symlink" (default): current behaviour. Codex/OpenCode targets,
+                 rules, adapters, and MCP generation are unaffected either way.
   -h, --help     Show this help.
 EOF
 }
@@ -49,6 +59,20 @@ while [[ $# -gt 0 ]]; do
             ;;
         -q|--quiet)
             QUIET=1
+            ;;
+        --claude-channel)
+            shift
+            [[ $# -gt 0 ]] || { echo "error: --claude-channel requires a value (marketplace|symlink)" >&2; exit 1; }
+            case "$1" in
+                marketplace|symlink) CLAUDE_CHANNEL_FLAG="$1" ;;
+                *) echo "error: invalid --claude-channel value: $1 (want marketplace|symlink)" >&2; exit 1 ;;
+            esac
+            ;;
+        --claude-channel=*)
+            case "${1#*=}" in
+                marketplace|symlink) CLAUDE_CHANNEL_FLAG="${1#*=}" ;;
+                *) echo "error: invalid --claude-channel value: ${1#*=} (want marketplace|symlink)" >&2; exit 1 ;;
+            esac
             ;;
         -h|--help)
             usage
@@ -93,6 +117,19 @@ CODEX_SKILLS_TARGET="$CODEX_BASE/skills"
 AGENTS_SKILLS_TARGET="$AGENTS_BASE/skills"
 COMMANDS_TARGET="$CLAUDE_BASE/commands"
 RULES_TARGET="$CLAUDE_BASE/rules"
+
+# ── Claude channel (global installs only): persisted per-machine choice.
+# "symlink" (default) serves Claude from ~/.claude/skills; "marketplace" leaves
+# Claude to /plugin and prunes kit-owned links (one channel per machine, ADR-0006 §3).
+if [[ -n "$CLAUDE_CHANNEL_FLAG" ]]; then
+    mkdir -p "$(dirname "$CLAUDE_CHANNEL_FILE")"
+    printf '%s\n' "$CLAUDE_CHANNEL_FLAG" > "$CLAUDE_CHANNEL_FILE"
+    log "Claude channel recorded: $CLAUDE_CHANNEL_FLAG"
+fi
+CLAUDE_CHANNEL="symlink"
+if [[ -z "$TARGET_ROOT" && -f "$CLAUDE_CHANNEL_FILE" ]]; then
+    CLAUDE_CHANNEL="$(cat "$CLAUDE_CHANNEL_FILE")"
+fi
 
 mkdir -p "$COMMANDS_TARGET" "$RULES_TARGET"
 for skills_target in "$CLAUDE_SKILLS_TARGET" "$CODEX_SKILLS_TARGET" "$AGENTS_SKILLS_TARGET"; do
@@ -219,11 +256,33 @@ prune_legacy_repo_container() {
     _prun=$(( _prun + 1 ))
 }
 
+# Remove every kit-owned symlink from a target dir (marketplace-channel convergence).
+# Usage: prune_kit_links <target_dir> <label> <pruned_var>
+prune_kit_links() {
+    local target="$1" label="$2"
+    local -n _prun="$3"
+    local link resolved
+    for link in "$target"/*; do
+        [[ -L "$link" ]] || continue
+        resolved="$(realpath "$link" 2>/dev/null || true)"
+        if [[ -n "$resolved" && "$resolved" == "$SCRIPT_DIR/"* ]]; then
+            rm "$link"
+            log_verbose "  ✗ pruned $label (marketplace channel): $(basename "$link")"
+            _prun=$(( _prun + 1 ))
+        fi
+    done
+}
+
 changed_skills=0
 pruned_skills=0
 unchanged_skills=0
 
-sync_skills "$CLAUDE_SKILLS_TARGET" changed_skills pruned_skills unchanged_skills
+if [[ "$CLAUDE_CHANNEL" == "marketplace" ]]; then
+    log_verbose "Claude channel = marketplace: skipping ~/.claude skills/commands (served by /plugin)"
+    prune_kit_links "$CLAUDE_SKILLS_TARGET" "skill" pruned_skills
+else
+    sync_skills "$CLAUDE_SKILLS_TARGET" changed_skills pruned_skills unchanged_skills
+fi
 prune_legacy_repo_container "$CODEX_BASE/skills" "$(basename "$SCRIPT_DIR")" pruned_skills
 sync_skills "$CODEX_SKILLS_TARGET" changed_skills pruned_skills unchanged_skills
 prune_legacy_repo_container "$AGENTS_BASE/skills" "$(basename "$SCRIPT_DIR")" pruned_skills
@@ -233,10 +292,14 @@ sync_skills "$AGENTS_SKILLS_TARGET" changed_skills pruned_skills unchanged_skill
 changed_commands=0; pruned_commands=0; unchanged_commands=0
 changed_rules=0;    pruned_rules=0;    unchanged_rules=0
 
-for cmd_dir in "$SCRIPT_DIR"/plugins/*/commands; do
-    [[ -d "$cmd_dir" ]] || continue
-    sync_files "$cmd_dir" "$COMMANDS_TARGET" "command" changed_commands pruned_commands unchanged_commands
-done
+if [[ "$CLAUDE_CHANNEL" == "marketplace" ]]; then
+    prune_kit_links "$COMMANDS_TARGET" "command" pruned_commands
+else
+    for cmd_dir in "$SCRIPT_DIR"/plugins/*/commands; do
+        [[ -d "$cmd_dir" ]] || continue
+        sync_files "$cmd_dir" "$COMMANDS_TARGET" "command" changed_commands pruned_commands unchanged_commands
+    done
+fi
 sync_files "$SCRIPT_DIR/rules"    "$RULES_TARGET"    "rule"    changed_rules    pruned_rules    unchanged_rules
 
 # ── Harness adapters (global installs only): AGENTS.md routing + behavioural rules

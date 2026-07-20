@@ -42,9 +42,18 @@ Per-skill purpose lives in each `plugins/<set>/skills/<name>/SKILL.md` frontmatt
 ```
 
 Each plugin bundles its skills, commands, and MCP servers (`plugins/<set>/.mcp.json`) — a
-set toggle carries all three. **One channel per machine:** if you use the marketplace,
-don't also serve Claude from the symlink channel below (`util-toolkit-doctor` warns on the
-conflict).
+set toggle carries all three. **One channel per machine:** after adopting the marketplace,
+record it once —
+
+```bash
+cd ~/projects/homemade-claude-kit && ./install.sh --claude-channel marketplace
+```
+
+— every later `install.sh` run (including chezmoi's) then skips and prunes the
+`~/.claude/skills` + `~/.claude/commands` links while still serving Codex/OpenCode, rules,
+adapters, and MCP. Revert with `--claude-channel symlink`. The choice persists in
+`var/claude-channel` (per machine, gitignored); `util-toolkit-doctor` warns if both channels
+end up live.
 
 ### All harnesses — symlink channel
 

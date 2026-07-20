@@ -51,9 +51,12 @@ Beyond the gather script, verify the packaging surfaces:
    `scripts/gen-mcp.py` (plugins + harness).
 5. **Dual-channel conflict (Claude)**: if the Claude Code config shows the kit's marketplace
    installed AND `~/.claude/skills` contains kit symlinks, the same skills are served twice.
-   STOP and propose-confirm: name both channels and ask which to remove (marketplace
-   channel → delete the kit symlinks from `~/.claude/skills` only, keeping `~/.codex` +
-   `~/.agents`; symlink channel → uninstall the marketplace). One channel per machine.
+   Also check the recorded choice: `var/claude-channel` in the kit clone (`symlink` when the
+   file is absent). STOP and propose-confirm which channel this machine keeps: marketplace →
+   `install.sh --claude-channel marketplace` (records the choice, prunes the Claude
+   skills/commands links, survives chezmoi re-runs; `~/.codex` + `~/.agents` unaffected);
+   symlink → uninstall the marketplace, then `install.sh --claude-channel symlink`. One
+   channel per machine.
 
 ## Step 3 — Apply auto-fix policy
 
