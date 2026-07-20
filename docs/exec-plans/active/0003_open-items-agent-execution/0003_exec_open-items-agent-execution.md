@@ -394,24 +394,58 @@ Exit criteria:
 1. The live queue contains only deliberately-kept items, each `ready-for-agent` or
    `needs-human`; dropped items are closed `not planned` with rationale, never deleted.
 
-### Increment 12: Delegation Skill — `agent-issue-loop`
+### Increment 12: Delegation Skill — `agent-issue-loop` (three mode families)
 
 **Status:** pending
 
 Scope:
 
 1. New skill in the `agent-loop` plugin (working name `agent-issue-loop`; confirm against
-   `rules/skill-creation-sync.md` naming at build time). Modes:
-   - `take #N` — validate the issue is `ready-for-agent` (refuse otherwise, citing what's
+   `rules/skill-creation-sync.md` naming at build time). Three mode families:
+
+   **A. Readiness validation (read + propose; no implementation):**
+   - `validate #N` — assess one issue against the `ready-for-agent` contract
+     (self-contained summary, `references` present and resolving to real files/symbols,
+     `acceptance_criteria` observable and ending in a runnable check, one-PR `size`,
+     no reliance on context an agent cannot reach — research 0002 §4/§7). Output a
+     pass/fail report with the exact gaps, and for near-misses a **drafted brief**
+     (proposed criteria + references) ready to paste into the issue.
+   - `validate --queue` — run the same assessment over every issue currently labelled
+     `ready-for-agent` and flag any that no longer pass (drift check; keeps the queue
+     trustworthy between triage sessions). Proposal-only: promotion/demotion label
+     changes are applied only with operator approval, and demotion proposals cite the
+     failed criterion.
+
+   **B. Duplication control & merge (write, operator-gated):**
+   - `dedupe` — scan open `open-item` issues, cluster candidates using the skill's
+     established identity triple (`source_artefact`, `source_anchor`, summary
+     fingerprint) plus semantic similarity of summary/resolution-path; output a
+     duplicate-pairs proposal table (canonical issue, duplicate, evidence, merge plan).
+   - On operator approval, execute each merge: append the duplicate's unique
+     information (provenance, context, links) as a comment on the canonical issue;
+     cross-reference both; close the duplicate via the `util-open-items` `drop`
+     semantics (`not planned`, rationale `Duplicate of #N`) so closure evidence rules
+     hold. Never auto-merges without approval; never deletes content.
+
+   **C. Implementation & verification (write):**
+   - `take #N` — refuse unless the issue passes the mode-A validation (cite what's
      missing); set `state:in-progress`; plan → implement → verify against the issue's
-     acceptance-criteria checks → PR with `Closes #N`; on merge the label lifecycle ends
-     naturally with the issue.
+     own acceptance-criteria checks → PR with `Closes #N`; on merge the label lifecycle
+     ends naturally with the issue.
    - `next` — query `label:open-item label:ready-for-agent`, pick highest `priority:`
      (tie-break: smallest `size:`), then run `take`.
-2. Action-budget contract in the skill (per research 0002 §7): touch only the taken
-   issue; never promote issues to `ready-for-agent` itself; never file new issues without
-   running the duplicate search; one issue per invocation.
-3. Register in the plugin's `plugin.json` / marketplace set.
+
+2. Action-budget contract in the skill (per research 0002 §7), per mode family:
+   validation mutates nothing without approval; dedupe touches only the approved pairs
+   and always closes with a rationale; take/next touch only the taken issue, never
+   promote issues to `ready-for-agent`, never file new issues without running the
+   duplicate search, one issue per invocation.
+3. Boundary with `util-open-items`: triage v2 (increment 07) remains the owner of
+   readiness *promotion* during triage sessions; `validate` is the per-issue /
+   between-sessions check, and `dedupe` executes what triage-style clustering only
+   proposes — both route closures through the `drop` contract rather than raw
+   `gh issue close`.
+4. Register in the plugin's `plugin.json` / marketplace set.
 
 Primary files:
 
@@ -420,13 +454,20 @@ Primary files:
 
 Test gate:
 
-1. Skill frontmatter parses; `rg -n "ready-for-agent|Closes #|refuse" .../agent-issue-loop/SKILL.md`.
-2. Dry-run `next` against the post-increment-11 queue selects the expected top issue.
+1. Skill frontmatter parses; `rg -n "validate|dedupe|take|ready-for-agent|Closes #|refuse" .../agent-issue-loop/SKILL.md` shows all mode families.
+2. `validate` dry-run on one known-good and one known-incomplete issue produces the
+   expected pass and gap report.
+3. `dedupe` dry-run against the post-increment-11 queue outputs a proposal table (empty
+   is acceptable) without mutating.
+4. Dry-run `next` against the post-increment-11 queue selects the expected top issue.
 
 Exit criteria:
 
 1. `take` on a `needs-human` issue refuses with the missing-precondition message.
-2. One full `take → PR` round-trip executed on a real `ready-for-agent` issue.
+2. `validate --queue` demotion proposals cite the failed criterion for each flagged issue.
+3. One approved `dedupe` merge (or a documented empty run) executed with the duplicate
+   closed as `not planned` + rationale.
+4. One full `take → PR` round-trip executed on a real `ready-for-agent` issue.
 
 ### Increment 13: Rollout Guide + README Refresh
 
@@ -478,7 +519,7 @@ Exit criteria:
 | M2: Intake surface | 04–06 | pending | New issues arrive label-complete and agent-parseable | Test issue filed via form arrives fully labelled | Zero manual label edits needed on a fresh filing | `feat(open-items): ...` |
 | M3: Tooling conformance | 07–09 | pending | Skill, audit, and scripts operate the new layer | Script dry-runs + rg checks | Adoption checklist self-sufficient; backfill validated dry-run | `feat(open-items): ...` |
 | M4: Kit-repo rollout | 10–11 | pending | Live queue backfilled and triaged; `ready-for-agent` trustworthy | `gh issue list` label assertions | No `needs-triage` remains; stale items dropped with rationale | operational commits + progress.txt log |
-| M5: Delegation + rollout | 12–13 | pending | Agents can take/select issues; other repos can adopt | Dry-run `next` + one real `take → PR` round-trip | One issue driven to merged PR by the skill | `feat(agent-loop): ...` / `docs(open-items): ...` |
+| M5: Delegation + rollout | 12–13 | pending | Agents can validate readiness, dedupe/merge, and take/select issues; other repos can adopt | Dry-run `validate --queue` + `dedupe` + `next`, one real `take → PR` round-trip | One issue driven to merged PR by the skill; queue passes validate with zero unproposed drift | `feat(agent-loop): ...` / `docs(open-items): ...` |
 
 ## File Open Items to the central ledger
 
