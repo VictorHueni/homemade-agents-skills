@@ -6,11 +6,15 @@ markdown -> github only, and MUST emit a persisted OI-NNNN -> #N map so back-ref
 survive the identifier re-mint. There is NO reverse path and NO concurrent two-way sync.
 
 Pipeline:
+  0. Bootstrap the 17-label ADR-0009 vocabulary idempotently (parsed at runtime from the
+     sibling bootstrap_labels.sh — the single source of truth; no duplicated label table).
   1. Parse the live table of the markdown ledger (docs/project-control/open-items/open-items.md).
   2. For each row, create (or reuse) a GitHub issue via `gh`, mapping the canonical slugs
-     onto Issue Type + form-structured body + assignee, and the lifecycle status onto issue
-     state + close reason. De-dups by (source_artefact, source_anchor, summary) so re-runs
-     are idempotent.
+     onto labels (`type:` per the github-backend.md SS2a governance mapping, `priority:pN`,
+     `needs-triage`; `state:` for in-progress/blocked rows) + form-structured body +
+     assignee, and the lifecycle status onto issue state + close reason. De-dups by
+     (source_artefact, source_anchor, summary) so re-runs are idempotent. No marker label,
+     no title prefix, no native Issue Types (ADR-0009).
   3. Emit the OI-NNNN -> #N map.
   4. Rewrite OI-NNNN back-references across the docs tree to #N (OI-ID cells + prose).
 
@@ -31,6 +35,24 @@ from datetime import date
 from pathlib import Path
 
 VALID_TYPES = {"doc-gap", "decision-gap", "execution-item", "tech-debt"}
+# Governance §2 -> label mapping (github-backend.md §2a, ADR-0009): decision work is a
+# task whose deliverable is the decision record.
+TYPE_LABEL = {
+    "doc-gap": "type:docs",
+    "decision-gap": "type:task",
+    "execution-item": "type:task",
+    "tech-debt": "type:tech-debt",
+}
+# Ledger priority -> label (github-backend.md §2, ADR-0008).
+PRIORITY_LABEL = {
+    "critical": "priority:p0",
+    "high": "priority:p1",
+    "medium": "priority:p2",
+    "low": "priority:p3",
+}
+# Single source of truth for the 17-label vocabulary (names/colors/descriptions):
+# the sibling bootstrap script's LABELS data block (ADR-0009 §5).
+BOOTSTRAP_SCRIPT = Path(__file__).resolve().parent / "bootstrap_labels.sh"
 # Live-table column order in open-items.md (§5.1: Source artefact inserted after Summary).
 LEDGER_COLS = [
     "oi_id", "type", "summary", "source_artefact", "source_anchor", "source_heading",
@@ -93,9 +115,10 @@ def issue_body(row: dict) -> str:
 
 
 def find_existing(repo: str, row: dict) -> int | None:
-    """De-dup: an issue already carrying this summary + source anchor."""
+    """De-dup: an issue already carrying this summary as its title (titles have no
+    prefix under ADR-0009)."""
     out = run(
-        ["gh", "issue", "list", "-R", repo, "--label", "open-item", "--state", "all",
+        ["gh", "issue", "list", "-R", repo, "--state", "all",
          "--search", row["summary"], "--json", "number,title", "-L", "50"],
         apply=True, capture=True,
     )
@@ -103,26 +126,38 @@ def find_existing(repo: str, row: dict) -> int | None:
         return None
     try:
         for it in json.loads(out):
-            if it.get("title", "").lstrip("[OI] ").strip() == row["summary"]:
+            if it.get("title", "").strip() == row["summary"]:
                 return int(it["number"])
     except (json.JSONDecodeError, ValueError):
         pass
     return None
 
 
-def issue_types_available(repo: str) -> bool:
-    """Native Issue Types are org-level. On a personal repo the endpoint 404s, and we fall
-    back to encoding the type as a `type:<value>` label. Always a real GET (read-only)."""
-    res = subprocess.run(["gh", "api", f"repos/{repo}/issue-types"],
-                         capture_output=True, text=True)
-    return res.returncode == 0 and '"name"' in res.stdout
+def load_vocabulary() -> list[tuple[str, str, str]]:
+    """Parse the (name, color, description) triples out of bootstrap_labels.sh's LABELS
+    data block. Parsing the sibling script (rather than duplicating the table) keeps this
+    migration drift-free against the ADR-0009 §5 source of truth."""
+    if not BOOTSTRAP_SCRIPT.is_file():
+        raise FileNotFoundError(f"bootstrap script not found: {BOOTSTRAP_SCRIPT}")
+    m = re.search(r"^LABELS='(.*?)'\n", BOOTSTRAP_SCRIPT.read_text(encoding="utf-8"),
+                  re.S | re.M)
+    if not m:
+        raise ValueError(f"could not parse the LABELS block in {BOOTSTRAP_SCRIPT}")
+    triples: list[tuple[str, str, str]] = []
+    for line in m.group(1).strip().splitlines():
+        name, color, desc = line.split("|", 2)
+        triples.append((name, color, desc))
+    return triples
 
 
-def ensure_labels(repo: str, labels: list[str], apply: bool) -> None:
-    """Idempotently create the labels the migration relies on (`open-item`, plus
-    `type:<value>` when Issue Types are unavailable)."""
-    for lbl in labels:
-        run(["gh", "label", "create", lbl, "--force"], apply)
+def ensure_labels(repo: str, apply: bool) -> None:
+    """Idempotently bootstrap the full 17-label ADR-0009 vocabulary (same semantics as
+    bootstrap_labels.sh --apply: `gh label create --force` normalizes color/description)."""
+    triples = load_vocabulary()
+    print(f"Bootstrapping {len(triples)} labels (source: {BOOTSTRAP_SCRIPT.name})")
+    for name, color, desc in triples:
+        run(["gh", "label", "create", name, "--repo", repo,
+             "--color", color, "--description", desc, "--force"], apply)
 
 
 def resolve_assignee(owner: str, assignee_map: dict[str, str]) -> str | None:
@@ -136,7 +171,23 @@ def resolve_assignee(owner: str, assignee_map: dict[str, str]) -> str | None:
     return login
 
 
-def create_issue(repo: str, row: dict, apply: bool, use_types: bool,
+def creation_labels(row: dict) -> list[str]:
+    """Labels applied atomically at issue creation: mapped `type:` (§2a) + `priority:pN`
+    + the `needs-triage` readiness default. `state:` labels are applied by
+    apply_lifecycle so reused (de-duped) issues get them too."""
+    labels = [TYPE_LABEL[row["type"]]]
+    prio = PRIORITY_LABEL.get(row["priority"].strip().lower())
+    if prio:
+        labels.append(prio)
+    else:
+        sys.stderr.write(
+            f"  WARN {row['oi_id']}: unmappable priority '{row['priority']}' — "
+            "no priority label applied\n")
+    labels.append("needs-triage")
+    return labels
+
+
+def create_issue(repo: str, row: dict, apply: bool,
                  assignee_map: dict[str, str]) -> int | None:
     if row["type"] not in VALID_TYPES:
         sys.stderr.write(f"  SKIP {row['oi_id']}: invalid type '{row['type']}'\n")
@@ -146,13 +197,9 @@ def create_issue(repo: str, row: dict, apply: bool, use_types: bool,
         print(f"  {row['oi_id']} -> #{existing} (existing, reused)")
         return existing
     cmd = ["gh", "issue", "create", "-R", repo,
-           "--title", f"[OI] {row['summary']}",
+           "--title", row["summary"],
            "--body", issue_body(row),
-           "--label", "open-item"]
-    if use_types:
-        cmd += ["--type", row["type"]]
-    else:
-        cmd += ["--label", f"type:{row['type']}"]
+           "--label", ",".join(creation_labels(row))]
     assignee = resolve_assignee(row["owner"], assignee_map)
     if assignee:
         cmd += ["--assignee", assignee]
@@ -169,7 +216,11 @@ def apply_lifecycle(repo: str, number: int, row: dict, apply: bool) -> None:
     status = row["status"]
     if status in ("open", "in-progress", "blocked"):
         if status in ("in-progress", "blocked"):
-            print(f"    note: set Project Status='{status}' for #{number} (manual / Project field)")
+            # §3c status decomposition: open issue + state: label (the retired
+            # "set Project Status manually" step is now a direct label write).
+            run(["gh", "issue", "edit", str(number), "-R", repo,
+                 "--add-label", f"state:{status}"], apply)
+            print(f"    state:{status} label applied to #{number} (status decomposition §3c)")
         return
     reason = "completed" if status == "closed" else "not planned"
     if row["tracker_ref"] and row["tracker_ref"] != "_TBD_":
@@ -223,18 +274,14 @@ def main() -> int:
     print(f"Parsed {len(rows)} live rows from {ledger}")
     print(f"Mode: {'APPLY' if args.apply else 'DRY-RUN (no mutations)'}")
 
-    # Issue Types are org-level; on a personal repo, fall back to a `type:<value>` label.
-    use_types = issue_types_available(args.repo)
-    print(f"Issue Types: {'available -> native --type' if use_types else 'unavailable (404) -> type:<value> labels'}")
     print(f"Assignee map: {assignee_map or '(none — owners skipped unless mapped)'}\n")
 
-    # Make sure the labels the migration relies on exist.
-    labels = ["open-item"] + ([] if use_types else [f"type:{t}" for t in sorted(VALID_TYPES)])
-    ensure_labels(args.repo, labels, args.apply)
+    # Bootstrap the full ADR-0009 vocabulary before any issue names a label.
+    ensure_labels(args.repo, args.apply)
 
     mapping: dict[str, int] = {}
     for row in rows:
-        number = create_issue(args.repo, row, args.apply, use_types, assignee_map)
+        number = create_issue(args.repo, row, args.apply, assignee_map)
         if number is None:
             if args.apply:
                 sys.stderr.write(f"  WARN: no issue number for {row['oi_id']}\n")
@@ -268,9 +315,8 @@ def main() -> int:
 
     if not args.apply:
         print("\nDRY-RUN complete. Re-run with --apply to migrate, then (operator):")
-        print("  1. verify the issues + Project look right")
-        print("  2. set Project Status for any in-progress/blocked rows")
-        print("  3. move open-items.md into archive/ (frozen) and set backend.yml: github")
+        print("  1. verify the issues + labels look right (gh issue list --label needs-triage)")
+        print("  2. move open-items.md into archive/ (frozen) and set backend.yml: github")
     return 0
 
 

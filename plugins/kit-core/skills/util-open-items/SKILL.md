@@ -1,9 +1,9 @@
 ---
 name: util-open-items
 description: "Maintain the repo-wide living ledger of unresolved governance work at `docs/project-control/open-items/open-items.md`. Use this skill to file open items directly into the central ledger, triage incoming rows, close or drop items with a tracker ref, archive terminal rows at the end of a review cycle, and produce status reports. Triggers on: log open item, file open item, sync open items, triage open items, close open item, drop open item, archive open items, open-items report, roll up open items, OI-NNNN, central ledger, docs/project-control/open-items."
-version: "2.0.0"
+version: "2.1.0"
 status: active
-last_reviewed: 2026-07-03
+last_reviewed: 2026-07-20
 review_interval: 180d
 user-invocable: true
 allow_implicit_invocation: true
@@ -17,7 +17,8 @@ metadata:
 
 Operate the central control plane for unresolved governance work. This skill is the only
 sanctioned writer of the central ledger — `docs/project-control/open-items/open-items.md`
-under the `markdown` backend, or GitHub Issues labelled `open-item` under `github`. Every
+under the `markdown` backend, or GitHub Issues under `github` (the repo's issue tracker
+*is* the ledger — no marker label, kit ADR-0009). Every
 other skill that identifies unresolved work chains to this skill to file it **directly**:
 there is no per-artefact local section to author first
 ([ADR-0005](../docs/architecture/decisions/adr-0005-open-items-ledger-sole-authoring-surface.md)).
@@ -36,8 +37,9 @@ operates one of two backends:
 
 - **`markdown`** (default) — the living ledger at
   `docs/project-control/open-items/open-items.md` plus `archive/`. Mints `OI-NNNN`.
-- **`github`** — GitHub Issues + one Project (v2) as the consolidated read-out. Identity is
-  the issue number `#N`; `OI-NNNN` is retired.
+- **`github`** — GitHub Issues; the whole tracker is the ledger, read out through the
+  ADR-0009 label axes (`type:` / `priority:` / `size:` / readiness / `state:`) via
+  filtered queries. Identity is the issue number `#N`; `OI-NNNN` is retired.
 
 **Declaration.** A project selects its backend in
 `docs/project-control/open-items/backend.yml`; absent ⇒ `markdown`:
@@ -45,7 +47,6 @@ operates one of two backends:
 ```yaml
 backend: github          # markdown (default) | github
 repo: owner/name         # github only — where the issues live
-project: 7               # github only — the Project (v2) number for the read-out
 ```
 
 **What stays the same regardless of backend:** filing is always direct (Invariant I4) — only
@@ -57,22 +58,25 @@ composite are identical (governance §4/§5.3).
 
 **Operational github mapping.** Before operating the `github` backend, read
 [`references/github-backend.md`](references/github-backend.md) — the normative slug
-contract, serialization, identity translation, status decomposition, and invariants
-I1–I5. The authoring surface for a github-backend project is the issue form
-[`templates/open-item.form.yml`](templates/open-item.form.yml).
+contract, serialization (§2, §2a type mapping, §2b execution layer), identity
+translation, status decomposition, and invariants I1–I5. The human authoring surface is
+the per-type issue forms (`templates/form-{bug,feature,task,docs,tech-debt}.yml`); the
+skill's own filings go through `gh` with the same section headings.
 
-**github adoption checklist** (per project, one-time):
+**github adoption checklist** (per project, one-time — order matters):
 
-1. The form template (`templates/open-item.form.yml`) lives in the skill and is used
-   internally by `sync` / `migrate` when constructing `gh issue create` calls — **no copy
-   to `.github/ISSUE_TEMPLATE/` is needed**. Copy it only if you want open-item issues
-   to be openable through the GitHub web UI form chooser (rare — the skill handles all
-   programmatic creation).
-2. Create the four Issue Types: `doc-gap`, `decision-gap`, `execution-item`, `tech-debt`.
-3. Create the Project (v2) with `Status` (Open / In progress / Blocked), `Priority`, and a
-   `Review date` field.
-4. Add `docs/project-control/open-items/backend.yml` with `backend: github` + `repo` +
-   `project`.
+1. **Bootstrap the 17-label vocabulary first**:
+   `scripts/bootstrap_labels.sh --repo OWNER/NAME --apply` (idempotent; MUST precede the
+   forms — GitHub silently skips `labels:` entries that don't exist).
+2. **Install the intake surface**: copy `templates/form-<type>.yml` →
+   `.github/ISSUE_TEMPLATE/{1-bug,2-feature,3-task,4-docs,5-tech-debt}.yml` (numeric
+   prefixes = chooser order), `templates/issue-template.config.yml` →
+   `.github/ISSUE_TEMPLATE/config.yml`, and `templates/issue-form-labeler.workflow.yml` →
+   `.github/workflows/issue-form-labeler.yml`.
+3. **Ensure the repo's `CLAUDE.md` carries a verification-commands section**
+   (build/test/lint invocations) — the single biggest measured driver of agent success on
+   delegated issues (research 0001 §3.3).
+4. Add `docs/project-control/open-items/backend.yml` with `backend: github` + `repo`.
 
 ---
 
@@ -114,24 +118,36 @@ Input:
 
 - The item's fields: `Type`, `Summary`, `Source artefact` (a relative repo path, or the
   central-only scope marker per governance §5.2), `Source anchor`, `Source heading`,
-  `Resolution path`, `Priority`, `Owner`, `Due / Review date`. `Status` defaults to `open`;
-  `Tracker ref` defaults to `_TBD_`.
+  `Resolution path`, `Priority`, `Size` (S/M/L, github backend), `Owner`,
+  `Due / Review date`; optionally `References`, `Acceptance criteria`, `Out of scope`
+  (the agent-execution fields — recommended at filing, required later for
+  `ready-for-agent` promotion). `Status` defaults to `open`; `Tracker ref` defaults to
+  `_TBD_`. Readiness always starts `needs-triage` — `sync` NEVER applies
+  `ready-for-agent` (triage-owned, ADR-0008 §3).
 
 Process:
 
 1. **Validate the fields.** `Type` must be one of the four taxonomy values. `Source anchor`
    and `Source heading` are supplied together, or both left empty for a central-only row.
-2. **De-duplicate against the existing ledger/issues.** Identity is the triple
+2. **De-duplicate AND check dependencies before creating.** Identity is the triple
    `(Source artefact, Source anchor, Summary fingerprint)` (see De-duplication policy
    below) — search the ledger table, or `gh issue list --search` under `github`, before
-   creating.
+   creating. Under `github`, also search for **related or dependent** open issues (same
+   files, same subsystem, blocking work): link them in the body (`Relates to #N` /
+   `Blocked by #N`) instead of duplicating context. Filing without this search is a
+   contract violation — it is why the forms carry no duplicate-search checkbox.
 3. **Assign the ID.** `markdown` backend: mint the next monotonic `OI-NNNN` (max across
    `open-items.md` plus every `archive/*.md`, plus one — never recycle). `github` backend:
    `gh issue create`; the resulting issue number `#N` **is** the ID — no `OI-NNNN` is
    minted.
 4. **Write the row.** `markdown`: append to `open-items.md` using the §4 schema.
-   `github`: form-structured issue body (provenance + `Resolution path`), `type:` label or
-   native Issue Type, assignee, Project fields.
+   `github`: `gh issue create` with the labels applied **atomically at creation** —
+   `--label "type:<mapped>,priority:<p0..p3>,size:<S|M|L>,needs-triage"` (governance
+   `Type` mapped per `references/github-backend.md` §2a: doc-gap→docs,
+   decision-gap→task, execution-item→task, tech-debt→tech-debt) — body using the form's
+   `### <slug label>` section headings (provenance, `Resolution path`, `References`,
+   `Acceptance criteria`, `Out of scope`), assignee = `owner`, milestone = review date
+   when one exists.
 5. **Report** the assigned `OI-NNNN` or issue number back to the caller.
 
 Refuse to sync if:
@@ -142,12 +158,14 @@ Refuse to sync if:
 - A duplicate is found and the caller's intent is unclear — surface the existing
   `OI-NNNN`/issue number and ask the operator to reference it directly, or use `triage`/
   `drop` to merge explicitly, instead of silently creating a second row.
+- The caller asks for `ready-for-agent` at filing time — promotion is triage-owned; file
+  as `needs-triage` and let `triage` (or the operator) promote.
 
-### Mode 2 — `triage`
+### Mode 2 — `triage` (v2)
 
-Walk every `open` and `in-progress` row in the ledger and propose owner, priority, and
-de-duplication changes. Triage never mutates the source artefact silently; it produces a
-diff or proposal list for operator approval.
+Walk every `open` and `in-progress` row/issue and propose owner, priority,
+de-duplication, **readiness**, and **staleness** changes. Triage is proposal-only: it
+never mutates silently; every disposition is applied only after operator approval.
 
 Process:
 
@@ -155,8 +173,25 @@ Process:
 2. Flag rows with `Owner: _TBD_` older than 14 days as triage-needed.
 3. Flag rows with `Priority: critical` or `high` and no `Tracker ref` movement as
    escalation candidates.
-4. Output a triage report (in-memory or written to
-   `var/reports/open-items/triage-YYYY-MM-DD.md` if the operator requests a file).
+4. **Readiness routing (github backend).** For each `needs-triage` issue, propose one of:
+   - **Promote to `ready-for-agent`** — ONLY when the readiness precondition holds
+     (non-empty `Acceptance criteria` + `References`, `size:` set — ADR-0008 §3). For
+     near-misses, draft the missing brief (proposed acceptance criteria + code pointers)
+     as part of the proposal so approval is one edit away.
+   - **Route to `needs-human`** — valid item, but requires a human decision or work an
+     agent cannot verify.
+   - **Keep `needs-triage`** with a stated reason (rare; e.g. blocked on info).
+   Also flag drift: `ready-for-agent` issues that no longer pass the precondition →
+   propose demotion, citing the failed criterion.
+5. **Staleness policy.** Rows/issues with no movement (no label change, comment, or
+   linked activity) for 90 days (configurable per invocation) → propose `drop`
+   (`not planned` + one-line rationale). Bankruptcy happens item-by-item with an audit
+   trail, never as a bulk purge.
+6. Output a triage report — a per-item **disposition table**
+   (`# | title | current | proposed | rationale / draft brief`) — in-memory or written to
+   `var/reports/open-items/triage-YYYY-MM-DD.md` if the operator requests a file. After
+   operator approval, apply the accepted dispositions (label changes via `gh`; drops via
+   Mode 4 so closure evidence rules hold).
 
 ### Mode 3 — `close`
 
@@ -222,7 +257,7 @@ One-time cutover of a project from the `markdown` backend to `github`. Enforces 
 sync.
 
 **Preconditions:** the github adoption checklist (§Backends) is done — form installed, Issue
-Types created, Project exists, `gh` authenticated against the target repo. The `markdown`
+labels bootstrapped, `gh` authenticated against the target repo. The `markdown`
 ledger `open-items.md` is the source.
 
 **Driver:** [`scripts/migrate_markdown_to_github.py`](scripts/migrate_markdown_to_github.py)
@@ -238,39 +273,41 @@ python3 scripts/migrate_markdown_to_github.py --repo OWNER/NAME --assignee-map v
 
 **Portability (auto-detected — works on personal repos):**
 
-- **Issue Types** are org-level. The script probes `repos/OWNER/NAME/issue-types`; if absent
-  (404, e.g. a personal repo) it encodes the type as a **`type:<value>` label** instead of
-  `--type`, and bootstraps the `type:doc-gap`…`type:tech-debt` labels.
+- **Types are labels** (ADR-0009): the script maps ledger types per §2a
+  (doc-gap→`type:docs`, decision-gap→`type:task`, execution-item→`type:task`,
+  tech-debt→`type:tech-debt`) and bootstraps the full 17-label vocabulary via
+  `scripts/bootstrap_labels.sh` semantics (the label table is parsed from that script at
+  runtime — single source of truth).
 - **`owner` → GitHub login.** Ledger owners rarely equal a GitHub login. Pass
   `--assignee-map LEDGER_OWNER=LOGIN` (repeatable). `_TBD_` and unmapped owners get **no
   assignee** (warned), never a failing `--assignee`.
-- The `open-item` label is created idempotently (`gh label create --force`).
+- The ADR-0009 label vocabulary is created idempotently (`gh label create --force` via
+  the bootstrap script); no marker label exists.
 
 **Per live ledger row:**
 
 1. De-dups by summary + provenance (`gh issue list --search`) — re-runs are idempotent.
-2. `gh issue create` — `summary`→title, `type`→Issue Type **or `type:` label** (per detection),
+2. `gh issue create` — `summary`→title, `type`→**`type:` label per the §2a mapping**,
    provenance + `resolution_path`→form-structured body, mapped `owner`→assignee.
-3. Lifecycle: `open` stays open; `in-progress`/`blocked` stay open (set the Project Status
-   field manually — the script logs which); `closed`→close `completed`; `dropped`→close
-   `not planned` (original `tracker_ref` preserved as a comment).
+3. Lifecycle: `open` stays open; `in-progress`/`blocked` stay open with the matching
+   `state:` label applied (§3c decomposition — logged); `closed`→close `completed`;
+   `dropped`→close `not planned` (original `tracker_ref` preserved as a comment).
 4. Records `OI-NNNN → #N`, writing the map to
    `docs/project-control/open-items/migration-map.md` (the persisted I2 artefact).
 5. Rewrites every `OI-NNNN` back-reference under `--docs` (OI-ID cells + prose) to `#N`.
 
 **Operator finish (not automated — verify first):**
 
-1. Eyeball the issues + Project board.
-2. Set Project `Status` for any `in-progress`/`blocked` rows.
-3. Move `open-items.md` into `archive/` as a frozen, dated snapshot — never silent-delete (§6).
-4. Set `backend.yml: github`. From here `sync` / `close` / etc. operate the github backend.
+1. Eyeball the issues + label queries (`gh issue list --label needs-triage`); the
+   `state:` labels for `in-progress`/`blocked` rows are applied by the script (logged).
+2. Move `open-items.md` into `archive/` as a frozen, dated snapshot — never silent-delete (§6).
+3. Set `backend.yml: github`. From here `sync` / `close` / etc. operate the github backend.
 
-**Rollback** (before step 3–4): the migration is one-way, so undo = delete the created issues
+**Rollback** (before step 2–3): the migration is one-way, so undo = delete the created issues
 and `git checkout` the ref rewrites while the markdown ledger is still authoritative.
 
 `archive/*.md` history stays as frozen markdown (optionally backfilled as closed issues
-later). Issue Type + Project-field assignment are `gh`-version-dependent; the script logs
-anything it could not set so you can finish via the GitHub UI or GraphQL.
+later). The script logs any label it could not set so you can finish via the GitHub UI.
 
 ---
 
@@ -282,12 +319,12 @@ Fields are supplied directly by the calling skill; only the write target changes
 
 | Mode | `github` behaviour |
 | :--- | :--- |
-| `sync` | `gh issue create` from the supplied fields — `summary` → title, `type` → Issue Type + form dropdown, provenance + `resolution_path` → form body, `priority` → Project field; set assignee = `owner`, Project `Review date` = `review_date`. Report the resulting `#N` back to the caller. De-dup by `(source_artefact, source_anchor, summary)` via `gh issue list --search` before creating. |
-| `triage` | `gh issue list` / `gh project item-list` to cluster duplicates, flag `_TBD_` assignees and stale high-priority items. Proposal only — never mutates silently. |
-| `close` | `gh issue close --reason completed`. The closing reference (`Closes #N` / linked PR) **is** the `tracker_ref` — evidence is structurally enforced, so the §3 `_TBD_` guard cannot be violated. |
-| `drop` | `gh issue close --reason "not planned"`; record the rationale as an issue comment (the `Resolution path` analog). |
+| `sync` | `gh issue create` — `summary` → title (no prefix), labels applied atomically (`type:<mapped>` per §2a, `priority:p0..p3`, `size:`, `needs-triage`), provenance + `resolution_path` + agent-execution fields → `### <slug>` body sections, assignee = `owner`. Report the resulting `#N` back to the caller. Before creating: de-dup by `(source_artefact, source_anchor, summary)` AND search related/dependent issues via `gh issue list --search`, linking them in the body. |
+| `triage` | `gh issue list` + label queries to cluster duplicates, flag `_TBD_` assignees and stale high-priority items, propose readiness routing (promote/route/demote per the ADR-0008 §3 precondition, drafting missing briefs) and 90-day staleness drops. Proposal only — apply after operator approval. |
+| `close` | `gh issue close --reason completed`; remove readiness/`state:` labels. The closing reference (`Closes #N` / linked PR) **is** the `tracker_ref` — evidence is structurally enforced, so the §3 `_TBD_` guard cannot be violated. |
+| `drop` | `gh issue close --reason "not planned"`; record the rationale as an issue comment (the `Resolution path` analog); remove readiness/`state:` labels. |
 | `archive` | No-op. Closed issues are the archive (searchable indefinitely); there is no `archive/` file. |
-| `report` | Render from the Project (v2) view / `gh` queries instead of the markdown ledger. May still emit a `var/reports/open-items/report-YYYY-MM-DD.md` snapshot. |
+| `report` | Render from label queries (`gh issue list --label …`) instead of the markdown ledger — counts by `type:`/`priority:`/readiness axis, delegation-queue depth (`is:open label:ready-for-agent`), stale candidates. May still emit a `var/reports/open-items/report-YYYY-MM-DD.md` snapshot. |
 
 Refusal conditions from `sync` (invalid `Type`, terminal status filed with a `_TBD_`
 tracker) apply unchanged — validated before any `gh` call.
@@ -381,7 +418,9 @@ audits use the linger period to scan recent resolutions for patterns.
 util-open-items sync --source-artefact docs/architecture/research/0003-token-auth.md \
   --source-anchor "#q3" --source-heading "Q3 — How do partners authenticate?" \
   --type decision-gap --summary "Auth model for partner API" \
-  --resolution-path "Open ADR on token strategy" --priority high
+  --resolution-path "Open ADR on token strategy" --priority high --size S
+# github backend: files as type:task (decision-gap maps per §2a) + priority:p1 + size:S
+#                 + needs-triage, after the duplicate/dependency search
 # → mints OI-NNNN (or opens a GitHub issue),
 #   appends the row directly to docs/project-control/open-items/open-items.md
 #   (or files it as an issue under the github backend).
@@ -422,7 +461,7 @@ util-open-items report
 | `var/reports/open-items/report-YYYY-MM-DD.md`                 | This skill (report mode).              |
 
 The `open-items.md` / `archive/` paths above apply to the **`markdown` backend**. Under
-**`github`**, those central writes go to GitHub Issues + the Project instead (via `gh`) —
+**`github`**, those central writes go to GitHub Issues + labels instead (via `gh`) —
 this skill writes no repo file at all in that case.
 
 This skill MUST NOT write to any other path. In particular it MUST NOT mutate
@@ -442,8 +481,18 @@ MUST NOT touch any artefact body — there is no local section for it to write b
 - [`references/github-backend.md`](references/github-backend.md) — normative `github`-backend
   mapping: slug contract, serialization, identity translation, status decomposition,
   invariants I1–I5.
-- [`templates/open-item.form.yml`](templates/open-item.form.yml) — the GitHub Issue Form
-  (authoring surface for the `github` backend); copy to `.github/ISSUE_TEMPLATE/` on adoption.
+- `templates/form-{bug,feature,task,docs,tech-debt}.yml` — the per-type GitHub Issue
+  Forms (human authoring surface for the `github` backend); installed as
+  `1-bug` … `5-tech-debt` per the adoption checklist.
+- [`templates/issue-template.config.yml`](templates/issue-template.config.yml) +
+  [`templates/issue-form-labeler.workflow.yml`](templates/issue-form-labeler.workflow.yml)
+  — intake config (no blank issues) and the Priority/Size → label mirror workflow.
+- [`scripts/bootstrap_labels.sh`](scripts/bootstrap_labels.sh) — idempotent 17-label
+  vocabulary bootstrap (adoption step 1; dry-run by default).
+- [`scripts/backfill_execution_labels.py`](scripts/backfill_execution_labels.py) — one-time
+  backfill for repos on the github backend pre-ADR-0009 (old type labels remapped per §2a,
+  body-parsed `priority:` labels, `needs-triage` default, marker stripped; dry-run by
+  default, offline `--selftest`).
 - [`scripts/migrate_markdown_to_github.py`](scripts/migrate_markdown_to_github.py) — the
   one-way `markdown → github` migration driver for Mode 7 (dry-run by default; emits the
   `OI-NNNN → #N` map and rewrites back-references).

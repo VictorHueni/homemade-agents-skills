@@ -3,17 +3,17 @@
 > **This markdown ledger is retired.** As of **2026-06-04** this repo runs the **`github`**
 > open-items backend (see [`backend.yml`](./backend.yml) and
 > [`rules/open-items-governance.md`](../../../rules/open-items-governance.md) §5.3). Open
-> items now live as **GitHub Issues** labelled **`open-item`** — there is no longer a live
-> markdown ledger here (one backend per project; never both).
+> items now live as **GitHub Issues** — there is no longer a live markdown ledger here
+> (one backend per project; never both). Since **2026-07-20** (kit ADR-0009) the whole
+> tracker is the ledger: the former `open-item` marker label is retired and issues use
+> the standard `type:` vocabulary.
 
 ## Where open items live now
 
-- **Live read-out:** GitHub Issues filtered by the `open-item` label —
-  <https://github.com/VictorHueni/homemade-claude-kit/issues?q=label%3Aopen-item>.
-  Type is the `type:<value>` label (Issue Types are org-level and unavailable on this repo);
-  closed issues are the archive.
-- **Authoring:** open a new issue via the **Open Item** form
-  (`.github/ISSUE_TEMPLATE/open-item.yml`).
+- **Live read-out:** the issue tracker —
+  <https://github.com/VictorHueni/homemade-claude-kit/issues>, driven by the label axes
+  (`type:` / `priority:` / `size:` / readiness / `state:`); closed issues are the archive.
+- **Authoring:** the per-type issue forms (`1-bug` … `5-tech-debt` in the chooser).
 - **Operating manual:** `util-open-items/SKILL.md` (`backend: github`) +
   `util-open-items/references/github-backend.md`.
 

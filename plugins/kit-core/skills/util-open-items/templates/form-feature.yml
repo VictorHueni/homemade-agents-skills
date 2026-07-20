@@ -1,0 +1,103 @@
+# Feature request — per-type Issue Form for the github backend (ADR-0009 §4;
+# references/github-backend.md §2a/§2b in util-open-items).
+#
+# PRECONDITION: run scripts/bootstrap_labels.sh --apply first — GitHub silently
+# skips `labels:` entries that do not exist on the repo.
+#
+# This form applies `type:feature` statically; the Priority and Size dropdown
+# answers are mirrored to `priority:` / `size:` labels by the labeler workflow
+# (forms cannot set labels per answer). Field `id:` keys equal the canonical
+# slugs (Invariant I1) — do not rename an `id:`, rename the label instead.
+#
+# No duplicate-search checkbox by design: issues here are filed by the operator
+# or by agents whose contract requires a duplicate/dependency search before
+# creation (Plan-0003 increments 07/12). Add the conventional required
+# "I have searched the existing issues" checkbox if external filers arrive.
+
+name: Feature request
+description: A new user-facing capability.
+labels: ["type:feature", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The issue **title** is the summary — one self-contained sentence. This issue
+        starts as `needs-triage`; **References** and **Acceptance criteria** must be
+        filled before triage can promote it to `ready-for-agent`.
+
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: The problem or motivation, and the desired outcome.
+      placeholder: As a user of X I cannot Y; I want Z so that ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: A sketch of how it could work, if you have one (optional).
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: >-
+        Observable pass/fail checklist, ending with a runnable check. Required
+        before promotion to `ready-for-agent`.
+      placeholder: |
+        - [ ] X behaves like Y under Z
+        - [ ] verify: bash scripts/foo.sh --dry-run exits 0
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: >-
+        Code pointers an executor needs — files, symbols, prior PRs, patterns to
+        imitate. Required before promotion to `ready-for-agent`.
+      placeholder: |
+        - plugins/kit-core/skills/util-open-items/SKILL.md (Mode 2)
+        - prior art: PR #4
+    validations:
+      required: false
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: What must NOT be touched or changed while building this (optional).
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: "Mirrored to a `priority:` label — p0=critical, p1=high, p2=medium, p3=low."
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      description: One-PR effort bound, mirrored to a `size:` label. L = consider splitting before delegating.
+      options:
+        - S
+        - M
+        - L
+    validations:
+      required: true
