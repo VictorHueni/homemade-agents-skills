@@ -1,4 +1,4 @@
-<!-- OKF reserved sub-folder index (docs/product-specs/use-cases/index.md): a directory
+<!-- OKF reserved sub-folder index (docs/product-specs/use-cases/issues-management/index.md): a directory
      listing, not an artefact concept document — frontmatter-free per
      the `metamodel` skill's `references/artefact-frontmatter.md` §Reserved files. The registry is the body below. -->
 
