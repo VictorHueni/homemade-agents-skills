@@ -239,25 +239,25 @@ Exit criteria:
 
 Scope:
 
-1. Add `.github/workflows/open-item-labeler.yml` — on `issues: [opened, edited]`, for
-   issues labelled `open-item`: parse the form's `### Type` / `### Priority` / `### Size`
-   sections and apply the matching `type:` / `priority:` / `size:` labels (Advanced Issue
-   Labeler action with a `.github/issue-labeler.yml` config, or an equivalent ~30-line
-   `gh`-scripted step — decide in-increment, record choice in the workflow header).
+1. Add `.github/workflows/issue-form-labeler.yml` (filename renamed post-ADR-0009) — on
+   `issues: [opened, edited]`: parse the form's `### Priority` / `### Size` sections and
+   apply the matching `priority:` / `size:` labels (Advanced Issue Labeler action or an
+   equivalent `gh`-scripted step — decide in-increment, record choice in the workflow
+   header). Type labels are form-static per ADR-0009.
 2. Add `.github/ISSUE_TEMPLATE/config.yml` — `blank_issues_enabled: false`; no
    contact_links yet (solo repo).
 3. Template copies of both files land in `util-open-items/templates/` for adopting repos.
 
 Primary files:
 
-1. `.github/workflows/open-item-labeler.yml`
+1. `.github/workflows/issue-form-labeler.yml`
 2. `.github/ISSUE_TEMPLATE/config.yml`
 3. `plugins/kit-core/skills/util-open-items/templates/` (copies)
 
 Test gate:
 
 1. YAML parse of both files exits 0.
-2. `rg -n "issues" .github/workflows/open-item-labeler.yml` confirms the trigger; a
+2. `rg -n "issues" .github/workflows/issue-form-labeler.yml` confirms the trigger; a
    manual test issue (filed after increment 04+05 land) arrives with correct labels.
 
 Exit criteria:
