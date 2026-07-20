@@ -1,0 +1,8 @@
+{
+  "name": "dev-flow",
+  "description": "Developer workflow. Git enforcement stack, conventional commits, PRs, worktrees, release automation, stack guides, onboarding \u2014 plus the branch-cleanup-audit command.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Victor Hueni"
+  }
+}

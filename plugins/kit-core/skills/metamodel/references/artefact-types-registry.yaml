@@ -1,0 +1,419 @@
+# artefact-types-registry.yaml — structural registry of every artefact type the kit mints.
+#
+# GENERATED PROJECTION (future — clew ADR-0008 Phase 4).
+# Canonical owner: the clew repo (docs/metamodel/ -> metamodel.yaml).
+# Do NOT author new artefact types here first; author clew-side, then sync.
+# Until `clew metamodel export` ships, this file is the interim hand-authored
+# projection sanctioned by clew ADR-0008 Phase 2 (kit ADR-0007 §4).
+#
+# Schema (one entry per artefact type):
+#   type                 snake_case stable key (row identity, audit lookup)
+#   okf_type             Title-Case display name emitted verbatim into `type:` frontmatter
+#   minting_skill        the skill that produces the type
+#   id_format            business-ID regex; null when the type mints no ID
+#   layout               single-collection | one-per-artefact | inherits-from-parent
+#   parent               set only when layout is inherits-from-parent
+#   default_path         canonical output location template; null when inherited
+#   review_interval      staleness cadence
+#   frontmatter_conditionals  per-type fields beyond the universal supersedes/superseded_by; [] when none
+#   property_schema_ref  property-model reference (TBD until clew defines it)
+#
+# Maintenance coupling: new/changed row -> this file + the metamodel skill's Audit mode type enum;
+# semantics -> minting SKILL.md `## Canonical definition`; build order/ER -> SKILL.md spine
+# + references/metamodel-reference.md.
+
+artefact_types:
+  - type: vision
+    okf_type: "Product Vision"
+    minting_skill: business-vision
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/VISION.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: persona
+    okf_type: "Persona"
+    minting_skill: business-persona
+    id_format: "P-\\d{2}"
+    layout: single-collection
+    default_path: "docs/business/01a-personas.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: canvas
+    okf_type: "Business Model Canvas"
+    minting_skill: business-model-canvas
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/business/02a-{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: bmc_block
+    okf_type: "Business Model Canvas Block"
+    minting_skill: business-model-canvas
+    id_format: "[A-Z]{2}-\\d+"
+    layout: inherits-from-parent
+    parent: canvas
+    default_path: null   # inherited from parent
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: capability
+    okf_type: "Business Capability"
+    minting_skill: business-capability-map
+    id_format: "C\\d+(\\.\\d+){0,2}"
+    layout: single-collection
+    default_path: "docs/business/03a-capability-map.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: value_stream
+    okf_type: "Value Stream"
+    minting_skill: business-value-stream
+    id_format: "VS-\\d+"
+    layout: single-collection
+    default_path: "docs/business/04a-value-streams.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: vs_stage
+    okf_type: "Value Stream Stage"
+    minting_skill: business-value-stream
+    id_format: "VS-\\d+\\.\\d+"
+    layout: inherits-from-parent
+    parent: value_stream
+    default_path: null   # inherited from parent
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: objective
+    okf_type: "Business Objective"
+    minting_skill: business-objective
+    id_format: "OBJ-\\d{2}"
+    layout: single-collection
+    default_path: "docs/business/04b-objectives.md"
+    review_interval: 60d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: key_result
+    okf_type: "Key Result"
+    minting_skill: business-objective
+    id_format: "KR-\\d{2}\\.\\d+"
+    layout: inherits-from-parent
+    parent: objective
+    default_path: null   # inherited from parent
+    review_interval: 60d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: process
+    okf_type: "Business Process"
+    minting_skill: business-process
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/business/05a-processes/proc-{nn}-{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: quantitative_model
+    okf_type: "Quantitative Model"
+    minting_skill: business-quantitative-model
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/business/06a-models/qm-{nn}-{topic}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: competitor
+    okf_type: "Competitor Profile"
+    minting_skill: business-competitive-landscape
+    id_format: "CO-\\d{2}"
+    layout: one-per-artefact
+    default_path: "docs/business/01b-competitive-landscape/{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: bounded_context
+    okf_type: "Bounded Context"
+    minting_skill: domain-bounded-context
+    id_format: "BC-\\d{2}"
+    layout: single-collection
+    default_path: "docs/domain/02b-bounded-contexts.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: glossary_term
+    okf_type: "Glossary Term"
+    minting_skill: domain-glossary
+    id_format: "BC-\\d{2}\\.GT-\\d{2}"
+    layout: single-collection
+    default_path: "docs/domain/02c-glossary.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: fbs_functionality
+    okf_type: "Functionality"
+    minting_skill: spec-functional-breakdown-structure
+    id_format: "C\\d+\\.\\d+\\.F\\d{2}"
+    layout: single-collection
+    default_path: "docs/product-specs/07a-fbs.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: domain_model
+    okf_type: "Domain Model"
+    minting_skill: domain-model
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/domain/07b-models/{bc-slug}.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: aggregate
+    okf_type: "Aggregate"
+    minting_skill: domain-model
+    id_format: "BC-\\d{2}\\.AGG-\\d{2}"
+    layout: inherits-from-parent
+    parent: domain_model
+    default_path: null   # inherited from parent
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: entity
+    okf_type: "Entity"
+    minting_skill: domain-model
+    id_format: "BC-\\d{2}\\.ENT-\\d{2}"
+    layout: inherits-from-parent
+    parent: domain_model
+    default_path: null   # inherited from parent
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: value_object
+    okf_type: "Value Object"
+    minting_skill: domain-model
+    id_format: "BC-\\d{2}\\.VO-\\d{2}"
+    layout: inherits-from-parent
+    parent: domain_model
+    default_path: null   # inherited from parent
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: domain_event
+    okf_type: "Domain Event"
+    minting_skill: domain-model
+    id_format: "BC-\\d{2}\\.EVT-\\d{2}"
+    layout: inherits-from-parent
+    parent: domain_model
+    default_path: null   # inherited from parent
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: interface_contract
+    okf_type: "Interface Contract"
+    minting_skill: arch-service-contract
+    id_format: "(BC-\\d{2}\\.)?CTR-\\d{2}"
+    layout: one-per-artefact
+    default_path: "docs/architecture/interfaces/{bc-slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: epic
+    okf_type: "Epic"
+    minting_skill: plan-delivery-roadmap
+    id_format: "E-\\d{2}"
+    layout: single-collection
+    default_path: "docs/plans/delivery-roadmap.md"
+    review_interval: 60d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: cli_surface
+    okf_type: "CLI Surface Contract"
+    minting_skill: arch-cli-contract
+    id_format: "(BC-\\d{2}\\.)?CLI-\\d{2}"
+    layout: one-per-artefact
+    default_path: "docs/architecture/interfaces/cli-{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: cli_command
+    okf_type: "CLI Command"
+    minting_skill: arch-cli-contract
+    id_format: "(BC-\\d{2}\\.)?CLI-\\d{2}\\.CMD-\\d{2}"
+    layout: inherits-from-parent
+    parent: cli_surface
+    default_path: null   # inherited from parent
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: quality_attribute
+    okf_type: "Quality Attribute"
+    minting_skill: spec-quality-attributes
+    id_format: "QA-[A-Z]{2}\\d{2}"
+    layout: single-collection
+    default_path: "docs/product-specs/09a-quality-attributes.md"
+    review_interval: 60d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: use_case
+    okf_type: "Use Case"
+    minting_skill: spec-use-case
+    id_format: "UC-\\d{2}"
+    layout: one-per-artefact
+    default_path: "docs/product-specs/use-cases/uc-{nn}-{slug}.md"
+    review_interval: 60d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: prd
+    okf_type: "Product Requirements Document"
+    minting_skill: spec-prd
+    id_format: "PRD-\\d{4}"
+    layout: one-per-artefact
+    default_path: "docs/product-specs/prds/prd-{nnnn}-{feature}.md"
+    review_interval: 30d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: implementation_plan
+    okf_type: "Implementation Plan"
+    minting_skill: plan-implementation
+    id_format: "Plan-\\d{4}"
+    layout: one-per-artefact
+    default_path: "docs/plans/active/{nnnn}_exec_{slug}.md"
+    review_interval: 30d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: adr
+    okf_type: "Architecture Decision Record"
+    minting_skill: arch-adr
+    id_format: "ADR-\\d{4}"
+    layout: one-per-artefact
+    default_path: "docs/architecture/decisions/adr-{nnnn}-{slug}.md"
+    review_interval: 180d
+    frontmatter_conditionals: [supersedes, superseded_by]
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: research
+    okf_type: "Architecture Research Note"
+    minting_skill: arch-research
+    id_format: "Research-\\d{4}"
+    layout: one-per-artefact
+    default_path: "docs/architecture/research/{nnnn}-{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: idea
+    okf_type: "Idea"
+    minting_skill: discovery-idea
+    id_format: "IDEA-\\d{4}"
+    layout: one-per-artefact
+    default_path: "docs/discovery/ideation/IDEA-{nnnn}-{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: [graduates_to]
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: runbook
+    okf_type: "Runbook"
+    minting_skill: ops-runbook
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/ops/runbooks/{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: bug_rca
+    okf_type: "Bug RCA"
+    minting_skill: ops-bug-rca
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/ops/rcas/{date}-{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: stack_guide
+    okf_type: "Stack Guide"
+    minting_skill: dev-stack-guide
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/dev-guides/{tech-slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: getting_started
+    okf_type: "Getting Started Guide"
+    minting_skill: dev-getting-started
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/dev-guides/getting-started.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: research_note
+    okf_type: "Research Note"
+    minting_skill: discovery-research
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/discovery/interviews/{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: workshop_note
+    okf_type: "Workshop Note"
+    minting_skill: discovery-workshop
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/discovery/workshops/{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: design_system
+    okf_type: "Design System"
+    minting_skill: ux-design-system
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/ux/design-system.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: release_notes
+    okf_type: "Release Notes"
+    minting_skill: com-release-note
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/communication/release-notes/{slug}.md"
+    review_interval: 90d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: arc42_section
+    okf_type: "Architecture Documentation"
+    minting_skill: arch-arc42
+    id_format: null
+    layout: one-per-artefact
+    default_path: "docs/architecture/arc42/{nn}-{slug}.md"
+    review_interval: 180d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+
+# Canonical slugs — the third first-class identifier (stable + readable + short) carried by
+# L0 capability domains, L1 capabilities, and products. Consumed by tooling (commit scopes
+# via gen-commit-scopes.py, anchors, config keys). Enforced by Audit mode (Check 19).
+slug_contract:
+  applies_to:
+    - concept: l0_capability_domain
+      business_id: "C-N"
+      canonical_home: docs/business/03a-capability-map.md
+      placement: "code-line under the `## CN · Name` heading"
+    - concept: l1_capability
+      business_id: "C-N.M"
+      canonical_home: docs/business/03a-capability-map.md
+      placement: "code-line under the `### CN.M · Name` heading"
+    - concept: product
+      business_id: null   # FBS root / PBS layer
+      canonical_home: docs/product-specs/07a-fbs.md
+      placement: "code-line under the H1; and under each `## CN · Product` L0 section for a product-family FBS"
+  line_format: "`slug: <handle>`"
+  parser_regex: "^\\s*`slug:\\s*([a-z0-9]+(?:-[a-z0-9]+)*)`\\s*$"
+  invariants:
+    - "kebab-case, recommended <= 20 chars; no leading/trailing/double hyphens"
+    - "globally unique across one flat namespace (L0 + L1 + product slugs together); sole sanctioned repeat: the same product in BC Map L0 and FBS L0 carries the byte-identical slug"
+    - "mandatory for every L0 domain, L1 capability, and product; minting skill auto-proposes slugify(display-name)"
+    - "stable: renaming is an ID-rename — propagate to all consumers and record in the artefact changelog"
+

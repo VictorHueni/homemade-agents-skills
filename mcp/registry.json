@@ -1,0 +1,94 @@
+{
+  "description": "Single source of truth for the kit's MCP servers (kit ADR-0006 §4). scripts/gen-mcp.py projects it into per-plugin .mcp.json (Claude marketplace), a marker block in ~/.codex/config.toml, and the mcp key of ~/.config/opencode/opencode.json. The enabled flag is committed configuration, not runtime state — flip it and re-run the generator.",
+  "servers": [
+    {
+      "name": "chrome-devtools",
+      "owning_set": "dev-flow",
+      "enabled": true,
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "chrome-devtools-mcp@latest"
+        ]
+      },
+      "notes": "Official Google server. Front-end debugging: console, network, performance traces, DOM — pairs with the frontend-nuxt rule's hydration/SSR pitfalls."
+    },
+    {
+      "name": "context7",
+      "owning_set": "dev-flow",
+      "enabled": true,
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@upstash/context7-mcp"
+        ]
+      },
+      "notes": "Live version-pinned library docs; no CLI equivalent. Used by dev-stack-guide and framework work."
+    },
+    {
+      "name": "playwright",
+      "owning_set": "delivery-comms",
+      "enabled": true,
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@playwright/mcp@latest"
+        ]
+      },
+      "notes": "Official Microsoft server. Verifies com-slide-deck / com-artefact-viz HTML output. Demotion candidate if browser-server overlap with chrome-devtools ever bites."
+    },
+    {
+      "name": "github",
+      "owning_set": "dev-flow",
+      "enabled": false,
+      "transport": {
+        "type": "http",
+        "url": "https://api.githubcopilot.com/mcp/"
+      },
+      "notes": "Opt-in: gh CLI covers ~90% (CLI-first, ADR-0006). Enable for sessions without gh auth or structured PR-review flows."
+    },
+    {
+      "name": "terraform",
+      "owning_set": "ops",
+      "enabled": false,
+      "transport": {
+        "type": "stdio",
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "hashicorp/terraform-mcp-server"
+        ]
+      },
+      "notes": "Official HashiCorp server. Opt-in: single-skill use (ops-terraform-exoscale provider-docs lookup)."
+    }
+  ],
+  "project_scoped_recipes": {
+    "postgresql": {
+      "server": "crystaldba/postgres-mcp (Postgres MCP Pro)",
+      "why_not_user_global": "Databases are per-project (ADR-0006): declare in the project's own .mcp.json / opencode.json when it makes sense. Codex caveat: config.toml is global-only — enable there deliberately.",
+      "claude_project_mcp_json": {
+        "mcpServers": {
+          "postgres": {
+            "command": "uvx",
+            "args": [
+              "postgres-mcp",
+              "--access-mode=restricted"
+            ],
+            "env": {
+              "DATABASE_URI": "${DATABASE_URL}"
+            }
+          }
+        }
+      },
+      "context": "Anthropic's reference server was archived July 2025 (SQLi); PGDG ships none — revisit if an official server appears."
+    }
+  }
+}

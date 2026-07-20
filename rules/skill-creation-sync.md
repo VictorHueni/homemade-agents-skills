@@ -1,6 +1,6 @@
 ---
 paths:
-  - "skills/**"
+  - "plugins/**"
   - ".claude/skills/**"
 ---
 
@@ -10,7 +10,7 @@ How to create a new Claude skill, publish it to `homemade-claude-kit`, and make 
 
 ## Where new skills live
 
-New skills belong in `<KIT_DIR>/skills/<skill-name>/SKILL.md` (with optional `references/` and `scripts/` subdirs). All skill folders live under `skills/`; the repo root holds only `install.sh`, `README.md`, and the non-skill dirs `commands/`, `rules/`, `docs/`, `scripts/`, `var/`.
+New skills belong in `<KIT_DIR>/plugins/<set>/skills/<skill-name>/SKILL.md` (with optional `references/` and `scripts/` subdirs) — pick the plugin set from the ADR-0006 composition (`kit-core`, `strategy`, `domain-modeling`, `product-spec`, `architecture`, `dev-flow`, `agent-loop`, `delivery-comms`, `ops`, `docs-hygiene`). Skill names stay globally unique across all sets (the installer flattens them into one directory per harness). The repo root holds `install.sh`, `README.md`, `.claude-plugin/` (marketplace), and the non-skill dirs `plugins/`, `rules/`, `docs/`, `scripts/`, `mcp/`, `var/`.
 
 **Finding the kit:** `homemade-claude-kit` is always a sibling of the current project — the parent folder name varies by machine (`projets/` vs `projects/`). Derive it reliably from the current git root:
 
@@ -21,7 +21,7 @@ KIT_DIR="$(dirname "$(git rev-parse --show-toplevel)")/homemade-claude-kit"
 ## Standard skill structure
 
 ```
-<KIT_DIR>/skills/<skill-name>/
+<KIT_DIR>/plugins/<set>/skills/<skill-name>/
   SKILL.md              # required — YAML frontmatter + Claude-facing instructions
   references/           # optional — markdown content the skill loads on demand
   scripts/              # optional — runtime helpers
@@ -116,14 +116,24 @@ When only ONE skill exists per artefact, **drop the verb suffix**. The "build" i
 | Synonym verbs (`-creator`, `-generator`, `-builder` interchangeably) | Pick-one inconsistency | Standardise on `-builder`, drop others |
 | Folder name ≠ `name:` field | Hidden inconsistency | Always align both |
 
+### Registered exceptions (do NOT repeat without an ADR)
+
+| Skill | Exception | Rationale | ADR |
+|---|---|---|---|
+| `metamodel` | Bare, category-less name | The category registry is itself part of the metamodel — a prefix for the thing that defines prefixes is circular. Single skill for its artefact (lifecycle operations are its modes), so verb suffixes drop per this convention's own rule. | kit ADR-0007 |
+| `business-vision` | Output path breaks the prefix→folder rule (`docs/VISION.md`, not `docs/business/`) | North-star singleton lives at the docs root for CLAUDE.md wiring | (pre-ADR; documented in the metamodel prefix mapping) |
+
+An exception is registered here + justified in an ADR, or it is a naming violation — the
+"missing category prefix" anti-pattern row above stays the default judgement.
+
 ### Verification
 
 When you create or rename a skill, verify name consistency:
 
 ```bash
-for skill in skills/*/; do
+for skill in plugins/*/skills/*/; do
   skill_name="$(basename "${skill%/}")"
-  [ -f "$skill/SKILL.md" ] && name=$(grep "^name:" "$skill/SKILL.md" | sed -E 's/name: *//; s/^"//; s/"$//')
+  [ -f "$skill/SKILL.md" ] && name=$(grep -m1 "^name:" "$skill/SKILL.md" | sed -E 's/name: *//; s/^"//; s/"$//')
   [ "$skill_name" != "$name" ] && echo "MISMATCH: folder=$skill_name name=$name"
 done
 ```
@@ -172,14 +182,16 @@ Every markdown file a skill writes under `docs/` must open with the standard
 frontmatter block — an **OKF v0.1 superset**: the six OKF fields (`type`, `title`,
 `description`, `resource`, `tags`, `timestamp`) followed by the kit lifecycle fields
 (`status`, `owner`, `last_reviewed`, `review_interval`). The canonical schema, field rules,
-the `type` display-name source (`okf_type` in `rules/artefact-types-registry.md`), default
-`review_interval` values per artefact type, and audit enforcement details live in
-`rules/artefact-frontmatter.md`. Reference that file in every new skill's output
-or checklist section — do not restate the schema inline.
+the `type` display-name source (`okf_type` in the `metamodel` skill's
+`references/artefact-types-registry.yaml`), default `review_interval` values per artefact
+type, and audit enforcement details live in the `metamodel` skill's
+`references/artefact-frontmatter.md`. Reference it **name-first** in every new skill's
+output or checklist section (kit ADR-0007: "the `metamodel` skill's `references/<file>`" —
+never a relative path across skills) — do not restate the schema inline.
 
 ```yaml
 ---
-type: <artefact's okf_type display name — see artefact-types-registry.md>
+type: <artefact's okf_type display name — see the metamodel skill's references/artefact-types-registry.yaml>
 title: <instance title — not the artefact type name>
 description: <one-sentence instance summary>
 resource: <asset URI — omit when no external asset>
@@ -244,19 +256,23 @@ Before touching any file, answer:
 
 For every brand-new artefact step, the following files require updates. Work through them in order.
 
-**Core metamodel files (always).** The metamodel is split: the imperative spine is `rules/metamodel.md`; the heavy reference (DAG, ER, per-step detail, ID conventions, canonical paths, maintenance-coupling contract) is the on-demand companion `rules/metamodel-reference.md`. Update both as noted:
+**Structural facts — author clew-side FIRST (kit ADR-0007, clew ADR-0008).** The structural
++ relational metamodel is canonically owned by the **clew** repo. A new artefact type, ID
+format, path, or relationship is added to clew's `docs/metamodel/` first, then synced into
+the kit's projection: the **`metamodel` skill**.
+
+**Core metamodel files in the kit (always — all inside `skills/metamodel/`):**
 
 | Change point | File | What to update |
 |---|---|---|
-| Spine table header | `rules/metamodel.md` | Update count ("The build-order spine — N artefacts") |
-| Spine table row | `rules/metamodel.md` | Add `\| step \| **Name** (tagline) \| \`skill-name\` \| IDs or — \|` |
-| Build order step section | `rules/metamodel-reference.md` | Add `### Step N` with: Skill, Prerequisites, Process (modes), Output verification criteria |
-| DAG flowchart (text art) | `rules/metamodel-reference.md` | Add node box + edges showing what it consumes (solid) and what soft-links to it (dashed) |
-| ER diagram | `rules/metamodel-reference.md` | Add entity + FK fields + relationship lines |
-| Cross-doc ID conventions table | `rules/metamodel-reference.md` | Add `\| \`ID-NN\` \| meaning \| owning skill \|` row (diagram / sub-element IDs only — artefact-type IDs live in `artefact-types-registry.md`) |
-| Canonical output paths tree | `rules/metamodel-reference.md` | Add the output path in the correct position in the `docs/` tree |
-| Prefix → folder mapping | `rules/metamodel-reference.md` | Note any exception if the output location breaks the prefix convention |
-| Maintenance coupling log | `docs/project-control/metamodel-changelog.md` (→ clew, metamodel SoT) | Add a dated entry listing every file updated |
+| Registry entry (id_format · layout · default_path · review_interval · okf_type) | `references/artefact-types-registry.yaml` | Add the entry, synced verbatim from clew. Audit/Scaffold/Migrate modes derive from it automatically — no per-mode update needed |
+| Spine table header + row | `SKILL.md` | Update count + add `\| step \| **Name** (tagline) \| \`skill-name\` \| IDs or — \|` |
+| Build order step section | `references/metamodel-reference.md` | Add `### Step N` with: Skill, Prerequisites, Process (modes), Output verification criteria |
+| DAG flowchart + ER diagram | `references/metamodel-reference.md` | Add node/entity + edges/relationships |
+| Cross-doc ID conventions table | `references/metamodel-reference.md` | Diagram / sub-element IDs only — artefact-type IDs live in the registry YAML. If a sub-element ID is minted, also add it to the Audit mode's Check 5 curated table (`references/modes/audit-check-catalogue.md`) |
+| Canonical output paths tree | `references/metamodel-reference.md` | Add the output path in the correct position in the `docs/` tree |
+| Prefix → folder mapping | `references/metamodel-reference.md` | Note any exception if the output location breaks the prefix convention |
+| Maintenance coupling log | clew repo (metamodel SoT) | Record the change clew-side; the kit's `docs/project-control/metamodel-changelog.md` is the parked prior digest |
 
 **README.md (always — 4 change points):**
 
@@ -264,7 +280,7 @@ For every brand-new artefact step, the following files require updates. Work thr
 |---|---|
 | Intro line | Update artefact count ("N artefacts across…") |
 | Flowchart | Add node (inside or outside a subgraph based on layer) + update subgraph label + add edges |
-| ER diagram | Add entity + relationships (same changes as in `rules/metamodel.md`) |
+| ER diagram | Add entity + relationships (same changes as in the `metamodel` skill's references) |
 | Skill index table | Add row |
 
 **Existing skills — upstream reads (contextual):**
@@ -283,20 +299,24 @@ For each skill whose output *should reference the new artefact's IDs or path*, a
 - The cross-references section (quality attributes)
 - The soft-links table (any canvas or objectives doc)
 
-**Audit tool (always):**
+**Audit / Migrate modes (mostly automatic since kit ADR-0007):**
 
-| File | Checks to update |
+Path, placement, artefact-type ID, and `okf_type` checks **derive from the registry YAML at
+run time** — a new registry entry is auto-covered; nothing to update. Only two curated
+surfaces may still need a touch:
+
+| File | Update only when |
 |---|---|
-| `util-metamodel-audit/references/check-catalogue.md` | Check 1: add `find` command for new output path · Check 2: add canonical placement rule · Check 5: add ID regex + owning artefact (skip if singleton) · Check 7: add dependency enforcement rule · Check 9: add mandatory sections detection |
-| `util-metamodel-migration/references/detection-signals.md` | §Filename patterns: add glob + artefact type + canonical path · §Folder name patterns: add if applicable · §Content signals: add heading pattern or ID pattern |
+| `skills/metamodel/references/modes/audit-check-catalogue.md` | The new type needs a Check 7 dependency-enforcement rule or a Check 9 mandatory-sections pattern (judgement content, not derivable), or mints a sub-element ID (Check 5 curated table) |
+| `skills/metamodel/references/modes/migrate-detection-signals.md` | The type benefits from fuzzy-name heuristics (synonyms, legacy names) beyond the auto-derived `default_path`/`id_format` baseline signal |
 
 #### Part 3: After building — verify
 
 ```bash
 # 1. Naming consistency
-for skill in skills/*/; do
+for skill in plugins/*/skills/*/; do
   skill_name="$(basename "${skill%/}")"
-  [ -f "$skill/SKILL.md" ] && name=$(grep "^name:" "$skill/SKILL.md" | sed -E 's/name: *//; s/^"//; s/"$//')
+  [ -f "$skill/SKILL.md" ] && name=$(grep -m1 "^name:" "$skill/SKILL.md" | sed -E 's/name: *//; s/^"//; s/"$//')
   [ "$skill_name" != "$name" ] && echo "MISMATCH: folder=$skill_name name=$name"
 done
 # Should return zero lines (excluding non-skill folders like commands/, rules/)
@@ -316,9 +336,9 @@ No new build order step. Run only the checks that apply:
 
 | Changed? | Update |
 |---|---|
-| Output path changed | `rules/metamodel-reference.md` canonical paths · Check 1 · §Filename patterns |
-| New ID format minted | `rules/metamodel-reference.md` ID conventions · Check 5 · §Filename patterns |
-| Prerequisite added/removed | `rules/metamodel-reference.md` DAG + build order step · Check 7 |
+| Output path changed | clew-side first, then the registry YAML entry (`default_path`) + `references/metamodel-reference.md` canonical paths — audit/migrate checks re-derive automatically |
+| New ID format minted | clew-side first, then the registry YAML entry (`id_format`) — Check 5/filename signals re-derive automatically; sub-element IDs also go to the Check 5 curated table |
+| Prerequisite added/removed | `references/metamodel-reference.md` DAG + build order step · Check 7 rule in `references/modes/audit-check-catalogue.md` |
 | Mandatory section added/renamed/removed | Check 9 · §Content signals |
 
 ---

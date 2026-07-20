@@ -1,0 +1,8 @@
+{
+  "name": "product-spec",
+  "description": "Product specs & planning. FBS, PRDs, quality attributes, use cases, delivery roadmap, and implementation plans.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Victor Hueni"
+  }
+}
