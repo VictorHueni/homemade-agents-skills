@@ -24,17 +24,17 @@ automation* (Actions workflow).
 
 | ID | Use case (goal) | Level | Scope | Primary actor | Realises (FBS) | Status |
 |---|---|---|---|---|---|---|
-| UC-01 | Drive an item from identified to resolved | ☁ | system | Operator | _TBD_ | _planned_ |
-| UC-02 | File an issue via the tracker forms | 🌊 | system | Operator | _TBD_ | _planned_ |
-| UC-03 | File an issue as an agent | 🌊 | system | Coding Agent | _TBD_ | _planned_ |
+| UC-01 | Drive an item from identified to resolved | ☁ | system | Operator | _TBD_ | ⬜ |
+| UC-02 | File an issue via the tracker forms | 🌊 | system | Operator | _TBD_ | ⬜ |
+| UC-03 | File an issue as an agent | 🌊 | system | Coding Agent | _TBD_ | ⬜ |
 | UC-04 | Triage the backlog | 🌊 | system | Operator | _TBD_ | ⬜ |
-| UC-05 | Deduplicate and merge issues | 🌊 | system | Coding Agent | _TBD_ | _planned_ |
+| UC-05 | Deduplicate and merge issues | 🌊 | system | Coding Agent | _TBD_ | ⬜ |
 | UC-06 | Execute a delegated issue | 🌊 | system | Coding Agent | _TBD_ | ⬜ |
-| UC-07 | Self-select the next work item | 🌊 | system | Coding Agent | _TBD_ | _planned_ |
-| UC-08 | Verify the queue is trustworthy | 🌊 | system | Operator | _TBD_ | _planned_ |
-| UC-09 | Adopt the backend on a new repo | 🌊 | system | Operator | _TBD_ | _planned_ |
-| UC-10 | Convert a legacy backlog | 🌊 | system | Operator | _TBD_ | _planned_ |
-| UC-11 | Assess an issue's readiness | 🐟 | system | (reused step) | _TBD_ | _planned_ |
+| UC-07 | Self-select the next work item | 🌊 | system | Coding Agent | _TBD_ | ⬜ |
+| UC-08 | Verify the queue is trustworthy | 🌊 | system | Operator | _TBD_ | ⬜ |
+| UC-09 | Adopt the backend on a new repo | 🌊 | system | Operator | _TBD_ | ⬜ |
+| UC-10 | Convert a legacy backlog | 🌊 | system | Operator | _TBD_ | ⬜ |
+| UC-11 | Assess an issue's readiness | 🐟 | system | (reused step) | _TBD_ | ⬜ |
 
 ## Actor / use-case overview
 
