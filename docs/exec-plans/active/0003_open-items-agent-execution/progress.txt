@@ -1,0 +1,10 @@
+Plan-0003 — Open-Items Agent-Execution Layer
+=============================================
+
+2026-07-20  Plan drafted (status: draft). Source: research notes 0001 + 0002
+            (docs/architecture/research/). Option A selected in conversation;
+            per-repo tracking, solo-now/team-later, all four agent flows.
+            Awaiting operator review of the plan before increment 01.
+
+Increments: 13 total, milestones M1-M5. None started.
+Open items filed at plan creation: see plan §File Open Items (3 issues).
