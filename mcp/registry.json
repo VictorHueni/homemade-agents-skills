@@ -10,10 +10,14 @@
         "command": "npx",
         "args": [
           "-y",
-          "chrome-devtools-mcp@latest"
+          "chrome-devtools-mcp@latest",
+          "--headless",
+          "--isolated",
+          "--executablePath",
+          "/usr/lib/chromium/chromium"
         ]
       },
-      "notes": "Official Google server. Front-end debugging: console, network, performance traces, DOM — pairs with the frontend-nuxt rule's hydration/SSR pitfalls."
+      "notes": "Official Google server. Front-end debugging: console, network, performance traces, DOM — pairs with the frontend-nuxt rule's hydration/SSR pitfalls. Runs headless + isolated, pinned to the system Chromium via --executablePath. NOTE: /usr/lib/chromium/chromium is Linux/WSL-specific — public adopters on macOS or other distros must change or drop this path."
     },
     {
       "name": "context7",
