@@ -86,3 +86,14 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             pre-filing per increments 07/12). ADR-0009 amended in place (same-day,
             unreleased); backend ref + plan + bootstrap script conformed.
             Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).
+
+2026-07-20  Increment 07 DONE — util-open-items SKILL.md v2.1.0: sync applies labels
+            atomically (type:<mapped>/priority/size/needs-triage) with a mandatory
+            duplicate AND dependency search before create (Relates to / Blocked by
+            links); new refusal: never ready-for-agent at filing. Triage v2: readiness
+            routing (promote/route/demote per ADR-0008 §3 precondition, drafts briefs
+            for near-misses), 90-day staleness -> propose drop, disposition-table
+            output. Adoption checklist rewritten (bootstrap -> 5 forms + config +
+            labeler -> CLAUDE.md verify commands -> backend.yml); behaviour table,
+            Mode 7 prose, references conformed to ADR-0009 (no Project, no marker).
+            Next: increment 08 (audit mode conformance).

@@ -69,7 +69,7 @@ Principles:
    if acceptance criteria and code pointers are present.
 
 **Overall Status:** in-progress
-**Current Increment:** 07
+**Current Increment:** 08
 
 ## Increment Plan
 
@@ -267,7 +267,7 @@ Exit criteria:
 
 ### Increment 07: `util-open-items` SKILL.md v2.1 — sync labels + triage v2
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
