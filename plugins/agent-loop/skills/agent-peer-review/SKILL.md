@@ -79,7 +79,7 @@ Default output location: `var/reports/<feature>/` (a feature-named subfolder, pe
 
 Open with a **light plain-markdown header** (no YAML frontmatter block): an H1 title, then a one-line metadata line — target reviewed (path), date, reviewer (`git config user.name`), and the one-line verdict.
 
-If the caller explicitly wants the review colocated with the artefact it reviews (e.g. next to a plan under `docs/exec-plans/`), honour that placement but keep the same light header — it stays a record, never a catalogued doc.
+If the caller explicitly wants the review colocated with the artefact it reviews (e.g. next to a plan under `docs/plans/`), honour that placement but keep the same light header — it stays a record, never a catalogued doc.
 
 Produce findings first, sorted by severity descending. Include:
 

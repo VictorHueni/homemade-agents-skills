@@ -42,9 +42,9 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | 9 | Quality Attributes | `spec-quality-attributes` | ⬜ | [`docs/product-specs/09a-quality-attributes.md`](product-specs/09a-quality-attributes.md) | — |
 | 9.5 | Use Cases | `spec-use-case` | ✅ | [`docs/product-specs/use-cases/`](product-specs/use-cases/) (11 UCs, index in-folder) | 2026-07-20 |
 | 10 | PRDs | `spec-prd` | ⬜ | [`docs/product-specs/prds/`](product-specs/prds/) | — |
-| 11 | Implementation Plans | `plan-implementation` | ⚠️ | canonical `docs/plans/active/` is empty — **actual plans live at [`docs/exec-plans/active/`](../docs/exec-plans/active/)** (3 plans: 0001, 0002, 0003), a legacy path pre-dating the `plan-`/`spec-` package split (PR #51). Not yet reconciled — candidate for the Migrate mode. | 2026-07-20 |
+| 11 | Implementation Plans | `plan-implementation` | ✅ | [`docs/plans/active/`](plans/active/) (3 plans: 0001, 0002, 0003, folder-per-plan with co-located `progress.txt`) | 2026-07-20 |
 
-**Summary:** ✅ 1 / 🔄 0 / ⬜ 14 / ⚠️ 1 drift of 16 artefact steps
+**Summary:** ✅ 2 / 🔄 0 / ⬜ 14 of 16 artefact steps
 
 **Next step:** this repo does not run its own business-strategy spine (see note above) — there is no "Step 0" to start. If a spine step is ever wanted for the kit itself, start there deliberately; otherwise the live work surfaces are the open-items ledger and the use-case registry.
 
@@ -56,7 +56,7 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 |---|---|---|
 | Open-items ledger (github backend) | [`docs/project-control/open-items/`](project-control/open-items/) | ✅ live — 32 open issues on `VictorHueni/homemade-claude-kit`, ADR-0008/0009 label vocabulary |
 | Use-case registry | [`docs/product-specs/use-cases/`](product-specs/use-cases/) | ✅ 11 UCs (UC-01..UC-11) |
-| Implementation plans (legacy path) | [`docs/exec-plans/active/`](exec-plans/active/) | ✅ 3 active plans |
+| Implementation plans | [`docs/plans/active/`](plans/active/) | ✅ 3 active plans (migrated from the legacy `docs/exec-plans/` path 2026-07-20 — `var/reports/metamodel-migration/migration-2026-07-20.md`) |
 | Architecture Decision Records | [`docs/architecture/decisions/`](architecture/decisions/) | ✅ 9 ADRs |
 | Architecture Research notes | [`docs/architecture/research/`](architecture/research/) | ✅ 3 notes |
 

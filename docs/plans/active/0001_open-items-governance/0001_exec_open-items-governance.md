@@ -47,7 +47,7 @@ Primary files:
 
 Test gate:
 
-1. `test -f docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md`
+1. `test -f docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md`
 2. `rg -n "## Open Items|document-level|Source anchor|Source heading|project-control/open-items|doc-gap|decision-gap|execution-item|tech-debt" rules/open-items-governance.md rules/metamodel.md README.md`
 
 Exit criteria:

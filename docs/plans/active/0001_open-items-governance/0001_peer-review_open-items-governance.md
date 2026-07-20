@@ -19,13 +19,13 @@ No active plan-level findings remain after the plan patch on 2026-05-25. The pre
 **Issue:** The earlier ambiguity is resolved. The plan now explicitly requires a document-level `## Open Items` section across artefacts and explicitly states that `arch-research` will consolidate question-level unresolved notes into that section while preserving provenance via `Source anchor` and `Source heading`.
 
 **Evidence:**
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:13`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:39`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:91`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:93`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:117`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:125`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:126`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:13`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:39`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:91`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:93`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:117`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:125`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:126`
 
 **Implementation risk to watch:** Increment 03 still needs a clean migration rule for how per-question notes are rewritten into the consolidated doc-level table so no question-specific nuance is lost.
 
@@ -36,11 +36,11 @@ No active plan-level findings remain after the plan patch on 2026-05-25. The pre
 **Issue:** The under-scoping problem is resolved. Increment 03 now includes the discipline and audit support files that would otherwise preserve or reintroduce the old vocabulary.
 
 **Evidence:**
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:100`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:106`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:107`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:108`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:121`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:100`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:106`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:107`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:108`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:121`
 
 **Implementation risk to watch:** the future edit should keep the audit expectations in `util-metamodel-audit/references/check-catalogue.md` aligned with the new headings, otherwise the migration can still drift at enforcement time.
 
@@ -51,10 +51,10 @@ No active plan-level findings remain after the plan patch on 2026-05-25. The pre
 **Issue:** The previous contradiction is resolved at specification level. The plan now says placeholder-only open-item rows should not be scaffolded, and Increment 03 explicitly removes placeholder-only requirements from `business-process`.
 
 **Evidence:**
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:23`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:95`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:127`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:257`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:23`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:95`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:127`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:257`
 
 **Implementation risk to watch:** the repo still needs the actual template and skill edits so no latent `≥3 TODOs on first scaffold` instruction survives in `business-process`.
 
@@ -65,9 +65,9 @@ No active plan-level findings remain after the plan patch on 2026-05-25. The pre
 **Issue:** The plan now explicitly names the embedded `business-research` and `business-workshop` variants that must be covered by Increment 03, so "file touched" is no longer enough to claim completion.
 
 **Evidence:**
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:96`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:97`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:120`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:96`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:97`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:120`
 
 **Implementation risk to watch:** the workshop wording still leaves room for a hidden variant if another unresolved-work section exists in the same file. The implementer should verify there are no additional headings beyond the ones currently identified.
 
@@ -78,7 +78,7 @@ No active plan-level findings remain after the plan patch on 2026-05-25. The pre
 **Issue:** The ambiguity is resolved. The plan now explicitly says `spec-prd` stays in Increment 03 as a first adopter rather than pretending it is a migration from an existing heading.
 
 **Evidence:**
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:98`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:98`
 
 **Implementation risk to watch:** none beyond ordinary delivery risk; this is now a deliberate scope choice, not a spec defect.
 
@@ -89,10 +89,10 @@ No active plan-level findings remain after the plan patch on 2026-05-25. The pre
 **Issue:** The coverage ambiguity is resolved. The plan now explicitly records that `business-competitive-landscape` remains changelog-only for now and is out of the formal `Open Items` rollout for this increment.
 
 **Evidence:**
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:138`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:151`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:156`
-- `docs/exec-plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:162`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:138`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:151`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:156`
+- `docs/plans/active/0001_open-items-governance/0001_exec_open-items-governance.md:162`
 
 ## Open Questions / Assumptions
 
