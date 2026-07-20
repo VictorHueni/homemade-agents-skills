@@ -8,6 +8,11 @@
 # answers are mirrored to `priority:` / `size:` labels by the labeler workflow
 # (forms cannot set labels per answer). Field `id:` keys equal the canonical
 # slugs (Invariant I1) — do not rename an `id:`, rename the label instead.
+#
+# No duplicate-search checkbox by design: issues here are filed by the operator
+# or by agents whose contract requires a duplicate/dependency search before
+# creation (Plan-0003 increments 07/12). Add the conventional required
+# "I have searched the existing issues" checkbox if external filers arrive.
 
 name: Feature request
 description: A new user-facing capability.
@@ -20,30 +25,6 @@ body:
         starts as `needs-triage`; **References** and **Acceptance criteria** must be
         filled before triage can promote it to `ready-for-agent`.
 
-  - type: dropdown
-    id: priority
-    attributes:
-      label: Priority
-      description: "Mirrored to a `priority:` label — p0=critical, p1=high, p2=medium, p3=low."
-      options:
-        - critical
-        - high
-        - medium
-        - low
-    validations:
-      required: true
-
-  - type: dropdown
-    id: size
-    attributes:
-      label: Size
-      description: One-PR effort bound, mirrored to a `size:` label. L = consider splitting before delegating.
-      options:
-        - S
-        - M
-        - L
-    validations:
-      required: true
 
   - type: textarea
     id: description
@@ -95,3 +76,28 @@ body:
       description: What must NOT be touched or changed while building this (optional).
     validations:
       required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: "Mirrored to a `priority:` label — p0=critical, p1=high, p2=medium, p3=low."
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      description: One-PR effort bound, mirrored to a `size:` label. L = consider splitting before delegating.
+      options:
+        - S
+        - M
+        - L
+    validations:
+      required: true

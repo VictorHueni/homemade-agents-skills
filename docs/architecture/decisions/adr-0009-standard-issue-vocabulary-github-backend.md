@@ -60,13 +60,19 @@ Chosen option: **Option 1.** This ADR amends ADR-0008 §4 (vocabulary) and §the
 everything else in ADR-0008 — label-based serialization, execution slugs, readiness
 contract, title convention, validation home — stands unchanged.
 
-### 1. Type axis: six standard values
+### 1. Type axis: five standard values
 
-`type:bug` · `type:feature` · `type:task` · `type:docs` · `type:decision` ·
-`type:tech-debt`
+`type:bug` · `type:feature` · `type:task` · `type:docs` · `type:tech-debt`
 
 The `type:` prefix stays (prefixed label groups are recognized practice and what axis
 exclusivity + the audit key on); the *values* are standard dev vocabulary.
+
+**Same-day amendment (operator review + conformance research 0003): no `decision`
+type.** A "decision needed" item is a **task** whose deliverable is the decision record
+("research X, write ADR-NNNN"); decisions with no codebase home are logged outside the
+tracker. This matches observed practice — no surveyed mainstream repo ships a decision
+template; decisions live in ADRs/RFCs, not in an issue type. `decision-gap` therefore
+maps to `type:task` (§2) and the vocabulary is 17 labels (§5).
 
 ### 2. Governance mapping (abstract model unchanged)
 
@@ -75,7 +81,7 @@ The governance §2 taxonomy maps into the serialization:
 | Governance §2 | Serialized as |
 | :--- | :--- |
 | `doc-gap` | `type:docs` |
-| `decision-gap` | `type:decision` |
+| `decision-gap` | `type:task` (the task's deliverable is the decision record — ADR or logged decision) |
 | `execution-item` | `type:task` |
 | `tech-debt` | `type:tech-debt` |
 
@@ -93,7 +99,8 @@ boundary is the ledger boundary. The delegation queue query becomes
 
 ### 4. One issue form per type
 
-Six forms (`bug` / `feature` / `task` / `docs` / `decision` / `tech-debt`), each:
+Five forms (`1-bug` / `2-feature` / `3-task` / `4-docs` / `5-tech-debt` — numeric
+prefixes control the template-chooser order, GitHub's documented mechanism), each:
 
 - auto-applies its `type:` label and `needs-triage` (statically — no mirroring needed for
   type anymore);
@@ -101,25 +108,30 @@ Six forms (`bug` / `feature` / `task` / `docs` / `decision` / `tech-debt`), each
   workflow, which loses its type mapping and `open-item` scope guard);
 - carries **tailored required fields**: bug → description + reproduction (environment
   optional, `render: shell`); feature → problem/motivation; task → description;
-  docs → what's missing/where; decision → context (options optional);
-  tech-debt → current state + impact;
+  docs → what's missing/where; tech-debt → current state + impact — substance fields
+  first, the shared Priority/Size dropdowns last (conformance research 0003: no
+  mainstream form leads with metadata);
 - keeps the canonical-slug fields where they apply: `references`,
   `acceptance_criteria`, `out_of_scope` on executable types; the provenance triple +
-  `resolution_path` (optional) on the governance-mapped types (task/docs/decision/
-  tech-debt). Field `id:` ≡ slug (Invariant I1) throughout.
+  `resolution_path` (optional) on the governance-mapped types (task/docs/tech-debt).
+  Field `id:` ≡ slug (Invariant I1) throughout;
+- omits the conventional duplicate-search checkbox **by design**: issues are filed by
+  the operator or by agents whose contract requires a duplicate/dependency search
+  before creation; the checkbox is added the day a repo takes external filers (noted
+  in each form header).
 
-### 5. Amended vocabulary (18 labels, five axes)
+### 5. Amended vocabulary (17 labels, five axes)
 
-Marker axis removed (−1); type axis grows to six (+2). Priority, size, readiness, state
-axes unchanged from ADR-0008 §4.
+Marker axis removed (−1); type axis becomes five standard values (+1 net: `bug` and
+`feature` added, the four governance names replaced, no `decision` per the §1
+amendment). Priority, size, readiness, state axes unchanged from ADR-0008 §4.
 
 | Axis | Label | Color | Description |
 | :--- | :--- | :--- | :--- |
 | type | `type:bug` | `D73A4A` | Something is broken |
 | type | `type:feature` | `A2EEEF` | New user-facing capability |
-| type | `type:task` | `1D76DB` | Concrete work item — not a feature, not broken |
+| type | `type:task` | `1D76DB` | Concrete work item — not a feature, not broken (incl. decision work → ADR) |
 | type | `type:docs` | `C5DEF5` | Documentation missing, wrong, or unclear |
-| type | `type:decision` | `6F42C1` | A decision is needed before work can proceed |
 | type | `type:tech-debt` | `023B95` | Deliberate structural shortcut to pay back |
 | priority | `priority:p0` | `B60205` | Critical — drop everything |
 | priority | `priority:p1` | `D93F0B` | High — this cycle |
@@ -149,7 +161,7 @@ axes unchanged from ADR-0008 §4.
   `type:doc-gap`→`type:docs` etc. and strip `open-item`.
 - The audit loses the marker as a cheap population selector; it scopes provenance checks
   by section presence instead.
-- Six forms to maintain instead of one (mitigated: shared blocks, template copies in the
+- Five forms to maintain instead of one (mitigated: shared blocks, template copies in the
   skill).
 - Plan-0003 increments 04–06, already built, are reworked in place (all unmerged — no
   released surface breaks).
@@ -159,7 +171,7 @@ axes unchanged from ADR-0008 §4.
 - ADR-0008's readiness contract, execution slugs, title rule, and validation-home note
   stand unchanged.
 - Native Issue Types (org-level) remain a possible future upgrade
-  ([#72](https://github.com/VictorHueni/homemade-claude-kit/issues/72)) — the 6-value
+  ([#72](https://github.com/VictorHueni/homemade-claude-kit/issues/72)) — the 5-value
   standard vocabulary maps cleanly onto them if the portfolio moves to an org.
 
 ## Open Items

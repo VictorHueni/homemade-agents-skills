@@ -46,8 +46,9 @@ exec-plan sequence.
 [ADR-0009](../../../architecture/decisions/adr-0009-standard-issue-vocabulary-github-backend.md)):**
 the operator rejected the `open-item` marker + governance-derived type vocabulary as
 exotic ("everything is an open item; fit what GitHub Issues is created for"). Decisions:
-type axis becomes the standard 6-value set (`bug`/`feature`/`task`/`docs`/`decision`/
-`tech-debt`, governance §2 mapping in the backend reference §2a), the marker label is
+type axis becomes the standard 5-value set (`bug`/`feature`/`task`/`docs`/`tech-debt` —
+the `decision` type was dropped same-day after conformance research 0003: decision work
+is a `task` whose deliverable is the ADR/decision record, governance §2 mapping in the backend reference §2a), the marker label is
 dropped (the tracker is the ledger), and intake is one form per type. Increments 04–06
 were reworked in place (all unmerged); increments 07–13 read with the amended
 vocabulary — notably: `sync` applies mapped `type:` labels, the backfill (09–10) also
@@ -343,7 +344,7 @@ Scope:
 2. New `scripts/backfill_execution_labels.py` — for repos already on the github backend:
    parse each open issue's `### Priority` body section → apply `priority:` label; apply
    `needs-triage` where no readiness label exists; **remap old type labels to the
-   ADR-0009 vocabulary** (`type:doc-gap`→`type:docs`, `type:decision-gap`→`type:decision`,
+   ADR-0009 vocabulary** (`type:doc-gap`→`type:docs`, `type:decision-gap`→`type:task`,
    `type:execution-item`→`type:task`; `type:tech-debt` unchanged) and **strip the retired
    `open-item` marker** (using it first as the population selector, then removing it).
    Dry-run default, `--apply`, idempotent.

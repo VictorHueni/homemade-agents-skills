@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # bootstrap_labels.sh — idempotent bootstrap of the open-items label vocabulary.
 #
-# Creates (or normalizes) the 18 canonical labels of the open-items github
+# Creates (or normalizes) the 17 canonical labels of the open-items github
 # backend on a target repo via `gh label create --force`. Idempotent: re-runs
 # are no-ops except that colors/descriptions are normalized back to canon.
 #
@@ -27,7 +27,6 @@ LABELS='type:bug|D73A4A|Something is broken
 type:feature|A2EEEF|New user-facing capability
 type:task|1D76DB|Concrete work item — not a feature, not broken
 type:docs|C5DEF5|Documentation missing, wrong, or unclear
-type:decision|6F42C1|A decision is needed before work can proceed
 type:tech-debt|023B95|Deliberate structural shortcut to pay back
 priority:p0|B60205|Critical — drop everything
 priority:p1|D93F0B|High — this cycle
@@ -46,7 +45,7 @@ usage() {
   cat >&2 <<'EOF'
 Usage: bootstrap_labels.sh --repo OWNER/NAME [--apply]
 
-Bootstraps the 18-label open-items vocabulary (ADR-0009 §5) on a repo.
+Bootstraps the 17-label open-items vocabulary (ADR-0009 §5) on a repo.
 
   --repo OWNER/NAME  Target repository (required).
   --apply            Actually run gh label create --force (requires gh).

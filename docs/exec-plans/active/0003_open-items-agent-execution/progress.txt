@@ -57,6 +57,7 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             --apply on GitHub first). M2 (Intake surface) complete.
             Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).
 
+
 2026-07-20  REVISION (ADR-0009) — operator rejected the open-item marker + governance
             type vocabulary as exotic. New contract: standard 6-value type axis
             (bug/feature/task/docs/decision/tech-debt) with governance §2 mapping,
@@ -73,4 +74,15 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             section-parse is the guard). Template copies updated. Gates: 18-label
             dry-run, ADR §5 diff clean, 14x YAML parse, per-form label/required
             asserts, workflow asserts, no marker references remain.
+            Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).
+
+2026-07-20  CONFORMANCE PASS (research 0003 + operator review) — fit-gap check of the
+            forms against 10 major OSS template sets. Applied: numeric filename
+            prefixes (1-bug..5-tech-debt, chooser order), substance-first field order
+            (Priority/Size moved last), decision type DROPPED (operator: decision work
+            = task whose deliverable is the ADR/decision record; no mainstream repo
+            ships a decision template) -> 5 types / 17 labels; dup-search checkbox
+            omission documented in form headers (agents search duplicates/dependencies
+            pre-filing per increments 07/12). ADR-0009 amended in place (same-day,
+            unreleased); backend ref + plan + bootstrap script conformed.
             Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).
