@@ -69,7 +69,7 @@ Principles:
    if acceptance criteria and code pointers are present.
 
 **Overall Status:** in-progress
-**Current Increment:** 09
+**Current Increment:** 10
 
 ## Increment Plan
 
@@ -333,7 +333,7 @@ Exit criteria:
 
 ### Increment 09: Migration Script v2 + Backfill Helper
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

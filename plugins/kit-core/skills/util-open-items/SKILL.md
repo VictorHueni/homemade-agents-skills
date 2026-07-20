@@ -276,7 +276,8 @@ python3 scripts/migrate_markdown_to_github.py --repo OWNER/NAME --assignee-map v
 - **Types are labels** (ADR-0009): the script maps ledger types per §2a
   (doc-gap→`type:docs`, decision-gap→`type:task`, execution-item→`type:task`,
   tech-debt→`type:tech-debt`) and bootstraps the full 17-label vocabulary via
-  `scripts/bootstrap_labels.sh` semantics. *(Script alignment: Plan-0003 increment 09.)*
+  `scripts/bootstrap_labels.sh` semantics (the label table is parsed from that script at
+  runtime — single source of truth).
 - **`owner` → GitHub login.** Ledger owners rarely equal a GitHub login. Pass
   `--assignee-map LEDGER_OWNER=LOGIN` (repeatable). `_TBD_` and unmapped owners get **no
   assignee** (warned), never a failing `--assignee`.
@@ -288,22 +289,21 @@ python3 scripts/migrate_markdown_to_github.py --repo OWNER/NAME --assignee-map v
 1. De-dups by summary + provenance (`gh issue list --search`) — re-runs are idempotent.
 2. `gh issue create` — `summary`→title, `type`→**`type:` label per the §2a mapping**,
    provenance + `resolution_path`→form-structured body, mapped `owner`→assignee.
-3. Lifecycle: `open` stays open; `in-progress`/`blocked` stay open (apply the `state:`
-   label manually — the script logs which); `closed`→close `completed`; `dropped`→close
-   `not planned` (original `tracker_ref` preserved as a comment).
+3. Lifecycle: `open` stays open; `in-progress`/`blocked` stay open with the matching
+   `state:` label applied (§3c decomposition — logged); `closed`→close `completed`;
+   `dropped`→close `not planned` (original `tracker_ref` preserved as a comment).
 4. Records `OI-NNNN → #N`, writing the map to
    `docs/project-control/open-items/migration-map.md` (the persisted I2 artefact).
 5. Rewrites every `OI-NNNN` back-reference under `--docs` (OI-ID cells + prose) to `#N`.
 
 **Operator finish (not automated — verify first):**
 
-1. Eyeball the issues + label queries (`gh issue list --label needs-triage`).
-2. Apply `state:in-progress` / `state:blocked` labels for rows migrated in those states
-   (the script logs which).
-3. Move `open-items.md` into `archive/` as a frozen, dated snapshot — never silent-delete (§6).
-4. Set `backend.yml: github`. From here `sync` / `close` / etc. operate the github backend.
+1. Eyeball the issues + label queries (`gh issue list --label needs-triage`); the
+   `state:` labels for `in-progress`/`blocked` rows are applied by the script (logged).
+2. Move `open-items.md` into `archive/` as a frozen, dated snapshot — never silent-delete (§6).
+3. Set `backend.yml: github`. From here `sync` / `close` / etc. operate the github backend.
 
-**Rollback** (before step 3–4): the migration is one-way, so undo = delete the created issues
+**Rollback** (before step 2–3): the migration is one-way, so undo = delete the created issues
 and `git checkout` the ref rewrites while the markdown ledger is still authoritative.
 
 `archive/*.md` history stays as frozen markdown (optionally backfilled as closed issues
@@ -489,6 +489,10 @@ MUST NOT touch any artefact body — there is no local section for it to write b
   — intake config (no blank issues) and the Priority/Size → label mirror workflow.
 - [`scripts/bootstrap_labels.sh`](scripts/bootstrap_labels.sh) — idempotent 17-label
   vocabulary bootstrap (adoption step 1; dry-run by default).
+- [`scripts/backfill_execution_labels.py`](scripts/backfill_execution_labels.py) — one-time
+  backfill for repos on the github backend pre-ADR-0009 (old type labels remapped per §2a,
+  body-parsed `priority:` labels, `needs-triage` default, marker stripped; dry-run by
+  default, offline `--selftest`).
 - [`scripts/migrate_markdown_to_github.py`](scripts/migrate_markdown_to_github.py) — the
   one-way `markdown → github` migration driver for Mode 7 (dry-run by default; emits the
   `OI-NNNN → #N` map and rewrites back-references).

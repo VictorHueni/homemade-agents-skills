@@ -105,3 +105,15 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             Project field to Milestone due date; new report-only 18h (trustworthy
             ready-for-agent queue + closed-issue label hygiene) and 18i (axis
             exclusivity). Next: increment 09 (migration + backfill scripts).
+
+2026-07-20  Increment 09 DONE — migrate_markdown_to_github.py v2: bootstraps the 17-label
+            vocabulary (parsed at runtime from bootstrap_labels.sh — single SoT), maps
+            ledger types per §2a (decision-gap + execution-item -> type:task), applies
+            type/priority/needs-triage at creation and state: labels for in-progress/
+            blocked rows; marker, [OI] prefix, and Issue-Types probing dropped. New
+            backfill_execution_labels.py: pre-ADR-0009 remap (old type labels, body-parsed
+            priority incl. legacy bold style, needs-triage default, marker strip,
+            optional --delete-retired-labels), dry-run default, idempotent --apply.
+            Gates: py_compile + --help x2, offline --selftest 5/5 (substitutes for the
+            live dry-run — no gh/network in this sandbox; deferred to inc 10).
+            Next: increment 10 (kit-repo backfill — operator-gated).
