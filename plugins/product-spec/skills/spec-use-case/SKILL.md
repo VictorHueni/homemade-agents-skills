@@ -1,9 +1,9 @@
 ---
 name: spec-use-case
-description: "Create effective use cases — goal-oriented, technology-neutral behavioural specs synthesising Cockburn's Writing Effective Use Cases (goal levels, fully-dressed + casual formats, main success scenario + extensions), UML use-case diagrams (actors, «include»/«extend»), and Jacobson's Use-Case 2.0 (slices for the backlog). Mints UC-NN. Modes: scaffold (use-cases/ folder + index), fully-dressed (author one use case), casual (lightweight variant), slice (Use-Case 2.0 backlog slices), review (quality audit). Output: docs/product-specs/use-cases/. Reads personas (P-NN as actors) + FBS (C-N.M.FXX); feeds PRDs, domain model, test cases. Triggers on: use case, write a use case, fully-dressed use case, main success scenario, actor goal, use case diagram, scenario, use case slice, alternate flow, extension, use case template."
-version: "1.0.0"
+description: "Create effective use cases — goal-oriented, technology-neutral behavioural specs synthesising Cockburn's Writing Effective Use Cases (goal levels, fully-dressed + casual formats, main success scenario + extensions), UML use-case diagrams (actors, «include»/«extend»), and Jacobson's Use-Case 2.0 (slices for the backlog). Mints UC-NN. Modes: scaffold (use-cases/ folder + index), fully-dressed (author one use case), casual (lightweight variant), slice (Use-Case 2.0 backlog slices), review (quality audit). Output: docs/product-specs/use-cases/ — grouped into per-capability slug subfolders when a capability map exists. Reads personas (P-NN as actors) + FBS (C-N.M.FXX); feeds PRDs, domain model, test cases. Triggers on: use case, write a use case, fully-dressed use case, main success scenario, actor goal, use case diagram, scenario, use case slice, alternate flow, extension, use case template."
+version: "1.1.0"
 status: active
-last_reviewed: 2026-06-06
+last_reviewed: 2026-07-20
 review_interval: 180d
 user-invocable: true
 allow_implicit_invocation: true
@@ -21,7 +21,7 @@ You are an expert at writing **effective use cases** — goal-oriented, technolo
 - **UML use-case diagrams (Jacobson / OMG)**: the visual overview. Actors, system boundary, `«include»` / `«extend»` / generalization. A *map* of use cases, never a substitute for the text. Render these with **`arch-uml`** (`use-case` mode → PlantUML → committed SVG); carry each `UC-NN` onto its ellipse so the diagram cross-references back to the fully-dressed text here.
 - **Ivar Jacobson — _Use-Case 2.0_ (2011)**: the agile delivery layer. The same use case, **sliced** vertically into backlog-sized increments (a *use-case slice* = narrative path + its test cases), so use cases drive iterative delivery the way user stories do.
 
-The artefact produced is **one markdown file per use case** under `docs/product-specs/use-cases/`, plus a registry `index.md`. A use case is NOT a user story, NOT a PRD, NOT an FBS row, NOT a UI spec — it is **the behavioural scenario**: the numbered interaction between actor and system, every alternate path, and the guarantees that hold when it ends.
+The artefact produced is **one markdown file per use case** under `docs/product-specs/use-cases/`, plus a registry `index.md`. When a capability map exists, the per-use-case files are grouped into per-capability subfolders (`use-cases/<capability-slug>/`) — see §Organizing use cases by capability. A use case is NOT a user story, NOT a PRD, NOT an FBS row, NOT a UI spec — it is **the behavioural scenario**: the numbered interaction between actor and system, every alternate path, and the guarantees that hold when it ends.
 
 This skill is **domain-agnostic**. When activated in a project, it inherits the project's personas (as actors) and FBS functionalities (as the behaviours the use case realises).
 
@@ -94,6 +94,8 @@ State `Scope` and `Level` explicitly in every use case. If you're tempted to wri
 **Output** under `docs/product-specs/use-cases/`:
 - `index.md` — the use-case registry (from `templates/index.md`): a table of `UC-NN`, name, level, scope, primary actor, status, plus the methodology pointer and an optional UML actor/use-case overview placeholder.
 
+Check for a capability map (`docs/business/03a-capability-map.md`). If it exists, scaffold the registry in its **capability-grouped** form and note that author-mode files will land under `use-cases/<capability-slug>/` subfolders (see §Organizing use cases by capability). If not, scaffold the flat single-table registry.
+
 Do NOT invent use cases in scaffold mode. Substitute `{{product_or_scope}}`. Open the file with standard artefact frontmatter (see below).
 
 ### Mode 2 — Fully-dressed (author one use case)
@@ -104,19 +106,19 @@ Do NOT invent use cases in scaffold mode. Substitute `{{product_or_scope}}`. Ope
 1. **Fix `Scope` + `Level`** (see above). Confirm with the user if ambiguous.
 2. **Identify the primary actor** — prefer a project persona (`P-NN`); record it as the actor. Identify supporting actors (other systems/services the system calls).
 3. **List stakeholders and interests** — who is *not* at the keyboard but whose interest the system must protect (the business, an auditor, the data subject).
-4. **Mint the ID** — next `UC-NN` from the registry. Create `uc-NN-{slug}.md` from `templates/use-case-fully-dressed.md`.
+4. **Mint the ID** — next `UC-NN` from the registry. Create `uc-NN-{slug}.md` from `templates/use-case-fully-dressed.md`, in the capability subfolder its `Realises` capability resolves to (see §Organizing use cases by capability), or the `use-cases/` root if it is unlinked or no capability map exists.
 5. **Write the Main Success Scenario** — numbered steps, each `Subject verb… ` in active voice, alternating actor intent and system responsibility. 3–9 steps is the sweet spot. Each step shows *who has the ball*.
 6. **Write Extensions** — walk every step; ask "what else could happen here?" Label `1a`, `1b`, `2a`… with the *condition* then the handling steps. Missing extensions is where real requirements hide.
 7. **State guarantees + preconditions + trigger.**
-8. **Link** — `Realises` the FBS functionalities (`C-N.M.FXX`); reference glossary terms (`GT-NN`); note the value-stream stage if relevant.
-9. **Update `index.md`** — add the registry row.
+8. **Link** — `Realises` the FBS functionalities (`C-N.M.FXX`); reference glossary terms (`GT-NN`); note the value-stream stage if relevant. The first `Realises` entry's capability determines the file's capability subfolder.
+9. **Update `index.md`** — add the registry row under the use case's capability group (or the Unassigned group if unlinked).
 10. **Run the quality checklist** in `references/use-case-discipline.md`.
 
 ### Mode 3 — Casual (lightweight variant)
 
 **When:** the goal is low-risk or you're early in discovery and want speed. Cockburn's casual format trades the field structure for a few prose paragraphs.
 
-**Output:** `uc-NN-{slug}.md` from `templates/use-case-casual.md` — title + scope/level + a paragraph for the main scenario and a short paragraph (or bullet list) for the alternate paths. Still mints `UC-NN` and updates the index. Casual use cases can be **promoted to fully-dressed** later without re-numbering.
+**Output:** `uc-NN-{slug}.md` from `templates/use-case-casual.md` — title + scope/level + a paragraph for the main scenario and a short paragraph (or bullet list) for the alternate paths. Placed under the same capability-subfolder rule as Mode 2 (§Organizing use cases by capability). Still mints `UC-NN` and updates the index. Casual use cases can be **promoted to fully-dressed** later without re-numbering.
 
 ### Mode 4 — Slice (Use-Case 2.0 — feed the backlog)
 
@@ -132,7 +134,7 @@ Do NOT invent use cases in scaffold mode. Substitute `{{product_or_scope}}`. Ope
 
 **When:** existing use cases need checking before they ground PRDs or domain models.
 
-Read each `uc-NN-*.md` against the checklist in `references/use-case-discipline.md` and emit ranked findings (which level violation, which anti-pattern, which missing extension) with a concrete fix per finding. **Report-only — do not silently rewrite** unless asked; propose the exact edits.
+Read each use-case file (discover recursively — `use-cases/**/uc-*.md`, so capability subfolders and any manual thematic subfolder are covered) against the checklist in `references/use-case-discipline.md` and emit ranked findings (which level violation, which anti-pattern, which missing extension) with a concrete fix per finding. **Report-only — do not silently rewrite** unless asked; propose the exact edits.
 
 ---
 
@@ -167,15 +169,48 @@ Use cases are the **behavioural bridge** between the strategic/registry layer an
 
 ---
 
+## Organizing use cases by capability
+
+By default (no capability map) all use cases live flat in `docs/product-specs/use-cases/`. **When a capability map (`docs/business/03a-capability-map.md`) exists, group the per-use-case files into per-capability subfolders** so the registry mirrors the capability structure — the layer directly above the FBS.
+
+**Folder = the capability's canonical slug.** Every L1 capability in the map carries a `` `slug: <handle>` `` code-line under its `### C-N.M · …` heading (stable, short, globally unique — the same handle used for commit scopes). Reuse it verbatim as the folder name; never invent a new one.
+
+```
+docs/product-specs/use-cases/
+  index.md                     ← registry, grouped by capability
+  <capability-slug>/           ← e.g. catalog-maintenance/  (one L1 capability C-N.M)
+    uc-03-....md
+    uc-07-....md
+  <another-capability-slug>/
+    uc-05-....md
+  uc-11-....md                 ← unassigned (no Realises yet) — stays at root
+```
+
+**Which folder a use case lands in:**
+
+1. Read the use case's `Realises: C-N.M.FXX`. The functionality's parent capability is its `C-N.M` prefix.
+2. Look up that capability's slug in the map; the file goes in `use-cases/<slug>/`.
+3. **Multiple capabilities realised** → file it once under the **primary** capability (the one owning the use case's main goal — the first `Realises` entry); the full `Realises:` list still cross-references the others.
+4. **No `Realises` yet** (soft-reference — a use case may precede the FBS), **no capability map**, or **the capability carries no slug** → leave the file at the `use-cases/` root and list it under the registry's **Unassigned** group. Re-file it when the link is added. (If the map exists but the target capability lacks a slug, prefer assigning one per `business-capability-map`'s mandatory-slug rule, then file.)
+
+**Registry index** groups rows under one `### C-N.M · <Capability name> (`slug`)` heading per capability, plus a trailing **Unassigned** group. With no capability map, keep the single flat table.
+
+**Discovery is recursive.** Scaffold-detection and Review mode locate use cases with `use-cases/**/uc-*.md` (never a single-level glob), so both the capability layout and any manual thematic subfolder are handled.
+
+> **Metamodel note.** The canonical use-case `default_path` is a structural fact owned by the **clew** repo (kit ADR-0007); this capability-subfolder layout is a projection of it. Until clew's registry sanctions the variant, a strict metamodel Audit that assumes the flat path may flag nested files — resolve UC discovery with the recursive glob above.
+
+---
+
 ## Inputs
 
 | Needed | What you ask if missing |
 |---|---|
 | **Mode** | Detect from request (scaffold / fully-dressed / casual / slice / review). Confirm if ambiguous. |
-| **Folder** | Look for `docs/product-specs/use-cases/`. If absent, default there and confirm. |
+| **Folder** | Look for `docs/product-specs/use-cases/` (search recursively — it may hold capability subfolders). If absent, default there and confirm. |
+| **Capability map** | Check for `docs/business/03a-capability-map.md`. If present, switch on the capability-slug subfolder layout (§Organizing use cases by capability). |
 | **Primary actor** | A project persona (`P-NN`) if one fits; else name the actor role. |
 | **Goal + level** | What does the actor want, in one go? Helps fix the level. |
-| **FBS existence** | Check for `docs/product-specs/07a-fbs.md` to populate `Realises:`. Optional. |
+| **FBS existence** | Check for `docs/product-specs/07a-fbs.md` to populate `Realises:` — its capability prefix also picks the subfolder. Optional. |
 
 Ask 2–4 questions max, single message, lettered options. Don't run a wizard.
 
@@ -217,6 +252,7 @@ After any mode, summarise in 4–6 lines:
 Before declaring the work done:
 
 - [ ] `use-cases/` folder + `index.md` registry exist.
+- [ ] When a capability map exists: each use case sits in its capability-slug subfolder (unlinked ones at root); the registry is capability-grouped with an Unassigned group. No capability map → flat layout.
 - [ ] Each use case states `Scope` + `Level` explicitly; level passes the coffee-break test (user-goal default).
 - [ ] Main success scenario is numbered, active-voice, actor-intent (no UI/screen detail), 3–9 steps.
 - [ ] Extensions walk every step; each has a condition + handling.

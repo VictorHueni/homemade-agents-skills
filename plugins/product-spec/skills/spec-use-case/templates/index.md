@@ -10,11 +10,38 @@ Methodology (kit-only): `spec-use-case/references/methodology.md` — Cockburn t
 
 **Levels:** 🌊 user-goal (default) · ☁🪁 summary · 🐟🦪 subfunction. **Status:** ⬜ draft · 🔄 in progress · ✅ stable.
 
+<!-- LAYOUT: use ONE of the two forms below.
+     • No capability map → keep the flat "## Use Cases" table; files live at use-cases/ root.
+     • Capability map exists → delete the flat table and use the "## Use Cases by capability"
+       form: one group per L1 capability (folder = its canonical `slug`), plus Unassigned.
+       See the spec-use-case skill's §Organizing use cases by capability. -->
+
 ## Use Cases
 
 | ID | Use case (goal) | Level | Scope | Primary actor | Realises (FBS) | Status |
 |---|---|---|---|---|---|---|
 | UC-01 | {{Goal verb phrase}} | 🌊 | system | {{P-NN}} | {{C-N.M.FXX}} | ⬜ |
+
+<!-- ── Capability-grouped form (use when docs/business/03a-capability-map.md exists) ──
+
+## Use Cases by capability
+
+### C-N.M · {{Capability name}} (`{{capability-slug}}`)
+
+Files: [`{{capability-slug}}/`]({{capability-slug}}/)
+
+| ID | Use case (goal) | Level | Scope | Primary actor | Realises (FBS) | Status |
+|---|---|---|---|---|---|---|
+| UC-01 | {{Goal verb phrase}} | 🌊 | system | {{P-NN}} | {{C-N.M.FXX}} | ⬜ |
+
+### Unassigned (no capability link yet)
+
+Files at `use-cases/` root; re-file under a capability once `Realises:` is set.
+
+| ID | Use case (goal) | Level | Scope | Primary actor | Realises (FBS) | Status |
+|---|---|---|---|---|---|---|
+| UC-NN | {{Goal verb phrase}} | 🌊 | system | {{P-NN}} | _TBD_ | ⬜ |
+-->
 
 ## Actor / use-case overview (optional)
 
