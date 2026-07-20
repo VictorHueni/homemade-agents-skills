@@ -53,7 +53,7 @@ Copy `.env.example` to `.env` (if you haven't already) and fill in the following
 | `{VAR_NAME}` | Yes | {what it does} | {source} |
 | `{VAR_NAME}` | No | {what it does — consequence of leaving unset} | {source or "any string"} |
 
-> Leave `_TODO_` for any variable whose source is unclear — add it to §Open Items below.
+> Leave `_TODO_` for any variable whose source is unclear — file it directly via `util-open-items` (ADR-0005).
 
 ---
 
