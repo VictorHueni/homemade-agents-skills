@@ -910,13 +910,27 @@ How the sub-checks split by backend:
 | :-- | :-- | :-- |
 | 18a Stale local-section relic sweep | run as written | run as written (a leftover local table is a relic regardless of backend) |
 | 18b Ledger schema compliance | run as written | not applicable — no literal table; see 18g |
-| 18c Source-location provenance & resolution | run as written | **github variant** — reads issue body fields via `gh` |
+| 18c Source-location provenance & resolution | run as written | **github variant** — reads provenance body sections via `gh`; applies only to issues that carry them |
 | 18e Closure drift | scan ledger rows | **github variant** — structurally enforced; verify the closing reference exists |
-| 18f Stale open items | ledger `Due / Review date` | **github variant** — open issues' Project `Review date` field |
-| 18g Form / slug integrity | — | **github only** — issue bodies carry the canonical slug fields + valid Type |
+| 18f Stale open items | ledger `Due / Review date` | **github variant** — open issues' Milestone due date (Project field retired — ADR-0008) |
+| 18g Form / slug integrity | — | **github only** — valid `type:` label (§2a) + canonical slug fields where provenance sections are present |
+| 18h Trustworthy `ready-for-agent` queue | — | **github only** — readiness-contract precondition + label hygiene on closed issues |
+| 18i Axis exclusivity | — | **github only** — at most one label per axis |
 
 (18d is retired — see below.) Everything stays **report-only**; remediation routes through
 `util-open-items`.
+
+**Population (`github` — ADR-0009 §3).** The retired `open-item` marker label is NOT a
+population selector: under this backend the repo's issue tracker *is* the ledger, so the
+github sub-checks read **all issues**. Structural checks (18g type label, 18h, 18i) apply
+to every issue; provenance/slug checks (18c, the field half of 18g) apply only to issues
+whose body carries the provenance sections (`### Source artefact` / `### Source anchor` /
+`### Source heading`) — `type:bug` / `type:feature` issues are tracker-native and normally
+carry none. Execution-layer fields — `type`, `priority`, `size`, readiness,
+`in-progress`/`blocked` — are read from **labels** via the slug map
+(`util-open-items/references/github-backend.md` §2, §2a, §2b), never parsed from body
+text; `type` is read back through the §2a governance mapping (`type:docs`→`doc-gap`,
+`type:task`→`decision-gap`/`execution-item`, `type:tech-debt`→`tech-debt`).
 
 ### Sub-check 18a — Stale local-section relic sweep (transitional)
 
@@ -1018,14 +1032,18 @@ done
 fix `Source artefact` — it currently points at a file that no longer exists (§4 of
 this skill's `references/open-items-governance.md`)."
 
-**github variant** (requires `gh` auth). Read the same fields from the issue body and check
-`source_artefact` resolves:
+**github variant** (requires `gh` auth). Population: **all** open issues (no marker label —
+ADR-0009 §3); the check applies only to issues whose body carries provenance sections.
+Read the same fields from the issue body and check `source_artefact` resolves:
 
 ```bash
 if [ "$backend" = "github" ]; then
-  gh issue list -R "$repo" --label open-item --state open --json number,body \
+  gh issue list -R "$repo" --state open --json number,body \
     -q '.[] | [(.number|tostring), (.body // "")] | @tsv' \
   | while IFS=$'\t' read -r n body; do
+    # Provenance-scoped: tracker-native issues (bug/feature) carry no provenance
+    # sections and are skipped, not flagged.
+    echo "$body" | grep -qi 'Source artefact' || continue
     artefact=$(echo "$body" | grep -A1 -i 'source_artefact\|Source artefact' | tail -1 | xargs)
     heading=$(echo "$body" | grep -A1 -i 'source_heading\|Source heading' | tail -1 | xargs)
     [ "$heading" = "_central-only_" ] && continue
@@ -1080,7 +1098,7 @@ has no evidencing `tracker_ref`:
 
 ```bash
 if [ "$backend" = "github" ]; then
-  gh issue list -R "$repo" --label open-item --state closed \
+  gh issue list -R "$repo" --state closed \
     --json number,stateReason,closedByPullRequestsReferences \
     -q '.[] | select(.stateReason=="COMPLETED" and (.closedByPullRequestsReferences|length==0)) | .number' \
   | while read -r n; do
@@ -1131,18 +1149,17 @@ today=$(date +%s)
 `{due date}` ({overdue days}d ago). Run `util-open-items` in `triage` mode to either
 re-date, escalate priority, reassign owner, or close with a `Tracker ref`."
 
-**github variant** (requires `gh` auth). Overdue is the Project `Review date` field on open
-issues. Field name follows the project's configuration — adjust the `-q` selector to match:
+**github variant** (requires `gh` auth). Overdue is the **Milestone due date** on open
+issues (`review_date` serialization per `github-backend.md` §2; the Project `Review date`
+field was retired unwired — ADR-0008). Issues with no milestone have no review date and
+are skipped:
 
 ```bash
 if [ "$backend" = "github" ]; then
-  project=$(grep -oE '^project:[[:space:]]*[0-9]+' "$backend_cfg" | awk '{print $2}')
-  owner=$(echo "$repo" | cut -d/ -f1)
   today=$(date +%s)
-  gh project item-list "$project" --owner "$owner" --format json \
-    -q '.items[] | select(.status!="Done") | [(.content.number|tostring), (.["reviewDate"] // "")] | @tsv' 2>/dev/null \
+  gh issue list -R "$repo" --state open --json number,milestone \
+    -q '.[] | select(.milestone.dueOn != null) | [(.number|tostring), .milestone.dueOn] | @tsv' \
   | while IFS=$'\t' read -r n due; do
-    [ -z "$due" ] && continue
     due_ts=$(date -d "$due" +%s 2>/dev/null) || continue
     [ "$today" -gt "$due_ts" ] && echo "OVERDUE: issue #$n review date $due has passed"
   done
@@ -1151,25 +1168,37 @@ fi
 
 ### Sub-check 18g — Form / slug integrity (github only)
 
-**What:** every open `open-item` issue was created from the canonical form, carries a valid
-Issue Type, and exposes the required slug fields in its body. This is the github analog of
-18b/18c — it verifies the issue conforms to the §4 slug contract (Invariant I1) so the
+**What:** every open issue carries exactly one valid `type:` label from the 5-value
+standard vocabulary (ADR-0009 §5; read from **labels**, never from body text or native
+Issue Types — the audit reads `type` back through the §2a governance mapping, where
+`type:bug`/`type:feature` are tracker-native, not governance items), and every issue whose
+body carries provenance sections exposes the required slug fields. This is the github
+analog of 18b/18c — it verifies conformance to the §4 slug contract (Invariant I1) so the
 read-out stays machine-parseable.
 
 **Detection** (requires `gh` auth):
 
 ```bash
 if [ "$backend" = "github" ]; then
-  valid="doc-gap decision-gap execution-item tech-debt"
-  gh issue list -R "$repo" --label open-item --state open \
-    --json number,issueType,body \
-    -q '.[] | [(.number|tostring), (.issueType.name // "none"), (.body|gsub("\n";"¶"))] | @tsv' \
-  | while IFS=$'\t' read -r n itype body; do
-    echo "$valid" | grep -qw "$itype" || \
-      echo "INVALID TYPE: issue #$n has Issue Type '$itype' (expected one of: $valid)"
-    echo "$body" | grep -qi "Source heading" || \
+  valid="type:bug type:feature type:task type:docs type:tech-debt"
+  gh issue list -R "$repo" --state open \
+    --json number,labels,body \
+    -q '.[] | [(.number|tostring), ([.labels[].name]|join(",")), ((.body // "")|gsub("\n";"¶"))] | @tsv' \
+  | while IFS=$'\t' read -r n labels body; do
+    tlabel=$(echo "$labels" | tr ',' '\n' | command grep '^type:' | head -1)
+    if [ -z "$tlabel" ]; then
+      echo "MISSING TYPE LABEL: issue #$n carries no type:* label"
+    else
+      echo "$valid" | command grep -qw -- "$tlabel" || \
+        echo "INVALID TYPE LABEL: issue #$n has '$tlabel' (expected one of: $valid)"
+    fi
+    # Slug-field checks are provenance-scoped (ADR-0009 §2): only issues whose body
+    # carries provenance sections are governance items; bug/feature issues are
+    # tracker-native and skipped.
+    echo "$body" | command grep -qi 'Source artefact' || continue
+    echo "$body" | command grep -qi "Source heading" || \
       echo "FORM DRIFT: issue #$n body has no Source heading field"
-    echo "$body" | grep -qi "Resolution path" || \
+    echo "$body" | command grep -qi "Resolution path" || \
       echo "FORM DRIFT: issue #$n body has no Resolution path field"
   done
 fi
@@ -1177,10 +1206,95 @@ fi
 
 **Severity:** Warning
 
-**Proposed fix template:** "Issue `#{N}` is missing `{field}` / has Issue Type `{itype}`.
-Re-create it through `.github/ISSUE_TEMPLATE/open-item.yml` or edit it to restore the
-canonical slug fields. The form `id:` keys are the binding contract (Invariant I1 in
-`util-open-items/references/github-backend.md`)."
+**Proposed fix template:** "Issue `#{N}` is missing `{field}` / carries type label
+`{tlabel}`. Apply exactly one `type:` label from the ADR-0009 §5 vocabulary (or re-create
+the issue through the per-type Issue Forms, `.github/ISSUE_TEMPLATE/1-bug.yml` …
+`5-tech-debt.yml`) and restore the canonical slug fields. The form `id:` keys are the
+binding contract (Invariant I1 in `util-open-items/references/github-backend.md`)."
+
+### Sub-check 18h — Trustworthy `ready-for-agent` queue (github only)
+
+**What:** the delegation queue (`is:open label:ready-for-agent`) is trustworthy by
+construction — an issue MAY carry `ready-for-agent` only if its `### Acceptance criteria`
+and `### References` body sections are non-empty AND a `size:` label is set (the ADR-0008
+§3 readiness-contract precondition, restated in `github-backend.md` §2b). Any queue issue
+missing one of the three is drift an agent would trip over. Second half: readiness or
+`state:` labels left on **closed** issues are a hygiene finding — the closing flow removes
+them at terminal state (§2b label handover), so leftovers are stale, not drift.
+Report-only, like every sub-check: promotion/demotion routes through `util-open-items`
+triage.
+
+**Detection** (requires `gh` auth):
+
+```bash
+if [ "$backend" = "github" ]; then
+  # Half 1 — queue precondition (ADR-0008 §3): acceptance criteria + references + size.
+  gh issue list -R "$repo" --state open --label ready-for-agent \
+    --json number,labels,body \
+    -q '.[] | [(.number|tostring), ([.labels[].name]|join(",")), ((.body // "")|gsub("\n";"¶"))] | @tsv' \
+  | while IFS=$'\t' read -r n labels body; do
+    echo "$labels" | tr ',' '\n' | command grep -q '^size:' || \
+      echo "QUEUE DRIFT: issue #$n is ready-for-agent but has no size: label"
+    for section in "Acceptance criteria" "References"; do
+      if ! echo "$body" | command grep -qi "### $section"; then
+        echo "QUEUE DRIFT: issue #$n is ready-for-agent but has no '### $section' section"
+      elif echo "$body" | command grep -qiE "### $section¶+_No response_"; then
+        echo "QUEUE DRIFT: issue #$n is ready-for-agent but '### $section' is empty"
+      fi
+    done
+  done
+
+  # Half 2 — hygiene: readiness / state: labels left behind on closed issues.
+  gh issue list -R "$repo" --state closed --json number,labels -L 500 \
+    -q '.[] | [(.number|tostring), ([.labels[].name]|join(","))] | @tsv' \
+  | while IFS=$'\t' read -r n labels; do
+    stale=$(echo "$labels" | tr ',' '\n' | \
+      command grep -E '^(needs-triage|ready-for-agent|needs-human|state:in-progress|state:blocked)$' | \
+      paste -sd, -)
+    [ -n "$stale" ] && echo "LABEL HYGIENE: closed issue #$n still carries: $stale"
+  done
+fi
+```
+
+**Severity:** Warning (queue precondition violated) · Info (stale labels on closed issues)
+
+**Proposed fix template:** "Issue `#{N}` violates the `ready-for-agent` precondition
+(ADR-0008 §3): missing `{acceptance criteria / references / size label}`. Run
+`util-open-items` triage — either draft the missing brief and re-promote, or demote to
+`needs-triage`/`needs-human`. For closed issue `#{N}`: remove the leftover
+`{labels}` label(s) — the closing flow (`close`/`drop`) strips readiness/`state:` labels
+at terminal state."
+
+### Sub-check 18i — Axis exclusivity (github only)
+
+**What:** the five label axes are mutually exclusive — no issue may carry more than one
+label from the same axis (`type:*`, `priority:*`, `size:*`, the readiness trio
+`needs-triage`/`ready-for-agent`/`needs-human`, `state:*`), per `github-backend.md` §2b
+("one label per axis"). Two `priority:` labels make the queue sort ambiguous; two
+readiness labels make routing ambiguous. Report-only.
+
+**Detection** (requires `gh` auth):
+
+```bash
+if [ "$backend" = "github" ]; then
+  gh issue list -R "$repo" --state all --json number,labels -L 500 \
+    -q '.[] | [.labels[].name] as $l |
+        { n: .number,
+          type:  ([$l[] | select(startswith("type:"))]     | length),
+          prio:  ([$l[] | select(startswith("priority:"))] | length),
+          size:  ([$l[] | select(startswith("size:"))]     | length),
+          ready: ([$l[] | select(. == "needs-triage" or . == "ready-for-agent" or . == "needs-human")] | length),
+          state: ([$l[] | select(startswith("state:"))]    | length) } |
+        select(.type > 1 or .prio > 1 or .size > 1 or .ready > 1 or .state > 1) |
+        "AXIS VIOLATION: issue #\(.n) — type=\(.type) priority=\(.prio) size=\(.size) readiness=\(.ready) state=\(.state) (each must be ≤1)"'
+fi
+```
+
+**Severity:** Warning
+
+**Proposed fix template:** "Issue `#{N}` carries {count} labels on the `{axis}` axis —
+keep exactly one and remove the rest (`github-backend.md` §2b: one label per axis). If
+the correct value is unclear, route through `util-open-items` triage."
 
 ### Summary — Check 18 outputs
 
@@ -1188,11 +1302,13 @@ canonical slug fields. The form `id:` keys are the binding contract (Invariant I
 | :-- | :-- | :-- | :-- |
 | 18a Stale local-section relic sweep | Error | both | Leftover local `## Open Items` table (ADR-0005 relic); forbidden legacy headings |
 | 18b Ledger schema compliance | Error | `markdown` | Missing / reordered canonical columns in the ledger or an archive bucket |
-| 18c Source-location provenance & resolution | Warning | both | Empty / `_TBD_` `Source anchor`/`Source heading` (excludes `_central-only_`); `Source artefact` pointing at a nonexistent file |
+| 18c Source-location provenance & resolution | Warning | both | Empty / `_TBD_` `Source anchor`/`Source heading` (excludes `_central-only_`); `Source artefact` pointing at a nonexistent file (github: provenance-section-scoped) |
 | 18d Tracker sync coverage | — | — | **Retired** (ADR-0005) — no local surface left to sync against; see 18c |
 | 18e Closure drift | Error | markdown: ledger · github: closing-ref | Terminal rows / issues without evidencing `Tracker ref` |
-| 18f Stale open items | Warning | markdown: `Due / Review date` · github: Project field | Active rows / issues past their review date |
-| 18g Form / slug integrity | Warning | **github only** | Open-item issues with invalid Type or missing canonical slug fields |
+| 18f Stale open items | Warning | markdown: `Due / Review date` · github: Milestone due date | Active rows / issues past their review date |
+| 18g Form / slug integrity | Warning | **github only** | Issues missing a valid `type:` label (§2a); provenance-carrying issues missing canonical slug fields |
+| 18h Trustworthy `ready-for-agent` queue | Warning · Info | **github only** | Queue issues missing acceptance criteria / references / `size:` (ADR-0008 §3); readiness/`state:` labels left on closed issues |
+| 18i Axis exclusivity | Warning | **github only** | Issues carrying more than one label from the same axis |
 
 All sub-checks are read-only; none write to `docs/project-control/open-items/`, to any
 artefact, or to GitHub. Findings always route to the operator for action through

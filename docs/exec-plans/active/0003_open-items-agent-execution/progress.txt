@@ -97,3 +97,11 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             labeler -> CLAUDE.md verify commands -> backend.yml); behaviour table,
             Mode 7 prose, references conformed to ADR-0009 (no Project, no marker).
             Next: increment 08 (audit mode conformance).
+
+2026-07-20  Increment 08 DONE — audit catalogue Check 18 conforms to ADR-0009: github
+            sub-checks read type/priority/size/readiness/state from labels via the slug
+            map (type back through §2a); population = all issues (marker retired) with
+            provenance checks scoped by section presence; 18f moved off the retired
+            Project field to Milestone due date; new report-only 18h (trustworthy
+            ready-for-agent queue + closed-issue label hygiene) and 18i (axis
+            exclusivity). Next: increment 09 (migration + backfill scripts).

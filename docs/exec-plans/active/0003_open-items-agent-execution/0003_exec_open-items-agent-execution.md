@@ -69,7 +69,7 @@ Principles:
    if acceptance criteria and code pointers are present.
 
 **Overall Status:** in-progress
-**Current Increment:** 08
+**Current Increment:** 09
 
 ## Increment Plan
 
@@ -306,7 +306,7 @@ Exit criteria:
 
 ### Increment 08: Audit Mode Conformance
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
