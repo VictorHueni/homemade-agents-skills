@@ -56,3 +56,11 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             Live end-to-end labeler test deferred to increment 10 (needs bootstrap
             --apply on GitHub first). M2 (Intake surface) complete.
             Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).
+
+2026-07-20  REVISION (ADR-0009) — operator rejected the open-item marker + governance
+            type vocabulary as exotic. New contract: standard 6-value type axis
+            (bug/feature/task/docs/decision/tech-debt) with governance §2 mapping,
+            marker dropped (tracker = ledger), one issue form per type. Vocabulary now
+            18 labels / 5 axes. Contract docs conformed (ADR-0009, governance §1/§5.3,
+            github-backend.md §2/§2a/§2b); plan increments 07-12 re-worded. Increments
+            04-06 rework follows as a separate commit.

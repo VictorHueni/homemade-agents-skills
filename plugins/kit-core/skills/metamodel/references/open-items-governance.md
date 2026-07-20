@@ -17,8 +17,9 @@ skill.
 
 Every open item — whatever artefact it concerns, or none at all — is authored **directly
 into the central ledger**: the living markdown table at
-`docs/project-control/open-items/open-items.md`, or a GitHub Issue labelled `open-item`,
-per whichever backend the project selects (`backend.yml`, §5.3). There is no per-artefact
+`docs/project-control/open-items/open-items.md`, or a GitHub Issue (under the `github`
+backend the repo's issue tracker *is* the ledger; serialization per §5.3 and the backend
+reference), per whichever backend the project selects (`backend.yml`, §5.3). There is no per-artefact
 local section to expose, populate, or keep in sync — the ledger (or issue tracker) is the
 only surface a skill or contributor writes to.
 
@@ -236,7 +237,7 @@ human), plus agent-ready content fields (`references`, `acceptance_criteria`,
 **orthogonal to lifecycle `status`** (§3): it qualifies an `open` item for delegation and
 never replaces or reorders the lifecycle. Serialization mechanics (label vocabulary,
 promotion rules, preconditions) belong to the backend reference
-(`util-open-items/references/github-backend.md`, per kit ADR-0008), never to this rule; a
+(`util-open-items/references/github-backend.md`, per kit ADR-0008/ADR-0009), never to this rule; a
 backend that omits the execution layer entirely remains conformant.
 
 A worked two-backend mapping (the kit's own `markdown` ledger plus an issue-tracker backend)

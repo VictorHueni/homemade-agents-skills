@@ -26,6 +26,9 @@ Per `adr-0002`, the `github` backend is an **opt-in** backend selected per proje
 decomposition live in **labels** (the originally-mapped Project v2 fields were never wired
 and are retired), and the backend gains an optional **execution layer** (`size`,
 `readiness`, agent-ready content fields) so coding agents can query and take issues.
+`adr-0009` amended the vocabulary: the type axis is the **standard 6-value set**
+(bug/feature/task/docs/decision/tech-debt, §2a), the `open-item` marker is retired (the
+tracker is the ledger), and intake is one Issue Form per type.
 
 ---
 
@@ -52,7 +55,7 @@ size · readiness · references · acceptance_criteria · out_of_scope
 | Slug | §4 column | Domain |
 | :--- | :--- | :--- |
 | `oi_id` | OI-ID | identity (realized per backend — §3) |
-| `type` | Type | `doc-gap` · `decision-gap` · `execution-item` · `tech-debt` |
+| `type` | Type | governance §2 values (`doc-gap` · `decision-gap` · `execution-item` · `tech-debt`); github serializes via the 6-value standard vocabulary (§2a, `adr-0009`) — `bug`/`feature` are tracker-native extras |
 | `summary` | Summary | one self-contained sentence |
 | `source_artefact` | Source artefact | repo path \| scope marker \| empty |
 | `source_anchor` | Source anchor | `#…` \| empty |
@@ -93,7 +96,7 @@ it lands changes. One `OpenItem` ⇒ one **Issue**, projected into one **Project
 | Canonical slug | GitHub home | Mechanism |
 | :--- | :--- | :--- |
 | `oi_id` | Issue **number** `#N` | native; `OI-NNNN` retired in this backend |
-| `type` | **Issue Type** (or `type:<value>` **label** where Issue Types are unavailable — e.g. personal repos) | 4 types map 1:1 to the taxonomy |
+| `type` | **Label** `type:bug\|feature\|task\|docs\|decision\|tech-debt` — form-static per template | 6-value standard vocabulary (`adr-0009`); governance §2 maps in via §2a |
 | `summary` | Issue **title** | |
 | `source_artefact` | Issue Form field `source_artefact` | `input` |
 | `source_anchor` | Issue Form field `source_anchor` | `input` |
@@ -112,15 +115,33 @@ it lands changes. One `OpenItem` ⇒ one **Issue**, projected into one **Project
 | read-out | Filtered issue lists (labels) | Projects v2 board deferred to [#73](https://github.com/VictorHueni/homemade-claude-kit/issues/73) |
 | archive | **Closed issues** (searchable indefinitely) | `archive` mode is a no-op here |
 
-The **Issue Form** (`.github/ISSUE_TEMPLATE/open-item.yml`) carries only the authoring-time
-partition; the lifecycle partition is native GitHub; readiness is triage-owned.
+The **Issue Forms** (one per type — `bug` / `feature` / `task` / `docs` / `decision` /
+`tech-debt`, templates `form-<type>.yml` in this skill) carry only the authoring-time
+partition; each form statically applies its `type:` label + `needs-triage`; the lifecycle
+partition is native GitHub; readiness is triage-owned.
 
-### 2b. Execution layer (`adr-0008`)
+### 2a. Type vocabulary and governance mapping (`adr-0009`)
 
-The canonical label vocabulary — 17 labels across six mutually-exclusive axes (marker,
-`type:`, `priority:`, `size:`, readiness, `state:`), exact names/colors/descriptions in
-`adr-0008` §4 — is bootstrapped idempotently by `scripts/bootstrap_labels.sh` **before**
-any surface that names a label ships (forms silently skip nonexistent labels).
+The type axis uses the **standard 6-value vocabulary**; there is no marker label — under
+this backend the repo's issue tracker *is* the ledger. The governance §2 taxonomy maps in:
+
+| Governance §2 | Serialized as | | Tracker-native (no §2 counterpart) |
+| :--- | :--- | :--- | :--- |
+| `doc-gap` | `type:docs` | | `type:bug` |
+| `decision-gap` | `type:decision` | | `type:feature` |
+| `execution-item` | `type:task` | | |
+| `tech-debt` | `type:tech-debt` | | |
+
+Tracker-native issues (`bug`, `feature`) are ordinary dev work: structural checks (axis
+exclusivity, readiness contract) apply to them; provenance checks apply only to issues
+carrying provenance sections. The audit reads `type` back through this mapping.
+
+### 2b. Execution layer (`adr-0008`, vocabulary as amended by `adr-0009`)
+
+The canonical label vocabulary — 18 labels across five mutually-exclusive axes (`type:`,
+`priority:`, `size:`, readiness, `state:`), exact names/colors/descriptions in `adr-0009`
+§5 — is bootstrapped idempotently by `scripts/bootstrap_labels.sh` **before** any surface
+that names a label ships (forms silently skip nonexistent labels).
 
 Rules:
 
@@ -135,7 +156,7 @@ Rules:
   readiness label; `state:blocked` per §3 lifecycle. The closing flow removes
   readiness/`state:` labels at terminal state; leftovers on closed issues are audit
   hygiene findings, not drift.
-- **Queries.** The delegation queue is `label:open-item label:ready-for-agent`, picked by
+- **Queries.** The delegation queue is `is:open label:ready-for-agent`, picked by
   highest `priority:` (tie-break: smallest `size:`). No body parsing anywhere in the
   execution path.
 - **Validation home.** Form `validations.required` gates only the web UI; `gh`/API filing
@@ -250,4 +271,5 @@ relationships are mutually exclusive, enforced by the `backend:` setting, not th
 - `util-open-items/references/template.md` — the `markdown`-backend ledger skeleton.
 - `adr-0002` (in a consuming repo's `docs/architecture/decisions/`, e.g. the kit) — the
   decision this mapping implements; `adr-0003` — github stays opt-in; `adr-0008` — the
-  label-based serialization amendment + execution layer this file conforms to.
+  label-based serialization amendment + execution layer; `adr-0009` — the standard
+  6-value type vocabulary, marker retirement, and per-type forms this file conforms to.

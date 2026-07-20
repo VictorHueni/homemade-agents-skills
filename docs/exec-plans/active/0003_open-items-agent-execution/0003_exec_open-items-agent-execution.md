@@ -42,6 +42,18 @@ backend is untouched.
 No PRD exists; the two research notes are the source artefacts. `0003` continues the
 exec-plan sequence.
 
+**Revision (2026-07-20, after increment 06 —
+[ADR-0009](../../../architecture/decisions/adr-0009-standard-issue-vocabulary-github-backend.md)):**
+the operator rejected the `open-item` marker + governance-derived type vocabulary as
+exotic ("everything is an open item; fit what GitHub Issues is created for"). Decisions:
+type axis becomes the standard 6-value set (`bug`/`feature`/`task`/`docs`/`decision`/
+`tech-debt`, governance §2 mapping in the backend reference §2a), the marker label is
+dropped (the tracker is the ledger), and intake is one form per type. Increments 04–06
+were reworked in place (all unmerged); increments 07–13 read with the amended
+vocabulary — notably: `sync` applies mapped `type:` labels, the backfill (09–10) also
+remaps old type labels and strips `open-item`, and the delegation queue is
+`is:open label:ready-for-agent`.
+
 Principles:
 
 1. One increment equals one coherent change set.
@@ -259,7 +271,8 @@ Exit criteria:
 Scope:
 
 1. **Mode 1 `sync` (github):** `gh issue create` applies labels atomically
-   (`--label open-item,type:<t>,priority:<p>,size:<s>,needs-triage`); body uses form
+   (`--label type:<mapped>,priority:<p>,size:<s>,needs-triage` — governance type mapped
+   per backend reference §2a); body uses form
    section headings; refusal rules unchanged and restated as the API-path gate
    (ADR-0008 §4).
 2. **Mode 2 `triage` v2:** adds the readiness duties — propose promotions to
@@ -328,9 +341,12 @@ Scope:
    issue creation; map ledger `in-progress`/`blocked` rows to `state:` labels instead of
    the retired "set Project Status manually" log line.
 2. New `scripts/backfill_execution_labels.py` — for repos already on the github backend:
-   parse each open `open-item` issue's `### Priority` body section → apply `priority:`
-   label; apply `needs-triage` to all open items lacking a readiness label. Dry-run
-   default, `--apply`, idempotent.
+   parse each open issue's `### Priority` body section → apply `priority:` label; apply
+   `needs-triage` where no readiness label exists; **remap old type labels to the
+   ADR-0009 vocabulary** (`type:doc-gap`→`type:docs`, `type:decision-gap`→`type:decision`,
+   `type:execution-item`→`type:task`; `type:tech-debt` unchanged) and **strip the retired
+   `open-item` marker** (using it first as the population selector, then removing it).
+   Dry-run default, `--apply`, idempotent.
 
 Primary files:
 
@@ -356,15 +372,18 @@ Scope:
 
 1. Run increment-04 bootstrap `--apply` on `VictorHueni/homemade-claude-kit`.
 2. Run increment-09 backfill dry-run; operator reviews the full plan; then `--apply`.
-3. Verify: every open `open-item` issue carries exactly one `priority:` label and
-   `needs-triage`.
+3. Verify: every open issue carries exactly one ADR-0009 `type:` label, exactly one
+   `priority:` label, and `needs-triage`; the retired `open-item` marker and old type
+   labels are gone (backfill uses the marker as population selector, then strips it and
+   deletes the retired labels from the repo).
 
 Primary files: none (operational; run log linked in progress.txt).
 
 Test gate:
 
-1. `gh issue list --label open-item --state open --json labels` shows no issue missing a
-   `priority:` label and none with a readiness label other than `needs-triage`.
+1. `gh issue list --state open --json labels` shows no issue missing a `type:`/`priority:`
+   label, none with a readiness label other than `needs-triage`, and zero occurrences of
+   `open-item` / `type:doc-gap` / `type:decision-gap` / `type:execution-item`.
 
 Exit criteria:
 
@@ -389,8 +408,8 @@ Primary files: none (operational).
 
 Test gate:
 
-1. Post-session: `gh issue list --label needs-triage --state open` is empty for
-   `open-item` issues; every `ready-for-agent` issue passes the increment-08 audit check.
+1. Post-session: `gh issue list --label needs-triage --state open` is empty; every
+   `ready-for-agent` issue passes the increment-08 audit check.
 
 Exit criteria:
 
@@ -420,7 +439,7 @@ Scope:
      failed criterion.
 
    **B. Duplication control & merge (write, operator-gated):**
-   - `dedupe` — scan open `open-item` issues, cluster candidates using the skill's
+   - `dedupe` — scan open issues, cluster candidates using the skill's
      established identity triple (`source_artefact`, `source_anchor`, summary
      fingerprint) plus semantic similarity of summary/resolution-path; output a
      duplicate-pairs proposal table (canonical issue, duplicate, evidence, merge plan).
@@ -435,7 +454,7 @@ Scope:
      missing); set `state:in-progress`; plan → implement → verify against the issue's
      own acceptance-criteria checks → PR with `Closes #N`; on merge the label lifecycle
      ends naturally with the issue.
-   - `next` — query `label:open-item label:ready-for-agent`, pick highest `priority:`
+   - `next` — query `is:open label:ready-for-agent`, pick highest `priority:`
      (tie-break: smallest `size:`), then run `take`.
 
 2. Action-budget contract in the skill (per research 0002 §7), per mode family:
