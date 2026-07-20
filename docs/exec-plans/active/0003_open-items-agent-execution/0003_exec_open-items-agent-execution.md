@@ -56,7 +56,7 @@ Principles:
    if acceptance criteria and code pointers are present.
 
 **Overall Status:** in-progress
-**Current Increment:** 06
+**Current Increment:** 07
 
 ## Increment Plan
 
@@ -223,7 +223,7 @@ Exit criteria:
 
 ### Increment 06: Creation-Time Automation (labeler + config.yml)
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -519,7 +519,7 @@ Exit criteria:
 | Milestone | Increments | Status | Coherent Outcome | Standalone Test Gate | Exit Criteria | Commit Guidance |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | M1: Contract | 01–03 | done | Serialization amendment decided and normative docs conform | rg checks on ADR-0008 + backend ref + governance rule | Label vocabulary + slugs fully specified; no design decisions left downstream | `docs(open-items): ...` |
-| M2: Intake surface | 04–06 | pending | New issues arrive label-complete and agent-parseable | Test issue filed via form arrives fully labelled | Zero manual label edits needed on a fresh filing | `feat(open-items): ...` |
+| M2: Intake surface | 04–06 | done | New issues arrive label-complete and agent-parseable | Test issue filed via form arrives fully labelled | Zero manual label edits needed on a fresh filing | `feat(open-items): ...` |
 | M3: Tooling conformance | 07–09 | pending | Skill, audit, and scripts operate the new layer | Script dry-runs + rg checks | Adoption checklist self-sufficient; backfill validated dry-run | `feat(open-items): ...` |
 | M4: Kit-repo rollout | 10–11 | pending | Live queue backfilled and triaged; `ready-for-agent` trustworthy | `gh issue list` label assertions | No `needs-triage` remains; stale items dropped with rationale | operational commits + progress.txt log |
 | M5: Delegation + rollout | 12–13 | pending | Agents can validate readiness, dedupe/merge, and take/select issues; other repos can adopt | Dry-run `validate --queue` + `dedupe` + `next`, one real `take → PR` round-trip | One issue driven to merged PR by the skill; queue passes validate with zero unproposed drift | `feat(agent-loop): ...` / `docs(open-items): ...` |

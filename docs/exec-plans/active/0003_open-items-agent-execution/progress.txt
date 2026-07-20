@@ -47,3 +47,12 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             dropped, priority options now canonical critical..low. Gates: YAML parse
             OK, all 10 slug ids present. Old projects: delta obsolete (ADR-0008).
             Next: increment 06 (labeler workflow + config.yml).
+
+2026-07-20  Increment 06 DONE — open-item-labeler.yml (actions/github-script chosen
+            over Advanced Issue Labeler: no external dep, critical->p0 mapping, axis
+            exclusivity on edit; open-item scope guard, issues:write only) +
+            config.yml (blank_issues_enabled: false) + both template copies. Gates:
+            4x YAML parse, trigger/permissions/guard asserts, JS body syntax OK.
+            Live end-to-end labeler test deferred to increment 10 (needs bootstrap
+            --apply on GitHub first). M2 (Intake surface) complete.
+            Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).

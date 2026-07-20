@@ -1,0 +1,93 @@
+# Open-item labeler — mirrors Issue Form dropdown answers to axis labels.
+#
+# Why this exists: GitHub Issue Forms cannot set labels per dropdown answer
+# (research 0002 §2), so this workflow parses the form's rendered body sections
+# (### Type / ### Priority / ### Size) on issues:opened|edited and applies the
+# matching `type:` / `priority:` / `size:` labels per ADR-0008 §4.
+#
+# Implementation choice (Plan-0003 increment 06): a self-contained
+# actions/github-script step instead of the third-party Advanced Issue Labeler —
+# zero external dependency, supports the critical→p0 value mapping, and enforces
+# axis exclusivity (one label per axis) by removing stale same-axis labels on edit.
+#
+# Scope guard: only issues carrying the `open-item` label are touched. Run
+# scripts/bootstrap_labels.sh --apply before enabling this workflow: the addLabels
+# API auto-creates missing labels with random colors, and the bootstrap is what
+# keeps names/colors/descriptions canonical (ADR-0008 §4).
+
+name: open-item-labeler
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  mirror-form-labels:
+    if: contains(github.event.issue.labels.*.name, 'open-item')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror Type/Priority/Size dropdowns to axis labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body || '';
+            const current = context.payload.issue.labels.map(l => l.name);
+
+            // Parse "### <Heading>\n\n<value>" sections as rendered by Issue Forms.
+            const section = (heading) => {
+              const m = body.match(new RegExp(`###\\s+${heading}\\s*\\n+\\s*([^\\n]+)`, 'i'));
+              return m ? m[1].trim() : null;
+            };
+
+            // axis prefix -> { parsed form value -> label }
+            const axes = {
+              'type:': {
+                'doc-gap': 'type:doc-gap',
+                'decision-gap': 'type:decision-gap',
+                'execution-item': 'type:execution-item',
+                'tech-debt': 'type:tech-debt',
+              },
+              'priority:': {
+                'critical': 'priority:p0',
+                'high': 'priority:p1',
+                'medium': 'priority:p2',
+                'low': 'priority:p3',
+              },
+              'size:': {
+                'S': 'size:S',
+                'M': 'size:M',
+                'L': 'size:L',
+              },
+            };
+            const headings = { 'type:': 'Type', 'priority:': 'Priority', 'size:': 'Size' };
+
+            const toAdd = [];
+            const toRemove = [];
+            for (const [prefix, map] of Object.entries(axes)) {
+              const raw = section(headings[prefix]);
+              if (!raw) continue;                      // section absent: leave axis alone
+              const want = map[raw] ?? map[raw.toUpperCase?.()] ?? null;
+              if (!want) {
+                core.warning(`Unmapped ${headings[prefix]} value: "${raw}" — axis left unchanged`);
+                continue;
+              }
+              // Axis exclusivity: drop any other label with this prefix.
+              for (const l of current) {
+                if (l.startsWith(prefix) && l !== want) toRemove.push(l);
+              }
+              if (!current.includes(want)) toAdd.push(want);
+            }
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.issue.number;
+            for (const name of toRemove) {
+              await github.rest.issues.removeLabel({ owner, repo, issue_number, name })
+                .catch(e => core.warning(`removeLabel ${name}: ${e.message}`));
+            }
+            if (toAdd.length) {
+              await github.rest.issues.addLabels({ owner, repo, issue_number, labels: toAdd });
+            }
+            core.info(`added: [${toAdd}] removed: [${toRemove}]`);

@@ -1,0 +1,4 @@
+# Issue intake routing (research 0002 §2): no blank issues — every issue goes
+# through a form so it arrives schema-complete and pre-labelled. Maintainers with
+# write access still see a "blank issue" escape hatch (GitHub behaviour).
+blank_issues_enabled: false
