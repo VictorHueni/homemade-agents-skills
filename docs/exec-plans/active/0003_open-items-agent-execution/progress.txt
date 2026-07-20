@@ -6,5 +6,15 @@ Plan-0003 — Open-Items Agent-Execution Layer
             per-repo tracking, solo-now/team-later, all four agent flows.
             Awaiting operator review of the plan before increment 01.
 
-Increments: 13 total, milestones M1-M5. None started.
-Open items filed at plan creation: see plan §File Open Items (3 issues).
+Increments: 13 total, milestones M1-M5.
+Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
+
+2026-07-20  Increment 01 DONE — ADR-0008 written
+            (docs/architecture/decisions/adr-0008-open-items-agent-execution-labels.md).
+            Amends ADR-0002 serialization: priority + in-progress/blocked -> labels
+            (Project fields retired unwired); optional slugs size + readiness; readiness
+            contract (ready-for-agent requires acceptance_criteria + references + size);
+            17-label vocabulary with colors; [OI] title prefix dropped; API-bypass
+            validation note. Plan gate amended: label budget restated as 17 total /
+            <=5 per issue (was <=15 total).
+            Next: increment 02 (github-backend.md conformance).

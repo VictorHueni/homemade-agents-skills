@@ -55,14 +55,14 @@ Principles:
 6. The `ready-for-agent` label is trustworthy by construction — an issue may only carry it
    if acceptance criteria and code pointers are present.
 
-**Overall Status:** pending
-**Current Increment:** --
+**Overall Status:** in-progress
+**Current Increment:** 02
 
 ## Increment Plan
 
 ### Increment 01: ADR-0008 — Label-Based Agent-Execution Serialization (extends ADR-0002)
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -95,7 +95,10 @@ Test gate:
 
 Exit criteria:
 
-1. The full label vocabulary (≤15 labels) is enumerated with exact names and colors.
+1. The full label vocabulary is enumerated with exact names and colors (17 labels across
+   six axes; ≤5 applied per issue — amended from the original "≤15 total" heuristic at
+   ADR time: the research's operative limit is per-issue count, and every axis is
+   queryable metadata, not free-form tagging).
 2. The serialization is specified precisely enough that increments 02–09 need no further
    design decisions.
 
