@@ -64,3 +64,13 @@ Open items filed at plan creation: see plan §File Open Items (#72 #73 #74).
             18 labels / 5 axes. Contract docs conformed (ADR-0009, governance §1/§5.3,
             github-backend.md §2/§2a/§2b); plan increments 07-12 re-worded. Increments
             04-06 rework follows as a separate commit.
+
+2026-07-20  Increment 04-06 REWORKED (ADR-0009) — bootstrap_labels.sh now creates
+            the 18-label ADR-0009 §5 vocabulary (marker gone, 6 standard types);
+            single open-item form replaced by six per-type forms (bug/feature/task/
+            docs/decision/tech-debt) with static type labels + tailored required
+            fields; labeler drops the marker guard + type axis (priority/size only,
+            section-parse is the guard). Template copies updated. Gates: 18-label
+            dry-run, ADR §5 diff clean, 14x YAML parse, per-form label/required
+            asserts, workflow asserts, no marker references remain.
+            Next: increment 07 (SKILL.md v2.1 — sync labels + triage v2).

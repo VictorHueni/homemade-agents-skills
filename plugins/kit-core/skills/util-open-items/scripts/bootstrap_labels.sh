@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # bootstrap_labels.sh — idempotent bootstrap of the open-items label vocabulary.
 #
-# Creates (or normalizes) the 17 canonical labels of the open-items github
+# Creates (or normalizes) the 18 canonical labels of the open-items github
 # backend on a target repo via `gh label create --force`. Idempotent: re-runs
 # are no-ops except that colors/descriptions are normalized back to canon.
 #
 # Source of truth for the vocabulary (names, colors, descriptions):
-#   docs/architecture/decisions/adr-0008-open-items-agent-execution-labels.md §4
+#   docs/architecture/decisions/adr-0009-standard-issue-vocabulary-github-backend.md §5
 # Backend mechanics (axes, exclusivity, query patterns):
 #   plugins/kit-core/skills/util-open-items/references/github-backend.md §2b
 #
-# IMPORTANT: run this BEFORE installing the issue form (open-item.yml) — GitHub
-# issue forms silently skip labels that do not exist on the repo.
+# IMPORTANT: run this BEFORE installing the issue forms — GitHub issue forms
+# silently skip labels that do not exist on the repo.
 #
 # Usage:
 #   bootstrap_labels.sh --repo OWNER/NAME [--apply]
@@ -21,12 +21,13 @@
 # authenticated `gh` CLI.
 set -euo pipefail
 
-# ADR-0008 §4 canonical label vocabulary — the ONE place to edit labels.
+# ADR-0009 §5 canonical label vocabulary — the ONE place to edit labels.
 # Format: name|color|description  (color without leading '#', gh convention)
-LABELS='open-item|5319E7|Governance open item (backend contract marker)
-type:doc-gap|C5DEF5|Missing information to research/write
-type:decision-gap|1D76DB|Decision required before downstream work
-type:execution-item|0052CC|Concrete follow-up work to schedule
+LABELS='type:bug|D73A4A|Something is broken
+type:feature|A2EEEF|New user-facing capability
+type:task|1D76DB|Concrete work item — not a feature, not broken
+type:docs|C5DEF5|Documentation missing, wrong, or unclear
+type:decision|6F42C1|A decision is needed before work can proceed
 type:tech-debt|023B95|Deliberate structural shortcut to pay back
 priority:p0|B60205|Critical — drop everything
 priority:p1|D93F0B|High — this cycle
@@ -45,7 +46,7 @@ usage() {
   cat >&2 <<'EOF'
 Usage: bootstrap_labels.sh --repo OWNER/NAME [--apply]
 
-Bootstraps the 17-label open-items vocabulary (ADR-0008 §4) on a repo.
+Bootstraps the 18-label open-items vocabulary (ADR-0009 §5) on a repo.
 
   --repo OWNER/NAME  Target repository (required).
   --apply            Actually run gh label create --force (requires gh).

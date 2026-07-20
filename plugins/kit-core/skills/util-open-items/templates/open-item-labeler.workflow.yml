@@ -1,21 +1,23 @@
-# Open-item labeler — mirrors Issue Form dropdown answers to axis labels.
+# Issue-form labeler — mirrors Issue Form dropdown answers to axis labels.
 #
 # Why this exists: GitHub Issue Forms cannot set labels per dropdown answer
 # (research 0002 §2), so this workflow parses the form's rendered body sections
-# (### Type / ### Priority / ### Size) on issues:opened|edited and applies the
-# matching `type:` / `priority:` / `size:` labels per ADR-0008 §4.
+# (### Priority / ### Size) on issues:opened|edited and applies the matching
+# `priority:` / `size:` labels per ADR-0009 §5. The `type:` label needs no
+# mirroring: each per-type form applies it statically (ADR-0009 §4), and there
+# is no marker label — the section parse is the scope guard, so issues whose
+# body carries no form-rendered Priority/Size headings are left untouched.
 #
 # Implementation choice (Plan-0003 increment 06): a self-contained
 # actions/github-script step instead of the third-party Advanced Issue Labeler —
 # zero external dependency, supports the critical→p0 value mapping, and enforces
 # axis exclusivity (one label per axis) by removing stale same-axis labels on edit.
 #
-# Scope guard: only issues carrying the `open-item` label are touched. Run
-# scripts/bootstrap_labels.sh --apply before enabling this workflow: the addLabels
-# API auto-creates missing labels with random colors, and the bootstrap is what
-# keeps names/colors/descriptions canonical (ADR-0008 §4).
+# Run scripts/bootstrap_labels.sh --apply before enabling this workflow: the
+# addLabels API auto-creates missing labels with random colors, and the
+# bootstrap is what keeps names/colors/descriptions canonical (ADR-0009 §5).
 
-name: open-item-labeler
+name: issue-form-labeler
 
 on:
   issues:
@@ -26,10 +28,9 @@ permissions:
 
 jobs:
   mirror-form-labels:
-    if: contains(github.event.issue.labels.*.name, 'open-item')
     runs-on: ubuntu-latest
     steps:
-      - name: Mirror Type/Priority/Size dropdowns to axis labels
+      - name: Mirror Priority/Size dropdowns to axis labels
         uses: actions/github-script@v7
         with:
           script: |
@@ -44,12 +45,6 @@ jobs:
 
             // axis prefix -> { parsed form value -> label }
             const axes = {
-              'type:': {
-                'doc-gap': 'type:doc-gap',
-                'decision-gap': 'type:decision-gap',
-                'execution-item': 'type:execution-item',
-                'tech-debt': 'type:tech-debt',
-              },
               'priority:': {
                 'critical': 'priority:p0',
                 'high': 'priority:p1',
@@ -62,7 +57,7 @@ jobs:
                 'L': 'size:L',
               },
             };
-            const headings = { 'type:': 'Type', 'priority:': 'Priority', 'size:': 'Size' };
+            const headings = { 'priority:': 'Priority', 'size:': 'Size' };
 
             const toAdd = [];
             const toRemove = [];

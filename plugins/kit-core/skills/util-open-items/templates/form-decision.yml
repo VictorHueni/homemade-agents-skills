@@ -1,0 +1,116 @@
+# Decision needed — per-type Issue Form for the github backend (ADR-0009 §4;
+# references/github-backend.md §2a/§2b in util-open-items). Serializes the
+# governance §2 `decision-gap` taxonomy value.
+#
+# PRECONDITION: run scripts/bootstrap_labels.sh --apply first — GitHub silently
+# skips `labels:` entries that do not exist on the repo.
+#
+# This form applies `type:decision` statically; the Priority and Size dropdown
+# answers are mirrored to `priority:` / `size:` labels by the labeler workflow
+# (forms cannot set labels per answer). Field `id:` keys equal the canonical
+# slugs (Invariant I1) — do not rename an `id:`, rename the label instead.
+
+name: Decision needed
+description: A decision is needed before work can proceed.
+labels: ["type:decision", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The issue **title** is the summary — one self-contained sentence. This issue
+        starts as `needs-triage`; **References** and **Acceptance criteria** must be
+        filled before triage can promote it to `ready-for-agent`.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: "Mirrored to a `priority:` label — p0=critical, p1=high, p2=medium, p3=low."
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      description: One-PR effort bound, mirrored to a `size:` label. L = consider splitting before delegating.
+      options:
+        - S
+        - M
+        - L
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: The problem, and why a decision is needed now.
+      placeholder: Downstream work X is blocked until we choose between ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Options
+      description: Options considered so far, with trade-offs if known (optional).
+      placeholder: |
+        1. Option A — pro/con
+        2. Option B — pro/con
+    validations:
+      required: false
+
+  - type: input
+    id: source_artefact
+    attributes:
+      label: Source artefact
+      description: Repo-relative path to the originating document, if any.
+      placeholder: docs/architecture/decisions/adr-0002-....md
+    validations:
+      required: false
+
+  - type: input
+    id: source_anchor
+    attributes:
+      label: Source anchor
+      description: Fragment identifier into the source document (e.g. #q3).
+      placeholder: "#tooling-consequences"
+    validations:
+      required: false
+
+  - type: input
+    id: source_heading
+    attributes:
+      label: Source heading
+      description: The heading the anchor resolves to, or _central-only_.
+      placeholder: Tooling consequences
+    validations:
+      required: false
+
+  - type: textarea
+    id: resolution_path
+    attributes:
+      label: Resolution path
+      description: What closing this item looks like — e.g. write ADR-NNNN (optional).
+      placeholder: Write ADR-NNNN on token strategy
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: >-
+        Pointers a decider needs — files, symbols, prior PRs, related ADRs.
+        Required before promotion to `ready-for-agent`.
+      placeholder: |
+        - docs/architecture/decisions/adr-0008-....md
+        - prior art: PR #4
+    validations:
+      required: false
