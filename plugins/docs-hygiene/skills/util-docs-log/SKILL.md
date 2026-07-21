@@ -1,4 +1,5 @@
 ---
+type: skill
 name: util-docs-log
 description: "Generate or refresh an OKF log.md for a folder — a per-directory change history materialised from git. A deterministic script renders git history for the folder's direct-child docs in the OKF-prescribed format (date-grouped, newest first, Creation/Update/Deprecation bullets with file links). One bullet per commit; non-recursive; idempotent (byte-stable given committed history). On-demand / at bundle-export — not a commit hook. Asks which folder if none is given. Triggers on: docs log, log.md, change history, folder history, directory update log, generate log, refresh log, OKF log, changelog for docs, materialize git history."
 version: "1.0.0"

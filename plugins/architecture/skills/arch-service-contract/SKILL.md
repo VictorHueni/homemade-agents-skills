@@ -1,4 +1,5 @@
 ---
+type: skill
 name: arch-service-contract
 description: "Define the external interface contract for a bounded context or a product-level API — REST resources, async events published, and commands consumed. BC-scoped (one artefact per BC-NN, ID: BC-NN.CTR-NN) or product-level spanning multiple BCs (ID: CTR-NN). Placed after the domain model (Step 7c). Derives contracts from BC-NN.AGG-NN, BC-NN.ENT-NN, BC-NN.EVT-NN. Modes: scaffold, contract-first (design from domain model outward), document-existing (reverse-engineer from code), refresh (detect drift + emit deprecation notices). Use when asked to define an API, design the interface surface, document HTTP endpoints, define event schemas, or formalise the public contract of a service. Triggers on: API design, REST API, interface contract, endpoint design, event schema, async surface, public API, service contract, HTTP API, interface surface, API surface. Output: docs/architecture/interfaces/{bc-slug}.md (BC-scoped) or docs/architecture/interfaces/{slug}.md (product-level)."
 version: "1.0.0"

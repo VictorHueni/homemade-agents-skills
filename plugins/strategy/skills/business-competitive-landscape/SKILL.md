@@ -1,4 +1,5 @@
 ---
+type: skill
 name: business-competitive-landscape
 description: "Create a competitive-landscape analysis — Porter's Five Forces (industry structure) + Strategic Group Mapping (clustering) + Blue Ocean Strategy Canvas / Value Curve (positioning) + per-competitor profiles (Tier-1 depth). Synthesises Porter (1979/80) + Kim & Mauborgne (2005) + SCIP practitioner discipline. Use when the user asks to analyse competitors, map the competitive landscape, build a competitive intelligence report, score industry attractiveness, identify market positioning, or differentiate from competitors. Triggers on: competitive landscape, competitor analysis, competitive intelligence, Porter five forces, Five Forces, strategy canvas, value curve, strategic group map, competitor profile, competitive positioning, market analysis. Domain-agnostic. Soft-links to personas / capability map / value streams / BMC (BIZBOK Business Architecture stack) but stands alone. NOT a quantitative market-sizing model (use business-quantitative-model for TAM/SAM/SOM)."
 version: "1.0.0"
