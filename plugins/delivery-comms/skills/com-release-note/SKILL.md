@@ -1,4 +1,5 @@
 ---
+type: skill
 name: com-release-note
 description: "Curate a stakeholder-facing, non-technical release note from a release's raw material: the changelog plus the commit and merged-PR history between two tags, and (when present) the FBS + capability map. Reorganises type-grouped changelog entries into a plain-language, benefit-first note structured by Product then Capability then Functionality, plus a Platform and Engineering tier for infra/CI/refactor work. Emits both a committed Markdown note and a condensed GitHub Release body; gracefully degrades when a project has no FBS. Four modes: gather, scaffold, curate, refresh. Use when the user wants release notes, a GitHub Release body, or to turn a changelog into something a non-technical reader (customer, manager, investor) can act on. Triggers on: release note, release notes, stakeholder release, changelog to release note, GitHub release body, curate release, com-release-note. Do NOT use to generate the automated technical changelog itself (that is release-please) or for slide decks (com-slide-deck)."
 version: "1.0.0"

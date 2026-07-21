@@ -1,4 +1,5 @@
 ---
+type: skill
 name: com-slide-deck
 description: >
   Build single-file HTML slide presentations from modular partials, a shared
