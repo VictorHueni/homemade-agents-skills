@@ -1,4 +1,5 @@
 ---
+type: skill
 name: dev-release-init
 description: 'Scaffold a release-please SemVer + changelog automation pipeline for a project whose commit hygiene dev-git-init guarantees. Generates release-please-config.json (mandatory include-component-in-tag:false, changelog-sections, extra-files), the manifest + version.txt, and the release-please.yml workflow. Two axes drive it: branch mode (integration-branch-targeted vs main-targeted — read from dev-git-init, never re-asked) and version-source (deployed-app with version.txt as truth + frozen manifests vs published-package with manifest identity). Four modes: audit (gap report; first checks for dev-git-init''s PR-title-lint + squash-title layer, offers to run it), scaffold (Q&A; emits but never runs the gh / tag / branch-protection commands), verify (dry-run to catch silent extra-files failures), seed (minimal anchor tag). Bakes in eight release lessons as guardrails. Triggers on: release automation, release-please, set up releases, versioning pipeline, changelog automation, cut releases, dev-release-init.'
 version: "1.0.0"

@@ -4,7 +4,11 @@
       "command": "npx",
       "args": [
         "-y",
-        "chrome-devtools-mcp@latest"
+        "chrome-devtools-mcp@latest",
+        "--headless",
+        "--isolated",
+        "--executablePath",
+        "/usr/lib/chromium/chromium"
       ]
     },
     "context7": {

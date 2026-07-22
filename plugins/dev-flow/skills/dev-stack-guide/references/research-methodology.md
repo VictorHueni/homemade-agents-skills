@@ -78,7 +78,7 @@ The richest sources of anti-patterns, in order:
 3. **Changelog "breaking changes" section** — implies the old way was acceptable before but is now wrong.
 4. **Official GitHub issues marked "documented" or "known limitation"** — confirms the anti-pattern is real and acknowledged.
 
-Anti-patterns sourced from Tier 4 community sources (blog posts, Reddit) must be cross-checked against official docs before inclusion. If they cannot be confirmed in Tier 1/2, omit them from the guide — include in §Open Items as a `doc-gap` instead.
+Anti-patterns sourced from Tier 4 community sources (blog posts, Reddit) must be cross-checked against official docs before inclusion. If they cannot be confirmed in Tier 1/2, omit them from the guide — file a `doc-gap` directly via `util-open-items` (ADR-0005) instead.
 
 ---
 

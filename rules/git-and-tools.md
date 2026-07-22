@@ -1,3 +1,7 @@
+---
+type: rule
+---
+
 # Git & tool-use discipline
 
 ## Never `git commit --amend`

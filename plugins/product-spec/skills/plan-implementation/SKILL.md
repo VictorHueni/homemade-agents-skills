@@ -1,4 +1,5 @@
 ---
+type: skill
 name: plan-implementation
 description: "Create a small-step, testable implementation roadmap from a PRD or feature request. Use when asked to create an implementation plan, write a roadmap, or plan this feature following the project's atomic increment standard."
 version: "1.0.0"

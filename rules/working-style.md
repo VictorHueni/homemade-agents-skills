@@ -1,3 +1,7 @@
+---
+type: rule
+---
+
 # Working style preferences
 
 ## Default to sequential, not parallel plan execution

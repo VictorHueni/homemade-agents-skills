@@ -12,11 +12,12 @@ okf_version: "0.1"
 > This is the OKF bundle root `index.md` (reserved file — no artefact frontmatter).
 
 > **Note on this repo.** `homemade-claude-kit` is the skill kit itself, not a product built
-> through its own business-strategy spine — it has no `VISION.md`, personas, or capability
-> map of its own, so Steps 0–10 below are legitimately ⬜. What this repo actually dogfoods
-> is the **open-items governance system** (`docs/project-control/open-items/`, github
-> backend) and the **use-case registry** (`docs/product-specs/use-cases/`, 11 UCs). Its
-> Architecture Decision Records (9) and research notes (3) are also live and current.
+> through its own full business-strategy spine — it carries a **`VISION.md`** (its north
+> star as a harness-agnostic toolkit) but no personas, BMC, or capability map of its own, so
+> Steps 1–10 below remain legitimately ⬜. What this repo actually dogfoods is the
+> **open-items governance system** (`docs/project-control/open-items/`, github backend) and
+> the **use-case registry** (`docs/product-specs/use-cases/issues-management/`, 11 UCs). Its Architecture
+> Decision Records (9) and research notes (3) are also live and current.
 
 ---
 
@@ -26,7 +27,7 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 
 | Step | Artefact | Skill | Status | Canonical path | Last modified |
 |---|---|---|---|---|---|
-| 0 | Product Vision | `business-vision` | ⬜ | [`docs/VISION.md`](VISION.md) | — |
+| 0 | Product Vision | `business-vision` | ✅ | [`docs/VISION.md`](VISION.md) | 2026-07-20 |
 | 1 | Personas | `business-persona` | ⬜ | [`docs/business/01a-personas.md`](business/01a-personas.md) | — |
 | 2 | Business Model Canvas | `business-model-canvas` | ⬜ | [`docs/business/02a-bmc.md`](business/02a-bmc.md) | — |
 | 2b | Bounded Context Map | `domain-bounded-context` | ⬜ | [`docs/domain/02b-bounded-contexts.md`](domain/02b-bounded-contexts.md) | — |
@@ -40,13 +41,13 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | 7b | Domain Model | `domain-model` | ⬜ | [`docs/domain/07b-models/`](domain/07b-models/) | — |
 | 8 | Delivery Roadmap | `plan-delivery-roadmap` | ⬜ | [`docs/plans/delivery-roadmap.md`](plans/delivery-roadmap.md) | — |
 | 9 | Quality Attributes | `spec-quality-attributes` | ⬜ | [`docs/product-specs/09a-quality-attributes.md`](product-specs/09a-quality-attributes.md) | — |
-| 9.5 | Use Cases | `spec-use-case` | ✅ | [`docs/product-specs/use-cases/`](product-specs/use-cases/) (11 UCs, index in-folder) | 2026-07-20 |
+| 9.5 | Use Cases | `spec-use-case` | ✅ | [`docs/product-specs/use-cases/issues-management/`](product-specs/use-cases/issues-management/) (11 UCs, index in-folder) | 2026-07-20 |
 | 10 | PRDs | `spec-prd` | ⬜ | [`docs/product-specs/prds/`](product-specs/prds/) | — |
-| 11 | Implementation Plans | `plan-implementation` | ✅ | [`docs/plans/active/`](plans/active/) (3 plans: 0001, 0002, 0003, folder-per-plan with co-located `progress.txt`) | 2026-07-20 |
+| 11 | Implementation Plans | `plan-implementation` | ✅ | [`docs/plans/`](plans/) (folder-per-plan with co-located `progress.txt`): [`active/`](plans/active/) 0003 · [`completed/`](plans/completed/) 0001, 0002 | 2026-07-20 |
 
-**Summary:** ✅ 2 / 🔄 0 / ⬜ 14 of 16 artefact steps
+**Summary:** ✅ 3 / 🔄 0 / ⬜ 13 of 16 artefact steps
 
-**Next step:** this repo does not run its own business-strategy spine (see note above) — there is no "Step 0" to start. If a spine step is ever wanted for the kit itself, start there deliberately; otherwise the live work surfaces are the open-items ledger and the use-case registry.
+**Next step:** this repo does not run its full business-strategy spine (see note above) — Step 0 (Vision) is now live, but Steps 1–10 are deliberately skipped for a toolkit rather than a product. The live work surfaces are `docs/VISION.md`, the open-items ledger, and the use-case registry.
 
 ---
 
@@ -55,8 +56,8 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | Artefact | Location | Status |
 |---|---|---|
 | Open-items ledger (github backend) | [`docs/project-control/open-items/`](project-control/open-items/) | ✅ live — 32 open issues on `VictorHueni/homemade-claude-kit`, ADR-0008/0009 label vocabulary |
-| Use-case registry | [`docs/product-specs/use-cases/`](product-specs/use-cases/) | ✅ 11 UCs (UC-01..UC-11) |
-| Implementation plans | [`docs/plans/active/`](plans/active/) | ✅ 3 active plans (migrated from the legacy `docs/exec-plans/` path 2026-07-20 — `var/reports/metamodel-migration/migration-2026-07-20.md`) |
+| Use-case registry | [`docs/product-specs/use-cases/issues-management/`](product-specs/use-cases/issues-management/) | ✅ 11 UCs (UC-01..UC-11) |
+| Implementation plans | [`docs/plans/active/`](plans/active/) · [`docs/plans/completed/`](plans/completed/) | ✅ 1 active (0003), 2 completed (0001, 0002) — folder-per-plan, migrated from the legacy `docs/exec-plans/` path 2026-07-20 |
 | Architecture Decision Records | [`docs/architecture/decisions/`](architecture/decisions/) | ✅ 9 ADRs |
 | Architecture Research notes | [`docs/architecture/research/`](architecture/research/) | ✅ 3 notes |
 
@@ -106,4 +107,4 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | `QA-XXNN` | Quality Attribute | `09a-quality-attributes.md` |
 | `PRD-NNNN` | PRD | `prds/prd-NNNN-{slug}.md` |
 | `ADR-NNNN` | Architecture Decision | `architecture/decisions/adr-NNNN-{slug}.md` |
-| `UC-NN` | Use Case | `use-cases/uc-NN-{slug}.md` |
+| `UC-NN` | Use Case | `use-cases/issues-management/uc-NN-{slug}.md` |

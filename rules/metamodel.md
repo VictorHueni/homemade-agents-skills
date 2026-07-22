@@ -1,4 +1,5 @@
 ---
+type: rule
 paths:
   - "docs/**"
   - "rules/metamodel.md"
