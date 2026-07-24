@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-def get_next_id(directory="docs/product-specs"):
+def get_next_id(directory="docs/product-specs/prds"):
     path = Path.cwd() / directory
 
     if not path.exists():
@@ -9,7 +9,7 @@ def get_next_id(directory="docs/product-specs"):
 
     ids = []
     for f in path.glob("*.md"):
-        match = re.match(r"^(\d{4})_", f.name)
+        match = re.match(r"^prd-(\d{4})-", f.name)
         if match:
             ids.append(int(match.group(1)))
 

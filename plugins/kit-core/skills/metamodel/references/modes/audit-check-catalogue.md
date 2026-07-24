@@ -30,8 +30,8 @@ table lives in Check 5 and is sourced from this skill's `references/metamodel-re
 **Detection — derive from the registry.** For every registry entry with a non-null
 `default_path`, resolve the template to a `find` probe: literal paths become exact-name
 finds (`docs/VISION.md` → `find docs -maxdepth 1 -name "VISION.md"`); templated paths
-(`{slug}`, `{nn}`, `{nnnn}`, `{bc-slug}`, `{date}`, `{feature}`, `{topic}`, `{tech-slug}`)
-become glob probes in the template's directory (`docs/product-specs/prds/prd-{nnnn}-{feature}.md`
+(`{slug}`, `{nn}`, `{nnnn}`, `{bc-slug}`, `{date}`, `{topic}`, `{tech-slug}`)
+become glob probes in the template's directory (`docs/product-specs/prds/prd-{nnnn}-{slug}.md`
 → `find docs/product-specs/prds -name "prd-*.md" | head -1`). Entries with
 `layout: inherits-from-parent` are covered by their parent's probe. Map each probe back to
 its build-order step via the spine table in this skill's `SKILL.md`.
@@ -46,6 +46,10 @@ find docs/architecture/c4/views -name "*.svg" 2>/dev/null | head -1             
 - ✅ Done — canonical file/folder found
 - 🔄 In progress — file found but >50% _TODO_ content
 - ⬜ Not started — no file found
+
+A **stub parent** — a real minted ID whose body is `_TODO_`, scaffolded as a prerequisite
+per clew ADR-0015's guide-and-scaffold semantics — reads as 🔄 with a "(stub)" annotation,
+never ✅: file presence alone does not complete the step.
 
 **Severity:** Info
 
@@ -198,6 +202,19 @@ Repeat for each ID type.
 grep -oh '\bP-[0-9]\{2\}\b' docs/business/01a-personas.md 2>/dev/null | sort | uniq -d
 ```
 
+**Interpretation — multi-artefact files (clew ADR-0017).** For registry types whose
+`layout` is `inherits-from-parent` (e.g. `user_story`, `key_result`) — and generally for
+the parent IDs of collection / one-per-artefact files — a conforming multi-artefact file
+legitimately repeats each child ID in tables and prose (index rows, cross-references,
+acceptance criteria). Counting every textual occurrence produces false duplicates by
+design. For these IDs, duplicate detection counts **heading-level definitions only**
+(`^#{1,6} ` lines carrying the ID), never bare occurrences:
+```bash
+# Example for PRD-NNNN.US-NN inside its parent PRD file — heading definitions only
+grep -hE '^#{1,6} .*PRD-[0-9]{4}\.US-[0-9]{2}\b' docs/product-specs/prds/prd-*.md 2>/dev/null \
+  | grep -oE 'PRD-[0-9]{4}\.US-[0-9]{2}' | sort | uniq -d
+```
+
 **Detection — malformed format:**
 ```bash
 # Single-digit persona IDs (P-1 instead of P-01)
@@ -219,6 +236,9 @@ grep -roh '\bCTR-[0-9]\b' docs/ --include="*.md"
 grep -roh '\bCLI-[0-9]\b' docs/ --include="*.md"
 # CMD IDs with single digit (CMD-1 instead of CMD-01)
 grep -roh '\bCMD-[0-9]\b' docs/ --include="*.md"
+# Bare or 3-digit story IDs — US-NN not preceded by its PRD-NNNN. parent qualifier
+# (US-01, US-123 instead of PRD-0001.US-01) — malformed per clew ADR-0017 D1
+grep -rohE '\b(PRD-[0-9]{4}\.)?US-[0-9]{2,3}\b' docs/ --include="*.md" | grep -v '^PRD-[0-9]\{4\}\.US-[0-9]\{2\}$'
 ```
 
 **Severity:** Error
@@ -226,6 +246,7 @@ grep -roh '\bCMD-[0-9]\b' docs/ --include="*.md"
 **Proposed fix template:**
 - Duplicate: "Renumber `{ID}` in `{file}` — two definitions of the same ID will corrupt cross-references."
 - Malformed: "Fix `{ID}` in `{file}` to canonical format `{correct_format}` and update all references."
+- Malformed story ID: "Qualify `{ID}` in `{file}` with its parent PRD — the canonical form is `PRD-NNNN.US-NN` (clew ADR-0017 D1); bare `US-NN` is ambiguous across PRDs and invalid."
 
 ---
 
@@ -336,10 +357,17 @@ done | sort -rn
 **Interpretation:**
 - 0 _TODO_ → complete
 - 1–10 _TODO_ → mostly filled; normal for active work
-- >50% of lines contain _TODO_ → scaffolded but not filled; flag as Info
+- >50% of lines contain a narrative _TODO_ → scaffolded but not filled; flag as Info
 - Any _TODO_ in a mandatory field (§8 KPIs, §5.2 assumptions, persona `Goals`) → flag specifically
+- **Declared absence (clew ADR-0015).** A `_TODO_` in a **soft-link slot** — a
+  cross-reference field such as `Covers:`, `Realised in stream:`, `Operationalised by
+  processes:`, `Realises:`, or a similar ID-reference field pointing at an unenabled or
+  unfilled target — is a sanctioned first-class declared absence, NOT prose debt: report
+  it as **Info**, never Warning, and exclude it from the >50% completeness threshold.
+  Only `_TODO_` in narrative / mandatory-content fields keeps the Warning treatment and
+  counts toward the threshold above.
 
-**Severity:** Info (density); Warning (mandatory field _TODO_)
+**Severity:** Info (density; declared absence in a soft-link slot is always Info per clew ADR-0015); Warning (narrative / mandatory field _TODO_ only)
 
 **Proposed fix template:** "Fill `{field}` in `{file}` using `{skill}` Mode 2 (fill). Priority: {high/medium/low}."
 

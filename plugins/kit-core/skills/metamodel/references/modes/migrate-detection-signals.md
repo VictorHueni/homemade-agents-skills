@@ -22,7 +22,7 @@ A file whose name matches one of these patterns is likely the artefact type list
 | Filename pattern (glob) | Likely artefact type | Canonical skill | Canonical path |
 |---|---|---|---|
 | `INDEX.md` (any depth under `docs/`) | Legacy bundle/folder index | the Scaffold mode | Rename to `index.md` (OKF reserved file); strip artefact frontmatter; root keeps only `okf_version` — see `okf-index-rename` in `path-migration-v2.md` |
-| `*_prd_*.md` or `*-prd-*.md` | PRD | `spec-prd` | `docs/product-specs/prds/prd-NNNN-{feature}.md` |
+| `*_prd_*.md` or `*-prd-*.md` | PRD | `spec-prd` | `docs/product-specs/prds/prd-NNNN-{slug}.md` |
 | `uc-[0-9][0-9]-*.md` or `*use-case*.md` | Use case | `spec-use-case` | `docs/product-specs/use-cases/uc-NN-{slug}.md` |
 | `[0-9][0-9][0-9][0-9]-*.md` or `[0-9][0-9][0-9][0-9]_*.md` in a decisions-like folder | ADR | `arch-adr` | `docs/architecture/decisions/adr-NNNN-{topic}.md` |
 | `*-adr-*.md` (redundant adr in name) | ADR naming issue | `arch-adr` | Rename: remove `-adr` from filename |
@@ -65,7 +65,7 @@ A file whose name matches one of these patterns is likely the artefact type list
 
 **ADR naming redundancy rule:** if a file is already in `docs/architecture/decisions/` and its name contains `-adr-` (e.g. `0003-adr-clean-architecture.md`), flag as Tier 1 naming issue. Proposed fix: `git mv 0003-adr-clean-architecture.md 0003-clean-architecture.md`. The `-adr-` prefix is redundant since the folder already signals the type.
 
-**PRD location rule:** canonical location is `docs/product-specs/prds/prd-NNNN-{feature}.md`. PRDs found flat under `docs/product-specs/` (not in `prds/` subfolder) should be moved.
+**PRD location rule:** canonical location is `docs/product-specs/prds/prd-NNNN-{slug}.md`. PRDs found flat under `docs/product-specs/` (not in `prds/` subfolder) should be moved.
 
 ---
 

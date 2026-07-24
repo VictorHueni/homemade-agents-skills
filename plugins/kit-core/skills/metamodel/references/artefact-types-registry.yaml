@@ -21,6 +21,14 @@
 # Maintenance coupling: new/changed row -> this file + the metamodel skill's Audit mode type enum;
 # semantics -> minting SKILL.md `## Canonical definition`; build order/ER -> SKILL.md spine
 # + references/metamodel-reference.md.
+#
+# NOT carried by this projection: file-binding + content-hash rules (clew ADR-0017 D2 —
+# child-bound sections excluded from the parent's hash) are clew-runtime facts; the kit
+# projection stays purely structural.
+# RULING (for OI-0078's implementer): the future `package` field will carry the clew
+# metamodel package slug (discovery, business-architecture, domain, product-specs,
+# planning, architecture, quality-assurance, operations) — NOT a TOGAF layer; layers are
+# clew-side documentation framing over packages.
 
 artefact_types:
   - type: vision
@@ -270,7 +278,17 @@ artefact_types:
     minting_skill: spec-prd
     id_format: "PRD-\\d{4}"
     layout: one-per-artefact
-    default_path: "docs/product-specs/prds/prd-{nnnn}-{feature}.md"
+    default_path: "docs/product-specs/prds/prd-{nnnn}-{slug}.md"
+    review_interval: 30d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: user_story
+    okf_type: "User Story"
+    minting_skill: spec-prd
+    id_format: "PRD-\\d{4}\\.US-\\d{2}"
+    layout: inherits-from-parent
+    parent: prd
+    default_path: null   # inherited from parent
     review_interval: 30d
     frontmatter_conditionals: []
     property_schema_ref: null   # TBD until clew defines property schemas

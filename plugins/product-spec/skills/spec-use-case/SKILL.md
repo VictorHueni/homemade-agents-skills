@@ -160,7 +160,7 @@ Use cases are the **behavioural bridge** between the strategic/registry layer an
 | **Value streams** (`VS-N.M`) | How value flows in stages | A use case often operationalises one stage's actor goal |
 | **Domain glossary** (`GT-NN`) | Ubiquitous language | Use-case prose uses glossary terms verbatim |
 | **Use case** *(this skill)* | The actor↔system scenario, all paths, guarantees | — |
-| **PRD** (`PRD-NNNN`) | What we build for one slice + acceptance criteria | A PRD **references** the use case(s) it delivers; the scenario grounds the acceptance criteria |
+| **PRD** (`PRD-NNNN`) | What we build for one slice + acceptance criteria | A PRD **references** the use case(s) it delivers; the scenario grounds the acceptance criteria. Its embedded stories (`PRD-NNNN.US-NN`) may carry a `Covers: UC-NN` soft edge — stories are PRD-scoped delivery slices, distinct from Use-Case 2.0 slices (see `references/methodology.md` §5) |
 | **Domain model** (`BC-NN.AGG-NN`, `BC-NN.EVT-NN`) | Entities, aggregates, domain events | Use-case steps that change state map to **commands → domain events**; scenarios drive aggregate design |
 | **Test cases** | Verification | Each flow / slice yields test cases (Use-Case 2.0 makes this explicit) |
 

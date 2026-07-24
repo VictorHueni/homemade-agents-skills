@@ -81,7 +81,7 @@ facts — none carries its own copy. Their long-term future is thin wrappers ove
 | 8.5 | **CLI Surface Contract** (only when the product ships a CLI) | `arch-cli-contract` | `CLI-NN.CMD-NN` |
 | 9 | **Quality Attributes** (how well — NFRs) | `spec-quality-attributes` | `QA-XXNN` |
 | 9.5 | **Use Cases** (actor↔system scenarios) | `spec-use-case` | `UC-NN` |
-| 10 | **PRDs** (feature specs — Build by Feature) | `spec-prd` | `PRD-NNNN` |
+| 10 | **PRDs** (feature specs — Build by Feature) | `spec-prd` | `PRD-NNNN` · `PRD-NNNN.US-NN` |
 | 11 | **Implementation plans** (atomic increments) | `plan-implementation` | `Plan-NNNN` |
 
 > The number is build order, not a strict linear chain — several artefacts are parallelisable

@@ -21,7 +21,7 @@ Used by the kit maintainer as the authoritative reference when updating skill fi
 | Domain model (per BC, step prefix on folder) | `docs/domain/07b-models/{bc-slug}.md` | `docs/domain/07b-models/scheduling.md` |
 | Multi-file artefact folder (step-scoped) | `docs/business/NNa-{slug}/` | `docs/business/06a-models/{slug}.md` |
 | Multi-file artefact (slug, no step prefix) | unchanged | `docs/business/05a-processes/proc-NN-{slug}.md` |
-| Numbered multi-file artefact | unchanged | `docs/product-specs/prds/prd-{NNNN}-{feature}.md` |
+| Numbered multi-file artefact | unchanged | `docs/product-specs/prds/prd-{NNNN}-{slug}.md` |
 
 **Rules:**
 - Step numbers zero-pad to 2 digits **plus a letter** to identify ordering: `01a`, `02a`, `03a`, `04a`, `07a`, `08a`, `09a` (primary singleton at each step).
@@ -57,7 +57,7 @@ Used by the kit maintainer as the authoritative reference when updating skill fi
 | 7b | Domain Model (per BC) | `docs/domain/{bc-slug}/domain-model.md` | `docs/domain/07b-models/{bc-slug}.md` | multi-file folder |
 | 8 | Delivery Roadmap | `docs/product-specs/delivery-roadmap/delivery-roadmap.md` | `docs/plans/delivery-roadmap.md` | singleton |
 | 9 | Quality Attributes | `docs/product-specs/quality-attributes/quality-attributes.md` | `docs/product-specs/09a-quality-attributes.md` | singleton |
-| 10 | PRDs | `docs/product-specs/{NNNN}_prd_{feature}.md` | `docs/product-specs/prds/prd-{NNNN}-{feature}.md` | pattern-b-rename |
+| 10 | PRDs | `docs/product-specs/{NNNN}_prd_{feature}.md` | `docs/product-specs/prds/prd-{NNNN}-{slug}.md` | pattern-b-rename |
 | 11 | Implementation Plans | `docs/plans/active/{NNNN}_{slug}/` | `docs/plans/active/{NNNN}_exec_{slug}.md` | pattern-b-rename |
 | 8† | Delivery Roadmap (pre-ADR-0009 `spec-` location) | `docs/product-specs/08a-delivery-roadmap.md` | `docs/plans/delivery-roadmap.md` | plan-split-move |
 | 11† | Implementation Plans (pre-ADR-0009 `spec-` location) | `docs/exec-plans/active/{NNNN}_exec_{slug}.md` | `docs/plans/active/{NNNN}_exec_{slug}.md` | plan-split-move |
