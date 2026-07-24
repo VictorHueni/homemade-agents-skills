@@ -236,7 +236,7 @@ competitive-landscape/
 
 **Soft-link discipline:** mention the ID + name + relative path; don't duplicate content. The competitive landscape stands alone — cross-references add depth.
 
-**Reference direction rule — critical:** the competitive landscape is a **strategic artefact** that sits UPSTREAM of PRDs in the documentation stack. It must NEVER reference a `prd-NNNN-{feature}.md` delivery spec — those are downstream outputs that don't yet exist when the competitive landscape is built. When citing documentary evidence from an internal source (e.g. current-state pain, market claims), reference the **source document** in `docs/sources/` directly:
+**Reference direction rule — critical:** the competitive landscape is a **strategic artefact** that sits UPSTREAM of PRDs in the documentation stack. It must NEVER reference a `prd-NNNN-{slug}.md` delivery spec — those are downstream outputs that don't yet exist when the competitive landscape is built. When citing documentary evidence from an internal source (e.g. current-state pain, market claims), reference the **source document** in `docs/sources/` directly:
 
 ```markdown
 ✅ [PRD §1.1 — current workflow pain](../../sources/BlocPlan_PRD_v1.docx) *(internal source)*

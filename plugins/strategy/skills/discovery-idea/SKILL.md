@@ -46,7 +46,7 @@ Every idea file declares a `graduates_to:` field naming the downstream skill tha
 
 **ID format:** `IDEA-NNNN` (4-digit zero-padded, monotonic per project). Assigned at scaffold time. Embedded in both the filename and the frontmatter `idea_id:` field. Used in cross-doc references when the idea is cited from a downstream artefact ("This PRD originated from IDEA-0042").
 
-**Filename rule:** `IDEA-{NNNN}-{slug}.md` — e.g. `IDEA-0042-sms-reorder-for-regulars.md`. The ID prefix guarantees uniqueness without per-domain subfolders; the slug is kebab-case, 3–5 words, human-readable. Same convention as `prd-NNNN-{feature}.md` and `adr-NNNN-{slug}.md` in the kit.
+**Filename rule:** `IDEA-{NNNN}-{slug}.md` — e.g. `IDEA-0042-sms-reorder-for-regulars.md`. The ID prefix guarantees uniqueness without per-domain subfolders; the slug is kebab-case, 3–5 words, human-readable. Same convention as `prd-NNNN-{slug}.md` and `adr-NNNN-{slug}.md` in the kit.
 
 **Index:** one `docs/discovery/ideation/index.md` listing every idea with status, domain, graduates-to target, and one-line summary. Filterable by the `domain:` column.
 

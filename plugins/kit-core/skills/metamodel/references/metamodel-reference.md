@@ -1,6 +1,6 @@
 # Strategic Architecture Stack — Reference (companion to `metamodel.md`)
 
-> Loaded on demand, **not** auto-injected — this file has no `paths:` frontmatter, so it costs no per-session context until something links to it. The imperative rule (trigger, the artefact/step index, variant selection, and how Claude uses it) is [`metamodel.md`](metamodel.md). This companion holds the heavy reference that rule points at: the supporting-skill catalogue, dependency graph, ER model, per-step build detail, variant detail, ID conventions, canonical paths, and the maintenance-coupling contract. Per-type structural facts (id-format, path, layout, interval) live in [`artefact-types-registry.md`](artefact-types-registry.md).
+> Loaded on demand, **not** auto-injected — this file has no `paths:` frontmatter, so it costs no per-session context until something links to it. The imperative rule (trigger, the artefact/step index, variant selection, and how Claude uses it) is [`metamodel.md`](metamodel.md). This companion holds the heavy reference that rule points at: the supporting-skill catalogue, dependency graph, ER model, per-step build detail, variant detail, ID conventions, canonical paths, and the maintenance-coupling contract. Per-type structural facts (id-format, path, layout, interval) live in [`artefact-types-registry.md`](artefact-types-registry.md). The registry's three-value `layout` enum follows clew ADR-0017 D5's derivation rule: `single-collection` = homogeneous catalogues whose value comes from side-by-side comparison; `one-per-artefact` = long-form documents read alone; `inherits-from-parent` = children meaningless outside their parent's context.
 
 ---
 
@@ -269,6 +269,11 @@ erDiagram
         string ADR_NNNN FK
         string UC_NN FK
     }
+    USER_STORY {
+        string PRD_NNNN_US_NN PK
+        string PRD_NNNN FK
+        string UC_NN FK
+    }
     IMPLEMENTATION_PLAN {
         string Plan_NNNN PK
         string PRD_NNNN FK
@@ -323,6 +328,8 @@ erDiagram
     FBS ||--o{ USE_CASE : "realised by"
     USE_CASE ||--o{ PRD : "grounds acceptance criteria"
     QUALITY_ATTRIBUTES ||--o{ PRD : "QA-XXNN in acceptance criteria"
+    PRD ||--o{ USER_STORY : "mints delivery slices"
+    USER_STORY }o..o| USE_CASE : "covers (proposed soft edge)"
     PRD ||--|| IMPLEMENTATION_PLAN : "one plan per PRD"
     INTERFACE_CONTRACT }o--o{ ADR : "versioning and auth decisions"
     INTERFACE_CONTRACT }o--o{ QUALITY_ATTRIBUTES : "SLA per CTR-NN"
@@ -552,8 +559,9 @@ moving on.
 **Skill:** `spec-prd`
 **Prerequisites:** Step 8 (one PRD per E-NN epic — scope pre-defined); Step 9 (PRDs reference `QA-XXNN` in acceptance criteria); Step 9.5 (PRDs reference the `UC-NN` use cases they deliver — the scenario grounds the acceptance criteria); relevant ADRs (PRDs do not re-open decided architectural choices).
 **Process:**
-- One PRD per epic: `docs/product-specs/prds/prd-NNNN-{feature}.md`
+- One PRD per epic: `docs/product-specs/prds/prd-NNNN-{slug}.md`
 - Each PRD: §0 Architecture Traceability (E-NN, P-NN, C-N.M, QA-XXNN, UC-NN, FBS scope) · problem · goals · non-goals · user stories (persona-grounded, P-NN) · acceptance criteria · success metrics
+- User stories are minted **with the PRD** as `PRD-NNNN.US-NN` children (`inherits-from-parent`, clew ADR-0017 D1) — delivery slices born and retired with their PRD; each may carry an optional `Covers: UC-NN` soft link (a declared absence when use cases aren't enabled)
 **Output verification:** ≥1 PRD per active epic (E-NN); each PRD references its E-NN, FBS IDs, and QA IDs; FBS functionality status promoted ⬜ → 🔄; Delivery Roadmap PRD link filled.
 
 ### Step 11 — Implementation Plans (atomic increments)
@@ -627,6 +635,8 @@ Artefact-type id_formats are defined in the structural registry [`artefact-types
 
 **BC-NN namespace rule:** All tactical DDD IDs are scoped to their bounded context. `BC-01.AGG-03` and `BC-02.AGG-03` are different aggregates. Cross-references must always include the BC prefix — bare `AGG-03` is ambiguous and invalid.
 
+**US namespace rule:** User-story IDs are scoped to their parent PRD (clew ADR-0017 D1). `PRD-0001.US-03` and `PRD-0002.US-03` are different stories. Cross-references must always use the parent-qualified form `PRD-NNNN.US-NN` — bare `US-03` is ambiguous and invalid.
+
 **Cross-doc linking rule:** any artefact that references another should use the ID + name + relative path:
 
 > `[C3.2 payment-fraud classification](../03a-capability-map.md#c32)` 
@@ -662,7 +672,7 @@ docs/
 │   ├── 07a-fbs.md
 │   ├── 09a-quality-attributes.md
 │   └── prds/
-│       └── prd-NNNN-{feature}.md (one per PRD)
+│       └── prd-NNNN-{slug}.md (one per PRD)
 ├── plans/                                               ← Build planning (plan-)
 │   ├── delivery-roadmap.md                              ← epics (E-NN)
 │   └── active/
