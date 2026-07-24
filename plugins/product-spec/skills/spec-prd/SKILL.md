@@ -204,6 +204,8 @@ As a [persona role] (P-NN), I want [action] so that [outcome].
 
 **`Covers:` field** — optional soft edge from the story to the use case it covers. `_TODO_` is a declared absence when use cases aren't enabled — spec-prd works without spec-use-case.
 
+**Escalation rule — story vs use case.** Stories deliberately underweight alternate and failure flows (the unanimous finding across the [Cockburn](https://www.viktorcessan.com/whats-the-difference-between-a-user-story-and-a-use-case/), [Cohn](https://www.mountaingoatsoftware.com/articles/advantages-of-user-stories-for-requirements), and [Use-Case 2.0](https://queue.acm.org/detail.cfm?id=2912151) traditions). When a story's acceptance criteria start sprouting alternate-flow language ("unless…", "if the payment fails…", "except when…"), that is the trigger to mint a `use_case` via `spec-use-case` and flip this story's `Covers:` from `_TODO_` to the real `UC-NN` — the scenario branches belong in the use case's extensions, not in a growing criteria list.
+
 #### 4.1 User Story Guidelines
 
 Good user stories are:
