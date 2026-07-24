@@ -94,7 +94,7 @@ This lets users respond with "1A, 2C, 3B" for quick iteration.
 
 Generate the PRD with these sections.
 
-Include an overall status at the top: `**Status:** draft | approved | in-progress | complete`
+Include an overall status at the top: `**Status:** draft | approved | in-progress | complete`. This is a **delivery status**, distinct from the frontmatter lifecycle `status` (draft/active/superseded/deprecated) — the two coexist and answer different questions.
 
 ---
 
@@ -178,13 +178,16 @@ They have different contexts, devices, and success criteria even for the same
 feature — merging them into one story produces acceptance criteria that satisfy
 neither.
 
+**Story IDs are parent-scoped:** `PRD-NNNN.US-NN` — the parent PRD's ID, a dot, then a 2-digit story number that restarts at `01` in every PRD (clew ADR-0017 D1). Never mint a bare `US-NN` or a 3-digit `US-NNN`.
+
 **User story format:**
 
 ```markdown
-### US-001: [Title]
+### PRD-NNNN.US-NN · [Title]
 
 **Persona:** P-NN · [Role name]
 **Status:** pending
+**Covers:** UC-NN *(or `_TODO_`)*
 **FBS refs:** C3.1.F02 · C3.2.F01
 
 **Description:**
@@ -196,6 +199,10 @@ As a [persona role] (P-NN), I want [action] so that [outcome].
 - [ ] Typecheck/lint passes
 - [ ] **[UI stories only]** Verify in browser using dev-browser skill
 ```
+
+**`Status:` field** — per-story delivery tracking, sanctioned for kit-only repos; when clew is present, per-story lifecycle status lives in the clew store (`clew set`) and supersedes this in-file field.
+
+**`Covers:` field** — optional soft edge from the story to the use case it covers. `_TODO_` is a declared absence when use cases aren't enabled — spec-prd works without spec-use-case.
 
 #### 4.1 User Story Guidelines
 
@@ -221,10 +228,11 @@ Good user stories are:
 **Example (with persona + FBS refs):**
 
 ```markdown
-### US-001: Generate semester OR schedule
+### PRD-0001.US-01 · Generate semester OR schedule
 
 **Persona:** P-01 · OR coordinator
 **Status:** pending
+**Covers:** UC-03
 **FBS refs:** C3.1.F02 · C3.1.F03 · C3.1.F04 · C3.1.F05
 
 **Description:**
@@ -320,10 +328,10 @@ the `metamodel` skill's `references/open-items-governance.md` — do not restate
 
 - One filing per actionable unresolved item. Inline `_TODO_` placeholders elsewhere in the PRD are scaffold debt, not open items.
 - `Type` is exactly one of `doc-gap` | `decision-gap` | `execution-item` | `tech-debt`.
-- `Source anchor` + `Source heading` together preserve provenance — for example, `#us-003` + `US-003 Partner authentication` when the open item surfaced from a user story. For PRD-wide items use `#open-items` + `_central-only_`.
+- `Source anchor` + `Source heading` together preserve provenance — for example, `#prd-0001us-03--partner-authentication` + `PRD-0001.US-03 · Partner authentication` when the open item surfaced from a user story (the `ID · Title` heading form yields the GFM autoanchor `<lowercase-id>--<slug>` that clew's file bindings expect, clew ADR-0002). For PRD-wide items use `#open-items` + `_central-only_`.
 - `Tracker ref` is `_TBD_` while the row is `open`; required (PR · ADR · plan increment · audit report link) to move to `closed` or `dropped`.
 - File nothing when there's no actionable unresolved work — do not invoke `util-open-items` just to record "none."
-- `Source artefact` is this PRD's path (`docs/product-specs/prds/prd-NNNN-{feature}.md`).
+- `Source artefact` is this PRD's path (`docs/product-specs/prds/prd-NNNN-{slug}.md`).
 
 ---
 
@@ -337,7 +345,7 @@ find docs/product-specs/prds/ -name "prd-*.md" | sort | tail -1
 ```
 
 The same NNNN is used in:
-- The filename: `docs/product-specs/prds/prd-NNNN-{feature}.md`
+- The filename: `docs/product-specs/prds/prd-NNNN-{slug}.md`
 - The frontmatter title: `PRD-NNNN — Feature Name`
 - The `**PRD-ID:** PRD-NNNN` field in §0 Architecture Traceability
 
@@ -365,15 +373,16 @@ While drafting the PRD, file each actionable unresolved item directly to the cen
 ledger via `util-open-items` — there is no local §9 table to populate first.
 
 - **File as you go.** Each row carries `Source anchor` + `Source heading` pointing back
-  to the originating PRD section (e.g. `#us-003` + "US-003 Partner authentication" for
-  items surfaced from a user story; `#open-items` + `_central-only_` for PRD-wide items),
-  citing this PRD's path as `Source artefact`.
+  to the originating PRD section (e.g. `#prd-0001us-03-partner-authentication` +
+  "PRD-0001.US-03 · Partner authentication" for items surfaced from a user story;
+  `#open-items` + `_central-only_` for PRD-wide items), citing this PRD's path as
+  `Source artefact`.
 - **File nothing when there's nothing to file.** The PRD §8 Open Questions narrative is
   discussion-only and never gets filed.
 - **Keep filing as the PRD evolves.** Status changes, owners added, or rows closed with a
   Tracker ref go through `util-open-items` (`close` / `drop` / `sync`) directly.
 
-Invoke as: "File the open item for `docs/product-specs/prds/prd-NNNN-{feature}.md`
+Invoke as: "File the open item for `docs/product-specs/prds/prd-NNNN-{slug}.md`
 §{section} via the util-open-items skill."
 
 ---
@@ -382,7 +391,7 @@ Invoke as: "File the open item for `docs/product-specs/prds/prd-NNNN-{feature}.m
 
 - **Format:** Markdown (`.md`)
 - **Location:** `docs/product-specs/prds/`
-- **Filename:** `prd-NNNN-{feature}.md` (e.g., `prd-0001-semester-schedule-generation.md`)
+- **Filename:** `prd-NNNN-{slug}.md` (e.g., `prd-0001-semester-schedule-generation.md`)
 - **ID format:** `PRD-NNNN` — 4-digit zero-padded integer. Determine by running `find docs/product-specs/prds/ -name "prd-*.md" | sort` and taking max NNNN + 1. First PRD is `PRD-0001`.
 - Open every generated file with the standard artefact frontmatter (OKF-superset block — set `type` to this artefact's `okf_type` display name from the `metamodel` skill's `references/artefact-types-registry.yaml`, plus `title`, `description`, `tags`, `timestamp`, `status`, `owner`, `last_reviewed`, `review_interval`). Run `git config user.name` for `owner`. Set `status: draft` on initial scaffold. Default `review_interval: 30d`. Full schema: the `metamodel` skill's `references/artefact-frontmatter.md`.
 
@@ -398,10 +407,11 @@ Before saving the PRD:
 - [ ] Clarifying questions asked with lettered options
 - [ ] User answers incorporated
 - [ ] Every user story references a specific persona role + P-NN ID
+- [ ] Every story ID uses the parent-scoped `PRD-NNNN.US-NN` format (2-digit, restarts at 01 per PRD) — never bare `US-NN` — and every story heading uses the `ID · Title` form so its GFM autoanchor matches clew's `<lowercase-id>--<slug>` binding convention (ADR-0002)
 - [ ] User stories are small, specific, and grounded in one persona
-- [ ] FBS refs listed per user story where applicable
+- [ ] FBS refs listed per user story where applicable (and `Covers:` set to a UC-NN or `_TODO_`)
 - [ ] Non-goals reference FBS IDs for explicitly deferred functionalities
 - [ ] Success metrics anchored to persona context and value-stream pain index
-- [ ] Saved to `docs/product-specs/prds/prd-NNNN-{feature}.md`
+- [ ] Saved to `docs/product-specs/prds/prd-NNNN-{slug}.md`
 - [ ] FBS promotion instructions provided (⬜ → 🔄 for committed functionalities)
 - [ ] Any unresolved work identified while drafting was filed directly via `util-open-items` per the `metamodel` skill's `references/open-items-governance.md` (no local section — ADR-0005)

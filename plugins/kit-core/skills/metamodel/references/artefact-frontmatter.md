@@ -67,6 +67,12 @@ okf_version: "0.1"
 - ❌ `type: prd` (snake_case internal key — not the OKF display value)
 - ❌ empty / missing (breaks OKF conformance)
 
+### Umbrella rule — mixed files (clew ADR-0017 D3)
+
+One frontmatter block per file, always. When a file contains bound child artefacts alongside its file-defining artefact (user stories in a PRD, key results in the objectives doc, glossary terms in the glossary), `type:` is the **file-defining artefact's** `okf_type` — a PRD file says `Product Requirements Document` even though it carries `PRD-NNNN.US-NN` children; collection files already work this way. Never emit a second frontmatter block mid-file for a child artefact.
+
+**Per-artefact status.** Per-artefact lifecycle status for child/bound artefacts lives in the clew store (written via `clew set`) when clew is present; file-level `status:` describes the file's primary artefact only. **RULING:** in kit-only repos with no clew store, a per-story in-file `Status:` field is the sanctioned degraded mode, explicitly superseded by the store once clew is enabled.
+
 **`title`** — instance title, not the artefact type name.
 - ✅ `"Payment Bounded Context Map"`
 - ✅ `"PRD-0003 — Bulk Invoice Export"`
