@@ -1,7 +1,7 @@
 {
   "name": "strategy",
   "description": "Business strategy & discovery. Vision, personas, canvases, capability map, value streams, objectives, processes, quantitative models, competitive landscape \u2014 plus discovery ideation, research, and workshops.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Victor Hueni"
   }

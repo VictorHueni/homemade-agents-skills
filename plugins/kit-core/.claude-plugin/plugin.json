@@ -1,7 +1,7 @@
 {
   "name": "kit-core",
   "description": "Kit core \u2014 always enabled. The metamodel keystone skill (spine, YAML type registry, frontmatter schema, open-items contract, Audit/Scaffold/Migrate modes) plus the cross-cutting operators: open-items ledger, provenance, toolkit doctor.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Victor Hueni"
   }
