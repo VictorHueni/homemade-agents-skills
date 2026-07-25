@@ -92,7 +92,9 @@ body {
 .dl-v, .dl-p { font-size: 8pt; font-variant-numeric: tabular-nums; text-align: right; }
 .dl-v { color: var(--ink, #1a1a1a); font-weight: 700; }
 .dl-p { color: var(--muted, #6b7280); }
-.recap-cards { display: grid; grid-auto-flow: column; gap: 3mm; }
+/* Quadrant, not a row: two columns keep the card block roughly as tall as the
+   donut beside it, so the two halves of the recap balance. */
+.recap-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
 .recap-card {
   border: 1px solid var(--border, #d7dce3); border-radius: var(--card-radius, 12px);
   padding: 2.5mm 3mm; text-align: center;
