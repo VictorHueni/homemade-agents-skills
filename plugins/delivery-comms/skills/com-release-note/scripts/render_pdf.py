@@ -231,31 +231,29 @@ def build_html(note_path: Path, design_system: str | None) -> str:
 _PDF_MARGIN = {"top": "14mm", "right": "16mm", "bottom": "18mm", "left": "16mm"}
 _PAGE_COUNT_RE = re.compile(rb"/Type\s*/Page[^s]")
 
+_MIN_SCALE = 0.85  # readability floor: 10.5pt body stays ≥ 8.9pt effective
+
 
 def _fit_scale(page) -> float:
-    """Largest scale (1.0 down to 0.9) at which the document footer adds no page.
+    """Largest scale in [_MIN_SCALE, 1.0] that needs the fewest pages.
 
-    The footer never splits across pages, so when body content ends near a page
-    boundary the footer alone would spill onto an extra, near-empty page. Probe
-    Chromium's actual pagination: render a throwaway PDF with the footer hidden
-    and one with it shown, and accept the first scale where the page counts
-    match. Below 0.9 the last page is genuinely full — keep scale 1 and accept
-    the extra page.
+    Content ending just past a page boundary — often only the atomic document
+    footer — buys a whole extra, near-empty page. A shrink of a few percent is
+    barely perceptible and usually reclaims it. Probe Chromium's real pagination
+    at each scale (screen-media measurements diverge from print layout) and take
+    the largest scale achieving the minimum page count; when shrinking saves
+    nothing, that is 1.0 and the document renders untouched. The floor keeps
+    body text readable — past it, an extra page is the honest answer.
     """
-    def pages(scale: float, hide_footer: bool) -> int:
-        page.evaluate("h => { document.querySelector('.report-footer').style.display = h ? 'none' : ''; }",
-                      hide_footer)
-        data = page.pdf(format="A4", scale=scale, margin=_PDF_MARGIN)
-        return len(_PAGE_COUNT_RE.findall(data))
+    def pages(scale: float) -> int:
+        return len(_PAGE_COUNT_RE.findall(page.pdf(format="A4", scale=scale, margin=_PDF_MARGIN)))
 
-    try:
-        for step in range(11):
-            scale = round(1.0 - step / 100, 2)
-            if pages(scale, True) == pages(scale, False):
-                return scale
-        return 1.0
-    finally:
-        page.evaluate("() => { document.querySelector('.report-footer').style.display = ''; }")
+    steps = int(round((1.0 - _MIN_SCALE) * 100)) + 1
+    counts = {round(1.0 - step / 100, 2): None for step in range(steps)}
+    for scale in counts:
+        counts[scale] = pages(scale)
+    fewest = min(counts.values())
+    return max(scale for scale, n in counts.items() if n == fewest)
 
 def _footer_template(stamp: str) -> str:
     """Chromium header/footer templates take inline styles only — page tokens don't reach them."""
@@ -286,13 +284,13 @@ def render_pdf(html_path: Path, pdf_path: Path, stamp: str) -> None:
         page.emulate_media(media="screen")
         page.goto(html_path.resolve().as_uri(), wait_until="networkidle")
         page.evaluate("() => document.fonts.ready")
-        # Neutralise the template's @page margins (Chromium combines CSS @page margins
-        # with the API margins below, so pagination margins come from one place only)
-        # and the wrapper padding, whose overflow can mint a blank trailing page.
-        page.add_style_tag(content="@page { size: A4; margin: 0; } .report { padding: 0; }")
+        # Drop the screen wrapper padding, whose overflow can mint a blank trailing
+        # page. The template's @page margins are left alone: they match _PDF_MARGIN,
+        # so Chromium paginates against the same box it prints into.
+        page.add_style_tag(content=".report { padding: 0; }")
         scale = _fit_scale(page)
         if scale < 1.0:
-            print(f"render_pdf.py: scaled to {scale:.3f} to keep the footer on the last content page")
+            print(f"render_pdf.py: scaled to {scale:.2f} to save a page")
         page.pdf(
             path=str(pdf_path),
             format="A4",

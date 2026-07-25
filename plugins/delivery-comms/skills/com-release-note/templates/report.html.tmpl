@@ -50,6 +50,8 @@ body {
   display: flex; align-items: center; gap: 3mm; margin-bottom: 3.5mm;
 }
 .section-label::after { content: ""; flex: 1; border-top: 1px solid var(--border, #d7dce3); }
+/* Never strand a section label at the foot of a page, away from its content. */
+.section-label { break-after: avoid; page-break-after: avoid; }
 
 /* --- Product cards (Tier 1) --- */
 .product-card {
@@ -79,13 +81,12 @@ body {
 }
 
 /* --- Platform and engineering (Tier 2) --- */
-.bucket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 5mm; }
+.bucket-grid { display: grid; grid-template-columns: 1fr; gap: 3mm; }
 .bucket {
   border: 1px solid var(--border, #d7dce3);
   border-radius: var(--card-radius, 12px);
   padding: 3mm 4mm; break-inside: avoid;
 }
-.bucket .entry-label { display: block; margin-bottom: 0.5mm; }
 
 /* --- Breaking changes --- */
 .breaking {
@@ -109,7 +110,9 @@ body {
 .report-footer code { font-family: inherit; }
 
 /* --- Print (also drives browser print-to-PDF fallback) --- */
-@page { size: A4; margin: 14mm 16mm 16mm; }
+/* Margins must match render_pdf.py's _PDF_MARGIN, or Chromium paginates
+   against one box and prints into another (content bleeds into the margin). */
+@page { size: A4; margin: 14mm 16mm 18mm; }
 @media print {
   .report { padding: 0; max-width: none; }
 }
