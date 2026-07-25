@@ -89,8 +89,10 @@ Default output: `docs/communication/release-notes/{version}-{slug}.md` (or an ex
 3. **Attribute each changelog/PR entry to Product → Capability → Functionality:**
    - The commit **scope** (`feat(billing): …`) and entry text are the clues; **an FBS functionality flipping to ✅ is the strongest signal**.
    - Entries with **no product-capability home** (CI/CD, refactor, tooling, infra, perf, security) → the **Platform and engineering** tier.
+   - A `fix:` entry a non-technical reader can actually notice → **Fixes and improvements**; an internal fix → Platform and engineering; dependency bumps and lint → dropped.
    - **Step 3b — graceful degradation (no FBS):** if there is no FBS, group Tier 1 by the product/area implied by commit scopes (or a single product if the repo has one), and skip the `C{n}.{m}` IDs — keep plain-language capability groupings. The note still reads correctly; it just loses the FBS ID cross-references.
-4. **Write the note** against `templates/release-note-template.md`: a one-line theme, `## What's new` (Tier 1, plain-language benefit-first bullets), `## Platform and engineering` (Tier 2, the project's stable buckets), optional `## Breaking changes`, then the `**Full Changelog**: v{PREV}...v{X.Y.Z}` link. Honour every rule in the template comment (no em dashes; scope honesty; do not invent).
+4. **Write the note** against `templates/release-note-template.md`: a one-line theme, `## What's new` (Tier 1, plain-language benefit-first bullets), `## Fixes and improvements` (Tier 1b — what was broken and is now right, same reader-facing voice; internal fixes go to Tier 2 and noise is dropped), `## Platform and engineering` (Tier 2, the project's stable buckets), optional `## Breaking changes`, then the `**Full Changelog**: v{PREV}...v{X.Y.Z}` link. Honour every rule in the template comment (no em dashes; scope honesty; do not invent).
+   **Only these four `##` headings render.** The PDF renderer matches headings on the keywords `new`, `fix`, `platform` and `breaking`; any other section is omitted from the report and reported as a warning on stderr (it will not vanish silently, but it will not print either).
 5. **Produce the GitHub Release body** from `templates/github-release-body-template.md`: a condensed, screenful summary that links back to the committed note at its tag. This is the second output — do not skip it.
 6. **Hand to the user for approval.** The narrative is judgement content, not mechanically verifiable. Delete the template comment blocks on finalise; flip `status: draft → active` once approved.
 
@@ -147,6 +149,7 @@ Open the committed note with the standard artefact frontmatter (OKF-superset blo
 docs/communication/release-notes/{version}-{slug}.md   ← committed note (OKF frontmatter)
   # v{X.Y.Z}: {theme} ({date})
   ## What's new                 ← Tier 1: Product → Capability, plain language
+  ## Fixes and improvements      ← Tier 1b: reader-visible fixes, same voice; omit if none
   ## Platform and engineering    ← Tier 2: 6 default buckets, redefinable per project
   ## Breaking changes            ← only if any
   Full Changelog: v{PREV}...v{X.Y.Z}

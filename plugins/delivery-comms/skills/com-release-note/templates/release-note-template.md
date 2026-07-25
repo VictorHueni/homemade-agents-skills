@@ -42,6 +42,17 @@ review_interval: 90d
 
 - C{n}.{m} {Capability name}: {what shipped}. ({plan/PRD id})
 
+## Fixes and improvements
+
+<!-- Tier 1b — things that were broken or weak and are now right, for a reader who can SEE the
+     difference. Same voice as What's new: lead with what the reader gets, not the defect
+     ("Double bookings no longer happen when two coordinators edit at once", not
+     "fix(booking): resolve race in slot writer"). Keep the C{n}.{m} ref when the fix maps to a
+     capability. Internal fixes (CI, refactors, staging-only) belong in Tier 2 below; pure noise
+     (dependency bumps, lint) is dropped entirely. Delete this section if nothing qualifies. -->
+
+- C{n}.{m} {Capability name}: {what works now that did not before, benefit-first}. ({plan id})
+
 ## Platform and engineering
 
 <!-- Tier 2 — work with no product-capability home (infra, CI/CD, refactors, tooling, perf,

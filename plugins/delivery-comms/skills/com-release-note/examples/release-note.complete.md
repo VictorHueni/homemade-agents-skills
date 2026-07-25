@@ -34,6 +34,13 @@ review_interval: 90d
 - C3.2 Scheduling API: The new `/api/v2` subscription feed pushes slot changes to partner systems as they happen, replacing the polling model that could be up to fifteen minutes stale. (0145)
 - C3.3 Audit export: Practice managers can export a full appointment audit trail for a date range without raising a support ticket. (0149)
 
+## Fixes and improvements
+
+- C2.4 Waitlist: Double bookings no longer happen when two coordinators accept the same freed slot at the same moment. (0144)
+- C1.3 Reminders: Reminders are no longer sent twice when a patient updates their phone number between confirmation and appointment. (0137)
+- C1.2 Slot rebooking: Rebooking across a daylight-saving change now keeps the time the patient actually chose. (0143)
+- C3.3 Audit export: Exports covering more than 5,000 appointments complete instead of timing out. (0149)
+
 ## Platform and engineering
 
 - CI/CD and Deployment: Portal, console and API now ship as one release train, cutting the release window from a full day to under two hours. (0135)

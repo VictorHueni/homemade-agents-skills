@@ -75,6 +75,22 @@ def _split_frontmatter(text: str) -> tuple[dict, str]:
     return {}, text  # unterminated frontmatter — treat as body
 
 
+# Heading keyword -> model key. "fix" is tested before "new" so a heading like
+# "Fixes and new improvements" resolves to the fixes section, not What's new.
+_SECTION_KEYS = (("fix", "fixes"), ("platform", "platform"), ("breaking", "breaking"), ("new", "products"))
+_RECOGNISED_SECTIONS = ("What's new", "Fixes and improvements", "Platform and engineering",
+                        "Breaking changes")
+
+
+def _section_for(heading: str) -> str | None:
+    """The model key a `## heading` feeds, or None if the heading is unrecognised."""
+    lowered = heading.lower()
+    for needle, key in _SECTION_KEYS:
+        if needle in lowered:
+            return "whats-new" if key == "products" else key
+    return None
+
+
 def _parse_entry(text: str) -> dict:
     """Split a bullet into optional FBS ref, bold label, body text, audit IDs."""
     audit = ""
@@ -91,8 +107,8 @@ def parse_note(text: str) -> dict:
     """Parse the release-note template structure into a model dict."""
     meta, body = _split_frontmatter(text)
     model: dict = {"meta": meta, "version": "", "theme": "", "daterange": "",
-                   "framing": "", "products": [], "platform": [], "breaking": [],
-                   "changelog": ""}
+                   "framing": "", "products": [], "fixes": [], "platform": [],
+                   "breaking": [], "changelog": "", "unknown": []}
     section = None
     product = None
     for raw in body.splitlines():
@@ -105,11 +121,11 @@ def parse_note(text: str) -> dict:
             model["daterange"] = h1.group(3) or ""
             continue
         if line.startswith("## "):
-            heading = line[3:].strip().lower()
-            section = ("whats-new" if "new" in heading
-                       else "platform" if "platform" in heading
-                       else "breaking" if "breaking" in heading
-                       else None)
+            heading = line[3:].strip()
+            section = _section_for(heading)
+            if section is None:
+                # Tracked, not dropped in silence — build_html warns about these.
+                model["unknown"].append({"heading": heading, "bullets": 0})
             product = None
             continue
         cl = _CHANGELOG_RE.match(line)
@@ -131,10 +147,10 @@ def parse_note(text: str) -> dict:
                     product = {"id": "", "name": "", "entries": []}
                     model["products"].append(product)
                 product["entries"].append(entry)
-            elif section == "platform":
-                model["platform"].append(entry)
-            elif section == "breaking":
-                model["breaking"].append(entry)
+            elif section in ("fixes", "platform", "breaking"):
+                model[section].append(entry)
+            elif model["unknown"]:
+                model["unknown"][-1]["bullets"] += 1
     if not model["version"]:
         _fail("no release H1 found (expected '# vX.Y.Z: theme (dates)') — is this a curated note?")
     return model
@@ -153,6 +169,16 @@ def _entry_html(entry: dict) -> str:
         parts.append(f'<span class="entry-audit">({_esc(entry["audit"])})</span>')
     parts.append("</li>")
     return "".join(parts)
+
+
+def _bucket_section(label: str, entries: list[dict]) -> str:
+    """One card per entry, stacked — used by Fixes and by Platform and engineering."""
+    if not entries:
+        return ""
+    cards = "".join('<div class="bucket"><ul class="entry-list">' + _entry_html(e) + "</ul></div>"
+                    for e in entries)
+    return (f'<section class="section"><div class="section-label">{_esc(label)}</div>'
+            f'<div class="bucket-grid">{cards}</div></section>')
 
 
 def render_content(model: dict) -> str:
@@ -177,12 +203,8 @@ def render_content(model: dict) -> str:
                        "".join(_entry_html(e) for e in product["entries"]) + "</ul></div>")
         out.append("</section>")
 
-    if model["platform"]:
-        out.append('<section class="section"><div class="section-label">Platform and engineering</div>'
-                   '<div class="bucket-grid">')
-        for entry in model["platform"]:
-            out.append('<div class="bucket"><ul class="entry-list">' + _entry_html(entry) + "</ul></div>")
-        out.append("</div></section>")
+    out.append(_bucket_section("Fixes and improvements", model["fixes"]))
+    out.append(_bucket_section("Platform and engineering", model["platform"]))
 
     if model["breaking"]:
         out.append('<section class="section section--breaking">'
@@ -230,8 +252,22 @@ def _github_release_url(note_path: Path, version: str, explicit: str | None) -> 
     return f"https://github.com/{m['owner']}/{m['repo']}/releases/tag/{version}" if m else ""
 
 
+def _warn_unknown_sections(model: dict) -> None:
+    """Never drop an authored section in silence — say what was skipped and why."""
+    if not model["unknown"]:
+        return
+    print(f"render_pdf.py: WARNING: {len(model['unknown'])} section(s) not recognised, "
+          f"omitted from the report:", file=sys.stderr)
+    for item in model["unknown"]:
+        dropped = f", {item['bullets']} bullet(s) dropped" if item["bullets"] else ""
+        print(f"  - \"{item['heading']}\"{dropped}", file=sys.stderr)
+    print(f"  Recognised headings: {', '.join(_RECOGNISED_SECTIONS)}. "
+          f"Rename the section, or fold its content into one of these.", file=sys.stderr)
+
+
 def build_html(note_path: Path, design_system: str | None, release_url: str | None) -> str:
     model = parse_note(note_path.read_text(encoding="utf-8"))
+    _warn_unknown_sections(model)
     today = datetime.date.today().isoformat()
     footer = ""
     if model["changelog"]:
