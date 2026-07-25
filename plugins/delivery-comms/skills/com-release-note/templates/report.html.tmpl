@@ -32,14 +32,34 @@ body {
 }
 .report-title { font-size: 21pt; font-weight: 700; line-height: 1.2; margin: 0 0 2mm; }
 .report-framing { font-size: 10.5pt; color: var(--muted, #6b7280); font-style: italic; margin: 0 0 3mm; }
-.report-meta {
-  display: flex; flex-wrap: wrap; gap: 1.5mm 6mm;
-  font-family: var(--font-mono, ui-monospace, monospace); font-size: 7.5pt;
-  color: var(--muted, #6b7280);
-  border-top: 1px solid var(--border, #d7dce3);
-  border-bottom: 1px solid var(--border, #d7dce3);
-  padding: 2mm 0; margin-bottom: 5mm;
+/* --- Cartouche: the title block under the summary. Holds every piece of release
+   metadata (period, owner, status, changelog range, release link, provenance), so
+   the document needs no separate footer. Accent-tinted rather than surface-2, to
+   read as document furniture and not as another content card. Each color-mix is
+   preceded by a flat fallback for engines without it. --- */
+.cartouche {
+  background: var(--surface-2, #eef1f5);
+  background: color-mix(in srgb, var(--accent, #3b6ef5) 7%, transparent);
+  border: 1px solid var(--border, #d7dce3);
+  border: 1px solid color-mix(in srgb, var(--accent, #3b6ef5) 25%, transparent);
+  border-radius: var(--card-radius, 12px);
+  padding: 3mm 4mm; margin: 0 0 6mm;
+  font-size: 8.5pt; break-inside: avoid;
 }
+.cart-row { display: grid; grid-template-columns: 30mm 1fr; gap: 3mm; padding: 1.2mm 0; }
+.cart-row + .cart-row {
+  border-top: 1px solid var(--border, #d7dce3);
+  border-top: 1px solid color-mix(in srgb, var(--accent, #3b6ef5) 18%, transparent);
+}
+.cart-k {
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 7.5pt;
+  text-transform: uppercase; letter-spacing: 0.1em; padding-top: 0.3mm;
+  color: var(--muted, #6b7280);
+  color: color-mix(in srgb, var(--accent, #3b6ef5) 75%, var(--muted, #6b7280));
+}
+.cart-v { color: var(--ink, #1a1a1a); overflow-wrap: anywhere; }
+.cartouche a { color: var(--accent, #3b6ef5); text-decoration: none; font-weight: 700; }
+.cartouche code { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.95em; }
 
 /* --- Sections --- */
 .section { margin-top: 9mm; margin-bottom: 5.5mm; }
@@ -106,19 +126,6 @@ body {
 }
 .breaking .entry-list li + li { border-top-color: var(--border, #d7dce3); }
 
-/* --- Document footer --- */
-.report-footer {
-  margin-top: 4mm; padding-top: 2.5mm;
-  break-inside: avoid;
-  border-top: 1px solid var(--border, #d7dce3);
-  font-family: var(--font-mono, ui-monospace, monospace); font-size: 7.5pt;
-  color: var(--muted, #6b7280);
-}
-.report-footer .changelog { color: var(--ink, #1a1a1a); margin-bottom: 1mm; }
-.report-footer .release-link { color: var(--ink, #1a1a1a); margin-bottom: 1mm; }
-.report-footer .release-link a { color: var(--accent, #3b6ef5); text-decoration: none; }
-.report-footer code { font-family: inherit; }
-
 /* --- Print (also drives browser print-to-PDF fallback) --- */
 /* Margins must match render_pdf.py's _PDF_MARGIN, or Chromium paginates
    against one box and prints into another (content bleeds into the margin). */
@@ -131,7 +138,6 @@ body {
 <body>
 <div class="report">
 {{CONTENT}}
-  <footer class="report-footer">{{FOOTER}}</footer>
 </div>
 </body>
 </html>

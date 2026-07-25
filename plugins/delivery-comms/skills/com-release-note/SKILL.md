@@ -116,7 +116,8 @@ Default output: `docs/communication/release-notes/{version}-{slug}.md` (or an ex
    ```
 2. **Theming** follows the kit's shared token cascade (same layering as `com-slide-deck` / `com-artefact-viz`): `templates/tokens.fallback.css` first, then the project's `docs/ux/tokens.css` (auto-detected from the working directory; `--design-system PATH` overrides), project values winning. All layout CSS in `templates/report.html.tmpl` references `var(--token)` only — re-theme the design system and the report follows.
 3. The script always writes the self-contained A4-print-styled HTML intermediate, then drives headless Chromium via **Playwright** (optional dependency — never auto-installed) for the paginated PDF, with page numbers per page. If Playwright is missing, the HTML is still written and the script fails the PDF step with an explicit message — open the HTML in a browser and print to PDF as the fallback.
-   The document footer carries a **link to the version's GitHub Release**, printed in full (a bare anchor is useless on paper) and clickable in the PDF. The URL is derived from the repo's `remote.origin.url` plus the note's version — reading the configured value, not `git remote get-url`, so `url.*.insteadOf` rewrites cannot redirect it to a mirror. Override with `--release-url`; a note outside a repo or on a non-GitHub remote simply renders no link. The PDF contains only pages with real content: when content ends just past a page boundary (often just the atomic footer), the renderer probes Chromium's real pagination and shrinks the document by the smallest amount that saves a page, down to a readability floor of 85% (logged as `scaled to N`). Past that floor the extra page is honest and is kept.
+   A **cartouche** sits directly under the summary and holds every piece of release metadata in label/value rows: period, owner, status, changelog range, a **link to the version's GitHub Release**, and the provenance line (which tool, which day, which source file). It replaces a document footer entirely, so the reader finds the links at the top rather than the end. Rows with nothing to show are omitted. The release URL is printed in full (a bare anchor is useless on paper) and clickable in the PDF; it is derived from the repo's `remote.origin.url` plus the note's version — reading the configured value, not `git remote get-url`, so `url.*.insteadOf` rewrites cannot redirect it to a mirror. Override with `--release-url`; a note outside a repo or on a non-GitHub remote simply carries no link row.
+   The PDF contains only pages with real content: when content ends just past a page boundary, the renderer probes Chromium's real pagination and shrinks the document by the smallest amount that saves a page, down to a readability floor of 85% (logged as `scaled to N`). Past that floor the extra page is honest and is kept.
 4. Verify the PDF: every section of the note is present, nothing truncated, cards not split across pages, project theme visible.
 
 **Output:** `{note-dir}/pdf/{version}-{slug}.pdf` + `.html` (both derived and regenerable — the Markdown note stays the single source of truth; re-render after edits). Override with `--output`; `--html-only` skips the PDF step.
@@ -137,7 +138,7 @@ Never overwrite an existing note for the same version — switch to Refresh, or 
 |---|---|
 | Tier 1 capability bullet | FBS `C{n}.{m}.F{xx}` / capability `C-N.M` |
 | Audit-trail parens `(0137)` | exec-plan / `PRD-NNNN` ID |
-| Full Changelog footer | the `v{PREV}...v{X.Y.Z}` compare range |
+| Full Changelog line (note footer; PDF cartouche) | the `v{PREV}...v{X.Y.Z}` compare range |
 
 Use ID + name + relative path for any in-repo link, so description renames don't break the link.
 
