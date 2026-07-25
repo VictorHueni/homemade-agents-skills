@@ -185,7 +185,8 @@ def render_content(model: dict) -> str:
         out.append("</div></section>")
 
     if model["breaking"]:
-        out.append('<section class="section"><div class="section-label">Breaking changes</div>'
+        out.append('<section class="section section--breaking">'
+                   '<div class="section-label">Breaking changes</div>'
                    '<div class="breaking"><ul class="entry-list">' +
                    "".join(_entry_html(e) for e in model["breaking"]) + "</ul></div></section>")
     return "\n".join(out)
