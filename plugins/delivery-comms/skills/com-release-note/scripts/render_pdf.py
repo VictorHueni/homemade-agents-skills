@@ -444,6 +444,9 @@ def _fit_scale(page) -> float:
     nothing, that is 1.0 and the document renders untouched. The floor keeps
     body text readable — past it, an extra page is the honest answer.
     """
+    # The probe omits the running header/footer deliberately: they render inside the
+    # reserved margin boxes, so they cannot change the page count (verified — counts
+    # match with and without them), and leaving them out keeps each probe cheaper.
     def pages(scale: float) -> int:
         return len(_PAGE_COUNT_RE.findall(page.pdf(format="A4", scale=scale, margin=_PDF_MARGIN)))
 
@@ -454,16 +457,31 @@ def _fit_scale(page) -> float:
     fewest = min(counts.values())
     return max(scale for scale, n in counts.items() if n == fewest)
 
-def _footer_template() -> str:
-    """Chromium header/footer templates take inline styles only — page tokens don't reach them."""
-    return (
-        '<div style="width:100%;padding:0 16mm;text-align:right;'
-        'font-family:ui-monospace,Menlo,monospace;font-size:8px;color:rgba(130,130,130,.95);">'
-        '<span class="pageNumber"></span> / <span class="totalPages"></span></div>'
-    )
+# Chromium renders these into the page-margin boxes. They are a separate document
+# from the report, so design tokens cannot reach them — hence inline styles and a
+# neutral grey rather than var(--muted). Keep them quiet: this is page furniture.
+_CHROME_STYLE = ("width:100%;padding:0 16mm;font-family:ui-monospace,Menlo,monospace;"
+                 "font-size:8px;color:rgba(130,130,130,.95);display:flex;"
+                 "justify-content:space-between;align-items:center;")
 
 
-def render_pdf(html_path: Path, pdf_path: Path) -> None:
+def _header_template(running_title: str) -> str:
+    """Running head: identifies a page that has been separated from the document."""
+    if not running_title:
+        return "<span></span>"
+    return (f'<div style="{_CHROME_STYLE}padding-bottom:2mm;">'
+            f'<span>{html.escape(running_title)}</span><span></span></div>')
+
+
+def _footer_template(version: str) -> str:
+    """Version on the left, page position on the right."""
+    left = f"Release note · {html.escape(version)}" if version else ""
+    return (f'<div style="{_CHROME_STYLE}">'
+            f'<span>{left}</span>'
+            f'<span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>')
+
+
+def render_pdf(html_path: Path, pdf_path: Path, running_title: str = "", version: str = "") -> None:
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -495,8 +513,8 @@ def render_pdf(html_path: Path, pdf_path: Path) -> None:
             scale=scale,
             print_background=True,
             display_header_footer=True,
-            header_template="<span></span>",
-            footer_template=_footer_template(),
+            header_template=_header_template(running_title),
+            footer_template=_footer_template(version),
             margin=_PDF_MARGIN,
         )
         browser.close()
@@ -526,7 +544,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.html_only:
         return 0
 
-    render_pdf(html_path, pdf_path)
+    model = parse_note(args.note.read_text(encoding="utf-8"))
+    running = model["meta"].get("title") or f'{model["version"]}: {model["theme"]}'
+    render_pdf(html_path, pdf_path, running, model["version"])
     print(f"render_pdf.py: wrote {pdf_path} ({pdf_path.stat().st_size / 1024:.1f} KB)")
     return 0
 
