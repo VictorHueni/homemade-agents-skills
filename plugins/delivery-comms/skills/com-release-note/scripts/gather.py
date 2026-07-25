@@ -3,6 +3,9 @@
 
 Read-only. Collects, for a tag range ``<since>..<until>``:
 
+  * the breaking changes detected in the range — commits carrying a `!` type
+    marker or a ``BREAKING CHANGE:`` footer — surfaced first so they cannot be
+    scrolled past (detection only; the curator still writes the note),
   * the ``CHANGELOG.md`` section for the release being noted,
   * the commit / merged-PR subjects, grouped by conventional-commit type
     (squash-merge subjects are the PR titles), and
@@ -35,6 +38,10 @@ from pathlib import Path
 # Conventional-commit types, in the order they should appear in the bundle.
 _TYPE_ORDER = ["feat", "fix", "perf", "refactor", "build", "ci", "docs", "test", "style", "chore"]
 _CONVENTIONAL_RE = re.compile(r"^(?P<type>[a-z]+)(?:\((?P<scope>[^)]*)\))?(?P<breaking>!)?:\s*(?P<desc>.+)$")
+# Conventional Commits allows either spelling of the breaking footer token.
+_BREAKING_FOOTER_RE = re.compile(r"^BREAKING[ -]CHANGE:\s*(?P<desc>.*)$")
+_FOOTER_TOKEN_RE = re.compile(r"^[A-Za-z][A-Za-z-]*:\s")
+_RECORD_SEP = "\x1e"
 
 
 def _fail(message: str) -> None:
@@ -63,14 +70,60 @@ def _auto_since(until: str) -> str:
         return ""  # unreachable — _fail raises
 
 
-def _commit_subjects(since: str, until: str) -> list[str]:
-    """Commit subjects in the range, newest first (squash subjects == PR titles)."""
+def _commits(since: str, until: str) -> list[tuple[str, str]]:
+    """(subject-with-hash, body) per commit in the range, newest first.
+
+    Bodies are read, not just subjects, so ``BREAKING CHANGE:`` footers are
+    visible to breaking-change detection. Records are separated by an ASCII
+    record separator, which cannot occur in commit text.
+    """
     try:
-        out = _run(["git", "log", "--no-merges", "--format=%s (%h)", f"{since}..{until}"])
+        out = _run(["git", "log", "--no-merges",
+                    f"--format={_RECORD_SEP}%s (%h)%n%b", f"{since}..{until}"])
     except subprocess.CalledProcessError as exc:
         _fail(f"git log {since}..{until} failed — are both refs valid? ({exc.stderr.strip()})")
         return []  # unreachable
-    return [line for line in out.splitlines() if line.strip()]
+    commits = []
+    for record in out.split(_RECORD_SEP):
+        lines = record.strip("\n").splitlines()
+        if lines and lines[0].strip():
+            commits.append((lines[0].strip(), "\n".join(lines[1:])))
+    return commits
+
+
+def _breaking_footers(body: str) -> list[str]:
+    """Text of each BREAKING CHANGE / BREAKING-CHANGE footer, wrapped lines joined."""
+    found, lines, i = [], body.splitlines(), 0
+    while i < len(lines):
+        match = _BREAKING_FOOTER_RE.match(lines[i])
+        if not match:
+            i += 1
+            continue
+        parts, i = [match.group("desc").strip()], i + 1
+        while i < len(lines) and lines[i].strip() and not _FOOTER_TOKEN_RE.match(lines[i]):
+            parts.append(lines[i].strip())
+            i += 1
+        found.append(" ".join(p for p in parts if p))
+    return found
+
+
+def _breaking_entries(commits: list[tuple[str, str]]) -> list[str]:
+    """Commits flagged breaking by a `!` type marker or a BREAKING CHANGE footer.
+
+    Detection only — the curator still decides what reaches the note's
+    `## Breaking changes` section and how it is worded for the reader.
+    """
+    entries = []
+    for subject, body in commits:
+        reasons = []
+        match = _CONVENTIONAL_RE.match(subject)
+        if match and match.group("breaking"):
+            reasons.append("`!` marker")
+        reasons += [f"BREAKING CHANGE: {text}" if text else "BREAKING CHANGE (no description)"
+                    for text in _breaking_footers(body)]
+        if reasons:
+            entries.append(f"- {subject}\n  - " + "\n  - ".join(reasons))
+    return entries
 
 
 def _group_by_type(subjects: list[str]) -> dict[str, list[str]]:
@@ -122,9 +175,19 @@ def _pr_enrichment(since: str, base: str | None) -> str:
 
 
 def _build_bundle(since: str, until: str, changelog: str | None, groups: dict[str, list[str]],
-                  pr_block: str, fbs: Path, capmap: Path) -> str:
+                  breaking: list[str], pr_block: str, fbs: Path, capmap: Path) -> str:
     """Assemble the Markdown evidence bundle."""
     parts = [f"# Release evidence bundle: {since}..{until}", ""]
+
+    # First, so a breaking change cannot be missed by scrolling.
+    parts += ["## Breaking changes (detected from commits)", ""]
+    if breaking:
+        parts += breaking + [""]
+        parts += ["_Detection only — decide per entry what the reader must do, and write it into "
+                  "the note's `## Breaking changes` section._", ""]
+    else:
+        parts += ["_No `!` markers or BREAKING CHANGE footers in range. "
+                  "Check the changelog section below before concluding there are none._", ""]
 
     parts += ["## Changelog section", ""]
     parts.append(changelog if changelog else f"_No CHANGELOG section found for {until}. Curate from commits below._")
@@ -163,17 +226,21 @@ def main(argv: list[str] | None = None) -> int:
     _require("git")
     since = args.since or _auto_since(args.until)
 
-    subjects = _commit_subjects(since, args.until)
+    commits = _commits(since, args.until)
+    subjects = [subject for subject, _ in commits]
     groups = _group_by_type(subjects)
+    breaking = _breaking_entries(commits)
     changelog = _changelog_section(args.changelog, args.until)
     pr_block = _pr_enrichment(since, args.pr_base)
-    bundle = _build_bundle(since, args.until, changelog, groups, pr_block, args.fbs, args.capability_map)
+    bundle = _build_bundle(since, args.until, changelog, groups, breaking, pr_block,
+                           args.fbs, args.capability_map)
 
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(bundle, encoding="utf-8")
         print(f"gather.py: wrote evidence bundle to {args.output} "
-              f"({len(subjects)} commits, changelog {'found' if changelog else 'missing'}).")
+              f"({len(subjects)} commits, {len(breaking)} breaking, "
+              f"changelog {'found' if changelog else 'missing'}).")
     else:
         print(bundle)
     return 0

@@ -64,7 +64,8 @@ Default output: `docs/communication/release-notes/{version}-{slug}.md` (or an ex
      --capability-map docs/business/03a-capability-map.md \
      --output {scratch}/release-{X.Y.Z}-bundle.md
    ```
-3. Surface the bundle to the user for a sanity check. It contains: the `CHANGELOG.md` section for the target version, the commit/merged-PR subjects grouped by conventional-commit type, and pointers to the FBS + capability map (not deep-parsed — Curate reads those).
+3. Surface the bundle to the user for a sanity check. It contains, in order: **breaking changes detected from commits** (a `!` type marker or a `BREAKING CHANGE:` / `BREAKING-CHANGE:` footer, listed first so they cannot be scrolled past), the `CHANGELOG.md` section for the target version, the commit/merged-PR subjects grouped by conventional-commit type, and pointers to the FBS + capability map (not deep-parsed — Curate reads those).
+   Detection is **not** a decision: the curator still judges what each breaking change means for the reader and writes the note's `## Breaking changes` section. The detected block only guarantees the input is never silently missing — a project without a release-please `CHANGELOG.md` would otherwise leave a `!` buried in one subject line as the sole signal, and footers invisible entirely.
 
 **Output:** a Markdown evidence bundle at a scratch path (gitignored / not committed).
 
