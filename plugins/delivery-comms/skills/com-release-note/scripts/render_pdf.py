@@ -227,6 +227,36 @@ def build_html(note_path: Path, design_system: str | None) -> str:
 
 # ------------------------------------------------------------- PDF export ----
 
+# Margins for every page.pdf() call (probe and final render alike).
+_PDF_MARGIN = {"top": "14mm", "right": "16mm", "bottom": "18mm", "left": "16mm"}
+_PAGE_COUNT_RE = re.compile(rb"/Type\s*/Page[^s]")
+
+
+def _fit_scale(page) -> float:
+    """Largest scale (1.0 down to 0.9) at which the document footer adds no page.
+
+    The footer never splits across pages, so when body content ends near a page
+    boundary the footer alone would spill onto an extra, near-empty page. Probe
+    Chromium's actual pagination: render a throwaway PDF with the footer hidden
+    and one with it shown, and accept the first scale where the page counts
+    match. Below 0.9 the last page is genuinely full — keep scale 1 and accept
+    the extra page.
+    """
+    def pages(scale: float, hide_footer: bool) -> int:
+        page.evaluate("h => { document.querySelector('.report-footer').style.display = h ? 'none' : ''; }",
+                      hide_footer)
+        data = page.pdf(format="A4", scale=scale, margin=_PDF_MARGIN)
+        return len(_PAGE_COUNT_RE.findall(data))
+
+    try:
+        for step in range(11):
+            scale = round(1.0 - step / 100, 2)
+            if pages(scale, True) == pages(scale, False):
+                return scale
+        return 1.0
+    finally:
+        page.evaluate("() => { document.querySelector('.report-footer').style.display = ''; }")
+
 def _footer_template(stamp: str) -> str:
     """Chromium header/footer templates take inline styles only — page tokens don't reach them."""
     return (
@@ -256,17 +286,22 @@ def render_pdf(html_path: Path, pdf_path: Path, stamp: str) -> None:
         page.emulate_media(media="screen")
         page.goto(html_path.resolve().as_uri(), wait_until="networkidle")
         page.evaluate("() => document.fonts.ready")
-        # Neutralise the template's @page margins: Chromium combines CSS @page margins
-        # with the API margins below, so pagination margins come from one place only.
-        page.add_style_tag(content="@page { size: A4; margin: 0; }")
+        # Neutralise the template's @page margins (Chromium combines CSS @page margins
+        # with the API margins below, so pagination margins come from one place only)
+        # and the wrapper padding, whose overflow can mint a blank trailing page.
+        page.add_style_tag(content="@page { size: A4; margin: 0; } .report { padding: 0; }")
+        scale = _fit_scale(page)
+        if scale < 1.0:
+            print(f"render_pdf.py: scaled to {scale:.3f} to keep the footer on the last content page")
         page.pdf(
             path=str(pdf_path),
             format="A4",
+            scale=scale,
             print_background=True,
             display_header_footer=True,
             header_template="<span></span>",
             footer_template=_footer_template(stamp),
-            margin={"top": "14mm", "right": "16mm", "bottom": "18mm", "left": "16mm"},
+            margin=_PDF_MARGIN,
         )
         browser.close()
 
