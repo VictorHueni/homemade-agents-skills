@@ -90,11 +90,18 @@ body {
 }
 
 /* --- Breaking changes --- */
+/* The section heading carries the warning colour; the panel is washed to match.
+   Each color-mix is preceded by a flat fallback for engines without it. */
+.section--breaking .section-label {
+  color: var(--danger, #d9534f);
+  border-bottom-color: var(--danger, #d9534f);
+}
 .breaking {
   border: 1px solid var(--border, #d7dce3);
-  border-left: 1.2mm solid var(--danger, #d9534f);
+  border: 1px solid color-mix(in srgb, var(--danger, #d9534f) 35%, transparent);
   border-radius: var(--card-radius, 12px);
   background: var(--surface-2, #eef1f5);
+  background: color-mix(in srgb, var(--danger, #d9534f) 8%, transparent);
   padding: 3.5mm 5mm; break-inside: avoid;
 }
 .breaking .entry-list li + li { border-top-color: var(--border, #d7dce3); }
