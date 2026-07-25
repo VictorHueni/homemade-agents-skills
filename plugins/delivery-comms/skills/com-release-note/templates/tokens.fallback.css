@@ -1,0 +1,43 @@
+/*
+ * tokens.fallback.css — shipped neutral defaults for the generic token contract.
+ *
+ * Inlined FIRST so a deck/view renders correctly with ZERO project setup. When a
+ * project's docs/ux/tokens.css exists it is inlined AFTER this and overrides
+ * these values (project wins). Same layering in com-artefact-viz + com-slide-deck.
+ *
+ * Keep this :root in sync with the canonical contract,
+ * design-system/templates/tokens.template.css (generic names only — no kit-domain
+ * tokens; those are consumer-derived, e.g. com-artefact-viz/templates/tokens.domain.css).
+ */
+:root {
+  /* ---- Base palette ---- */
+  --ink:        #1a1f29;   /* primary text */
+  --muted:      #6b7280;   /* secondary text */
+  --canvas-bg:  #f6f7f9;   /* page background */
+  --surface:    #ffffff;   /* card / panel background */
+  --surface-2:  #eef1f5;   /* recessed / group background */
+  --border:     #d7dce3;   /* hairlines, dividers */
+  --accent:     #3b6ef5;   /* primary action, links, IDs */
+  --accent-ink: #ffffff;   /* text on accent fills */
+
+  /* ---- Semantic state (generic; portable across projects + tools) ---- */
+  --success: #2e9e5b;   /* positive / done / validated */
+  --warning: #f0ad4e;   /* caution / in-progress / tested */
+  --danger:  #d9534f;   /* negative / error / critical */
+  --info:    #3b6ef5;   /* informational / planned / neutral-active */
+
+  /* ---- Typography ---- */
+  --font-sans:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:  ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+  --title-size: 1.6rem;
+
+  /* ---- Spacing & shape ---- */
+  --space-sm:    0.5rem;
+  --space-md:    1rem;
+  --space-lg:    2rem;
+  --shell-max:   1400px;
+  --card-radius: 12px;
+  --btn-radius:  8px;
+  --node-radius: 10px;
+  --shadow:      0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10);
+}

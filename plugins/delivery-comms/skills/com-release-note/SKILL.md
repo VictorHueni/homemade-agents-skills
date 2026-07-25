@@ -1,8 +1,8 @@
 ---
 type: skill
 name: com-release-note
-description: "Curate a stakeholder-facing, non-technical release note from a release's raw material: the changelog plus the commit and merged-PR history between two tags, and (when present) the FBS + capability map. Reorganises type-grouped changelog entries into a plain-language, benefit-first note structured by Product then Capability then Functionality, plus a Platform and Engineering tier for infra/CI/refactor work. Emits both a committed Markdown note and a condensed GitHub Release body; gracefully degrades when a project has no FBS. Four modes: gather, scaffold, curate, refresh. Use when the user wants release notes, a GitHub Release body, or to turn a changelog into something a non-technical reader (customer, manager, investor) can act on. Triggers on: release note, release notes, stakeholder release, changelog to release note, GitHub release body, curate release, com-release-note. Do NOT use to generate the automated technical changelog itself (that is release-please) or for slide decks (com-slide-deck)."
-version: "1.0.0"
+description: "Curate a stakeholder-facing, non-technical release note from a release's raw material: the changelog plus commit and merged-PR history between two tags, and (when present) the FBS + capability map. Reorganises type-grouped changelog entries into a plain-language, benefit-first note by Product then Capability then Functionality, plus a Platform and Engineering tier for infra/CI/refactor work. Emits a committed Markdown note, a GitHub Release body, and (render mode) an A4 PDF report themed by the shared design-system tokens like com-slide-deck; degrades gracefully with no FBS. Five modes: gather, scaffold, curate, refresh, render. Use for release notes, a GitHub Release body, a release-note PDF for management, or turning a changelog into something a non-technical reader can act on. Triggers on: release note, changelog to release note, GitHub release body, release note pdf, release report, com-release-note. Do NOT use for the technical changelog itself (release-please) or slide decks (com-slide-deck)."
+version: "1.1.0"
 status: active
 last_reviewed: 2026-07-18
 review_interval: 180d
@@ -43,10 +43,11 @@ CHANGELOG + commit/PR history + FBS + capability map ──(gather)──▶ evi
 | Scaffold a blank note into the project | copy `templates/release-note-template.md` to the output location |
 | Curate the note (+ GitHub Release body) | reason over the bundle; fill the template; produce both outputs |
 | Refresh for the next release | re-gather from the new prior tag, re-curate |
+| Render the note to an A4 PDF report | `python path/to/com-release-note/scripts/render_pdf.py NOTE.md [--recipient NAME]` (optional Playwright) |
 
 Default output: `docs/communication/release-notes/{version}-{slug}.md` (or an existing `docs/release-notes/`).
 
-## The four modes of operation
+## The five modes of operation
 
 ### Mode 1 — Gather
 
@@ -100,6 +101,25 @@ Default output: `docs/communication/release-notes/{version}-{slug}.md` (or an ex
 
 **Process:** auto-detect the prior release tag, re-run Gather for the new range, then Curate a **new** note file (never overwrite a prior release's note). If the project defined custom Tier-2 buckets in an earlier note, reuse the same buckets for continuity.
 
+### Mode 5 — Render
+
+**When:** the curated note is approved and needs a human-readable, nicely designed A4 PDF (a management leave-behind), styled from the same design system as the project's slide decks and artefact views.
+
+**Process:**
+1. Run the renderer against the committed note (read-only on the note; derived outputs only):
+   ```bash
+   python path/to/com-release-note/scripts/render_pdf.py \
+     docs/communication/release-notes/{version}-{slug}.md \
+     --recipient "Management Board"
+   ```
+2. **Theming** follows the kit's shared token cascade (same layering as `com-slide-deck` / `com-artefact-viz`): `templates/tokens.fallback.css` first, then the project's `docs/ux/tokens.css` (auto-detected from the working directory; `--design-system PATH` overrides), project values winning. All layout CSS in `templates/report.html.tmpl` references `var(--token)` only — re-theme the design system and the report follows.
+3. The script always writes the self-contained A4-print-styled HTML intermediate, then drives headless Chromium via **Playwright** (optional dependency — never auto-installed) for the paginated PDF: A4 pages, page numbers, and the optional `--recipient` footer stamp ("Prepared for NAME · date"). If Playwright is missing, the HTML is still written and the script fails the PDF step with an explicit message — open the HTML in a browser and print to PDF as the fallback.
+4. Verify the PDF: every section of the note is present, nothing truncated, cards not split across pages, project theme visible.
+
+**Output:** `{note-dir}/pdf/{version}-{slug}.pdf` + `.html` (both derived and regenerable — the Markdown note stays the single source of truth; re-render after edits). Override with `--output`; `--html-only` skips the PDF step.
+
+A worked fixture lives at `examples/release-note.sample.md` — render it to smoke-test the pipeline.
+
 ## Auto-detect output location
 
 Probe in order:
@@ -145,10 +165,11 @@ The judgement calls — stakeholder voice vs commit voice, curate-don't-dump, ci
 - [ ] Frontmatter complete (`type: Release Notes`, owner, dates); `status: active` only after human approval.
 - [ ] Both outputs produced: committed note + GitHub Release body.
 - [ ] `**Full Changelog**` compare link present and correct.
+- [ ] *(Render)* PDF carries every note section, cards unsplit across pages, and the project's `docs/ux/tokens.css` visibly themes it (when present).
 
 ## Dependencies
 
-`git` and `gh` (GitHub CLI) on PATH for `scripts/gather.py`. Python 3.8+, standard library only. The script fails with an explicit message if `git`/`gh` is missing — it never auto-installs.
+`git` and `gh` (GitHub CLI) on PATH for `scripts/gather.py`. Python 3.8+, standard library only. **Playwright** is optional, only for `scripts/render_pdf.py` PDF export (`pip install playwright && python -m playwright install chromium`); without it the renderer still writes the HTML intermediate. Scripts fail with an explicit message if a dependency is missing — they never auto-install.
 
 ## Follow-up work
 
@@ -157,6 +178,8 @@ Open items about this skill's own evolution go to the kit's central ledger (`doc
 ## See also
 
 - `templates/release-note-template.md` · `templates/github-release-body-template.md` — the two outputs
+- `templates/report.html.tmpl` · `templates/tokens.fallback.css` — the A4 PDF report shell + shipped token contract (Mode 5)
+- `ux-design-system/SKILL.md` — the shared design system; its `docs/ux/tokens.css` is auto-detected as the report theme
 - `references/curation-methodology.md` — principles, boundaries, worked recipe
 - the `metamodel` skill's `references/artefact-frontmatter.md` · the `metamodel` skill's `references/artefact-types-registry.yaml` — `Release Notes` frontmatter + registry
 - `dev-release-init` — the upstream release-automation skill that produces the `CHANGELOG.md` + tags this note curates
