@@ -193,6 +193,98 @@ def _cartouche(model: dict, release_url: str, note_label: str, today: str) -> st
     return f'<div class="cartouche">{cells}</div>'
 
 
+_RANGE_RE = re.compile(r"(v?[\w.\-]+)\.\.\.?(v?[\w.\-]+)")
+
+
+def _commit_count(note_path: Path, changelog: str) -> str:
+    """Commits in the note's changelog range, counted with git. Empty when unavailable.
+
+    Deterministic and offline: the range comes from the note's own Full Changelog
+    line. A repo without those tags (or no git) yields no count, and the card is
+    simply omitted rather than guessed.
+    """
+    match = _RANGE_RE.search(changelog or "")
+    if not match:
+        return ""
+    try:
+        out = subprocess.run(["git", "-C", str(note_path.parent.resolve()), "rev-list",
+                              "--count", f"{match.group(1)}..{match.group(2)}"],
+                             capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return ""
+    return out if out.isdigit() else ""
+
+
+def _measures(model: dict) -> dict:
+    """Counts over the parsed note. Structural arithmetic only — no judgement."""
+    caps = sum(len(p["entries"]) for p in model["products"])
+    days = ""
+    dates = re.findall(r"\d{4}-\d{2}-\d{2}", model["daterange"])
+    if len(dates) == 2:
+        try:
+            start, end = (datetime.date.fromisoformat(d) for d in dates)
+            days = (end - start).days
+        except ValueError:
+            days = ""
+    return {"products": len(model["products"]), "caps": caps, "fixes": len(model["fixes"]),
+            "platform": len(model["platform"]), "breaking": len(model["breaking"]),
+            "total": caps + len(model["fixes"]) + len(model["platform"]) + len(model["breaking"]),
+            "days": days}
+
+
+# Ordinal ramp of the accent hue: the four sections are tiers, so one hue with
+# monotone lightness is the right colour job (validated: monotone L, adjacent dL,
+# light-end contrast, single hue). Dark to light, in slice order.
+_DONUT_STEPS = (
+    "color-mix(in srgb, var(--accent) 55%, var(--ink))",
+    "color-mix(in srgb, var(--accent) 78%, var(--ink))",
+    "var(--accent)",
+    "color-mix(in srgb, var(--accent) 72%, var(--surface))",
+)
+_SLICE_GAP_DEG = 1.4  # surface-coloured separator between slices, ~2px at this radius
+
+
+def _recap(model: dict, commits: str) -> str:
+    """Donut of the release's composition, with context cards beside it.
+
+    The donut and its legend stay together as one figure; the cards carry only
+    measures the donut does not already show, so no number appears twice.
+    """
+    m = _measures(model)
+    if not m["total"]:
+        return ""
+    slices = [("New capabilities", m["caps"]), ("Platform items", m["platform"]),
+              ("Fixes", m["fixes"]), ("Breaking changes", m["breaking"])]
+    slices = [(label, count) for label, count in slices if count]
+
+    stops, angle, legend = [], 0.0, ""
+    for i, (label, count) in enumerate(slices):
+        step = _DONUT_STEPS[i % len(_DONUT_STEPS)]
+        span = 360 * count / m["total"]
+        stops.append(f"{step} {angle:.2f}deg {angle + span - _SLICE_GAP_DEG:.2f}deg")
+        stops.append(f"var(--surface) {angle + span - _SLICE_GAP_DEG:.2f}deg {angle + span:.2f}deg")
+        angle += span
+        # The legend carries every value, so close slices are read as numbers, not arcs.
+        legend += (f'<div class="dl-row"><span class="dl-sw" style="background:{step}"></span>'
+                   f'<span class="dl-k">{_esc(label)}</span><span class="dl-v">{count}</span>'
+                   f'<span class="dl-p">{round(100 * count / m["total"])}%</span></div>')
+
+    cards = [("Days", m["days"]), ("Commits", commits), ("Products", m["products"])]
+    card_html = "".join(f'<div class="recap-card"><div class="rc-k">{key}</div>'
+                        f'<div class="rc-v">{value}</div></div>'
+                        for key, value in cards if value != "" and value is not None)
+
+    return (f'<div class="recap"><div class="recap-label">Release at a glance</div>'
+            f'<div class="recap-body">'
+            f'<div class="recap-figure">'
+            f'<div class="donut" style="background: conic-gradient({", ".join(stops)})">'
+            f'<div class="donut-hole"><span class="donut-total">{m["total"]}</span>'
+            f'<span class="donut-cap">entries</span></div></div>'
+            f'<div class="donut-legend">{legend}</div></div>'
+            f'<div class="recap-cards">{card_html}</div>'
+            f'</div></div>')
+
+
 def _bucket_section(label: str, entries: list[dict]) -> str:
     """One card per entry, stacked — used by Fixes and by Platform and engineering."""
     if not entries:
@@ -203,13 +295,14 @@ def _bucket_section(label: str, entries: list[dict]) -> str:
             f'<div class="bucket-grid">{cards}</div></section>')
 
 
-def render_content(model: dict, release_url: str, note_label: str, today: str) -> str:
+def render_content(model: dict, release_url: str, note_label: str, today: str, commits: str) -> str:
     out = []
     out.append(f'<div class="report-kicker">Release note · {_esc(model["version"])}</div>')
     out.append(f'<h1 class="report-title">{_esc(model["theme"])}</h1>')
     if model["framing"]:
         out.append(f'<p class="report-framing">{_inline(model["framing"])}</p>')
     out.append(_cartouche(model, release_url, note_label, today))
+    out.append(_recap(model, commits))
 
     if model["products"]:
         out.append('<section class="section"><div class="section-label">What&#x2019;s new</div>')
@@ -297,7 +390,8 @@ def build_html(note_path: Path, design_system: str | None, release_url: str | No
     title = model["meta"].get("title") or f'{model["version"]}: {model["theme"]}'
     for key, value in {"TITLE": _esc(title),
                        "DESIGN_SYSTEM_CSS": _design_system_css(design_system),
-                       "CONTENT": render_content(model, url, note_label, today)}.items():
+                       "CONTENT": render_content(model, url, note_label, today,
+                                                 _commit_count(note_path, model["changelog"]))}.items():
         tmpl = tmpl.replace("{{" + key + "}}", value)
     return tmpl
 

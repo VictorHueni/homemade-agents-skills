@@ -61,6 +61,45 @@ body {
 .cartouche a { color: var(--accent, #3b6ef5); text-decoration: none; font-weight: 700; }
 .cartouche code { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.95em; }
 
+/* --- Recap: donut of the release composition, plus context cards.
+   The donut and its legend form one figure and stay adjacent; the cards sit to the
+   right and carry only measures the donut does not show, so nothing is repeated.
+   Colour is an ordinal ramp of one hue (see _DONUT_STEPS in render_pdf.py) — the
+   sections are tiers, and slices are separated by surface-coloured gaps, never a
+   stroke. Every slice value is in the legend, so identity is never colour alone. --- */
+.recap { margin: 0 0 6mm; break-inside: avoid; }
+.recap-label {
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 7.5pt;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted, #6b7280); margin-bottom: 3mm;
+}
+.recap-body { display: grid; grid-template-columns: max-content 1fr; gap: 10mm; align-items: center; }
+.recap-figure { display: grid; grid-template-columns: 28mm max-content; gap: 4mm; align-items: center; }
+.donut { width: 28mm; height: 28mm; border-radius: 50%; position: relative; }
+.donut-hole {
+  position: absolute; inset: 6.5mm; border-radius: 50%; background: var(--surface, #fff);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.donut-total { font-size: 14pt; font-weight: 700; color: var(--ink, #1a1a1a); line-height: 1; }
+.donut-cap {
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 6.5pt;
+  color: var(--muted, #6b7280);
+}
+.donut-legend { display: grid; gap: 1.2mm; }
+.dl-row { display: grid; grid-template-columns: 3mm auto 6mm 8mm; align-items: center; gap: 2.5mm; }
+.dl-sw { width: 3mm; height: 3mm; border-radius: 1px; }
+.dl-k { font-size: 8pt; color: var(--ink, #1a1a1a); white-space: nowrap; }
+.dl-v, .dl-p { font-size: 8pt; font-variant-numeric: tabular-nums; text-align: right; }
+.dl-v { color: var(--ink, #1a1a1a); font-weight: 700; }
+.dl-p { color: var(--muted, #6b7280); }
+.recap-cards { display: grid; grid-auto-flow: column; gap: 3mm; }
+.recap-card {
+  border: 1px solid var(--border, #d7dce3); border-radius: var(--card-radius, 12px);
+  padding: 2.5mm 3mm; text-align: center;
+}
+.rc-k { font-size: 7.5pt; color: var(--muted, #6b7280); margin-bottom: 1mm; }
+.rc-v { font-size: 15pt; font-weight: 700; color: var(--ink, #1a1a1a); line-height: 1; }
+
 /* --- Sections --- */
 .section { margin-top: 9mm; margin-bottom: 5.5mm; }
 .section-label {
