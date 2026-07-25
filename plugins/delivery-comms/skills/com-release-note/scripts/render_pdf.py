@@ -196,23 +196,45 @@ def _cartouche(model: dict, release_url: str, note_label: str, today: str) -> st
 _RANGE_RE = re.compile(r"(v?[\w.\-]+)\.\.\.?(v?[\w.\-]+)")
 
 
-def _commit_count(note_path: Path, changelog: str) -> str:
-    """Commits in the note's changelog range, counted with git. Empty when unavailable.
+def _compact(n: int) -> str:
+    """Stat-tile number formatting: thousands-separated, then compact past 5 digits."""
+    return f"{n:,}" if n < 10_000 else f"{n / 1000:.1f}k"
+
+
+def _git_stats(note_path: Path, changelog: str) -> dict:
+    """Commits, active days and lines changed for the note's changelog range.
 
     Deterministic and offline: the range comes from the note's own Full Changelog
-    line. A repo without those tags (or no git) yields no count, and the card is
-    simply omitted rather than guessed.
+    line. A repo without those tags (or no git) yields nothing, and the affected
+    cards are omitted rather than guessed.
     """
     match = _RANGE_RE.search(changelog or "")
     if not match:
-        return ""
-    try:
-        out = subprocess.run(["git", "-C", str(note_path.parent.resolve()), "rev-list",
-                              "--count", f"{match.group(1)}..{match.group(2)}"],
-                             capture_output=True, text=True, check=True).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        return ""
-    return out if out.isdigit() else ""
+        return {}
+    rng = f"{match.group(1)}..{match.group(2)}"
+    cwd = str(note_path.parent.resolve())
+
+    def run(args: list[str]) -> str | None:
+        try:
+            return subprocess.run(["git", "-C", cwd, *args],
+                                  capture_output=True, text=True, check=True).stdout
+        except (OSError, subprocess.CalledProcessError):
+            return None
+
+    count = run(["rev-list", "--count", rng])
+    if count is None or not count.strip().isdigit():
+        return {}
+    stats = {"commits": count.strip()}
+    dates = run(["log", "--format=%cs", rng])
+    if dates is not None:
+        stats["active_days"] = len({d for d in dates.split() if d}) or ""
+    short = run(["diff", "--shortstat", rng]) or ""
+    added = re.search(r"(\d+) insertion", short)
+    removed = re.search(r"(\d+) deletion", short)
+    if added or removed:
+        stats["lines"] = (int(added.group(1)) if added else 0,
+                          int(removed.group(1)) if removed else 0)
+    return stats
 
 
 def _measures(model: dict) -> dict:
@@ -244,7 +266,7 @@ _DONUT_STEPS = (
 _SLICE_GAP_DEG = 1.4  # surface-coloured separator between slices, ~2px at this radius
 
 
-def _recap(model: dict, commits: str) -> str:
+def _recap(model: dict, git: dict) -> str:
     """Donut of the release's composition, with context cards beside it.
 
     The donut and its legend stay together as one figure; the cards carry only
@@ -269,7 +291,13 @@ def _recap(model: dict, commits: str) -> str:
                    f'<span class="dl-k">{_esc(label)}</span><span class="dl-v">{count}</span>'
                    f'<span class="dl-p">{round(100 * count / m["total"])}%</span></div>')
 
-    cards = [("Days", m["days"]), ("Commits", commits), ("Products", m["products"])]
+    # Signs alone distinguish added from removed: colouring them good/bad would
+    # assert a judgement the numbers do not carry (deleted code is often a win).
+    lines = git.get("lines")
+    lines_html = (f'<span class="rc-pair">+{_compact(lines[0])} &#8722;{_compact(lines[1])}</span>'
+                  if lines else "")
+    cards = [("Days", m["days"]), ("Active days", git.get("active_days", "")),
+             ("Commits", git.get("commits", "")), ("Lines", lines_html)]
     card_html = "".join(f'<div class="recap-card"><div class="rc-k">{key}</div>'
                         f'<div class="rc-v">{value}</div></div>'
                         for key, value in cards if value != "" and value is not None)
@@ -295,14 +323,14 @@ def _bucket_section(label: str, entries: list[dict]) -> str:
             f'<div class="bucket-grid">{cards}</div></section>')
 
 
-def render_content(model: dict, release_url: str, note_label: str, today: str, commits: str) -> str:
+def render_content(model: dict, release_url: str, note_label: str, today: str, git: dict) -> str:
     out = []
     out.append(f'<div class="report-kicker">Release note · {_esc(model["version"])}</div>')
     out.append(f'<h1 class="report-title">{_esc(model["theme"])}</h1>')
     if model["framing"]:
         out.append(f'<p class="report-framing">{_inline(model["framing"])}</p>')
     out.append(_cartouche(model, release_url, note_label, today))
-    out.append(_recap(model, commits))
+    out.append(_recap(model, git))
 
     if model["products"]:
         out.append('<section class="section"><div class="section-label">What&#x2019;s new</div>')
@@ -391,7 +419,7 @@ def build_html(note_path: Path, design_system: str | None, release_url: str | No
     for key, value in {"TITLE": _esc(title),
                        "DESIGN_SYSTEM_CSS": _design_system_css(design_system),
                        "CONTENT": render_content(model, url, note_label, today,
-                                                 _commit_count(note_path, model["changelog"]))}.items():
+                                                 _git_stats(note_path, model["changelog"]))}.items():
         tmpl = tmpl.replace("{{" + key + "}}", value)
     return tmpl
 
