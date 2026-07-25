@@ -43,7 +43,7 @@ CHANGELOG + commit/PR history + FBS + capability map ──(gather)──▶ evi
 | Scaffold a blank note into the project | copy `templates/release-note-template.md` to the output location |
 | Curate the note (+ GitHub Release body) | reason over the bundle; fill the template; produce both outputs |
 | Refresh for the next release | re-gather from the new prior tag, re-curate |
-| Render the note to an A4 PDF report | `python path/to/com-release-note/scripts/render_pdf.py NOTE.md [--recipient NAME]` (optional Playwright) |
+| Render the note to an A4 PDF report | `python path/to/com-release-note/scripts/render_pdf.py NOTE.md` (optional Playwright) |
 
 Default output: `docs/communication/release-notes/{version}-{slug}.md` (or an existing `docs/release-notes/`).
 
@@ -109,11 +109,11 @@ Default output: `docs/communication/release-notes/{version}-{slug}.md` (or an ex
 1. Run the renderer against the committed note (read-only on the note; derived outputs only):
    ```bash
    python path/to/com-release-note/scripts/render_pdf.py \
-     docs/communication/release-notes/{version}-{slug}.md \
-     --recipient "Management Board"
+     docs/communication/release-notes/{version}-{slug}.md
    ```
 2. **Theming** follows the kit's shared token cascade (same layering as `com-slide-deck` / `com-artefact-viz`): `templates/tokens.fallback.css` first, then the project's `docs/ux/tokens.css` (auto-detected from the working directory; `--design-system PATH` overrides), project values winning. All layout CSS in `templates/report.html.tmpl` references `var(--token)` only — re-theme the design system and the report follows.
-3. The script always writes the self-contained A4-print-styled HTML intermediate, then drives headless Chromium via **Playwright** (optional dependency — never auto-installed) for the paginated PDF: A4 pages, page numbers, and the optional `--recipient` footer stamp ("Prepared for NAME · date"). If Playwright is missing, the HTML is still written and the script fails the PDF step with an explicit message — open the HTML in a browser and print to PDF as the fallback. The PDF contains only pages with real content: when content ends just past a page boundary (often just the atomic footer), the renderer probes Chromium's real pagination and shrinks the document by the smallest amount that saves a page, down to a readability floor of 85% (logged as `scaled to N`). Past that floor the extra page is honest and is kept.
+3. The script always writes the self-contained A4-print-styled HTML intermediate, then drives headless Chromium via **Playwright** (optional dependency — never auto-installed) for the paginated PDF, with page numbers per page. If Playwright is missing, the HTML is still written and the script fails the PDF step with an explicit message — open the HTML in a browser and print to PDF as the fallback.
+   The document footer carries a **link to the version's GitHub Release**, printed in full (a bare anchor is useless on paper) and clickable in the PDF. The URL is derived from the repo's `remote.origin.url` plus the note's version — reading the configured value, not `git remote get-url`, so `url.*.insteadOf` rewrites cannot redirect it to a mirror. Override with `--release-url`; a note outside a repo or on a non-GitHub remote simply renders no link. The PDF contains only pages with real content: when content ends just past a page boundary (often just the atomic footer), the renderer probes Chromium's real pagination and shrinks the document by the smallest amount that saves a page, down to a readability floor of 85% (logged as `scaled to N`). Past that floor the extra page is honest and is kept.
 4. Verify the PDF: every section of the note is present, nothing truncated, cards not split across pages, project theme visible.
 
 **Output:** `{note-dir}/pdf/{version}-{slug}.pdf` + `.html` (both derived and regenerable — the Markdown note stays the single source of truth; re-render after edits). Override with `--output`; `--html-only` skips the PDF step.

@@ -9,7 +9,7 @@ its deterministic template structure, and emits:
     tokens.fallback.css`` first, then the project's ``docs/ux/tokens.css``
     (auto-detected, or ``--design-system PATH``), project values winning; and
   * a paginated A4 PDF via headless Chromium (Playwright), with page numbers
-    and an optional "Prepared for <recipient> · <date>" footer stamp.
+    and a link to the version's GitHub Release.
 
 Playwright is an optional dependency — NOT auto-installed. If it is missing,
 the HTML is still written and the script fails the PDF step with an explicit
@@ -18,7 +18,7 @@ message (print the HTML to PDF from a browser as a fallback).
 Usage::
 
     python render_pdf.py docs/communication/release-notes/v1.4.0-rebooking.md
-    python render_pdf.py NOTE.md --recipient "Management Board"
+    python render_pdf.py NOTE.md --release-url https://github.com/o/r/releases/tag/v1.4.0
     python render_pdf.py NOTE.md --design-system docs/ux/tokens.css --output /tmp/note.pdf
     python render_pdf.py NOTE.md --html-only
 """
@@ -30,6 +30,7 @@ import datetime
 import html
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -203,12 +204,42 @@ def _design_system_css(explicit: str | None) -> str:
     return css
 
 
-def build_html(note_path: Path, design_system: str | None) -> str:
+_GITHUB_REMOTE_RE = re.compile(r"github\.com[:/](?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?$")
+
+
+def _github_release_url(note_path: Path, version: str, explicit: str | None) -> str:
+    """URL of the GitHub Release for this version, from --release-url or git origin.
+
+    Read-only and best-effort: a note outside a repo, a non-GitHub remote, or a
+    missing git simply yields no link rather than a failed render.
+    """
+    if explicit:
+        return explicit
+    if not version:
+        return ""
+    try:
+        # `git config --get` (not `remote get-url`): the latter applies url.*.insteadOf
+        # rewrites, which can turn a GitHub origin into a mirror or proxy address.
+        remote = subprocess.run(["git", "-C", str(note_path.parent.resolve()),
+                                 "config", "--get", "remote.origin.url"],
+                                capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return ""
+    m = _GITHUB_REMOTE_RE.search(remote)
+    return f"https://github.com/{m['owner']}/{m['repo']}/releases/tag/{version}" if m else ""
+
+
+def build_html(note_path: Path, design_system: str | None, release_url: str | None) -> str:
     model = parse_note(note_path.read_text(encoding="utf-8"))
     today = datetime.date.today().isoformat()
     footer = ""
     if model["changelog"]:
         footer += f'<div class="changelog"><strong>Full Changelog</strong>: <code>{_esc(model["changelog"])}</code></div>'
+    url = _github_release_url(note_path, model["version"], release_url)
+    if url:
+        # Printed as well as linked — a bare anchor is useless on paper.
+        footer += (f'<div class="release-link">Release notes on GitHub: '
+                   f'<a href="{_esc(url)}">{_esc(url)}</a></div>')
     try:
         note_label = os.path.relpath(note_path)
     except ValueError:
@@ -255,17 +286,16 @@ def _fit_scale(page) -> float:
     fewest = min(counts.values())
     return max(scale for scale, n in counts.items() if n == fewest)
 
-def _footer_template(stamp: str) -> str:
+def _footer_template() -> str:
     """Chromium header/footer templates take inline styles only — page tokens don't reach them."""
     return (
-        '<div style="width:100%;padding:0 16mm;display:flex;justify-content:space-between;'
+        '<div style="width:100%;padding:0 16mm;text-align:right;'
         'font-family:ui-monospace,Menlo,monospace;font-size:8px;color:rgba(130,130,130,.95);">'
-        f"<span>{html.escape(stamp)}</span>"
-        '<span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>'
+        '<span class="pageNumber"></span> / <span class="totalPages"></span></div>'
     )
 
 
-def render_pdf(html_path: Path, pdf_path: Path, stamp: str) -> None:
+def render_pdf(html_path: Path, pdf_path: Path) -> None:
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -298,7 +328,7 @@ def render_pdf(html_path: Path, pdf_path: Path, stamp: str) -> None:
             print_background=True,
             display_header_footer=True,
             header_template="<span></span>",
-            footer_template=_footer_template(stamp),
+            footer_template=_footer_template(),
             margin=_PDF_MARGIN,
         )
         browser.close()
@@ -310,9 +340,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("note", type=Path, help="Path to the curated release-note Markdown.")
     parser.add_argument("--design-system", help="Project token sheet (default: auto-detect docs/ux/tokens.css).")
-    parser.add_argument("--recipient", help='Footer stamp (e.g. "Management Board").')
-    parser.add_argument("--date", default=datetime.date.today().isoformat(),
-                        help="Date for the stamp (ISO, default today).")
+    parser.add_argument("--release-url",
+                        help="GitHub Release URL (default: derived from the repo's origin remote + version).")
     parser.add_argument("--output", type=Path,
                         help="Output PDF path (default: <note-dir>/pdf/<note-stem>.pdf).")
     parser.add_argument("--html-only", action="store_true", help="Write the HTML and skip the PDF step.")
@@ -324,13 +353,12 @@ def main(argv: list[str] | None = None) -> int:
     html_path = pdf_path.with_suffix(".html")
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
 
-    html_path.write_text(build_html(args.note, args.design_system), encoding="utf-8")
+    html_path.write_text(build_html(args.note, args.design_system, args.release_url), encoding="utf-8")
     print(f"render_pdf.py: wrote {html_path}")
     if args.html_only:
         return 0
 
-    stamp = f"Prepared for {args.recipient} · {args.date}" if args.recipient else ""
-    render_pdf(html_path, pdf_path, stamp)
+    render_pdf(html_path, pdf_path)
     print(f"render_pdf.py: wrote {pdf_path} ({pdf_path.stat().st_size / 1024:.1f} KB)")
     return 0
 
