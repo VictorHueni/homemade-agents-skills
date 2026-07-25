@@ -119,7 +119,7 @@ Default output: `docs/communication/release-notes/{version}-{slug}.md` (or an ex
 
 **Output:** `{note-dir}/pdf/{version}-{slug}.pdf` + `.html` (both derived and regenerable — the Markdown note stays the single source of truth; re-render after edits). Override with `--output`; `--html-only` skips the PDF step.
 
-A worked fixture lives at `examples/release-note.sample.md` — render it to smoke-test the pipeline.
+Two fixtures live in `examples/`: `release-note.sample.md` is a minimal note for smoke-testing the pipeline, and `release-note.complete.md` is a full worked example — three products, nine capabilities, all six default Tier-2 buckets, and three breaking changes — paired with `github-release-body.complete.md`, the condensed second output for the Releases page. Render either to see the shipped design.
 
 ## Auto-detect output location
 
