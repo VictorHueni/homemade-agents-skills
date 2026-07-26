@@ -50,3 +50,26 @@ If grep still finds the string, those are the occurrences where the wider patter
 - **Wide `old_string`** (with surrounding context) → only when disambiguation is required. Risk: silent misses when surrounding context varies.
 
 Anti-pattern: assuming a multi-line `replace_all` Edit "got everything" without verification.
+
+## `LSP findReferences`: cross-check the file count, or a cold server will lie to you
+
+`findReferences` is the right tool for renaming a **code symbol** — it beats grep by excluding docstring/comment mentions, never matching a same-named local variable, and searching outside whatever directory scope you would have hand-picked for grep.
+
+**But it only searches files the language server has already loaded into its program.** A cold call returns a small, plausible, silently incomplete answer with no warning that it looked at one file. Measured case: the same symbol at the same position returned **3 references in 1 file** on the first call and **47 across 13 files** once the server had loaded the surrounding package.
+
+**Always cross-check the file count before trusting it:**
+
+```bash
+git grep -lw "<identifier>" <dirs> | wc -l     # compare against the LSP file count
+```
+
+Agreement → warm and trustworthy. Disagreement → cold: warm the server by running `findReferences` from a module that *imports* the symbol, then re-run the original query.
+
+**Two structural limits to plan around:**
+
+- **There is no rename operation** — the tool offers `findReferences`, `goToDefinition`, `workspaceSymbol`, hover, and call hierarchy. Enumeration is semantic; the edits are still `Edit`/`replace_all`. Never write "use LSP to rename X" into a plan as an executable instruction.
+- **No language server sees inside a string literal.** For anything whose name also appears as text — SQL table names in `text()` bodies and ORM metadata, template keys, config identifiers, DI tokens — LSP is blind by construction and grep is the only completeness proof.
+
+**The risk asymmetry decides where to spend review effort:** a missed *symbol* fails loudly (ImportError/NameError at import or collection, or a type-check error) and CI catches it; a missed *string* fails silently at runtime on whatever path happens to execute it. Budget the scrutiny on the strings, and make sure the test lane that actually executes them runs.
+
+**Prerequisite:** the language server is usually a machine-level tool, not a project dependency. Confirm `command -v <server>` before relying on any of this and fall back to grep-only if absent — see [[toolchain-version-managed-globals]] for why a declared-and-installed server can still be missing.
