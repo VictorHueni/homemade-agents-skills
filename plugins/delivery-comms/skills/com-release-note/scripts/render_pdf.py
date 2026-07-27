@@ -7,7 +7,13 @@ its deterministic template structure, and emits:
   * a self-contained A4-print-styled HTML file (always), themed by the same
     token cascade as com-slide-deck / com-artefact-viz — ``templates/
     tokens.fallback.css`` first, then the project's ``docs/ux/tokens.css``
-    (auto-detected, or ``--design-system PATH``), project values winning; and
+    (auto-detected, or ``--design-system PATH``), project values winning.
+    ``tokens.css`` only ever carries font *names* (``--font-sans``); if the
+    project also self-hosts real font files under ``docs/ux/fonts/fonts.css``
+    (plain ``@font-face`` rules, relative ``url()`` to sibling files —
+    auto-detected, no flag), those are inlined as base64 data URIs so the
+    fonts actually render instead of silently falling back to the CSS stack
+    fallback (e.g. Georgia instead of a real serif brand font); and
   * a paginated A4 PDF via headless Chromium (Playwright), with page numbers
     and a link to the version's GitHub Release.
 
@@ -26,6 +32,7 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import base64
 import datetime
 import html
 import os
@@ -367,6 +374,36 @@ def _design_system_css(explicit: str | None) -> str:
     return css
 
 
+_FONT_URL_RE = re.compile(r"url\(\s*\.?/?([^)'\"]+\.woff2?)\s*\)")
+
+
+def _embed_fonts(fonts_dir: Path) -> str:
+    """Inline docs/ux/fonts/fonts.css's @font-face rules with base64 font data.
+
+    tokens.css only ever carries font *names* (--font-sans, --font-mono); nothing
+    loads the actual font file, so a project's brand font silently falls through
+    to its CSS fallback in headless Chromium. A project that self-hosts real font
+    files opts in with docs/ux/fonts/fonts.css (plain @font-face rules, relative
+    url() to sibling files — the same shape a package like @fontsource ships).
+    Absent file -> no CSS, same silent degrade as the rest of the token cascade.
+    """
+    css_path = fonts_dir / "fonts.css"
+    if not css_path.is_file():
+        return ""
+
+    def _inline_one(match: re.Match) -> str:
+        rel = match.group(1)
+        font_path = fonts_dir / rel
+        if not font_path.is_file():
+            _fail(f"{css_path} references a missing font file: {font_path}")
+        data = base64.b64encode(font_path.read_bytes()).decode("ascii")
+        mime = "font/woff2" if font_path.suffix == ".woff2" else "font/woff"
+        return f"url(data:{mime};base64,{data})"
+
+    print(f"embedding self-hosted fonts from {css_path}")
+    return _FONT_URL_RE.sub(_inline_one, css_path.read_text(encoding="utf-8"))
+
+
 _GITHUB_REMOTE_RE = re.compile(r"github\.com[:/](?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?$")
 
 
@@ -416,8 +453,10 @@ def build_html(note_path: Path, design_system: str | None, release_url: str | No
         note_label = str(note_path)
     tmpl = (_TEMPLATE_DIR / "report.html.tmpl").read_text(encoding="utf-8")
     title = model["meta"].get("title") or f'{model["version"]}: {model["theme"]}'
+    fonts_css = _embed_fonts(Path("docs/ux/fonts"))
+    design_css = _design_system_css(design_system)
     for key, value in {"TITLE": _esc(title),
-                       "DESIGN_SYSTEM_CSS": _design_system_css(design_system),
+                       "DESIGN_SYSTEM_CSS": fonts_css + "\n\n" + design_css if fonts_css else design_css,
                        "CONTENT": render_content(model, url, note_label, today,
                                                  _git_stats(note_path, model["changelog"]))}.items():
         tmpl = tmpl.replace("{{" + key + "}}", value)
