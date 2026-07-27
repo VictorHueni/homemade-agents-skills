@@ -336,13 +336,14 @@ def _recap(model: dict, git: dict) -> str:
             f'</div></div>')
 
 
-def _bucket_section(label: str, entries: list[dict]) -> str:
+def _bucket_section(label: str, entries: list[dict], page_break: bool = False) -> str:
     """One card per entry, stacked — used by Fixes and by Platform and engineering."""
     if not entries:
         return ""
     cards = "".join('<div class="bucket"><ul class="entry-list">' + _entry_html(e) + "</ul></div>"
                     for e in entries)
-    return (f'<section class="section"><div class="section-label">{_esc(label)}</div>'
+    cls = "section section--page-break" if page_break else "section"
+    return (f'<section class="{cls}"><div class="section-label">{_esc(label)}</div>'
             f'<div class="bucket-grid">{cards}</div></section>')
 
 
@@ -356,7 +357,8 @@ def render_content(model: dict, release_url: str, note_label: str, today: str, g
     out.append(_recap(model, git))
 
     if model["products"]:
-        out.append('<section class="section"><div class="section-label">What&#x2019;s new</div>')
+        out.append('<section class="section section--page-break">'
+                   '<div class="section-label">What&#x2019;s new</div>')
         for product in model["products"]:
             out.append('<div class="product-card">')
             if product["name"]:
@@ -373,7 +375,7 @@ def render_content(model: dict, release_url: str, note_label: str, today: str, g
         out.append("</section>")
 
     out.append(_bucket_section("Fixes and improvements", model["fixes"]))
-    out.append(_bucket_section("Platform and engineering", model["platform"]))
+    out.append(_bucket_section("Platform and engineering", model["platform"], page_break=True))
 
     if model["breaking"]:
         out.append('<section class="section section--breaking">'
