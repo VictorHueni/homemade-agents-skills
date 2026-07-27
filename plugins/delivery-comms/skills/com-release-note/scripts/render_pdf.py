@@ -62,9 +62,33 @@ def _esc(text: str) -> str:
     return html.escape(text, quote=True)
 
 
+# Escaping runs first and leaves []() untouched, so these match on escaped text.
+_MD_LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)\s]+)\)")
+_BARE_URL_RE = re.compile(r"^https?://\S+$")
+# Only schemes that mean "go read this" — anything else (javascript:, data:) is
+# rendered as plain text rather than becoming a live link in a distributed PDF.
+_SAFE_URL_RE = re.compile(r"^(?:https?://|mailto:|[./#])", re.I)
+
+
+def _link_sub(match: re.Match) -> str:
+    """[label](url) → an <a>, or the matched text verbatim when url isn't followable.
+
+    Returning the original spelling (rather than the bare label) keeps an
+    unrenderable link visible and intact instead of quietly dropping half of it.
+    """
+    label, url = match.group(1), match.group(2)
+    return f'<a href="{url}">{label}</a>' if _SAFE_URL_RE.match(url) else match.group(0)
+
+
 def _inline(text: str) -> str:
-    """Escape, then render Markdown inline code spans (`x` → <code>x</code>)."""
-    return re.sub(r"`([^`]+)`", r"<code>\1</code>", _esc(text))
+    """Escape, then render Markdown inline code spans and links.
+
+    A release note is a document whose whole job is to point somewhere — at a
+    compare range, a PR, a spec — so an authored [text](url) has to survive into
+    the PDF as a live link rather than printing its own syntax.
+    """
+    out = re.sub(r"`([^`]+)`", r"<code>\1</code>", _esc(text))
+    return _MD_LINK_RE.sub(_link_sub, out)
 
 
 # ---------------------------------------------------------------- parsing ----
@@ -195,6 +219,25 @@ def _entry_html(entry: dict) -> str:
     return "".join(parts)
 
 
+def _changelog_cell(changelog: str) -> str:
+    """The Full changelog row: a link when the note gives one, code otherwise.
+
+    The template's own convention is a bare compare range (`v1.3.0...v1.4.0`),
+    which is an identifier and reads as code. But an author who wrote a Markdown
+    link — or pasted the compare URL — meant it to be followable, and the
+    cartouche is exactly where this document puts its links.
+    """
+    value = (changelog or "").strip()
+    if not value:
+        return ""
+    m = _MD_LINK_RE.fullmatch(value)
+    if m and _SAFE_URL_RE.match(m.group(2)):
+        return f'<a href="{_esc(m.group(2))}">{_esc(m.group(1))}</a>'
+    if _BARE_URL_RE.match(value):
+        return f'<a href="{_esc(value)}">{_esc(value)}</a>'
+    return f"<code>{_esc(value)}</code>"
+
+
 def _cartouche(model: dict, release_url: str, note_label: str, today: str) -> str:
     """The title block under the summary: all release metadata, in place of a footer.
 
@@ -206,7 +249,7 @@ def _cartouche(model: dict, release_url: str, note_label: str, today: str) -> st
         ("Period", _esc(model["daterange"])),
         ("Owner", _esc(meta.get("owner", ""))),
         ("Status", _esc(meta.get("status", ""))),
-        ("Full changelog", f'<code>{_esc(model["changelog"])}</code>' if model["changelog"] else ""),
+        ("Full changelog", _changelog_cell(model["changelog"])),
         ("Release notes", f'<a href="{_esc(release_url)}">{_esc(release_url)}</a>' if release_url else ""),
         ("Generated", f'com-release-note on {_esc(today)} from <code>{_esc(note_label)}</code>. '
                       f'Source note is the single source of truth; re-render after edits.'),
