@@ -34,28 +34,22 @@ body {
 .report-framing { font-size: 10.5pt; color: var(--muted, #6b7280); font-style: italic; margin: 0 0 3mm; }
 /* --- Cartouche: the title block under the summary. Holds every piece of release
    metadata (period, owner, status, changelog range, release link, provenance), so
-   the document needs no separate footer. Accent-tinted rather than surface-2, to
-   read as document furniture and not as another content card. Each color-mix is
-   preceded by a flat fallback for engines without it. --- */
+   the document needs no separate footer. Neutral surface, same treatment as every
+   other card (bucket, recap-card) — reads as one more content block, not a tinted
+   callout. --- */
 .cartouche {
-  background: var(--surface-2, #eef1f5);
-  background: color-mix(in srgb, var(--accent, #3b6ef5) 7%, transparent);
+  background: var(--surface, #fff);
   border: 1px solid var(--border, #d7dce3);
-  border: 1px solid color-mix(in srgb, var(--accent, #3b6ef5) 25%, transparent);
   border-radius: var(--card-radius, 12px);
   padding: 3mm 4mm; margin: 0 0 6mm;
   font-size: 8.5pt; break-inside: avoid;
 }
 .cart-row { display: grid; grid-template-columns: 30mm 1fr; gap: 3mm; padding: 1.2mm 0; }
-.cart-row + .cart-row {
-  border-top: 1px solid var(--border, #d7dce3);
-  border-top: 1px solid color-mix(in srgb, var(--accent, #3b6ef5) 18%, transparent);
-}
+.cart-row + .cart-row { border-top: 1px solid var(--border, #d7dce3); }
 .cart-k {
   font-family: var(--font-mono, ui-monospace, monospace); font-size: 7.5pt;
   text-transform: uppercase; letter-spacing: 0.1em; padding-top: 0.3mm;
-  color: var(--muted, #6b7280);
-  color: color-mix(in srgb, var(--accent, #3b6ef5) 75%, var(--muted, #6b7280));
+  color: var(--accent, #3b6ef5);
 }
 .cart-v { color: var(--ink, #1a1a1a); overflow-wrap: anywhere; }
 .cartouche a { color: var(--accent, #3b6ef5); text-decoration: none; font-weight: 700; }
@@ -130,6 +124,16 @@ body {
   font-family: var(--font-mono, ui-monospace, monospace); font-size: 8pt; font-weight: 600;
   color: var(--accent-ink, #fff); background: var(--accent, #3b6ef5);
   border-radius: 999px; padding: 0.5mm 2.5mm;
+}
+/* A capability groups its child entries under one heading (shown once), instead
+   of repeating the capability name on every entry. Unnamed (flat) groups — a note
+   without capability headers — render no heading at all, unchanged from before. */
+.capability-group + .capability-group {
+  margin-top: 3mm; padding-top: 3mm; border-top: 1px solid var(--border, #d7dce3);
+}
+.capability-label {
+  font-size: 9.5pt; font-weight: 700; margin: 0 0 1.5mm;
+  display: flex; align-items: baseline; gap: 2mm;
 }
 .entry-list { list-style: none; margin: 0; padding: 0; }
 .entry-list li { padding: 1mm 0; break-inside: avoid; }
