@@ -277,19 +277,68 @@ def _measures(model: dict) -> dict:
             "days": days}
 
 
-# Ordinal ramp of the accent hue: the four sections are tiers, so one hue with
-# monotone lightness is the right colour job (validated: monotone L, adjacent dL,
-# light-end contrast, single hue). Dark to light, in slice order.
-_DONUT_STEPS = (
-    "color-mix(in srgb, var(--accent) 55%, var(--ink))",
-    "color-mix(in srgb, var(--accent) 78%, var(--ink))",
-    "var(--accent)",
-    "color-mix(in srgb, var(--accent) 72%, var(--surface))",
-)
+_HEX_RE = re.compile(r"#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b")
+_TOKEN_DEFAULTS = {"accent": "#3b6ef5", "ink": "#1a1f29", "surface": "#ffffff"}
+
+
+def _resolve_token(css_text: str, name: str) -> str:
+    """The hex value a --name custom property resolves to, last declaration wins.
+
+    A regex scan over the assembled CSS text (fallback, then project — the same
+    cascade order the stylesheet itself uses), not a real CSS parser: sufficient
+    because every token file declares these as plain hex literals. Falls back to
+    the kit's own neutral default if the property is never declared (e.g. a
+    project tokens.css that doesn't define --ink).
+    """
+    matches = re.findall(rf"--{name}:\s*([^;]+);", css_text)
+    for value in reversed(matches):  # last declaration in the cascade wins
+        hexm = _HEX_RE.search(value)
+        if hexm:
+            return "#" + hexm.group(1)
+    return _TOKEN_DEFAULTS[name]
+
+
+def _hex_to_rgb(hex_value: str) -> tuple[int, int, int]:
+    h = hex_value.lstrip("#")
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+
+
+def _mix_hex(hex_a: str, pct_a: float, hex_b: str) -> str:
+    """color-mix(in srgb, A pct_a%, B) computed in Python: a linear per-channel
+    blend of the encoded sRGB bytes, matching the CSS Color 4 semantics for two
+    opaque colours. Baking the result as a literal hex string (rather than
+    leaving color-mix() to resolve live) sidesteps a real divergence observed
+    between environments when color-mix() is nested inside a gradient's stop
+    list during PDF export — plain `background: color-mix(...)` rendered
+    correctly everywhere tested, but the identical expression inside
+    conic-gradient(...) did not on at least one reader's setup."""
+    ra, ga, ba = _hex_to_rgb(hex_a)
+    rb, gb, bb = _hex_to_rgb(hex_b)
+    t = pct_a / 100
+    mix = lambda a, b: round(a * t + b * (1 - t))  # noqa: E731
+    return f"#{mix(ra, rb):02x}{mix(ga, gb):02x}{mix(ba, bb):02x}"
+
+
+def _donut_steps(tokens: dict) -> tuple[str, str, str, str]:
+    """Ordinal ramp of the accent hue, as literal hex — see _mix_hex for why not
+    color-mix(). The four sections are tiers, so one hue with monotone lightness
+    is the right colour job (validated: monotone L, adjacent dL, light-end
+    contrast, single hue). Dark to light, in slice order."""
+    accent, ink, surface = tokens["accent"], tokens["ink"], tokens["surface"]
+    return (
+        _mix_hex(accent, 55, ink),
+        _mix_hex(accent, 78, ink),
+        accent,
+        _mix_hex(accent, 72, surface),
+    )
+
+
 _SLICE_GAP_DEG = 1.4  # surface-coloured separator between slices, ~2px at this radius
 
 
-def _recap(model: dict, git: dict) -> str:
+def _recap(model: dict, git: dict, tokens: dict) -> str:
     """Donut of the release's composition, with context cards beside it.
 
     The donut and its legend stay together as one figure; the cards carry only
@@ -302,12 +351,13 @@ def _recap(model: dict, git: dict) -> str:
               ("Fixes", m["fixes"]), ("Breaking changes", m["breaking"])]
     slices = [(label, count) for label, count in slices if count]
 
+    donut_steps = _donut_steps(tokens)
     stops, angle, legend = [], 0.0, ""
     for i, (label, count) in enumerate(slices):
-        step = _DONUT_STEPS[i % len(_DONUT_STEPS)]
+        step = donut_steps[i % len(donut_steps)]
         span = 360 * count / m["total"]
         stops.append(f"{step} {angle:.2f}deg {angle + span - _SLICE_GAP_DEG:.2f}deg")
-        stops.append(f"var(--surface) {angle + span - _SLICE_GAP_DEG:.2f}deg {angle + span:.2f}deg")
+        stops.append(f"{tokens['surface']} {angle + span - _SLICE_GAP_DEG:.2f}deg {angle + span:.2f}deg")
         angle += span
         # The legend carries every value, so close slices are read as numbers, not arcs.
         legend += (f'<div class="dl-row"><span class="dl-sw" style="background:{step}"></span>'
@@ -347,14 +397,15 @@ def _bucket_section(label: str, entries: list[dict], page_break: bool = False) -
             f'<div class="bucket-grid">{cards}</div></section>')
 
 
-def render_content(model: dict, release_url: str, note_label: str, today: str, git: dict) -> str:
+def render_content(model: dict, release_url: str, note_label: str, today: str, git: dict,
+                   tokens: dict) -> str:
     out = []
     out.append(f'<div class="report-kicker">Release note · {_esc(model["version"])}</div>')
     out.append(f'<h1 class="report-title">{_esc(model["theme"])}</h1>')
     if model["framing"]:
         out.append(f'<p class="report-framing">{_inline(model["framing"])}</p>')
     out.append(_cartouche(model, release_url, note_label, today))
-    out.append(_recap(model, git))
+    out.append(_recap(model, git, tokens))
 
     if model["products"]:
         out.append('<section class="section section--page-break">'
@@ -479,10 +530,13 @@ def build_html(note_path: Path, design_system: str | None, release_url: str | No
     title = model["meta"].get("title") or f'{model["version"]}: {model["theme"]}'
     fonts_css = _embed_fonts(Path("docs/ux/fonts"))
     design_css = _design_system_css(design_system)
+    all_css = fonts_css + "\n\n" + design_css if fonts_css else design_css
+    tokens = {name: _resolve_token(all_css, name) for name in _TOKEN_DEFAULTS}
     for key, value in {"TITLE": _esc(title),
-                       "DESIGN_SYSTEM_CSS": fonts_css + "\n\n" + design_css if fonts_css else design_css,
+                       "DESIGN_SYSTEM_CSS": all_css,
                        "CONTENT": render_content(model, url, note_label, today,
-                                                 _git_stats(note_path, model["changelog"]))}.items():
+                                                 _git_stats(note_path, model["changelog"]),
+                                                 tokens)}.items():
         tmpl = tmpl.replace("{{" + key + "}}", value)
     return tmpl
 
