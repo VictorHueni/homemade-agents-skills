@@ -35,6 +35,7 @@ import argparse
 import base64
 import datetime
 import html
+import math
 import os
 import re
 import subprocess
@@ -335,7 +336,43 @@ def _donut_steps(tokens: dict) -> tuple[str, str, str, str]:
     )
 
 
-_SLICE_GAP_DEG = 1.4  # surface-coloured separator between slices, ~2px at this radius
+_SLICE_GAP_DEG = 1.4  # blank separator between slices, ~2px at this radius
+
+# Ring geometry in viewBox units. The thickness matches the .donut-hole inset in
+# report.html.tmpl (6.5mm of a 28mm figure); keep the two in step.
+_RING_THICKNESS = 100 * 6.5 / 28
+_RING_RADIUS = 50 - _RING_THICKNESS / 2
+
+
+def _donut_svg(slices: list, total: int, tokens: dict) -> str:
+    """The composition ring as flat-filled SVG arcs.
+
+    Deliberately NOT a CSS conic-gradient: Chromium compiles one into a PDF
+    function-based shading (/ShadingType 1 driven by a /FunctionType 4
+    PostScript calculator), the least-supported corner of the shading spec —
+    correct in some readers and wildly wrong in others (observed: the whole ring
+    rendering pink). The ring is discrete slices, not a blend, so stroked arc
+    segments express the intent directly and are plain vector fills every reader
+    draws identically. Arcs are stroked on one circle via dash offsets, so a
+    slice's angular position needs no path arithmetic.
+    """
+    steps = _donut_steps(tokens)
+    circumference = 2 * math.pi * _RING_RADIUS
+    arcs, angle = [], 0.0
+    for i, (_label, count) in enumerate(slices):
+        span = 360 * count / total
+        drawn = max(span - _SLICE_GAP_DEG, 0.0)  # the gap is undrawn, not painted over
+        arc = circumference * drawn / 360
+        arcs.append(
+            f'<circle cx="50" cy="50" r="{_RING_RADIUS:.2f}" fill="none" '
+            f'stroke="{steps[i % len(steps)]}" stroke-width="{_RING_THICKNESS:.2f}" '
+            f'stroke-dasharray="{arc:.2f} {circumference - arc:.2f}" '
+            f'stroke-dashoffset="{-circumference * angle / 360:.2f}"/>'
+        )
+        angle += span
+    # Rotate so slice one starts at twelve o'clock, as a conic gradient would.
+    return (f'<svg class="donut-svg" viewBox="0 0 100 100" role="presentation">'
+            f'<g transform="rotate(-90 50 50)">{"".join(arcs)}</g></svg>')
 
 
 def _recap(model: dict, git: dict, tokens: dict) -> str:
@@ -352,17 +389,14 @@ def _recap(model: dict, git: dict, tokens: dict) -> str:
     slices = [(label, count) for label, count in slices if count]
 
     donut_steps = _donut_steps(tokens)
-    stops, angle, legend = [], 0.0, ""
-    for i, (label, count) in enumerate(slices):
-        step = donut_steps[i % len(donut_steps)]
-        span = 360 * count / m["total"]
-        stops.append(f"{step} {angle:.2f}deg {angle + span - _SLICE_GAP_DEG:.2f}deg")
-        stops.append(f"{tokens['surface']} {angle + span - _SLICE_GAP_DEG:.2f}deg {angle + span:.2f}deg")
-        angle += span
-        # The legend carries every value, so close slices are read as numbers, not arcs.
-        legend += (f'<div class="dl-row"><span class="dl-sw" style="background:{step}"></span>'
-                   f'<span class="dl-k">{_esc(label)}</span><span class="dl-v">{count}</span>'
-                   f'<span class="dl-p">{round(100 * count / m["total"])}%</span></div>')
+    # The legend carries every value, so close slices are read as numbers, not arcs.
+    legend = "".join(
+        f'<div class="dl-row">'
+        f'<span class="dl-sw" style="background:{donut_steps[i % len(donut_steps)]}"></span>'
+        f'<span class="dl-k">{_esc(label)}</span><span class="dl-v">{count}</span>'
+        f'<span class="dl-p">{round(100 * count / m["total"])}%</span></div>'
+        for i, (label, count) in enumerate(slices)
+    )
 
     # Signs alone distinguish added from removed: colouring them good/bad would
     # assert a judgement the numbers do not carry (deleted code is often a win).
@@ -378,7 +412,7 @@ def _recap(model: dict, git: dict, tokens: dict) -> str:
     return (f'<div class="recap"><div class="recap-label">Release at a glance</div>'
             f'<div class="recap-body">'
             f'<div class="recap-figure">'
-            f'<div class="donut" style="background: conic-gradient({", ".join(stops)})">'
+            f'<div class="donut">{_donut_svg(slices, m["total"], tokens)}'
             f'<div class="donut-hole"><span class="donut-total">{m["total"]}</span>'
             f'<span class="donut-cap">entries</span></div></div>'
             f'<div class="donut-legend">{legend}</div></div>'
