@@ -31,12 +31,25 @@ review_interval: 90d
 <!-- Tier 1 — Product capabilities. One block per Product that shipped user-facing work.
      Structure mirrors the FBS product-scoped view: Product -> Business Capability -> Functionality.
      Use the FBS (docs/product-specs/07a-fbs.md), NOT the domain-scoped capability map IDs
-     (the two numbering schemes collide). Empty products/capabilities simply don't render. -->
+     (the two numbering schemes collide). Empty products/capabilities simply don't render.
+
+     Two forms, pick per capability:
+     - One functionality shipped -> a single flat bullet: `- C{n}.{m} {Capability name}: {what shipped}. (id)`
+     - Several functionalities shipped under one capability -> a capability header (its own
+       bold line, `**C{n}.{m} {Capability name}**`), then one plain bullet per functionality
+       underneath — no C-ref repeated per bullet, the header already names the capability
+       once for every child. The report renders the capability name as a heading shown once,
+       with each functionality listed under it with its own title, instead of repeating the
+       capability name on every line. -->
 
 **P{n} · {Product name}**
 
 - C{n}.{m} {Capability name}: {what shipped, in plain language and benefit-first}. ({plan/PRD id})
-- C{n}.{m} {Capability name}: {what shipped}. ({plan/PRD id})
+
+**C{n}.{m} {Capability name}**
+
+- {Functionality name}: {what shipped, in plain language and benefit-first}. ({plan/PRD id})
+- {Functionality name}: {what shipped}. ({plan/PRD id})
 
 **P{n} · {Product name}**
 

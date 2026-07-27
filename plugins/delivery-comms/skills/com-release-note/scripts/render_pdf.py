@@ -45,6 +45,7 @@ _HERE = Path(__file__).resolve().parent
 _TEMPLATE_DIR = _HERE.parent / "templates"
 
 _PRODUCT_RE = re.compile(r"^\*\*(?:(P\d+)\s*·\s*)?(.+?)\*\*$")
+_CAPABILITY_RE = re.compile(r"^\*\*(C\d+(?:\.\d+)*)\s+(.+?)\*\*$")
 _ENTRY_RE = re.compile(r"^(?:(C\d+(?:\.\d+)*)\s+)?([^:]{1,60}):\s*(.+)$")
 _AUDIT_RE = re.compile(r"^(.*?)\s*\(([0-9A-Za-z\-]{1,12}(?:,\s*[0-9A-Za-z\-]{1,12})*)\)\s*$")
 _H1_RE = re.compile(r"^#\s+(v[^:\s]+):\s*(.+?)\s*(?:\(([^()]*)\))?\s*$")
@@ -118,6 +119,7 @@ def parse_note(text: str) -> dict:
                    "breaking": [], "changelog": "", "unknown": []}
     section = None
     product = None
+    group = None
     for raw in body.splitlines():
         line = raw.strip()
         if not line or line.startswith("<!--"):
@@ -134,6 +136,7 @@ def parse_note(text: str) -> dict:
                 # Tracked, not dropped in silence — build_html warns about these.
                 model["unknown"].append({"heading": heading, "bullets": 0})
             product = None
+            group = None
             continue
         cl = _CHANGELOG_RE.match(line)
         if cl:
@@ -142,18 +145,31 @@ def parse_note(text: str) -> dict:
         if line.startswith(">") and not model["framing"]:
             model["framing"] = line.lstrip("> ").strip("_ ")
             continue
+        # Capability header checked before product: both are bare **bold** lines,
+        # but a capability always carries a C-ref — check the more specific pattern
+        # first so "**C2.2 Regulatory Change Monitoring**" isn't mistaken for a
+        # second product.
+        cm = _CAPABILITY_RE.match(line)
+        if cm and section == "whats-new" and product is not None:
+            group = {"id": cm.group(1), "name": cm.group(2), "entries": []}
+            product["groups"].append(group)
+            continue
         pm = _PRODUCT_RE.match(line)
         if pm and section == "whats-new":
-            product = {"id": pm.group(1) or "", "name": pm.group(2), "entries": []}
+            product = {"id": pm.group(1) or "", "name": pm.group(2), "groups": []}
             model["products"].append(product)
+            group = None
             continue
         if line.startswith("- "):
             entry = _parse_entry(line[2:])
             if section == "whats-new":
                 if product is None:  # graceful degradation — note without product headers
-                    product = {"id": "", "name": "", "entries": []}
+                    product = {"id": "", "name": "", "groups": []}
                     model["products"].append(product)
-                product["entries"].append(entry)
+                if group is None:  # no capability header seen yet — flat, unnamed group
+                    group = {"id": "", "name": "", "entries": []}
+                    product["groups"].append(group)
+                group["entries"].append(entry)
             elif section in ("fixes", "platform", "breaking"):
                 model[section].append(entry)
             elif model["unknown"]:
@@ -246,7 +262,7 @@ def _git_stats(note_path: Path, changelog: str) -> dict:
 
 def _measures(model: dict) -> dict:
     """Counts over the parsed note. Structural arithmetic only — no judgement."""
-    caps = sum(len(p["entries"]) for p in model["products"])
+    caps = sum(len(g["entries"]) for p in model["products"] for g in p["groups"])
     days = ""
     dates = re.findall(r"\d{4}-\d{2}-\d{2}", model["daterange"])
     if len(dates) == 2:
@@ -346,8 +362,14 @@ def render_content(model: dict, release_url: str, note_label: str, today: str, g
             if product["name"]:
                 chip = f'<span class="product-id">{_esc(product["id"])}</span>' if product["id"] else ""
                 out.append(f'<h2 class="product-name">{chip}{_esc(product["name"])}</h2>')
-            out.append('<ul class="entry-list">' +
-                       "".join(_entry_html(e) for e in product["entries"]) + "</ul></div>")
+            for group in product["groups"]:
+                out.append('<div class="capability-group">')
+                if group["name"]:
+                    chip = (f'<span class="entry-ref">{_esc(group["id"])}</span>' if group["id"] else "")
+                    out.append(f'<h3 class="capability-label">{chip}{_esc(group["name"])}</h3>')
+                out.append('<ul class="entry-list">' +
+                           "".join(_entry_html(e) for e in group["entries"]) + "</ul></div>")
+            out.append("</div>")
         out.append("</section>")
 
     out.append(_bucket_section("Fixes and improvements", model["fixes"]))
