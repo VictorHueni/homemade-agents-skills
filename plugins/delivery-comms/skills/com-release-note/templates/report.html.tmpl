@@ -100,6 +100,10 @@ body {
 
 /* --- Sections --- */
 .section { margin-top: 9mm; margin-bottom: 5.5mm; }
+/* What's new and Platform and engineering always lead a fresh page — a reader
+   flipping through lands on a section start, never mid-scroll into one. A no-op
+   if the section is already at the top of a page. */
+.section--page-break { break-before: page; page-break-before: always; }
 .section-label {
   display: block;
   font-family: var(--font-sans, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
