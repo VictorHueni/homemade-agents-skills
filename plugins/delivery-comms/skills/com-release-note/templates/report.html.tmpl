@@ -23,6 +23,16 @@ body {
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.9em;
 }
+/* Prose is justified: the report reads as a document, and at this measure a
+   ragged right edge leaves visible steps against the card borders the text sits
+   inside. Hyphenation is what makes justification safe — without it, the long
+   compound terms this kind of vocabulary is full of open rivers of whitespace.
+   Headings, metadata rows and figures keep their own alignment. */
+.report-framing,
+.entry-list li {
+  text-align: justify;
+  hyphens: auto;
+}
 
 /* --- Title block --- */
 .report-kicker {
