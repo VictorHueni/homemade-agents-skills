@@ -172,6 +172,10 @@ body {
    the same accent chip: one visual language for "this entry's handle". Tabular
    figures and zero padding keep the numbers on a common left edge. */
 .entry-num { font-variant-numeric: tabular-nums; }
+/* A Platform bucket is a tier in its own right, not a leaf item, so it carries a
+   heading like a capability does rather than a run-in label. The extra padding
+   gives each titled block the room a two-line unit needs. */
+.entry--titled { padding: 2mm 0; }
 
 /* --- Breaking changes --- */
 /* The section heading carries the warning colour; the panel is washed to match.

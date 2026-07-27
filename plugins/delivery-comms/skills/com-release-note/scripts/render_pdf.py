@@ -206,21 +206,32 @@ def parse_note(text: str) -> dict:
 
 # -------------------------------------------------------------- rendering ----
 
-def _entry_html(entry: dict, number: int | None = None) -> str:
-    """One entry. `number` gives a sequence handle to entries that carry no
-    FBS ref of their own, rendered in the same accent chip so both read alike."""
-    parts = ["<li>"]
-    if entry["ref"]:
-        parts.append(f'<span class="entry-ref">{_esc(entry["ref"])}</span>')
-    elif number is not None:
-        parts.append(f'<span class="entry-ref entry-num">{number:02d}</span>')
-    if entry["label"]:
-        parts.append(f'<span class="entry-label">{_inline(entry["label"])}:</span> ')
-    parts.append(_inline(entry["text"]))
+def _entry_html(entry: dict, number: int | None = None, titled: bool = False) -> str:
+    """One entry.
+
+    `number` gives a sequence handle to entries carrying no FBS ref of their own,
+    in the same accent chip, so both read as the same kind of handle. `titled`
+    promotes the label to a heading with the text beneath — the treatment What's
+    new gives a capability — for a tier whose entries are themselves groupings
+    rather than leaf items.
+    """
+    ref, num_class = entry["ref"], ""
+    if not ref and number is not None:
+        ref, num_class = f"{number:02d}", " entry-num"
+    chip = f'<span class="entry-ref{num_class}">{_esc(ref)}</span>' if ref else ""
+
+    body = _inline(entry["text"])
     if entry["audit"]:
-        parts.append(f'<span class="entry-audit">({_esc(entry["audit"])})</span>')
-    parts.append("</li>")
-    return "".join(parts)
+        body += f'<span class="entry-audit">({_esc(entry["audit"])})</span>'
+
+    if titled and entry["label"]:
+        # Same heading class the capability groups use, so the two tiers match.
+        return (f'<li class="entry--titled">'
+                f'<h3 class="capability-label">{chip}{_inline(entry["label"])}</h3>'
+                f"<div>{body}</div></li>")
+
+    label = f'<span class="entry-label">{_inline(entry["label"])}:</span> ' if entry["label"] else ""
+    return f"<li>{chip}{label}{body}</li>"
 
 
 def _changelog_cell(changelog: str) -> str:
@@ -468,13 +479,18 @@ def _recap(model: dict, git: dict, tokens: dict) -> str:
 
 
 def _bucket_section(label: str, entries: list[dict], page_break: bool = False,
-                    numbered: bool = False) -> str:
+                    titled: bool = False) -> str:
     """One card holding every entry — the same shape a product card takes in
     What's new, so both tiers read as a block of related items rather than a
-    stack of loose cards. Used by Fixes and by Platform and engineering."""
+    stack of loose cards. Used by Fixes and by Platform and engineering.
+
+    `titled` numbers each entry and gives its label a heading, for a tier whose
+    entries are groupings in their own right (the Platform buckets). Leave it off
+    for leaf items such as individual fixes, which read better as run-in labels.
+    """
     if not entries:
         return ""
-    items = "".join(_entry_html(e, i if numbered else None)
+    items = "".join(_entry_html(e, i if titled else None, titled)
                     for i, e in enumerate(entries, start=1))
     cls = "section section--page-break" if page_break else "section"
     return (f'<section class="{cls}"><div class="section-label">{_esc(label)}</div>'
@@ -511,7 +527,7 @@ def render_content(model: dict, release_url: str, note_label: str, today: str, g
 
     out.append(_bucket_section("Fixes and improvements", model["fixes"]))
     out.append(_bucket_section("Platform and engineering", model["platform"],
-                               page_break=True, numbered=True))
+                               page_break=True, titled=True))
 
     if model["breaking"]:
         out.append('<section class="section section--breaking">'
