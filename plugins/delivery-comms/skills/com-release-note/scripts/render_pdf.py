@@ -206,10 +206,14 @@ def parse_note(text: str) -> dict:
 
 # -------------------------------------------------------------- rendering ----
 
-def _entry_html(entry: dict) -> str:
+def _entry_html(entry: dict, number: int | None = None) -> str:
+    """One entry. `number` gives a sequence handle to entries that carry no
+    FBS ref of their own, rendered in the same accent chip so both read alike."""
     parts = ["<li>"]
     if entry["ref"]:
         parts.append(f'<span class="entry-ref">{_esc(entry["ref"])}</span>')
+    elif number is not None:
+        parts.append(f'<span class="entry-ref entry-num">{number:02d}</span>')
     if entry["label"]:
         parts.append(f'<span class="entry-label">{_inline(entry["label"])}:</span> ')
     parts.append(_inline(entry["text"]))
@@ -463,15 +467,18 @@ def _recap(model: dict, git: dict, tokens: dict) -> str:
             f'</div></div>')
 
 
-def _bucket_section(label: str, entries: list[dict], page_break: bool = False) -> str:
-    """One card per entry, stacked — used by Fixes and by Platform and engineering."""
+def _bucket_section(label: str, entries: list[dict], page_break: bool = False,
+                    numbered: bool = False) -> str:
+    """One card holding every entry — the same shape a product card takes in
+    What's new, so both tiers read as a block of related items rather than a
+    stack of loose cards. Used by Fixes and by Platform and engineering."""
     if not entries:
         return ""
-    cards = "".join('<div class="bucket"><ul class="entry-list">' + _entry_html(e) + "</ul></div>"
-                    for e in entries)
+    items = "".join(_entry_html(e, i if numbered else None)
+                    for i, e in enumerate(entries, start=1))
     cls = "section section--page-break" if page_break else "section"
     return (f'<section class="{cls}"><div class="section-label">{_esc(label)}</div>'
-            f'<div class="bucket-grid">{cards}</div></section>')
+            f'<div class="bucket"><ul class="entry-list">{items}</ul></div></section>')
 
 
 def render_content(model: dict, release_url: str, note_label: str, today: str, git: dict,
@@ -503,7 +510,8 @@ def render_content(model: dict, release_url: str, note_label: str, today: str, g
         out.append("</section>")
 
     out.append(_bucket_section("Fixes and improvements", model["fixes"]))
-    out.append(_bucket_section("Platform and engineering", model["platform"], page_break=True))
+    out.append(_bucket_section("Platform and engineering", model["platform"],
+                               page_break=True, numbered=True))
 
     if model["breaking"]:
         out.append('<section class="section section--breaking">'

@@ -126,8 +126,12 @@ body {
   break-after: avoid; page-break-after: avoid;
 }
 
-/* --- Product cards (Tier 1) --- */
-.product-card {
+/* --- Cards (Tier 1 products, Tier 2 panel) --- */
+/* Both tiers use one card treatment, so each section reads as a single block of
+   related items rather than a stack of loose cards. Entries inside are separated
+   by the .entry-list hairline, not by card borders. */
+.product-card,
+.bucket {
   background: var(--surface-2, #eef1f5);
   border: 1px solid var(--border, #d7dce3);
   border-radius: var(--card-radius, 12px);
@@ -164,12 +168,10 @@ body {
 }
 
 /* --- Platform and engineering (Tier 2) --- */
-.bucket-grid { display: grid; grid-template-columns: 1fr; gap: 3mm; }
-.bucket {
-  border: 1px solid var(--border, #d7dce3);
-  border-radius: var(--card-radius, 12px);
-  padding: 3mm 4mm; break-inside: avoid;
-}
+/* Sequence numbers reuse .entry-ref, so a numbered item and a C-ref'd one carry
+   the same accent chip: one visual language for "this entry's handle". Tabular
+   figures and zero padding keep the numbers on a common left edge. */
+.entry-num { font-variant-numeric: tabular-nums; }
 
 /* --- Breaking changes --- */
 /* The section heading carries the warning colour; the panel is washed to match.
