@@ -29,6 +29,13 @@ KIT_DIR="$(dirname "$(git rev-parse --show-toplevel)")/homemade-claude-kit"
   templates/            # optional — output templates
 ```
 
+## Skill output storage conventions (consuming-project `var/`)
+
+Two carve-outs under a consuming project's `var/`, kept separate because they answer different questions:
+
+- **`var/reports/<feature>/`** — analysis artefacts a skill produces about the project (audits, research syntheses, eval results). Answers "what did the skill find?" Never write to top-level `var/reports/` (CI logs only) or `outputs/`.
+- **`var/handoffs/<workstream-slug>/`** — session state written by the `agent-handoff` skill so a fresh session can continue interrupted work. Answers "where did the prior session leave off?" Not an analysis artefact — gitignored by default with explicit opt-in commit; see [[session-handoff]].
+
 ## Naming convention (canonical)
 
 Skill folder name + `name:` frontmatter field must follow this exact pattern:
