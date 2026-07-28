@@ -70,6 +70,31 @@ against the current repo state to detect drift, and then treats every inherited 
 unverified until re-checked against the current code — the same trust-but-verify posture
 this skill's author applies to any prior-session analysis.
 
+### Resume-mode procedure
+
+1. **Locate the handoff.** Use the path the operator gave, if any. Otherwise read
+   `var/handoffs/LATEST` and use the path it points to. If neither is available, ask the
+   operator which handoff to resume.
+2. **Drift check.** Compare the handoff header's recorded branch and HEAD sha against the
+   current repo: `git branch --show-current` and `git rev-parse HEAD`. If they differ, run
+   `git log --oneline <recorded-sha>..HEAD` to summarise what moved since the handoff was
+   written, and list any files the handoff's "Files" section points at that also appear in
+   that range — flag them as possibly stale. **Never hard-block on drift.** Warn, show the
+   summary, and continue; the operator or the agent decides whether the drift matters.
+3. **Trust-but-verify every inherited claim.** Before acting on anything the handoff states:
+   - Re-read every cited `file:line` pointer in the "Files" section — don't act on the
+     handoff's description of a file, act on the file's current content.
+   - Treat everything in "Constraints & gotchas" marked as a hypothesis (as opposed to a
+     verified fact) as still unverified; re-check it before relying on it.
+   - Honour "Dead ends — do not retry" explicitly: do not re-attempt an approach listed
+     there without first understanding why the prior session ruled it out.
+4. **Act** on the "Next step" once drift is understood and the claims that gate it are
+   re-verified.
+5. **Mark the handoff consumed.** On successful resume, update `var/handoffs/LATEST`'s
+   status field from `unread` to `consumed`. If the work continues past this session, note
+   that the next `create` call extends the same chain (same workstream slug, next `NN`) —
+   it does not start a new one.
+
 ## Timing guidance
 
 Write the handoff proactively, not as a last resort:
