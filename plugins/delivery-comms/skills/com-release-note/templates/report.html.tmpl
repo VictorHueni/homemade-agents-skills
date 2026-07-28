@@ -148,7 +148,7 @@ body {
    of repeating the capability name on every entry. Unnamed (flat) groups — a note
    without capability headers — render no heading at all, unchanged from before. */
 .capability-group + .capability-group {
-  margin-top: 3mm; padding-top: 3mm; border-top: 1px solid var(--border, #d7dce3);
+  margin-top: 4mm; padding-top: 4mm; border-top: 1px solid var(--border, #d7dce3);
 }
 .capability-label {
   font-size: 9.5pt; font-weight: 700; margin: 0 0 1.5mm;
@@ -173,9 +173,13 @@ body {
    figures and zero padding keep the numbers on a common left edge. */
 .entry-num { font-variant-numeric: tabular-nums; }
 /* A Platform bucket is a tier in its own right, not a leaf item, so it carries a
-   heading like a capability does rather than a run-in label. The extra padding
-   gives each titled block the room a two-line unit needs. */
-.entry--titled { padding: 2mm 0; }
+   heading like a capability does rather than a run-in label.
+   Space goes *between* blocks, not around every one: a titled block is a
+   heading bound to its own paragraph, so the gap separating two blocks has to
+   beat the gap inside one (.capability-label's margin) or the pairing reads
+   ambiguously. Matching .capability-group keeps the two tiers on one rhythm. */
+.entry--titled { padding: 0; }
+.entry--titled + .entry--titled { margin-top: 4mm; padding-top: 4mm; }
 
 /* --- Breaking changes --- */
 /* The section heading carries the warning colour; the panel is washed to match.
