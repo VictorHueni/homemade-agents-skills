@@ -41,6 +41,27 @@ finishes once the validator accepts the document. The final action is always pri
 paste-ready resume prompt — `create` mode cannot clear or restart the running session
 itself; only the operator, in a new session, can do that.
 
+### Create-mode procedure
+
+1. **Derive the workstream slug.** If this session is continuing a workstream that already
+   has a `var/handoffs/<workstream-slug>/` folder, reuse that slug and write the next `NN`
+   in the chain (increment from the highest existing `NN`). Otherwise mint a new short
+   kebab-case slug from the goal and start the chain at `01`.
+2. **Write the document** following `references/handoff-template.md` — all nine sections,
+   in order, router-not-archive, evidence over prose. Use `references/example-handoff.md`
+   as the concrete reference for what "done" looks like.
+3. **Record header provenance**: current date, `git branch --show-current`, full
+   `git rev-parse HEAD`, and an approximate context-used percentage.
+4. **Run the validator**: `python3 scripts/validate-handoff.py <path>`. Fix every reported
+   finding and re-run until it exits 0 — a handoff the validator rejects is not finished.
+5. **Update `var/handoffs/LATEST`** to point at the new path with status `unread`.
+6. **Ensure `var/handoffs/` is gitignored** in the target project. If the project's
+   `.gitignore` does not already exclude it, append `var/handoffs/` and tell the operator
+   this was added — committing a handoff is an explicit per-file opt-in, never the default.
+7. **End the turn** by printing a paste-ready resume prompt for the operator to give the
+   next session, naming the handoff path (e.g. "Resume from
+   `var/handoffs/<slug>/<NN>-<date>-<slug>.md` using the agent-handoff skill.").
+
 ## Mode: resume
 
 Invoked from inside a fresh session that has no memory of the work described in the

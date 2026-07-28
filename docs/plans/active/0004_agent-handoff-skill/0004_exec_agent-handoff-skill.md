@@ -26,7 +26,7 @@ Principles:
 4. Validator before trust: create mode never emits a handoff that `validate-handoff.py` rejects.
 
 **Overall Status:** pending
-**Current Increment:** 01
+**Current Increment:** 02
 
 ## Design constraints (locked 2026-07-28 — do not re-litigate in increments)
 
@@ -66,7 +66,7 @@ Exit criteria:
 
 ### Increment 02: Handoff template reference + create-mode procedure + example fixture
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
