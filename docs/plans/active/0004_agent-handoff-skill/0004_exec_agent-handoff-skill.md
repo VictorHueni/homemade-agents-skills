@@ -25,7 +25,7 @@ Principles:
 3. Portable core first, harness adapters second: the skill must work as plain markdown-in / markdown-out on Claude Code, Codex, and OpenCode before any harness-specific surface is touched. No hooks in v1 (deferred; revisit trigger: losing a session to surprise auto-compaction despite the skill existing).
 4. Validator before trust: create mode never emits a handoff that `validate-handoff.py` rejects.
 
-**Overall Status:** pending
+**Overall Status:** done
 **Current Increment:** 08
 
 ## Design constraints (locked 2026-07-28 — do not re-litigate in increments)
@@ -208,7 +208,7 @@ Exit criteria:
 
 ### Increment 08: Release housekeeping
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -246,4 +246,4 @@ Exit criteria:
 | M1: Core skill | 01-04 | done | agent-handoff usable end-to-end manually (create → validate → resume) | audit-skills.sh + validator passes example, rejects fixtures | Both modes fully specified; validator dual-use ready | `feat(agent-handoff): …` per increment |
 | M2: Cross-harness wiring | 05 | done | Passive routing reaches all three harnesses via existing surfaces | scratch install + rendered AGENTS.md grep | Rule + adapter line live; no per-project writes | `feat(agent-handoff): …` |
 | M3: Eval assets | 06-07 | done | Pilot evals forward-compatible with #102 + on-demand round-trip lane | evals.json schema check + fixture git-init | Case file consumable by future runner; round-trip runnable from README | `test(agent-handoff): …` |
-| M4: Release | 08 | pending | Version + counts consistent | JSON parse + audit | Plugin bumped, prose counts updated | `chore(agent-handoff): …` |
+| M4: Release | 08 | done | Version + counts consistent | JSON parse + audit | Plugin bumped, prose counts updated | `chore(agent-handoff): …` |
