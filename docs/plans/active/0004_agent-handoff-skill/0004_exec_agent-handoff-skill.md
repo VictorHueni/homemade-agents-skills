@@ -26,7 +26,7 @@ Principles:
 4. Validator before trust: create mode never emits a handoff that `validate-handoff.py` rejects.
 
 **Overall Status:** pending
-**Current Increment:** --
+**Current Increment:** 01
 
 ## Design constraints (locked 2026-07-28 — do not re-litigate in increments)
 
@@ -43,7 +43,7 @@ Principles:
 
 ### Increment 01: Scaffold SKILL.md with frontmatter, triggers, and mode contract
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
