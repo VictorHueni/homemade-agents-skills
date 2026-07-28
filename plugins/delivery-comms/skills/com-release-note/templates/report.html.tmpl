@@ -104,10 +104,15 @@ body {
   border: 1px solid var(--border, #d7dce3); border-radius: var(--card-radius, 12px);
   padding: 2.5mm 3mm; text-align: center;
 }
+/* An odd last card would leave a hole in the two-up grid, which reads as a
+   missing measure rather than a deliberate stop. Let it span the row instead. */
+.recap-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .rc-k { font-size: 7.5pt; color: var(--muted, #6b7280); margin-bottom: 1mm; }
 .rc-v { font-size: 15pt; font-weight: 700; color: var(--ink, #1a1a1a); line-height: 1; }
-/* Added/removed share one card; the signs carry the direction, not colour. */
-.rc-pair { font-size: 10.5pt; white-space: nowrap; }
+/* Added/removed share one card; the signs carry the direction, not colour.
+   Sized like every other value — the pair only ever needed to be smaller while
+   it was competing for a half-width cell. */
+.rc-pair { white-space: nowrap; }
 
 /* --- Sections --- */
 .section { margin-top: 9mm; margin-bottom: 5.5mm; }
