@@ -32,8 +32,10 @@ Options:
                  Record how THIS machine serves skills/commands to Claude Code
                  (persisted in var/claude-channel; read by every later run, incl.
                  flag-less chezmoi runs). "marketplace": the kit is consumed via
-                 /plugin — skip ~/.claude/skills + ~/.claude/commands and prune
-                 kit-owned links there (one channel per machine, kit ADR-0006 §3).
+                 /plugin — skip ~/.claude/skills + ~/.claude/commands, prune
+                 kit-owned links there, and refresh the plugin marketplace +
+                 installed kit plugins so the /plugin cache tracks the kit's
+                 main (one channel per machine, kit ADR-0006 §3).
                  "symlink" (default): current behaviour. Codex/OpenCode targets,
                  rules, adapters, and MCP generation are unaffected either way.
   -h, --help     Show this help.
@@ -273,13 +275,56 @@ prune_kit_links() {
     done
 }
 
+# Refresh the Claude plugin-marketplace channel: git-refresh the marketplace
+# clone, then re-snapshot every installed kit plugin into the versioned cache.
+# Without this, the run_onchange chezmoi hook freshens the dev checkout while
+# the serving path (~/.claude/plugins/marketplaces + cache) silently rots —
+# /reload-plugins only re-reads the cache, it never fetches (ADR-0006 §3).
+refresh_claude_marketplace() {
+    local marketplace="homemade-claude-kit"
+    local installed="$HOME/.claude/plugins/installed_plugins.json"
+    command -v claude >/dev/null 2>&1 || { log_verbose "  claude CLI not on PATH: skipping marketplace refresh"; return 0; }
+    [[ -f "$installed" ]] || { log_verbose "  no installed_plugins.json: skipping marketplace refresh"; return 0; }
+    command -v python3 >/dev/null 2>&1 || { log_verbose "  python3 not on PATH: skipping marketplace refresh"; return 0; }
+
+    if ! claude plugin marketplace update "$marketplace" >/dev/null 2>&1; then
+        log "warning: could not refresh marketplace '$marketplace' (offline?); installed plugin versions may be stale"
+        return 0
+    fi
+
+    local plugin
+    while IFS= read -r plugin; do
+        [[ -n "$plugin" ]] || continue
+        if claude plugin update "${plugin}@${marketplace}" 2>/dev/null | grep -q "updated from"; then
+            log "  ↑ plugin updated: $plugin"
+            updated_plugins=$(( updated_plugins + 1 ))
+        else
+            log_verbose "  = plugin current: $plugin"
+        fi
+    done < <(python3 - "$installed" "$marketplace" <<'PYEOF'
+import json, sys
+data = json.load(open(sys.argv[1]))
+plugins = data.get("plugins", data) if isinstance(data, dict) else {}
+for key in plugins:
+    name, _, mp = key.partition("@")
+    if mp == sys.argv[2]:
+        print(name)
+PYEOF
+)
+    if (( updated_plugins > 0 )); then
+        log "Marketplace plugins updated ($updated_plugins) — run /reload-plugins (or restart) in live Claude sessions to load them."
+    fi
+}
+
 changed_skills=0
 pruned_skills=0
 unchanged_skills=0
+updated_plugins=0
 
 if [[ "$CLAUDE_CHANNEL" == "marketplace" ]]; then
     log_verbose "Claude channel = marketplace: skipping ~/.claude skills/commands (served by /plugin)"
     prune_kit_links "$CLAUDE_SKILLS_TARGET" "skill" pruned_skills
+    refresh_claude_marketplace
 else
     sync_skills "$CLAUDE_SKILLS_TARGET" changed_skills pruned_skills unchanged_skills
 fi
@@ -317,10 +362,10 @@ if [[ -z "$TARGET_ROOT" ]] && command -v python3 >/dev/null 2>&1; then
 fi
 
 if (( !QUIET )); then
-    total_changes=$(( changed_skills + pruned_skills + changed_commands + pruned_commands + changed_rules + pruned_rules ))
+    total_changes=$(( changed_skills + pruned_skills + changed_commands + pruned_commands + changed_rules + pruned_rules + updated_plugins ))
     if (( total_changes == 0 )); then
         echo "No changes."
     else
-        echo "Sync complete. skills: $changed_skills changed, $pruned_skills pruned; commands: $changed_commands changed, $pruned_commands pruned; rules: $changed_rules changed, $pruned_rules pruned."
+        echo "Sync complete. skills: $changed_skills changed, $pruned_skills pruned; commands: $changed_commands changed, $pruned_commands pruned; rules: $changed_rules changed, $pruned_rules pruned; plugins: $updated_plugins updated."
     fi
 fi
