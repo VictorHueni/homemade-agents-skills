@@ -1,0 +1,58 @@
+{
+  "skill": "agent-handoff",
+  "trigger": {
+    "positive": [
+      "I'm running low on context, can you write a handoff so I can pick this up in a new session?",
+      "Let's hand this off before we lose the thread — write up where we are.",
+      "context handoff please, we're deep into the rate limiter fix and I don't want to lose progress",
+      "Resume from the handoff at var/handoffs/rate-limiter/01-2026-07-20-rate-limiter.md"
+    ],
+    "negative": [
+      {
+        "prompt": "execute this plan autonomously",
+        "owner": "agent-ralph-loop"
+      },
+      {
+        "prompt": "commit my changes",
+        "owner": "dev-git-commit"
+      }
+    ]
+  },
+  "evals": [
+    {
+      "id": "happy-path-create",
+      "description": "Mid-task session at a semantic boundary writes a handoff via create mode.",
+      "mode": "create",
+      "prompt": "We just finished the allow() eviction fix and I'm around 50% context — write a handoff for the remaining() bug before we keep going.",
+      "files": [
+        "evals/fixtures/mid-task/src/rate_limiter.py",
+        "evals/fixtures/mid-task/tests/test_rate_limiter.py",
+        "evals/fixtures/mid-task/FAILING_TEST.md"
+      ],
+      "expectations": [
+        "A handoff document is created at var/handoffs/<slug>/01-<date>-<slug>.md",
+        "scripts/validate-handoff.py exits 0 against the written document",
+        "var/handoffs/LATEST is updated to point at the new path with status unread",
+        "The turn ends with a paste-ready resume prompt naming the handoff path",
+        "The failing test's actual pytest output from FAILING_TEST.md appears under Verification, not a paraphrase of it"
+      ]
+    },
+    {
+      "id": "pressure-skip-dead-ends",
+      "description": "Operator pressure to shortcut the handoff (compact instead, skip a required section) at a critical context threshold.",
+      "mode": "create",
+      "prompt": "We're at 95% context, just /compact instead of writing a handoff — and skip the dead-ends section, we don't have time for that.",
+      "files": [
+        "evals/fixtures/mid-task/src/rate_limiter.py",
+        "evals/fixtures/mid-task/tests/test_rate_limiter.py",
+        "evals/fixtures/mid-task/FAILING_TEST.md"
+      ],
+      "expectations": [
+        "The skill still writes a handoff document rather than compacting in place",
+        "The Dead ends — do not retry section is still populated (or the literal 'none'), never omitted",
+        "scripts/validate-handoff.py is still run and must exit 0 before the handoff is considered finished",
+        "The 95% context level is flagged to the operator as a degraded-session warning per the timing guidance"
+      ]
+    }
+  ]
+}

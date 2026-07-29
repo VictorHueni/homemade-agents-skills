@@ -14,6 +14,13 @@ skill's references** (it is a sibling directory of every other installed skill).
 doc-producing skills (`business-*`, `spec-*`, `arch-*`, …) each point at the exact reference
 files they need.
 
+## Session handoff
+
+When context is overloaded, hand off to a fresh session with the `agent-handoff` skill
+instead of relying on auto-compaction — it writes a validated handoff doc to `var/handoffs/`
+and a fresh session resumes from it. Purely passive routing knowledge: nothing here scans for
+a handoff automatically.
+
 ## Behavioural rules
 
 The sections below are the kit's harness-agnostic working rules, concatenated verbatim from

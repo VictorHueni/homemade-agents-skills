@@ -1,0 +1,71 @@
+## Iteration 1
+- Increment: 01 — Scaffold SKILL.md with frontmatter, triggers, and mode contract
+- Status: done
+- Files changed: plugins/agent-loop/skills/agent-handoff/SKILL.md (new)
+- Test gate: passed
+- Learnings: no PRD (without-prd mode), so no PRD checkbox updates this iteration. Full create/resume procedures are deferred to increments 02/04 per plan; increment 01 only needed the mode contract, timing guidance, storage contract, and the five non-goals.
+- Commit: e6b83b5
+- Timestamp: 2026-07-28T00:00:00Z
+
+## Iteration 2
+- Increment: 02 — Handoff template reference + create-mode procedure + example fixture
+- Status: done
+- Files changed: plugins/agent-loop/skills/agent-handoff/references/handoff-template.md (new), plugins/agent-loop/skills/agent-handoff/references/example-handoff.md (new), plugins/agent-loop/skills/agent-handoff/SKILL.md (create-mode procedure added), docs/plans/active/0004_agent-handoff-skill/0004_exec_agent-handoff-skill.md (increment status)
+- Test gate: passed
+- Learnings: example-handoff.md needed exactly 9 lines matching '^## ' — kept header provenance (date/branch/sha/context%) as bold metadata lines under a single H1, not H2 sections, so the grep count stays exact. No PRD (without-prd mode), so no PRD checkbox updates this iteration.
+- Commit: 2e3b1f6
+- Timestamp: 2026-07-28T00:00:00Z
+
+## Iteration 3
+- Increment: 03 — validate-handoff.py + positive/negative fixtures
+- Status: done
+- Files changed: plugins/agent-loop/skills/agent-handoff/scripts/validate-handoff.py (new), plugins/agent-loop/skills/agent-handoff/scripts/fixtures/invalid-missing-section.md (new), plugins/agent-loop/skills/agent-handoff/scripts/fixtures/invalid-secret.md (new), plugins/agent-loop/skills/agent-handoff/scripts/fixtures/invalid-over-budget.md (new), docs/plans/active/0004_agent-handoff-skill/0004_exec_agent-handoff-skill.md (increment status)
+- Test gate: passed
+- Learnings: scope text names three negative fixtures (missing-section, over-budget, planted-secret) but the increment's Primary Files list only enumerated two — added the third (invalid-over-budget.md) to satisfy scope faithfully since the test gate's invalid-*.md glob picks up any count. Had to add "rotate" to the validator's imperative-verb word-list so the secret fixture's Next-step line didn't trip a second, unrelated finding alongside the planted AWS key. No PRD (without-prd mode), so no PRD checkbox updates this iteration.
+- Commit: b806d30
+- Timestamp: 2026-07-28T00:00:00Z
+
+## Iteration 4
+- Increment: 04 — Resume-mode procedure
+- Status: done
+- Files changed: plugins/agent-loop/skills/agent-handoff/SKILL.md (resume-mode procedure added), docs/plans/active/0004_agent-handoff-skill/0004_exec_agent-handoff-skill.md (increment + milestone status)
+- Test gate: passed
+- Learnings: M1 milestone (increments 01-04) is now fully done, so its status row flipped to done alongside the increment. No PRD (without-prd mode), so no PRD checkbox updates this iteration.
+- Commit: ca3a26f
+- Timestamp: 2026-07-28T00:00:00Z
+
+## Iteration 5
+- Increment: 05 — Cross-harness wiring — rule file + AGENTS.md adapter line
+- Status: done
+- Files changed: rules/session-handoff.md (new), rules/skill-creation-sync.md (storage carve-out section added), templates/agents-adapter.md (Session handoff routing paragraph added), docs/plans/active/0004_agent-handoff-skill/0004_exec_agent-handoff-skill.md (increment + M2 milestone status)
+- Test gate: passed
+- Learnings: session-handoff.md is deliberately excluded from gen-agents-md.py's BEHAVIOURAL_RULES concatenation list (same treatment as the metamodel pointer rules) — the AGENTS.md routing paragraph was added directly to templates/agents-adapter.md instead, keeping the "var/handoffs" grep at exactly one occurrence in the rendered output per the test gate. No PRD (without-prd mode), so no PRD checkbox updates this iteration. M2 milestone (increment 05 only) flipped to done alongside the increment.
+- Commit: cc6c275
+- Timestamp: 2026-07-28T00:00:00Z
+
+## Iteration 6
+- Increment: 06 — Pilot eval case file (skill-creator v2 schema + trigger block)
+- Status: done
+- Files changed: plugins/agent-loop/skills/agent-handoff/evals/evals.json (new), plugins/agent-loop/skills/agent-handoff/evals/fixtures/mid-task/src/rate_limiter.py (new), plugins/agent-loop/skills/agent-handoff/evals/fixtures/mid-task/tests/test_rate_limiter.py (new), plugins/agent-loop/skills/agent-handoff/evals/fixtures/mid-task/FAILING_TEST.md (new), docs/plans/active/0004_agent-handoff-skill/0004_exec_agent-handoff-skill.md (increment + M3 milestone status)
+- Test gate: passed
+- Learnings: no skill-creator v2 schema precedent exists anywhere in the repo, so the evals.json shape (trigger.positive/negative with owner-declared negatives, evals[] with files[]/expectations[]) was designed directly from the plan's scope prose and test-gate assertions rather than copied from an example. The fixture's failing test needed a real bug (remaining() skips eviction) verified by actually running pytest — an injectable clock made the aged-out-events case reproducible without real sleep. Running pytest against the fixture left a stray .hypothesis/ cache dir under the fixture tree that had to be deleted before staging (not part of the fixture, a local pytest artifact). No PRD (without-prd mode), so no PRD checkbox updates this iteration. M3 milestone (06-07) flipped to in-progress; increment 07 still pending.
+- Commit: a561dcb
+- Timestamp: 2026-07-28T00:00:00Z
+
+## Iteration 7
+- Increment: 07 — Round-trip eval assets (pre-release lane, on-demand only)
+- Status: done
+- Files changed: plugins/agent-loop/skills/agent-handoff/evals/roundtrip/README.md (new), plugins/agent-loop/skills/agent-handoff/evals/roundtrip/fixture/src/lru_cache.py (new), plugins/agent-loop/skills/agent-handoff/evals/roundtrip/fixture/tests/test_lru_cache.py (new), plugins/agent-loop/skills/agent-handoff/evals/roundtrip/fixture/REMAINING_STEP.md (new), plugins/agent-loop/skills/agent-handoff/evals/roundtrip/fixture/DEAD_END.md (new), docs/plans/active/0004_agent-handoff-skill/0004_exec_agent-handoff-skill.md (increment + M3 milestone status)
+- Test gate: passed
+- Learnings: chose a fresh domain (LRU cache eviction-direction bug) rather than reusing the mid-task rate-limiter fixture, so the round-trip lane exercises a distinct scenario from the pilot evals. Verified the failing test's actual pytest output by running it before writing REMAINING_STEP.md (same discipline as increment 06's FAILING_TEST.md). DEAD_END.md seeds a plausible-but-wrong alternative (a parallel `_access_times` dict) specifically so the README's grading step can grep agent B's transcript for a re-explored dead end. No PRD (without-prd mode), so no PRD checkbox updates this iteration. M3 milestone (06-07) flipped to done alongside the increment.
+- Commit: c5a0fd8
+- Timestamp: 2026-07-29T00:00:00Z
+
+## Iteration 8
+- Increment: 08 — Release housekeeping
+- Status: done
+- Files changed: plugins/agent-loop/.claude-plugin/plugin.json (version 1.1.0 → 1.2.0), AGENTS.md (skill count 57 → 58), index.md (OKF bundle root skill count 57 → 58), docs/plans/active/0004_agent-handoff-skill/0004_exec_agent-handoff-skill.md (increment + M4 milestone + Overall Status → done)
+- Test gate: passed
+- Learnings: root-level index.md (the OKF bundle root index, distinct from docs/index.md) also stated "57 skills under plugins/*/skills/*/SKILL.md" — updated it alongside AGENTS.md since it matched the plan's "reflect the addition where the metamodel/docs index expects it" clause even though it wasn't in the increment's Primary Files list; ADR-0006's plugin-set table was left untouched per the plan's explicit "historical — do not edit" note. Actual on-disk skill directory count (find) already read 58, confirming the prose bump was correct. No PRD (without-prd mode), so no PRD checkbox updates. This was the final increment — M4 milestone and Overall Status both flipped to done; all 8 increments across M1-M4 are now complete.
+- Commit: 1c828df
+- Timestamp: 2026-07-29T00:00:00Z
