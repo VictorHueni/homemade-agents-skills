@@ -17,6 +17,9 @@ status: active
 last_reviewed: 2026-05-31
 user-invocable: true
 impact: "low"
+metadata:
+  category: "communication"
+  complexity: "high"
 ---
 
 # Slide Builder

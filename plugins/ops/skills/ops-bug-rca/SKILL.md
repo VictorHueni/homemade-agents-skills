@@ -10,6 +10,9 @@ status: active
 last_reviewed: 2026-05-29
 user-invocable: true
 impact: "low"
+metadata:
+  category: "operations"
+  complexity: "medium"
 ---
 
 # Bug Root Cause Analysis & Fix Recommendations

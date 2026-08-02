@@ -8,6 +8,9 @@ last_reviewed: 2026-05-29
 version: "1.0.0"
 user-invocable: true
 impact: "low"
+metadata:
+  category: "utility"
+  complexity: "medium"
 ---
 
 # util-toolkit-doctor

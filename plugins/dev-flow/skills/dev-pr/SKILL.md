@@ -8,6 +8,9 @@ status: active
 last_reviewed: 2026-06-07
 user-invocable: true
 impact: "low"
+metadata:
+  category: "utility"
+  complexity: "low"
 ---
 
 # Pull Request Creator

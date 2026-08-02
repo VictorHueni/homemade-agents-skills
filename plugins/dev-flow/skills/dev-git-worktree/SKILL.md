@@ -8,6 +8,9 @@ last_reviewed: 2026-05-22
 review_interval: 180d
 user-invocable: true
 impact: "low"
+metadata:
+  category: "utility"
+  complexity: "medium"
 ---
 
 # Using Git Worktrees
