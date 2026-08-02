@@ -1,13 +1,16 @@
 ---
-type: skill
 name: ops-runbook
+license: MIT
 description: "Create operator-grade runbooks for any project. Use when asked to write a runbook, document an operational procedure, capture a workflow just executed, or produce a step-by-step operator guide. Triggers on: create a runbook, write a runbook for, document this procedure, add a runbook, ops procedure, operator guide, incident playbook."
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-22
-review_interval: 180d
 user-invocable: true
-impact: "low"
+metadata:
+  category: "operations"
+  complexity: "medium"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-22
+  review_interval: 180d
+  impact: "low"
 ---
 
 # Ops Runbook Creator

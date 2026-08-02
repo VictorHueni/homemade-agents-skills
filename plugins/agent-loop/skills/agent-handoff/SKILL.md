@@ -1,16 +1,16 @@
 ---
-type: skill
 name: agent-handoff
+license: MIT
 description: "Hand off an overloaded interactive session's context to a fresh session via a validated markdown handoff document. Two modes: create (write the handoff at var/handoffs/, end with a paste-ready resume prompt) and resume (load a handoff in a fresh session, check repo drift, re-verify inherited claims, continue the work). Triggers on: handoff, hand off context, context handoff, pass context to a new session, continue in fresh session, resume handoff."
-version: "1.0.0"
+allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/validate-handoff.py *)
 user-invocable: true
-allow_implicit_invocation: false
-impact: "medium"
 metadata:
   category: "agent"
   complexity: "medium"
-status: active
-last_reviewed: 2026-07-28
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-07-28
+  impact: "medium"
 ---
 
 # Agent Handoff — session context handoff

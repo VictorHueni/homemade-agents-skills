@@ -1,19 +1,16 @@
 ---
-type: skill
 name: arch-c4
+license: MIT
 description: "Author and refresh C4 diagrams (Levels 1–3, deployment, runtime) via Structurizr DSL, and emit the DSL-derived tables for arc42 §3/§5/§7 as fenced generated blocks (arch-c4:start/end markers). The surrounding narrative is owned by arch-arc42 — arch-c4 authors no arc42 prose (see ADR-0004). Mints SYS-NN, CON-NN, CMP-NN, DN-NN; SCN-NN scenario IDs are owned by arch-arc42 §6, so runtime mode only renders the dynamic-view SVG keyed by a given SCN-NN. Five modes: context, container, component, deployment, runtime. Edits docs/architecture/c4/workspace.dsl; writes generated table blocks into docs/architecture/arc42/. Enforces boundary discipline: BBV is technical decomposition, references domain model. Triggers on: C4 diagram, system context, container diagram, component diagram, deployment view, runtime view, architecture diagram, building block view."
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-28
-review_interval: 365d
-supersedes: ~
-superseded_by: ~
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
   category: "architecture"
   complexity: "high"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-28
+  review_interval: 365d
+  impact: "low"
 ---
 
 # C4 model authoring → arc42 §3 / §5 / §7 generated tables

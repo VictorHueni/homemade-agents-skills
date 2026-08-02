@@ -75,12 +75,21 @@ while IFS= read -r skill_dir; do
   fi
 
   # 4. Check required frontmatter fields
-  required_fields=("name" "description" "version" "status" "last_reviewed" "user-invocable" "impact")
+  # Top-level: fields Claude Code / the Agent Skills standard reads directly.
+  # metadata.*: kit-internal governance fields, nested under metadata: so they
+  # can never collide with a real skill-loader field (see rules/skill-creation-sync.md).
+  top_level_fields=("name" "description" "license" "user-invocable")
+  metadata_fields=("version" "status" "last_reviewed" "impact" "category" "complexity")
   missing_fields=()
 
-  for field in "${required_fields[@]}"; do
+  for field in "${top_level_fields[@]}"; do
     if ! grep -q "^$field:" "$skill_path/SKILL.md"; then
       missing_fields+=("$field")
+    fi
+  done
+  for field in "${metadata_fields[@]}"; do
+    if ! grep -q "^  $field:" "$skill_path/SKILL.md"; then
+      missing_fields+=("metadata.$field")
     fi
   done
 
@@ -91,7 +100,7 @@ while IFS= read -r skill_dir; do
   fi
 
   # 5. Validate status field value
-  status=$(grep "^status:" "$skill_path/SKILL.md" 2>/dev/null | sed 's/^status: *//' | sed 's/ *#.*//' | head -1)
+  status=$(grep "^  status:" "$skill_path/SKILL.md" 2>/dev/null | sed 's/^  status: *//' | sed 's/ *#.*//' | head -1)
   valid_statuses=("draft" "active" "deprecated" "superseded")
   status_valid=0
   for valid_status in "${valid_statuses[@]}"; do

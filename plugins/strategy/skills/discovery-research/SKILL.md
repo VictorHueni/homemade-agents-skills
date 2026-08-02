@@ -1,16 +1,15 @@
 ---
-type: skill
 name: discovery-research
+license: MIT
 description: "Create hypothesis-anchored interview scripts, research plans, and synthesis docs that validate upstream business-architecture artefacts such as personas, value streams, BMC blocks, and competitive claims. Use when the user asks to plan an interview, write an interview script, run customer-discovery research, validate persona assumptions, synthesize findings, plan a research wave, or unblock open hypotheses in existing docs. Triggers on: interview script, customer interview, user research, research plan, validate persona, synthesize interview findings, customer discovery, primary research, semi-structured interview, research wave. Domain-agnostic. Not for group facilitation; use `discovery-workshop` for workshops."
-version: "1.0.0"
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
   category: "specification"
   complexity: "medium"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # Business Research Builder
