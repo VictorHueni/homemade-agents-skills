@@ -2,6 +2,7 @@
 name: agent-issue-loop
 license: MIT
 description: "Work a GitHub-backend issue backlog as a coding agent: validate an issue's readiness (or sweep the ready queue for drift), find and merge duplicate issues, and take a ready-for-agent issue through implement → verify → PR. Triggers on: take issue #N, work the next ready issue, next issue, validate issue readiness, validate the queue, dedupe the backlog, merge duplicate issues, tackle open issues one by one."
+disallowed-tools: AskUserQuestion
 user-invocable: true
 metadata:
   category: "agent"
