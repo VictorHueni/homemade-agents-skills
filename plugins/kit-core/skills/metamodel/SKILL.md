@@ -1,5 +1,6 @@
 ---
 name: metamodel
+license: MIT
 description: "Canonical metamodel of the strategic-architecture documentation stack: the 19-artefact build order, the artefact-type registry (ID formats, canonical paths, review intervals, OKF type names), the artefact frontmatter schema, and open-items governance — plus the stack lifecycle as modes: Audit (health check), Scaffold (canonical folder tree + CLAUDE.md wiring), Migrate (bring existing docs onto the metamodel). Every doc-producing kit skill reads this skill's references; consult it directly for stack-level work. Triggers on: build the documentation stack, do the strategic docs, start the project documentation, documentation plan, build order, what artefact comes next, where does an artefact live, which ID format, artefact frontmatter, docs folder structure, audit my docs stack, metamodel audit, artefact stack health, scaffold the docs folder, docs folder setup, migrate my docs, docs migration report."
 version: "1.0.0"
 status: active

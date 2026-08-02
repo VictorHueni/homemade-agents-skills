@@ -1,5 +1,6 @@
 ---
 name: discovery-idea
+license: MIT
 description: "Capture, refine, and graduate pre-formal ideas — product, business, architecture, process, dx, or ops. Use when brainstorming a vague concept, pressure-testing an early hunch, drafting a one-pager before a PRD/ADR/OBJ, or routing an idea to the right downstream skill. Triggers on: /idea, /ideate, new idea, refine idea, pressure-test idea, one-pager, pre-PRD idea, idea status, graduate idea."
 version: "2.0.0"
 user-invocable: true

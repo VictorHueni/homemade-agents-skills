@@ -1,5 +1,6 @@
 ---
 name: com-slide-deck
+license: MIT
 description: >
   Build single-file HTML slide presentations from modular partials, a shared
   design system, and a Python build pipeline. Use this skill any time the user

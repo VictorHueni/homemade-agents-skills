@@ -1,5 +1,6 @@
 ---
 name: agent-ralph-loop
+license: MIT
 description: "Execute an implementation plan autonomously using the Ralph Loop protocol. Iterates through increments one at a time: implement, test, commit, repeat. Use when asked to 'run the ralph loop', 'execute this plan', or 'start autonomous execution'."
 allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/ralph.sh *)
 version: '1.0.0'

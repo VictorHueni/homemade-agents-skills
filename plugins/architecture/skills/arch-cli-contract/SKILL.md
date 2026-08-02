@@ -1,5 +1,6 @@
 ---
 name: arch-cli-contract
+license: MIT
 description: "Define the external CLI surface contract for a user-facing command-line tool — subcommand tree, per-command flags and arguments, output format contract, exit code catalogue, configuration precedence, and error contract. BC-scoped (one CLI per BC/service, ID: BC-NN.CLI-NN) or product-level spanning multiple BCs (ID: CLI-NN). Modes: scaffold, design (contract-first from FBS functionalities), document-existing (reverse-engineer from --help output or source), refresh (detect added/removed commands, emit changelog). Use when asked to design a CLI, document CLI commands, define subcommands and flags, specify exit codes, or formalise the surface of a command-line tool. Triggers on: CLI design, command line, subcommands, flags, CLI surface, shell tool, command interface, exit codes, CLI contract. Output: docs/architecture/interfaces/cli-{slug}.md."
 version: "1.0.0"
 status: draft

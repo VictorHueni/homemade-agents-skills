@@ -1,5 +1,6 @@
 ---
 name: arch-adr
+license: MIT
 description: "Create, review, update, and supersede Architecture Decision Records (ADRs) using MADR 4.x conventions. Handles full ADR lifecycle including project bootstrap (init), new ADR creation with auto-numbering, supersession as an atomic two-file operation, and quality review. Use when asked to document an architecture/technical decision, initialise the ADR directory, supersede an older ADR, or improve ADR quality."
 version: "1.1.0"
 status: active          # draft | active | deprecated | superseded

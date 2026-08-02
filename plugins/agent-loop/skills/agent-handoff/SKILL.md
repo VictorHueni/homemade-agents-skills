@@ -1,5 +1,6 @@
 ---
 name: agent-handoff
+license: MIT
 description: "Hand off an overloaded interactive session's context to a fresh session via a validated markdown handoff document. Two modes: create (write the handoff at var/handoffs/, end with a paste-ready resume prompt) and resume (load a handoff in a fresh session, check repo drift, re-verify inherited claims, continue the work). Triggers on: handoff, hand off context, context handoff, pass context to a new session, continue in fresh session, resume handoff."
 allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/validate-handoff.py *)
 version: "1.0.0"

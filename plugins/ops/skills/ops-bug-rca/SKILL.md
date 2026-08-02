@@ -1,5 +1,6 @@
 ---
 name: ops-bug-rca
+license: MIT
 description: >
   Systematic bug root cause analysis and fix recommendations.
   Use when: debugging errors, investigating bugs, analyzing failures, troubleshooting unexpected behavior,

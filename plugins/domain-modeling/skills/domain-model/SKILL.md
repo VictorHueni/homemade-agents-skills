@@ -1,5 +1,6 @@
 ---
 name: domain-model
+license: MIT
 description: "Create a tactical DDD domain model per bounded context — entities (identity + lifecycle + behaviour), value objects (immutable, equality by value), aggregates (consistency boundary + invariants + root), and domain events (past-tense business facts). Synthesises Evans Domain-Driven Design (2003) Chapters 5–8 + Vernon Implementing DDD (2013) Chapters 5–6 + Vernon DDD Distilled (2016) Chapter 5 + Fowler anemic domain model anti-pattern. Use when asked to define the domain model, document entities and aggregates, define domain events, model the business objects, or implement tactical DDD. Triggers on: domain model, aggregate, entity, value object, domain event, tactical DDD, aggregate root, invariants, domain objects, DDD model, entity model, bounded context model. Output: docs/domain/07b-models/{bc-slug}.md (one file per bounded context). Reads BC-NN from domain-bounded-context; reads GT-NN from domain-glossary; reads C-N.M.FXX from FBS."
 version: "1.0.0"
 user-invocable: true

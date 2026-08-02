@@ -1,5 +1,6 @@
 ---
 name: arch-uml
+license: MIT
 description: "Author and refresh UML diagrams with PlantUML — sequence, class, state-machine, activity, entity-relationship, and use-case — rendered to committed SVG via the arch-plantuml Docker pipeline. Writes one docs/architecture/diagrams/<type>-NN-<slug>.puml per diagram (each !includes the shared _theme.puml and titles the upstream ID it visualises), runs render.sh, and embeds the SVG into the consuming markdown. Six modes, one per diagram type. Prerequisite: arch-plantuml init. Mints no IDs — diagrams visualise IDs owned by spec-use-case (UC-NN), domain-model (BC-NN.AGG-NN), business-process (PROC-NN). Triggers on: sequence diagram, class diagram, state machine diagram, activity diagram, ER diagram, use case diagram, UML diagram, plantuml diagram, draw sequence, draw class diagram. NOT for C4 (arch-c4) nor GitHub-inline diagrams (Mermaid)."
 version: "1.0.0"
 status: active

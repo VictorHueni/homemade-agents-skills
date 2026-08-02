@@ -1,5 +1,6 @@
 ---
 name: business-capability-map
+license: MIT
 description: "Create a strategic business capability map (L0 + L1, optionally L2) using the canonical synthesis of TOGAF G189 + Cutter Rosetta Stone + SAP Business Architecture + BABOK. Use when the user asks to build a capability map, define business capabilities, model the WHAT-the-business-does layer, scaffold an enterprise / product capability tree, or prepare a business-IT alignment artefact. Triggers on: business capability map, capability map, BC map, BCM, define capabilities for, what does {product} do, strategic capabilities, TOGAF capability map, capability decomposition, L0 L1 capabilities. Domain-agnostic; works for any product, service, or enterprise scope. Stays strategic — does NOT decompose to features / functionality (that belongs in an FBS)."
 version: "1.0.0"
 user-invocable: true
