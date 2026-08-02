@@ -4,7 +4,6 @@ name: agent-issue-loop
 description: "Work a GitHub-backend issue backlog as a coding agent: validate an issue's readiness (or sweep the ready queue for drift), find and merge duplicate issues, and take a ready-for-agent issue through implement → verify → PR. Triggers on: take issue #N, work the next ready issue, next issue, validate issue readiness, validate the queue, dedupe the backlog, merge duplicate issues, tackle open issues one by one."
 version: "1.0.0"
 user-invocable: true
-allow_implicit_invocation: false
 impact: "high"
 metadata:
   category: "agent"

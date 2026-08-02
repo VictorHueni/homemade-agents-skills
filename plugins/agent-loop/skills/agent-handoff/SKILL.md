@@ -4,7 +4,6 @@ name: agent-handoff
 description: "Hand off an overloaded interactive session's context to a fresh session via a validated markdown handoff document. Two modes: create (write the handoff at var/handoffs/, end with a paste-ready resume prompt) and resume (load a handoff in a fresh session, check repo drift, re-verify inherited claims, continue the work). Triggers on: handoff, hand off context, context handoff, pass context to a new session, continue in fresh session, resume handoff."
 version: "1.0.0"
 user-invocable: true
-allow_implicit_invocation: false
 impact: "medium"
 metadata:
   category: "agent"

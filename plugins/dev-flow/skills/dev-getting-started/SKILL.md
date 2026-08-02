@@ -7,7 +7,6 @@ status: active
 last_reviewed: 2026-05-28
 review_interval: 180d
 user-invocable: true
-allow_implicit_invocation: true
 impact: "low"
 metadata:
   category: "developer-documentation"

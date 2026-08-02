@@ -6,10 +6,7 @@ version: "1.0.0"
 status: draft
 last_reviewed: 2026-05-25
 review_interval: 180d
-supersedes: ~
-superseded_by: ~
 user-invocable: true
-allow_implicit_invocation: true
 impact: "low"
 metadata:
   category: "architecture"

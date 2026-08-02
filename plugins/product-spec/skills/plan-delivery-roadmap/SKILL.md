@@ -4,7 +4,6 @@ name: plan-delivery-roadmap
 description: "Create a Delivery Roadmap — the Plan by Feature artefact that groups FBS functionalities into named, scoped, priority-ordered epics (E-NN), defines the MVP walking skeleton (minimum end-to-end journey), and declares per-phase goals expressed as value streams made operational. Bridges FBS (what the product does), value streams (how value flows), and PRDs (what we build next). Serves simultaneously as delivery planning tool (E-NN clusters, FBS scope, PRD links) and product roadmap (phase goals, walking skeleton, business narrative). For a solo founder or small team, one document serves both audiences. Triggers on: delivery roadmap, epic catalogue, epic list, plan by feature, group features into epics, define epics, epic planning, feature grouping, epic scope, what PRDs to write, product roadmap, phase plan, MVP slice, walking skeleton, release plan, what do we build next."
 version: "1.1.0"
 user-invocable: true
-allow_implicit_invocation: false
 impact: "low"
 metadata:
   category: "planning"

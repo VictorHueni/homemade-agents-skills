@@ -4,7 +4,6 @@ name: discovery-workshop
 description: "Plan single-session or multi-session workshops that reality-check business-architecture artefacts such as personas, BMCs, value streams, capability maps, and competitive analyses through structured group facilitation. Use when the user asks to plan a workshop, design a workshop series, align stakeholders, run a BMC workshop, design a Design Sprint, plan a discovery workshop, or synthesize workshop outputs. Triggers on: workshop, facilitation, workshop series, workshop guide, design sprint, alignment workshop, BMC workshop, discovery workshop, Liberating Structures, facilitator's guide. Domain-agnostic. Not for 1:1 interviews; use `discovery-research` for individual research sessions."
 version: "1.0.0"
 user-invocable: true
-allow_implicit_invocation: true
 impact: "low"
 metadata:
   category: "specification"

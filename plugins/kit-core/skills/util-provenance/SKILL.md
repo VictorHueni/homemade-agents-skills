@@ -6,7 +6,6 @@ status: active
 last_reviewed: 2026-05-31
 version: "1.0.0"
 user-invocable: true
-allow_implicit_invocation: true
 impact: "low"
 metadata:
   category: "utility"

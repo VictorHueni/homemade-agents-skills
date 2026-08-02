@@ -6,10 +6,7 @@ version: "1.1.0"
 status: active          # draft | active | deprecated | superseded
 last_reviewed: 2026-05-22
 review_interval: 180d
-supersedes: ~           # path to superseded skill version, if applicable
-superseded_by: ~        # path to superseding skill, if this one is retired
 user-invocable: true
-allow_implicit_invocation: true
 impact: "low"
 metadata:
   category: "specification"

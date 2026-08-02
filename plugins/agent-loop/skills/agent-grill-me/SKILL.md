@@ -7,7 +7,6 @@ status: draft
 last_reviewed: 2026-06-16
 review_interval: 180d
 user-invocable: true
-allow_implicit_invocation: true
 impact: "low"
 metadata:
   category: "agent"
