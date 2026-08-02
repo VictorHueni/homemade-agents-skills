@@ -1,5 +1,4 @@
 ---
-type: skill
 name: util-provenance
 description: "Deterministic, hash-only provenance for any file: compute a SHA-256, obtain an RFC 3161 trusted timestamp over the digest, verify it, and publish a self-contained provenance record (digest, timestamp token, TSA certs, re-verify steps) in a provenance/ folder beside the target. The file's content NEVER leaves the machine — only the digest is sent to the Timestamp Authority. Use to prove the authorship/existence date of a document, deck, report, or release artefact (Swiss-style 'seniority' evidence), protect IP, or create tamper-evident provenance. Triggers on: provenance, prove authorship, authorship date, trusted timestamp, RFC3161, timestamp a file, hash and timestamp, notarise a file, IP protection, content provenance, prove this existed, tamper-evident. Evolves over time: detached digital signature and C2PA Content Credentials are planned. NOT a watermarking SaaS — it never uploads the file."
 status: active

@@ -1,5 +1,4 @@
 ---
-type: skill
 name: business-model-canvas
 description: "Create a Business Model Canvas (Osterwalder/Pigneur) or Lean Canvas (Ash Maurya) — the strategic-design one-pager that consolidates customer / value / infrastructure / financial logic into 9 inter-connected blocks. Optional Value Proposition Canvas (VPC) companion per customer segment. Synthesises Business Model Generation (2010) + Value Proposition Design (2014) + Running Lean. Use when the user asks to build a business model canvas, BMC, Lean Canvas, value proposition canvas, model the commercial logic, prepare a strategic one-pager for execs/investors. Triggers on: business model canvas, BMC, Lean Canvas, value proposition canvas, VPC, model the business, strategic one-pager, commercial logic, customer-value-infrastructure model. Domain-agnostic. Soft-links to personas / capability map / value streams / processes (the BIZBOK Business Architecture stack) but stands alone. NOT a quantitative model — for TAM/SAM/SOM / ROI / savings use business-quantitative-model instead."
 version: "1.0.0"

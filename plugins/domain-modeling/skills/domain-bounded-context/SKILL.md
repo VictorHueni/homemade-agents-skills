@@ -1,5 +1,4 @@
 ---
-type: skill
 name: domain-bounded-context
 description: "Create a Bounded Context Map + Context Map for a project using strategic DDD. Identifies bounded contexts from the capability map, classifies each as Core / Supporting / Generic subdomain (Vernon), maps integration patterns between contexts (Evans: ACL, Shared Kernel, Customer-Supplier, Open Host Service, Published Language, Conformist). Synthesises Evans Domain-Driven Design (2003) Chapter 14 + Vernon DDD Distilled (2016) Chapter 3-4 + Nick Tune Architecture Modernization (2024). Use when asked to identify bounded contexts, define system boundaries, map context relationships, classify subdomains, or align team topology with domain boundaries. Triggers on: bounded context, context map, subdomain, DDD boundaries, domain boundaries, core domain, supporting domain, generic subdomain, context mapping, anti-corruption layer, domain-driven design boundaries. Output: docs/domain/. Soft-links to capability map (C-N.M), personas (P-NN), value streams (VS-N.M)."
 version: "1.0.0"

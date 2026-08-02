@@ -1,5 +1,4 @@
 ---
-type: skill
 name: dev-pr
 description: "Use this skill when asked to create a pull request (PR). It ensures all PRs follow the repository's established templates and standards. Triggers on: create PR, open PR, pull request, draft PR."
 version: "1.1.0"

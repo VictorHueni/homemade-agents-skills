@@ -1,5 +1,4 @@
 ---
-type: skill
 name: dev-getting-started
 description: "Scaffold and populate a project-specific getting-started guide at docs/dev-guides/getting-started.md. Reads real project files (package.json, docker-compose.yml, .env.example, Makefile, CI config, CLAUDE.md) to emit exact commands for clone-to-run setup, environment variables, local dev workflow, common tasks, coding agent setup, and troubleshooting. Three modes: scaffold (creates with _TODO_ placeholders), fill (populates from project files with real commands), refresh (detects changes, updates stale sections). Triggers on: getting started guide, onboarding guide, dev setup guide, local dev guide, how to run this project, developer onboarding, setup guide, first run guide, new developer setup."
 version: "1.0.0"

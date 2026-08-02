@@ -1,5 +1,4 @@
 ---
-type: skill
 name: spec-quality-attributes
 description: "Create a Quality Attributes specification — the non-functional requirements registry organised by ISO/IEC 25010:2023 product quality characteristics, with measurable acceptance criteria and verification methods. Use when asked to define NFRs, quality attributes, non-functional requirements, system quality, performance targets, security requirements, usability constraints, or reliability targets. Triggers on: quality attributes, NFR, non-functional requirements, system quality, performance requirements, security requirements, usability requirements, reliability requirements, ISO 25010."
 version: "1.0.0"

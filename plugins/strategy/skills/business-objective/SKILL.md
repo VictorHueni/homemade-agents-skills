@@ -1,5 +1,4 @@
 ---
-type: skill
 name: business-objective
 description: "Create business objectives and key results — the strategic 'why' layer that connects commercial intent (BMC) and value stream pain points to delivery (epics, PRDs). Mints OBJ-NN and KR-NN.M IDs. Synthesises Doerr Measure What Matters (OKR structure) + BABOK v3 §1.3 (business requirements vocabulary) + Adzic Impact Mapping (outcome discipline) + Kaplan & Norton BSC 4-perspective classification. Use when asked to define strategic goals, business objectives, OKRs, key results, the purpose of an initiative, or what success looks like at initiative level. Triggers on: business objectives, OKR, key results, initiative goals, why are we building this, strategic intent, value objectives, business goals, what are we trying to achieve, define success, what does success look like, measure what matters, north star, initiative brief."
 version: "1.0.0"

@@ -1,5 +1,4 @@
 ---
-type: skill
 name: arch-plantuml
 description: "Initialise and maintain the PlantUML diagrams workspace + Docker-based render pipeline that powers UML diagrams (sequence, class, state-machine, activity, ER, use-case) — the diagram types Mermaid renders poorly and Structurizr does not cover. One-time setup skill: scaffolds docs/architecture/diagrams/{*.puml, _theme.puml, render.sh, README.md, views/}, pins the official plantuml/plantuml Docker image, and provides a validate→render pipeline (.puml → SVG). Companion to arch-uml, which authors the diagrams going forward. Triggers on: scaffold plantuml, init plantuml, plantuml workspace, set up plantuml, plantuml render pipeline, plantuml docker, uml render pipeline, plantuml foundation, diagrams folder. NOT for C4 architecture diagrams (arch-c4 / arch-structurizr) nor GitHub-inline diagrams (Mermaid)."
 version: "1.0.0"

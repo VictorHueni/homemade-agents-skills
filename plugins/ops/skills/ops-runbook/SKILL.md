@@ -1,5 +1,4 @@
 ---
-type: skill
 name: ops-runbook
 description: "Create operator-grade runbooks for any project. Use when asked to write a runbook, document an operational procedure, capture a workflow just executed, or produce a step-by-step operator guide. Triggers on: create a runbook, write a runbook for, document this procedure, add a runbook, ops procedure, operator guide, incident playbook."
 version: "1.0.0"

@@ -1,5 +1,4 @@
 ---
-type: skill
 name: ops-bug-rca
 description: >
   Systematic bug root cause analysis and fix recommendations.
