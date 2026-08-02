@@ -1,6 +1,7 @@
 ---
 name: ux-design-system
 description: "Author a project's single visual design system once and generate the canonical token sheet every com-* artefact consumes. Adapts Anthropic's brand-guidelines pattern (a design system as a shared, on-demand resource) kept domain-agnostic: scaffolds a fillable design-system.md (brand rationale + token tables for palette, typography, spacing, and semantic tokens) and generates docs/ux/tokens.css, a :root variable contract. com-slide-deck and com-artefact-viz reference these via var() and never hard-code colour/font/radius, so editing the design system re-themes every deck and view with no renderer change. Modes: scaffold, generate/refresh. Use when the user wants to define a design system, brand tokens, theme, colour palette, typography, or shared visual style for generated decks and visualisations. Triggers on: design system, design tokens, brand guidelines, theme, colour palette, typography tokens, tokens.css. Output: docs/ux/. Mints no IDs; cross-cutting foundation for the presentation layer."
+allowed-tools: Bash(python ${CLAUDE_SKILL_DIR}/scripts/generate_tokens.py *)
 version: "1.0.0"
 status: active
 last_reviewed: 2026-05-29

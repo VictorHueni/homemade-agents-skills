@@ -1,6 +1,7 @@
 ---
 name: dev-git-init
 description: 'Scaffold the deterministic git enforcement stack for a Node or Python project — husky/pre-commit hooks, commitlint/commitizen with Conventional Commits, gitleaks, .gitignore + .gitattributes + .editorconfig, CONTRIBUTING.md, GitHub PR template + CODEOWNERS + 3 issue templates, CI workflows, scripts/setup-branch-protection.sh, Dependabot config; on squash-merge strategies also a PR-title lint check, squash-title setting, and a capability scope-enum. Two modes: audit (read-only) and scaffold (3-question Q&A: stack · branching strategy · reviewer model). Uniformly skip-if-exists. Emits install + branch-protection commands; never executes them. Post-scaffold prompt asks whether to record decisions as an ADR via arch-adr. Triggers on: scaffold git, git init, set up git hooks, install husky, install commitlint, install commitizen, set up commit conventions, PR title lint, commit scope enum, branch protection, git workflow setup, dev workflow setup, repo conventions, scaffold contributing, scaffold dependabot.'
+allowed-tools: Bash(gh repo view *)
 version: "2.0.0"
 status: active
 last_reviewed: 2026-05-28

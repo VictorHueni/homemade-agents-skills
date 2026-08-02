@@ -1,6 +1,7 @@
 ---
 name: util-docs-audit
 description: "Scan repository documentation for stale, outdated, and dead docs. Use this skill whenever the user asks to audit documentation, check docs freshness, find outdated docs, detect dead documentation, review doc health, or mentions stale docs, doc rot, documentation drift, or docs cleanup. Also trigger when the user says things like are my docs up to date, which docs need updating, or scan docs for problems."
+allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/discover_docs.py *) Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/check_references.py *)
 status: active
 last_reviewed: 2026-05-29
 version: "1.0.0"

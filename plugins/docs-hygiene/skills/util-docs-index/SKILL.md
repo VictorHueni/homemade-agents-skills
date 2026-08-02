@@ -1,6 +1,7 @@
 ---
 name: util-docs-index
 description: "Generate or update an OKF index.md for a folder. A deterministic script parses the folder's docs (frontmatter type/title/status/description) and renders a consistent listing table; the skill then writes a concise one-line summary for any doc that lacks one. Idempotent — updates and completes an existing index, preserving summaries, byte-stable on re-run. Asks which folder if none is given. Triggers on: generate index, docs index, folder index, index.md, update the index, regenerate index, OKF index, progressive-disclosure listing, list the docs in, summarize this folder, refresh index."
+allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/gen_index.py *)
 version: "1.0.0"
 status: active
 last_reviewed: 2026-07-01
