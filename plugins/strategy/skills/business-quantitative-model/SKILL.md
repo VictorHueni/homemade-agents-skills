@@ -2,14 +2,14 @@
 name: business-quantitative-model
 license: MIT
 description: "Create or plan quantitative business model documents under `docs/business/06a-models/`. Supports four modes: catalogue the model set and build order for the venture shape, scaffold a single canonical model file, fill the funnel with project context, or refresh assumptions when new evidence arrives. Use when the user asks to create a TAM/SAM/SOM model, savings or recovery model, customer ROI model, market-sizing doc, or any quantified funnel for investor or sales narratives. Triggers on: create a business model, plan the models, which models do we need, scaffold a TAM, bootstrap a quant model, fill a model template, write a market-sizing doc, or model a product, feature, or flow. Uses the `qm-NN-{topic}` naming convention."
-version: "1.2.0"
 user-invocable: true
-impact: "low"
 metadata:
   category: "specification"
   complexity: "medium"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.2.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # Business Model Creator

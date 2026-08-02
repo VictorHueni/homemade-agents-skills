@@ -2,14 +2,14 @@
 name: business-persona
 license: MIT
 description: "Create research-grounded or proto- personas using the canonical synthesis of BABOK §10.43 + Cooper goal-directed design + NNG + Pruitt & Adlin lifecycle + Lene Nielsen 10-step + Lean UX + JTBD. Use when the user asks to build personas, scaffold a personas folder, define target users, write a persona for {role}, build a persona backlog, or capture stakeholder archetypes. Triggers on: create personas, scaffold personas, build persona backlog, write a persona for, define target users, persona for {role}, identify stakeholders, who are our users, proto-persona. Domain-agnostic; works for any product type."
-version: "1.0.0"
 user-invocable: true
-impact: "low"
 metadata:
   category: "specification"
   complexity: "medium"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # Persona Builder

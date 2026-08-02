@@ -3,14 +3,14 @@ name: dev-pr
 license: MIT
 description: "Use this skill when asked to create a pull request (PR). It ensures all PRs follow the repository's established templates and standards. Triggers on: create PR, open PR, pull request, draft PR."
 allowed-tools: Bash(git status *) Bash(git diff *) Bash(git log *) Bash(git push *) Bash(gh repo view *) Bash(gh pr create *)
-version: "1.1.0"
-status: active
-last_reviewed: 2026-06-07
 user-invocable: true
-impact: "low"
 metadata:
   category: "utility"
   complexity: "low"
+  version: "1.1.0"
+  status: active
+  last_reviewed: 2026-06-07
+  impact: "low"
 ---
 
 # Pull Request Creator

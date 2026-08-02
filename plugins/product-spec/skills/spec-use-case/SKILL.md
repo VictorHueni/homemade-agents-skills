@@ -2,15 +2,15 @@
 name: spec-use-case
 license: MIT
 description: "Create effective use cases — goal-oriented, technology-neutral behavioural specs synthesising Cockburn's Writing Effective Use Cases (goal levels, fully-dressed + casual formats, main success scenario + extensions), UML use-case diagrams (actors, «include»/«extend»), and Jacobson's Use-Case 2.0 (slices for the backlog). Mints UC-NN. Modes: scaffold (use-cases/ folder + index), fully-dressed (author one use case), casual (lightweight variant), slice (Use-Case 2.0 backlog slices), review (quality audit). Output: docs/product-specs/use-cases/ — grouped into per-capability slug subfolders when a capability map exists. Reads personas (P-NN as actors) + FBS (C-N.M.FXX); feeds PRDs, domain model, test cases. Triggers on: use case, write a use case, fully-dressed use case, main success scenario, actor goal, use case diagram, scenario, use case slice, alternate flow, extension, use case template."
-version: "1.1.0"
-status: active
-last_reviewed: 2026-07-20
-review_interval: 180d
 user-invocable: true
-impact: "low"
 metadata:
   category: "specification"
   complexity: "medium"
+  version: "1.1.0"
+  status: active
+  last_reviewed: 2026-07-20
+  review_interval: 180d
+  impact: "low"
 ---
 
 # Use Case Builder

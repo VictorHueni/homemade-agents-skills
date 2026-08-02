@@ -2,14 +2,14 @@
 name: domain-glossary
 license: MIT
 description: "Create and maintain the Ubiquitous Language glossary — the shared vocabulary between domain experts and developers scoped per bounded context. Each term has a stable GT-NN ID, canonical definition, examples, deprecated aliases, cross-context translations, and code convention note. Synthesises Evans Domain-Driven Design (2003) Chapter 2 + Vernon DDD Distilled (2016) Chapter 2 + Martin Fowler ubiquitous language pattern. Use when asked to define domain vocabulary, create a glossary, document ubiquitous language, deprecate synonyms, manage domain terms, or align terminology between business and engineering. Triggers on: ubiquitous language, domain glossary, domain vocabulary, shared language, term definition, domain terms, DDD glossary, terminology alignment, domain dictionary, term deprecation, glossary management. Output: docs/domain/02c-glossary.md. Scoped to bounded contexts (BC-NN from domain-bounded-context)."
-version: "1.0.0"
 user-invocable: true
-impact: "low"
 metadata:
   category: "domain"
   complexity: "medium"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # Domain Glossary Builder

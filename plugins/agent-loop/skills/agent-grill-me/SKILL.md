@@ -2,15 +2,15 @@
 name: agent-grill-me
 license: MIT
 description: "Interactive Socratic stress-test of a PRD or implementation plan: one focused question at a time, project domain vocabulary checked against docs/domain/glossary.md, decisions crystallised into ADRs via arch-adr. Triggers on: grill me on this PRD, grill me on this plan, stress-test this with me, question this spec, challenge my thinking, interview me about this plan."
-version: "1.0.0"
-status: draft
-last_reviewed: 2026-06-16
-review_interval: 180d
 user-invocable: true
-impact: "low"
 metadata:
   category: "agent"
   complexity: "high"
+  version: "1.0.0"
+  status: draft
+  last_reviewed: 2026-06-16
+  review_interval: 180d
+  impact: "low"
 ---
 
 # Grill Me

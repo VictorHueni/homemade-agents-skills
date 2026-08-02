@@ -5,14 +5,14 @@ description: >
   Systematic bug root cause analysis and fix recommendations.
   Use when: debugging errors, investigating bugs, analyzing failures, troubleshooting unexpected behavior,
   reviewing stack traces, or when the user mentions bug, error, crash, broken, regression, or "not working".
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-29
 user-invocable: true
-impact: "low"
 metadata:
   category: "operations"
   complexity: "medium"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # Bug Root Cause Analysis & Fix Recommendations

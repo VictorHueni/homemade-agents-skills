@@ -2,14 +2,14 @@
 name: business-vision
 license: MIT
 description: "Create the Product Vision — the north star document (≤ 1 page) that answers 'why does this product exist?' and loads automatically into every agent session via CLAUDE.md wiring. Synthesises Moore Crossing the Chasm positioning format + Sinek Golden Circle WHY/HOW/WHAT + Pichler Product Vision Board + Cagan Inspired product vision principles. Use when asked to define the product vision, write a north star document, capture why the product exists, create a context doc for agent sessions, or wire the vision into CLAUDE.md. Triggers on: product vision, north star, why are we building, what is the product, vision statement, elevator pitch, product purpose, agent context, wire vision, CLAUDE.md context, project context document."
-version: "1.0.0"
 user-invocable: true
-impact: "medium"
 metadata:
   category: "specification"
   complexity: "low"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "medium"
 ---
 
 # Product Vision Builder

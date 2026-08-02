@@ -12,14 +12,14 @@ description: >
   system for a presentation. Do NOT use for
   PowerPoint (.pptx) files or Google Slides (this skill exports its own decks to PDF via render.py).
 allowed-tools: Bash(python ${CLAUDE_SKILL_DIR}/scripts/init.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/build.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/split.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/migrate.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/dev_server.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/render.py *)
-version: "1.2.0"
-status: active
-last_reviewed: 2026-05-31
 user-invocable: true
-impact: "low"
 metadata:
   category: "communication"
   complexity: "high"
+  version: "1.2.0"
+  status: active
+  last_reviewed: 2026-05-31
+  impact: "low"
 ---
 
 # Slide Builder

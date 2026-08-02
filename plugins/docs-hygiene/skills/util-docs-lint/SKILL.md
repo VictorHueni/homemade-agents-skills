@@ -3,14 +3,14 @@ name: util-docs-lint
 license: MIT
 description: "Local-first docs/ quality toolchain for Markdown — format (dprint), prose style (Vale + Microsoft), links (lychee). Tools are referenced, not installed (pinned via mise/dotfiles); rules live in project-root configs dprint.json / .vale.ini / lychee.toml. Five modes: scaffold (write root configs + .gitignore), audit (read-only dprint check + vale + lychee, ranked issues), enforce (dprint fmt writes formatting fixes incl. un-hard-wrapping prose — prose/link findings are report-only, never auto-rewritten), scaffold-ci (GitHub Actions workflow), add-glossary (Vale Local style from docs/domain/02c-glossary.md aliases). Scope: docs/**. Triggers on: docs lint, lint docs, markdown lint, dprint, vale, lychee, prose lint, dead links, link check, docs quality, audit docs, fix markdown formatting, un-hard-wrap, docs CI, scaffold docs lint."
 allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/docs-lint.sh *)
-version: "2.0.0"
 user-invocable: true
-impact: "low"
 metadata:
   category: "utility"
   complexity: "low"
-status: active
-last_reviewed: 2026-05-29
+  version: "2.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # util-docs-lint

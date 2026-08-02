@@ -2,14 +2,14 @@
 name: business-process
 license: MIT
 description: "Create a BPMN-ready business process document. Use when the user asks to document a process, model a workflow, write a process spec, capture an as-is process, or anything BPMN-flavoured. Triggers on: create a process doc, document this process, model this workflow, BPMN, process model, business process for {X}, capture this workflow, write an as-is process, document the {Y} flow. Encodes a fixed template: Master diagram (Mermaid) → Triggers → Actors → Activities → Data Stores → Data Objects → Decisions → KPIs → Pain Points → Sources → TODOs. Domain-agnostic; works for any industry."
-version: "1.0.0"
 user-invocable: true
-impact: "low"
 metadata:
   category: "specification"
   complexity: "medium"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # Business Process Analyst

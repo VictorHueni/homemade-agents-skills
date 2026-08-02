@@ -2,15 +2,15 @@
 name: agent-peer-review
 license: MIT
 description: "Critically review PRDs and implementation plans to identify gaps, blind spots, contradictions, and delivery risks before coding begins. Use when asked to review product docs, technical specs, implementation plans, migration/deletion plans, acceptance criteria, or rollout strategy; produce ranked findings by severity (critical, major, normal, low) with concrete remediation and exact document updates."
-version: "1.1.0"
-status: active
-last_reviewed: 2026-07-04
-review_interval: 180d
 user-invocable: true
-impact: "low"
 metadata:
   category: "agent"
   complexity: "high"
+  version: "1.1.0"
+  status: active
+  last_reviewed: 2026-07-04
+  review_interval: 180d
+  impact: "low"
 ---
 
 # Peer Reviewer

@@ -2,14 +2,14 @@
 name: spec-prd
 license: MIT
 description: "Generate a Product Requirements Document (PRD) for a new feature. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out."
-version: "1.1.0"
 user-invocable: true
-impact: "low"
 metadata:
   category: "specification"
   complexity: "high"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.1.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # PRD Generator

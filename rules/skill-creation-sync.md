@@ -152,11 +152,12 @@ Should return zero output.
 
 ## SKILL.md frontmatter convention
 
-Match existing skills like `spec-prd`. Two field groups, kept separate because
-only the first is read by any actual skill loader:
+Match existing skills like `spec-prd`. Two field groups, kept physically
+separate in the frontmatter because only the first is read by any actual
+skill loader:
 
-**Real fields** (Agent Skills standard + Claude Code extensions — the model
-and harness read these):
+**Top-level fields** (Agent Skills standard + Claude Code extensions — the
+model and harness read these directly; never nest them):
 
 ```yaml
 ---
@@ -165,30 +166,31 @@ license: MIT                # SPDX identifier; must match the repo's root LICENS
 description: "One sentence + 'Triggers on: phrase1, phrase2, phrase3.' Claude uses this to decide when to activate."
 allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/foo.sh *)   # optional, see below
 disable-model-invocation: true                              # optional, see below
+user-invocable: true
 metadata:
   category: "specification"   # or "infrastructure", "utility", "operations", etc.
   complexity: "medium"
+  version: "1.0.0"
+  status: active          # draft | active | deprecated | superseded
+  last_reviewed: YYYY-MM-DD
+  review_interval: 180d
+  impact: "low"
 ---
 ```
 
-**Kit-internal governance fields** (this repo's own `audit-skills.sh` and the
-`metamodel` skill read these; not part of any Anthropic spec — Claude Code
-ignores them):
-
-```yaml
----
-version: "1.0.0"
-status: active          # draft | active | deprecated | superseded
-last_reviewed: YYYY-MM-DD
-review_interval: 180d
-user-invocable: true
-impact: "low"
----
-```
-
-`user-invocable` is the one field that lives in both worlds: Claude Code reads
-it to decide `/`-menu visibility (`false` hides it), and it doubles as this
-kit's own required field.
+**`metadata.*`** — this kit's own governance fields (`category`, `complexity`,
+`version`, `status`, `last_reviewed`, `review_interval`, `impact`) live nested
+inside the Agent Skills standard's `metadata` field, never at top level. Two
+reasons: (1) the standard's own guidance for `metadata` is "a map from string
+keys to string values... make key names reasonably unique to avoid accidental
+conflicts" — nesting under `metadata` already scopes them to this kit's
+namespace, no per-key prefix needed; (2) unlike `user-invocable` or
+`allowed-tools`, nothing outside this repo's own `audit-skills.sh` and the
+`metamodel` skill ever reads these fields, so they carry no risk of colliding
+with what a real skill loader expects at the top level. `user-invocable` and
+`allowed-tools`/`disable-model-invocation` stay top-level instead — Claude
+Code's runtime looks for them there specifically, so nesting them would
+silently break their function.
 
 **`allowed-tools`** — pre-approves specific tool calls so Claude doesn't ask
 permission during the turn that invokes the skill (the grant clears after that
@@ -220,11 +222,14 @@ ruby -e 'require "yaml"; d = YAML.load_file("SKILL.md")["description"]; puts d.l
 ```
 
 `scripts/audit-skills.sh` enforces presence of `name`, `description`,
-`version`, `status`, `last_reviewed`, `user-invocable`, `impact` and a valid
-`status` value — it does not check `review_interval`, `metadata`, `license`,
-or `allowed-tools`, so drift on those is silent. When adding a new required
-field to this convention, add it to the script's `required_fields` array in
-the same change, or the doc and the linter will diverge again.
+`license`, `user-invocable` (top-level) and `metadata.version`,
+`metadata.status`, `metadata.last_reviewed`, `metadata.impact`,
+`metadata.category`, `metadata.complexity`, plus a valid `metadata.status`
+value — it does not check `metadata.review_interval` or `allowed-tools`
+(both genuinely optional), so drift on those is silent. When adding a new
+required field to this convention, add it to the script's `top_level_fields`
+or `metadata_fields` array in the same change, or the doc and the linter will
+diverge again.
 
 ## Output artefact frontmatter (mandatory for all doc-producing skills)
 

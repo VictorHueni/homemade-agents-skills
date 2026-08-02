@@ -2,14 +2,14 @@
 name: business-value-stream
 license: MIT
 description: "Create EA-flavoured Business Architecture value streams (TOGAF + BIZBOK), modelling how value flows from triggering stakeholder through stages to value proposition. Use when the user asks to map value streams, define how value flows to a persona, model end-to-end customer outcomes, or build the bridge between personas + capabilities. Triggers on: value stream, value streams, map value flow, BIZBOK value stream, TOGAF value stream, how does value flow, end-to-end stages, value delivery model, customer outcome map. Domain-agnostic. Anchors on EA value streams (strategic, stage-based, capability-consuming) — NOT Lean VSM (operational cycle-time analysis). Stays strategic: stages soft-link to capabilities + processes, never define them inline."
-version: "1.0.0"
 user-invocable: true
-impact: "low"
 metadata:
   category: "specification"
   complexity: "medium"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # Value Stream Mapper

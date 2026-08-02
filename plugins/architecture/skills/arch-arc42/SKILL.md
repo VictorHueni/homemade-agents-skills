@@ -2,15 +2,15 @@
 name: arch-arc42
 license: MIT
 description: "Author and refresh the arc42 sections arc42 owns as prose (per ADR-0004 — arc42 owns ALL narrative; arch-c4 only emits diagram + DSL-derived table blocks in §3/§5/§7). Five modes: §2 Constraints (mints CST-NN), §4 Solution Strategy (links ADRs, no new IDs), §6 Runtime View (mints SCN-NN; embeds a C4 dynamic view OR an arch-uml sequence via a declared-figure dependency), §8 Cross-Cutting Concepts (mints CC-NN; may pull an arch-uml class/state/ER figure), §11 Risks and Technical Debt (mints RSK-NN). Reads upstream artefacts (ADRs, quality attributes, bounded contexts, FBS, personas, use cases) to fill content — never invents decisions. Output: docs/architecture/arc42/{02,04,06,08,11}-*.md. Triggers on: arc42 constraints, architecture constraints, solution strategy, runtime view, runtime scenario, cross-cutting concepts, logging strategy, error handling strategy, security concepts, risks, risk register, technical debt register, arc42 §2, arc42 §4, arc42 §6, arc42 §8, arc42 §11."
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-28
-review_interval: 365d
 user-invocable: true
-impact: "low"
 metadata:
   category: "architecture"
   complexity: "medium"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-28
+  review_interval: 365d
+  impact: "low"
 ---
 
 # arc42 narrative sections — §2 / §4 / §6 / §8 / §11
