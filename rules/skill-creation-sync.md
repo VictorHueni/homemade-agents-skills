@@ -152,24 +152,59 @@ Should return zero output.
 
 ## SKILL.md frontmatter convention
 
-Match existing skills like `spec-prd`:
+Match existing skills like `spec-prd`. Two field groups, kept separate because
+only the first is read by any actual skill loader:
+
+**Real fields** (Agent Skills standard + Claude Code extensions — the model
+and harness read these):
 
 ```yaml
 ---
 name: skill-name-kebab
+license: MIT                # SPDX identifier; must match the repo's root LICENSE
 description: "One sentence + 'Triggers on: phrase1, phrase2, phrase3.' Claude uses this to decide when to activate."
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/foo.sh *)   # optional, see below
+disable-model-invocation: true                              # optional, see below
+metadata:
+  category: "specification"   # or "infrastructure", "utility", "operations", etc.
+  complexity: "medium"
+---
+```
+
+**Kit-internal governance fields** (this repo's own `audit-skills.sh` and the
+`metamodel` skill read these; not part of any Anthropic spec — Claude Code
+ignores them):
+
+```yaml
+---
 version: "1.0.0"
 status: active          # draft | active | deprecated | superseded
 last_reviewed: YYYY-MM-DD
 review_interval: 180d
 user-invocable: true
-allow_implicit_invocation: true
 impact: "low"
-metadata:
-  category: "specification"   # or "infrastructure", "review", etc.
-  complexity: "medium"
 ---
 ```
+
+`user-invocable` is the one field that lives in both worlds: Claude Code reads
+it to decide `/`-menu visibility (`false` hides it), and it doubles as this
+kit's own required field.
+
+**`allowed-tools`** — pre-approves specific tool calls so Claude doesn't ask
+permission during the turn that invokes the skill (the grant clears after that
+turn; it does not restrict which tools are available). Only add it for a
+bounded, repeatable pattern — typically the skill's own
+`${CLAUDE_SKILL_DIR}/scripts/*` helper(s), or a narrow, always-safe read-only
+git/gh call the skill body already documents (`Bash(gh repo view *)`). Never
+grant a bare `Bash` or a wildcard covering a side-effecting command (`git
+commit`, `git push`, `gh pr create`, `terraform apply`, mutating `exo` verbs,
+…) unless the skill's entire documented purpose is that one action — and even
+then, scope it to the exact subcommands, not `Bash(*)`.
+
+**`disable-model-invocation`** — set `true` on any skill whose action has side
+effects or timing you want to control (a commit, a PR, an autonomous loop) so
+Claude never triggers it on its own; the skill still works via `/name`. Use
+this instead of leaving mutating skills silently auto-invocable.
 
 Codex agent loaders enforce a hard limit on the frontmatter `description`
 field: **1024 characters maximum**. If the description exceeds that limit, the
@@ -183,6 +218,13 @@ Validate before committing:
 ```bash
 ruby -e 'require "yaml"; d = YAML.load_file("SKILL.md")["description"]; puts d.length; abort("description too long") if d.length > 1024'
 ```
+
+`scripts/audit-skills.sh` enforces presence of `name`, `description`,
+`version`, `status`, `last_reviewed`, `user-invocable`, `impact` and a valid
+`status` value — it does not check `review_interval`, `metadata`, `license`,
+or `allowed-tools`, so drift on those is silent. When adding a new required
+field to this convention, add it to the script's `required_fields` array in
+the same change, or the doc and the linter will diverge again.
 
 ## Output artefact frontmatter (mandatory for all doc-producing skills)
 
