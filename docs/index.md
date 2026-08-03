@@ -74,6 +74,7 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | Discovery Workshops | `discovery-workshop` | `docs/discovery/workshops/` |
 | Ops Runbooks | `ops-runbook` | `docs/ops/runbooks/{slug}.md` |
 | Bug RCAs | `ops-bug-rca` | `docs/ops/rcas/{date}-{slug}.md` |
+| Test Strategy | `qa-test-strategy` | `docs/qa/test-strategy.md` |
 | Pre-formal Ideas | `discovery-idea` | `docs/discovery/ideation/IDEA-NNNN-{slug}.md` |
 | Slide Decks | `com-slide-deck` | `docs/communication/slides/{slug}/` |
 | PRD / Plan reviews | `agent-peer-review` | — (interactive, no persistent artefact) |
@@ -108,3 +109,4 @@ Status key: ✅ Done · 🔄 In progress (scaffold exists, needs filling) · ⬜
 | `PRD-NNNN` | PRD | `prds/prd-NNNN-{slug}.md` |
 | `ADR-NNNN` | Architecture Decision | `architecture/decisions/adr-NNNN-{slug}.md` |
 | `UC-NN` | Use Case | `use-cases/issues-management/uc-NN-{slug}.md` |
+| `TS-NN` | Test Strategy | `qa/test-strategy.md` |

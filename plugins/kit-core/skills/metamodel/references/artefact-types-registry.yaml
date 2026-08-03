@@ -264,6 +264,15 @@ artefact_types:
     review_interval: 60d
     frontmatter_conditionals: []
     property_schema_ref: null   # TBD until clew defines property schemas
+  - type: test_strategy
+    okf_type: "Test Strategy"
+    minting_skill: qa-test-strategy
+    id_format: "TS-\\d{2}"
+    layout: single-collection
+    default_path: "docs/qa/test-strategy.md"
+    review_interval: 60d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
   - type: use_case
     okf_type: "Use Case"
     minting_skill: spec-use-case

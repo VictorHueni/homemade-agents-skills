@@ -10,5 +10,5 @@ Filename note: OKF reserves the lowercase `index.md` as the bundle-root director
 
 ## Concept groups
 
-- [Skills](plugins/) — 58 skills under `plugins/*/skills/*/SKILL.md` (`type: skill`).
+- [Skills](plugins/) — 59 skills under `plugins/*/skills/*/SKILL.md` (`type: skill`).
 - [Rules](rules/) — cross-cutting authoring rules under `rules/` (`type: rule`).

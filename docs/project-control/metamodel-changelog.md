@@ -11,6 +11,31 @@
 > touched; the authoritative *why* for each is its row in
 > `docs/project-control/open-items/open-items.md`.
 
+**`qa-test-strategy` ships — first real `qa-` skill, new `quality-assurance` plugin (2026-08-03):**
+The `qa-` category's reservation (2026-06-26 entry below) graduates its lead skill:
+`qa-test-strategy` mints `TS-NN` — test pyramid (or trophy) allocation, `QA-XXNN`→`TS-NN`
+mapping, entry/exit criteria, environments, roles, defect-management handoff. Policy only —
+no test-case authoring or run-result logging, which stay with the still-reserved
+`qa-test-scenario` / `qa-test-plan` / `qa-acceptance-test`. This is the first artefact-count
+change the `qa-` reservation has caused: **new registry row** (`test_strategy`, `TS-NN`,
+single-collection, `docs/qa/test-strategy.md`) and a **new ER entity** (`TEST_STRATEGY`,
+edge `QUALITY_ATTRIBUTES ||--o{ TEST_STRATEGY : "defines tests for"`) — Check 5's ID
+cross-reference detection needs no catalogue change (it derives artefact-type IDs from the
+registry automatically). New plugin **`quality-assurance`** created to hold it; moved
+`spec-quality-attributes` in from `product-spec` (**plugin membership only** — its `spec-`
+prefix, `QA-XXNN` ID format, and `docs/product-specs/` path are unchanged; `quality_attribute`
+and `test_strategy` remain two distinct artefact types/packages per clew's explicit
+"don't merge the two" ruling). Skill/plugin counts bumped 58→59 / 10→11. Updated:
+`plugins/kit-core/skills/metamodel/references/artefact-types-registry.yaml` (`test_strategy`
+row) · `metamodel-reference.md` (Ongoing build-order note, canonical-paths tree,
+package-summary table, ER diagram) · `rules/skill-creation-sync.md` (`qa-` row) ·
+`docs/index.md` (Supporting artefacts + ID conventions) · `.claude-plugin/marketplace.json`
+(new `quality-assurance` entry, `product-spec` description trimmed) ·
+`plugins/quality-assurance/.claude-plugin/plugin.json` (new) ·
+`plugins/quality-assurance/skills/qa-test-strategy/` (new, incl.
+`references/methodology-references.md`) · `AGENTS.md` / `README.md` / `index.md` (counts) ·
+this entry. Tracked at kit issue [#8](https://github.com/VictorHueni/homemade-claude-kit/issues/8).
+
 **`qa-eval-harness` dropped, absorbed into `qa-acceptance-test` (clew-side, 2026-08-03):**
 "Eval harness" collided with an unrelated sense of "eval" floated separately as a hypothetical
 future extension of the `agent-` package (evaluating the coding agent's own performance — see

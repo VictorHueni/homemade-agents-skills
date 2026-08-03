@@ -1,7 +1,7 @@
 # homemade-claude-kit
 
-A personal, harness-portable toolkit — 56 composable skills for business architecture,
-domain modeling, product specification, and developer workflow, packaged as **10 toggleable
+A personal, harness-portable toolkit — 59 composable skills for business architecture,
+domain modeling, product specification, and developer workflow, packaged as **11 toggleable
 plugin sets** and consumable from **Claude Code, OpenAI Codex CLI, and OpenCode**.
 
 Three design pillars (kit [ADR-0006](docs/architecture/decisions/adr-0006-plugin-packaging-cross-harness-activation.md) / [ADR-0007](docs/architecture/decisions/adr-0007-metamodel-distribution-as-skill.md)):
