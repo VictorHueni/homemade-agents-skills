@@ -32,6 +32,18 @@ The verification costs < 1 minute; the cost of acting on a false premise is 15 m
 
 **Anti-pattern in self:** finding myself drafting code to address an issue I have not yet verified is live. Stop, verify, then act — or discover the issue does not exist.
 
+## Reuse the project's own automation — it is a probe, not just DRY
+
+When a task needs an operation the project already automates (a Makefile target, a task-runner recipe, a script under `scripts/`), reach for the existing entry point before writing a fresh equivalent — even when the fresh one would be three lines and the existing one needs a wrapper.
+
+The reason is not code duplication. A bespoke command is written against the *new* path's assumptions, so it satisfies them by construction and tells you nothing. The existing automation was written against the *old* path's assumptions, so pointing it somewhere new is what makes a stale assumption fail loudly. Reuse is the cheapest available test of whether the project's automation still means what it says.
+
+**How to apply:** find the existing target first (`grep` the Makefile/taskfile for the verb, read the recipe end to end — not just its name). Then, before adopting it, check that its semantics actually match your case: what does it destroy, what does it assume is already running, what identity does each line resolve and by which mechanism. Where the semantics differ, adopt it anyway *with the constraint written down at the call site* rather than forking a private copy. Where a step is currently a bare copy-pasted command in prose or docs, that is a missing target — add it, so the next caller inherits the fix instead of the string.
+
+**Watch for mixed resolution inside one recipe.** The highest-value defects this surfaces are lines that resolve the same identity by different mechanisms — one step going through the orchestrator (which reads its own env file) and the next through a raw CLI call (which reads the shell environment). While only one instance of the resource exists, both resolve to it and the inconsistency is invisible; introduce a second instance and the recipe operates on two different things mid-run. Guard such targets to fail closed on a mismatch rather than trusting the caller.
+
+**Why:** the failure mode of the bespoke shortcut is silence — it works, ships, and leaves the latent defect armed for whoever next runs the real target. Measured case: reusing an existing dump/restore pair instead of hand-rolling the equivalent exposed a live cross-instance data-loss path in a recipe nobody had reason to suspect, because two adjacent lines disagreed about which instance they addressed. **Anti-pattern in self:** writing a small bespoke command because wiring up the existing target "needs a wrapper anyway" — the wrapper is the cheap part; the assumptions the existing target carries are the whole point.
+
 ## Wait for async propagation before deleting or retrying
 
 When a change goes through a system that applies it asynchronously — DNS (especially DNSSEC-signed zones that re-sign on a schedule), CDN cache invalidation, certificate issuance, queue/worker processing, eventual-consistency stores — a write that the API reports as `success` but that is not yet observable downstream is usually **mid-propagation, not broken**. Wait and re-observe before mutating again.
