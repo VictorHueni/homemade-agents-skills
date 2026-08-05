@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "sonarqube-mcp-server@latest"
+        "sonarqube-mcp-server@1.10.21"
       ],
       "env": {
         "SONARQUBE_TOKEN": "${SONARQUBE_TOKEN}",
