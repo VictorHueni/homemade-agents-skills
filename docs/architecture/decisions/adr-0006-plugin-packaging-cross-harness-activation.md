@@ -134,6 +134,7 @@ deferred). `util-toolkit-doctor` warns on a dual-channel conflict and names the 
 | Always-on | Playwright (`microsoft/playwright-mcp`) | `delivery-comms` | verify HTML decks/viz; demotion candidate if browser-server overlap with Chrome DevTools ever bites |
 | Opt-in (`enabled: false`) | GitHub (official) | `dev-flow` | `gh` CLI covers ~90% (CLI-first) |
 | Opt-in | Terraform (HashiCorp) | `ops` | single-skill use |
+| Opt-in | SonarQube (SonarSource, official) | `ops` | needs a personal SonarQube Cloud user token (`SONARQUBE_TOKEN`), distinct from the project-scoped `SONAR_TOKEN` CI analysis secret |
 | Project-scoped (not in the user-global registry) | PostgreSQL — Postgres MCP Pro (`crystaldba/postgres-mcp`) | — | databases are per-project; declare in the project's own `.mcp.json` / `opencode.json` when it makes sense, `--access-mode=restricted` as the starting mode. (Codex caveat: `config.toml` is global-only — enable there deliberately.) Anthropic's reference server is archived (July 2025, SQLi); PGDG ships none — revisit if an official server appears |
 | Absent by design | Web search (harness-native search is relied on: Claude WebSearch, Codex built-in; OpenCode coverage varies by provider — accepted) · PlantUML/Structurizr (Docker per `arch-plantuml/references/mcp-optional.md`) · filesystem/git/memory (harness-native) · **clew** (future `kit-core` entry once its MCP mode lands) | | |
 

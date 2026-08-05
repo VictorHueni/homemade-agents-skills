@@ -72,6 +72,24 @@
         ]
       },
       "notes": "Official HashiCorp server. Opt-in: single-skill use (ops-terraform-exoscale provider-docs lookup)."
+    },
+    {
+      "name": "sonarqube",
+      "owning_set": "ops",
+      "enabled": true,
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "sonarqube-mcp-server@latest"
+        ],
+        "env": {
+          "SONARQUBE_TOKEN": "${SONARQUBE_TOKEN}",
+          "SONARQUBE_ORGANIZATION": "victorhueni"
+        }
+      },
+      "notes": "Official SonarSource server (SonarSource/sonarqube-mcp-server). Opt-in: needs a personal SonarQube Cloud user token (SONARQUBE_TOKEN) exported in the shell env — NOT the project-scoped SONAR_TOKEN CI secret used by sonar.yml analysis runs, which is the wrong token type for this server. Org key is the personal SonarCloud org (victorhueni); omit SONARQUBE_ORGANIZATION for a token scoped to exactly one org."
     }
   ],
   "project_scoped_recipes": {
