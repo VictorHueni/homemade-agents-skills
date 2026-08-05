@@ -1,6 +1,6 @@
 ---
-type: skill
 name: com-slide-deck
+license: MIT
 description: >
   Build single-file HTML slide presentations from modular partials, a shared
   design system, and a Python build pipeline. Use this skill any time the user
@@ -11,11 +11,15 @@ description: >
   slide-builder folder. Also use when the user asks to define or update a design
   system for a presentation. Do NOT use for
   PowerPoint (.pptx) files or Google Slides (this skill exports its own decks to PDF via render.py).
-version: "1.2.0"
-status: active
-last_reviewed: 2026-05-31
+allowed-tools: Bash(python ${CLAUDE_SKILL_DIR}/scripts/init.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/build.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/split.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/migrate.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/dev_server.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/render.py *)
 user-invocable: true
-impact: "low"
+metadata:
+  category: "communication"
+  complexity: "high"
+  version: "1.2.0"
+  status: active
+  last_reviewed: 2026-05-31
+  impact: "low"
 ---
 
 # Slide Builder

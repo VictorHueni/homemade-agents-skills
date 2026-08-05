@@ -1,16 +1,18 @@
 ---
-type: skill
 name: agent-ralph-loop
+license: MIT
+disable-model-invocation: true
 description: "Execute an implementation plan autonomously using the Ralph Loop protocol. Iterates through increments one at a time: implement, test, commit, repeat. Use when asked to 'run the ralph loop', 'execute this plan', or 'start autonomous execution'."
-version: '1.0.0'
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/ralph.sh *)
+disallowed-tools: AskUserQuestion
 user-invocable: true
-allow_implicit_invocation: false
-impact: 'high'
 metadata:
   category: 'agent'
   complexity: 'high'
-status: active
-last_reviewed: 2026-05-29
+  version: '1.0.0'
+  status: active
+  last_reviewed: 2026-05-29
+  impact: 'high'
 ---
 
 # Ralph Loop Runner

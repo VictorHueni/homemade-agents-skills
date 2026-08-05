@@ -1,16 +1,15 @@
 ---
-type: skill
 name: spec-functional-breakdown-structure
+license: MIT
 description: "Create a Functional Breakdown Structure (FBS) — the functionality registry organised by product → capability → functionality, with status tracking (✅/🔄/⬜), optional code-path annotations, and optional value-stream-stage linkage. Synthesises BABOK §10.22 Functional Decomposition + NASA FBS + TOGAF Business Architecture + practitioner discipline. Use when the user asks to build an FBS, scaffold a functionality registry, decompose a product into functionalities, track feature status across the lifecycle, or extend a Business Capability Map with feature-level detail. Triggers on: FBS, functional breakdown structure, functionality registry, decompose product, feature inventory, what does the product do (concretely), capability-to-feature mapping, product decomposition. Domain-agnostic. Soft-links UP to the Business Capability Map (BC Map owns L0+L1 strategic; FBS adds L2 functionalities + status + code paths). Stays out of PRD/roadmap territory."
-version: "1.2.0"
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
   category: "specification"
   complexity: "medium"
-status: active
-last_reviewed: 2026-05-29
+  version: "1.2.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # Functional Breakdown Structure Builder

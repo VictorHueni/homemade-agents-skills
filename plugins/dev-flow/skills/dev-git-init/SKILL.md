@@ -1,17 +1,18 @@
 ---
-type: skill
 name: dev-git-init
+license: MIT
+disable-model-invocation: true
 description: 'Scaffold the deterministic git enforcement stack for a Node or Python project — husky/pre-commit hooks, commitlint/commitizen with Conventional Commits, gitleaks, .gitignore + .gitattributes + .editorconfig, CONTRIBUTING.md, GitHub PR template + CODEOWNERS + 3 issue templates, CI workflows, scripts/setup-branch-protection.sh, Dependabot config; on squash-merge strategies also a PR-title lint check, squash-title setting, and a capability scope-enum. Two modes: audit (read-only) and scaffold (3-question Q&A: stack · branching strategy · reviewer model). Uniformly skip-if-exists. Emits install + branch-protection commands; never executes them. Post-scaffold prompt asks whether to record decisions as an ADR via arch-adr. Triggers on: scaffold git, git init, set up git hooks, install husky, install commitlint, install commitizen, set up commit conventions, PR title lint, commit scope enum, branch protection, git workflow setup, dev workflow setup, repo conventions, scaffold contributing, scaffold dependabot.'
-version: "2.0.0"
-status: active
-last_reviewed: 2026-05-28
-review_interval: 180d
+allowed-tools: Bash(gh repo view *)
 user-invocable: true
-allow_implicit_invocation: true
-impact: "medium"
 metadata:
   category: "infrastructure"
   complexity: "medium"
+  version: "2.0.0"
+  status: active
+  last_reviewed: 2026-05-28
+  review_interval: 180d
+  impact: "medium"
 ---
 
 # Git Enforcement Stack Scaffolder

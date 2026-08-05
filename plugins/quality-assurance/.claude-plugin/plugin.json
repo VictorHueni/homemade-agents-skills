@@ -1,0 +1,8 @@
+{
+  "name": "quality-assurance",
+  "description": "Quality assurance & test layer. Quality attributes (ISO/IEC 25010) and test strategy (pyramid allocation, QA-XXNN→TS-NN mapping).",
+  "version": "1.0.0",
+  "author": {
+    "name": "Victor Hueni"
+  }
+}

@@ -1,13 +1,17 @@
 ---
-type: skill
 name: util-toolkit-doctor
+license: MIT
+disable-model-invocation: true
 description: "Audit and repair the Claude Code setup health — chezmoi state, dotfiles + homemade-claude-kit repo sync, and ~/.claude/ symlink integrity. Auto-fixes safe drift but stops on uncommitted local changes. Use when the user asks to check, audit, sync, repair, doctor, or initialize their Claude setup, dotfiles, kit repo, skills, or commands installation."
 allowed-tools: Bash(chezmoi *) Bash(git *) Bash(ls *) Bash(readlink *) Bash(stat *) Bash(test *) Bash(cat *) Bash(~/projects/homemade-claude-kit/util-toolkit-doctor/scripts/gather-state.sh) Bash(~/projects/homemade-claude-kit/install.sh*)
-status: active
-last_reviewed: 2026-05-29
-version: "1.0.0"
 user-invocable: true
-impact: "low"
+metadata:
+  category: "utility"
+  complexity: "medium"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  impact: "low"
 ---
 
 # util-toolkit-doctor

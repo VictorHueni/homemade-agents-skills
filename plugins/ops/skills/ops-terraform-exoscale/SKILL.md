@@ -1,17 +1,18 @@
 ---
-type: skill
 name: ops-terraform-exoscale
+license: MIT
+disable-model-invocation: true
 description: "Scaffold, lint, validate, and plan Terraform infrastructure for Exoscale following best practices. Companion to HashiCorp's terraform-code-generation plugin (defers HCL style + .tftest.hcl to it; owns the Exoscale provider, resource recipes, and a deterministic fmt -> validate -> tflint -> exoscale-policy -> trivy -> plan toolchain). Five modes: scaffold (provider/versions/variables/.tflint.hcl/.gitignore + optional SOS remote state), add-resource (compute, network, security group, SKS, DBaaS, NLB, IAM), check (run the pipeline), review (audit existing .tf), verify (read-only post-apply inventory via the exo CLI). PLAN-ONLY: never runs apply/destroy, only read-only exo list/show, never writes secrets to disk (creds via EXOSCALE_API_KEY/EXOSCALE_API_SECRET env vars). Triggers on: exoscale terraform, provision exoscale, exoscale provider, exoscale SKS, exoscale dbaas, terraform lint, tflint, trivy, iac scan, verify exoscale deployment, exo cli, IaC exoscale, scaffold terraform, opentofu, tofu, SOS backend."
-version: "1.2.0"
-status: active
-last_reviewed: 2026-05-31
-review_interval: 90d
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/tf-check.sh *) Bash(${CLAUDE_SKILL_DIR}/scripts/exo-verify.sh *)
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
   category: "infrastructure"
   complexity: "medium"
+  version: "1.2.0"
+  status: active
+  last_reviewed: 2026-05-31
+  review_interval: 90d
+  impact: "low"
 ---
 
 # ops-terraform-exoscale

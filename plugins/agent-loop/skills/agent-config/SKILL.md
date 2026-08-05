@@ -1,17 +1,16 @@
 ---
-type: skill
 name: agent-config
+license: MIT
 description: "Scaffold, review, and improve CLAUDE.md and AGENTS.md files for any project. Applies behavioral posture guidelines, token budget discipline, progressive disclosure, and docs-index wiring so agents navigate the repo without stale inline path listings. Three modes: scaffold (minimal config from project scan + template), review (audit existing config against checklist, emit findings), improve (apply findings in-place). Triggers on: write CLAUDE.md, create AGENTS.md, improve CLAUDE.md, review agent config, agent configuration, scaffold agent config, CLAUDE.md template, AGENTS.md best practices, coding agent setup, agent onboarding file."
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-29
-review_interval: 90d
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
   category: "agent"
   complexity: "low"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  review_interval: 90d
+  impact: "low"
 ---
 
 # agent-config

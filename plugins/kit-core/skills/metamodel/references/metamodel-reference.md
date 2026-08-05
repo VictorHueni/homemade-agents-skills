@@ -257,6 +257,10 @@ erDiagram
         string ADR_NNNN FK
         string P_NN FK
     }
+    TEST_STRATEGY {
+        string TS_NN PK
+        string QA_XXNN FK
+    }
     USE_CASE {
         string UC_NN PK
         string P_NN FK
@@ -328,6 +332,7 @@ erDiagram
     FBS ||--o{ USE_CASE : "realised by"
     USE_CASE ||--o{ PRD : "grounds acceptance criteria"
     QUALITY_ATTRIBUTES ||--o{ PRD : "QA-XXNN in acceptance criteria"
+    QUALITY_ATTRIBUTES ||--o{ TEST_STRATEGY : "defines tests for"
     PRD ||--o{ USER_STORY : "mints delivery slices"
     USER_STORY }o..o| USE_CASE : "covers (proposed soft edge)"
     PRD ||--|| IMPLEMENTATION_PLAN : "one plan per PRD"
@@ -579,7 +584,7 @@ Not numbered in the linear build order but sequencing matters:
 - `arch-adr` → invoke as soon as an architectural choice must be made; ADRs governing security, flexibility, or maintainability must precede Step 9 (Quality Attributes); all ADRs must precede Step 10 (PRDs) that depend on their decisions
 - `ops-runbook` → operational procedures captured post-ship
 - `ops-bug-rca` → root cause analyses post-incident
-- *(reserved)* `qa-*` → the **validate / test** stage, sitting between Step 11 (implementation plans) and deploy/ops. A reserved category with **no skill yet** (`qa-test-strategy`, `qa-test-plan`, `qa-acceptance-test`, `qa-eval-harness` → `docs/qa/`); it will produce the tests that verify the `QA-XXNN` quality requirements `spec-quality-attributes` defines — distinct from it. The lead skill `qa-test-strategy` (was the planned `spec-test-strategy`, OI-0004) covers the test pyramid + coverage + `QA-XXNN`→test-type mapping and **mints `TS-NN`** → `docs/qa/test-strategy/`; `qa-test-scenario` *realises* `UC-NN` (a use case's main + alternate + exception flows become the test scenarios; PRD acceptance criteria are the oracle; step vocabulary from the glossary `GT-NN`)
+- `qa-*` → the **validate / test** stage, sitting between Step 11 (implementation plans) and deploy/ops (all → `docs/qa/`); it produces the tests that verify the `QA-XXNN` quality requirements `spec-quality-attributes` defines — distinct from it. The lead skill `qa-test-strategy` (was the planned `spec-test-strategy`, OI-0004) **ships**: it covers the test pyramid + coverage + `QA-XXNN`→test-type mapping and **mints `TS-NN`** → `docs/qa/test-strategy.md` (single-collection). *(Still reserved — no skill yet)*: `qa-test-plan`, `qa-acceptance-test` (also covers test execution, results logging, and bug filing, absorbing the dropped `qa-eval-harness` name); `qa-test-scenario` *realises* `UC-NN` (a use case's main + alternate + exception flows become the test scenarios; PRD acceptance criteria are the oracle; step vocabulary from the glossary `GT-NN`)
 
 - `discovery-idea` → pre-formal idea capture, refinement, and graduation (an idea graduates to whichever downstream skill matches its matured form — `spec-prd`, `arch-adr`, `business-persona`, `business-objective`, etc.)
 - `agent-*` (Agent-Centric Development Cycle) → cross-cutting agent tooling: `agent-config` (Guide — `CLAUDE.md`/`AGENTS.md`), `agent-grill-me` + `agent-peer-review` (Verify — stress-test / review PRDs & plans before implementation), `agent-ralph-loop` (Solve — autonomous increment execution); mint no IDs
@@ -719,9 +724,9 @@ docs/
 │   │   └── {slug}.md
 │   └── rcas/
 │       └── {YYYY-MM-DD}-{slug}.md
-├── qa/                                                  ← Quality assurance & test (reserved — no skill yet)
-│   ├── test-strategy/                                   ← qa-test-strategy (planned; mints TS-NN)
-│   └── (test plans · acceptance & eval harnesses)
+├── qa/                                                  ← Quality assurance & test (test-strategy ships; rest reserved)
+│   ├── test-strategy.md                                 ← qa-test-strategy (mints TS-NN)
+│   └── (test plans · scenarios/cases · acceptance tests, incl. execution + results + bug filing — planned)
 ├── ux/                                                  ← Design system (cross-cutting; mints no IDs)
 │   ├── design-system.md                                ← authored brand + tokens
 │   └── tokens.css                                       ← generated token contract
@@ -761,7 +766,7 @@ docs/
 | `arch-` | `docs/architecture/` | Subfolders per artefact (e.g., `decisions/` for ADRs) |
 | `domain-` | `docs/domain/` | DDD artefacts — the shared language between business and tech (bounded contexts, glossary, domain model) |
 | `ops-` | `docs/ops/` | Subfolders per artefact (`runbooks/`, `rcas/`) |
-| `qa-` | `docs/qa/` | Quality-assurance & test layer (test strategy, test plans, acceptance & eval harnesses). Produces the *tests* that verify the `QA-XXNN` quality requirements `spec-quality-attributes` defines — distinct from it. **Reserved category — no skill yet** (`qa-test-strategy` will mint `TS-NN`). |
+| `qa-` | `docs/qa/` | Quality-assurance & test layer (test strategy, test plans, scenarios/cases, acceptance tests incl. execution + results + bug filing). Produces the *tests* that verify the `QA-XXNN` quality requirements `spec-quality-attributes` defines — distinct from it. **`qa-test-strategy` ships** (mints `TS-NN`); `qa-test-scenario` / `qa-test-plan` / `qa-acceptance-test` remain reserved — no skill yet. |
 | `ux-` | `docs/ux/` | Design + experience layer — project visual source of truth (`design-system.md` + generated `tokens.css`) plus UX artefacts. Cross-cutting foundation for the `com-` presentation layer. Skill: `ux-design-system` (standard `<category>-<artefact>` naming). |
 | `com-` | `docs/communication/` | Communication artefacts (slide decks, presentations, artefact visualisations, release notes). Subfolders per artefact type (e.g. `slides/`, `visualisations/`, `release-notes/`). |
 | `dev-` | *(no doc folder)* for workflow utilities · **exception:** `dev-stack-guide` → `docs/dev-guides/{tech-slug}.md` + `docs/dev-guides/research/`; `dev-getting-started` → `docs/dev-guides/getting-started.md` | Developer-workflow utilities; `dev-stack-guide` and `dev-getting-started` are the only `dev-` skills that write to `docs/` |

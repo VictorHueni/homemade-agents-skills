@@ -1,17 +1,16 @@
 ---
-type: skill
 name: util-open-items
+license: MIT
 description: "Maintain the repo-wide living ledger of unresolved governance work at `docs/project-control/open-items/open-items.md`. Use this skill to file open items directly into the central ledger, triage incoming rows, close or drop items with a tracker ref, archive terminal rows at the end of a review cycle, and produce status reports. Triggers on: log open item, file open item, sync open items, triage open items, close open item, drop open item, archive open items, open-items report, roll up open items, OI-NNNN, central ledger, docs/project-control/open-items."
-version: "2.1.0"
-status: active
-last_reviewed: 2026-07-20
-review_interval: 180d
 user-invocable: true
-allow_implicit_invocation: true
-impact: "medium"
 metadata:
   category: "infrastructure"
   complexity: "medium"
+  version: "2.1.0"
+  status: active
+  last_reviewed: 2026-07-20
+  review_interval: 180d
+  impact: "medium"
 ---
 
 # util-open-items — Open Items Ledger Operator

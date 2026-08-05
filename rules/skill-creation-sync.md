@@ -57,7 +57,7 @@ Skill folder name + `name:` frontmatter field must follow this exact pattern:
 | `arch-` | `docs/architecture/` (subfolders per artefact type) | `arch-adr` (writes to `docs/architecture/decisions/`) |
 | `domain-` | `docs/domain/` | DDD artefacts — bounded contexts, glossary, domain model; the shared language between business and tech | `domain-bounded-context`, `domain-glossary`, `domain-model` |
 | `ops-` | `docs/ops/` for doc artefacts; *(no doc folder)* for infra/devops automation | `ops-runbook` (→ `docs/ops/runbooks/`), `ops-bug-rca` (→ `docs/ops/rcas/`), `ops-terraform-exoscale` *(infra automation — scaffolds into the project's `infra/`, no `docs/ops/` output)* |
-| `qa-` | `docs/qa/` (subfolders per artefact) | Quality-assurance & test layer — the *validate / test* stage of the SDLC. Produces the **tests** that verify the quality *requirements* `spec-quality-attributes` defines (`QA-XXNN`); the two are distinct (`spec-quality-attributes` = what must hold; `qa-` = how it is checked). **Reserved — no skill yet:** `qa-test-strategy` (mints `TS-NN`; was the planned `spec-test-strategy`), `qa-test-scenario` (realises `UC-NN`), `qa-test-plan`, `qa-acceptance-test`, `qa-eval-harness` |
+| `qa-` | `docs/qa/` (subfolders per artefact) | Quality-assurance & test layer — the *validate / test* stage of the SDLC. Produces the **tests** that verify the quality *requirements* `spec-quality-attributes` defines (`QA-XXNN`); the two are distinct (`spec-quality-attributes` = what must hold; `qa-` = how it is checked). **`qa-test-strategy` ships** (mints `TS-NN`; was the planned `spec-test-strategy`) — test pyramid allocation + `QA-XXNN`→`TS-NN` mapping, policy only. **Still reserved — no skill yet:** `qa-test-scenario` (realises `UC-NN`), `qa-test-plan`, `qa-acceptance-test` (also covers test execution, results logging, and bug filing — absorbs the dropped `qa-eval-harness` name) |
 | `dev-` | *(no doc folder — developer workflow utility)* | `dev-git-init`, `dev-release-init`, `dev-git-commit`, `dev-pr`, `dev-git-worktree`, `dev-stack-guide`, `dev-getting-started` |
 | `agent-` | *(no doc folder — Agent-Centric Development Cycle)* | Guide → Verify → Solve loop around agent code-gen (mints no IDs): `agent-config` (Guide — `CLAUDE.md`/`AGENTS.md`), `agent-grill-me` + `agent-peer-review` (Verify — stress-test / review specs), `agent-ralph-loop` (Solve — autonomous execution). Orchestrates *how the agent builds*, distinct from the `qa-` *tests* that verify the product. |
 | `ux-` | `docs/ux/` (design + experience layer — project visual source of truth + UX artefacts; tokens consumed by the `com-` presentation layer; cross-cutting) | `ux-design-system` (→ `docs/ux/design-system.md` + `tokens.css`) |
@@ -152,24 +152,61 @@ Should return zero output.
 
 ## SKILL.md frontmatter convention
 
-Match existing skills like `spec-prd`:
+Match existing skills like `spec-prd`. Two field groups, kept physically
+separate in the frontmatter because only the first is read by any actual
+skill loader:
+
+**Top-level fields** (Agent Skills standard + Claude Code extensions — the
+model and harness read these directly; never nest them):
 
 ```yaml
 ---
 name: skill-name-kebab
+license: MIT                # SPDX identifier; must match the repo's root LICENSE
 description: "One sentence + 'Triggers on: phrase1, phrase2, phrase3.' Claude uses this to decide when to activate."
-version: "1.0.0"
-status: active          # draft | active | deprecated | superseded
-last_reviewed: YYYY-MM-DD
-review_interval: 180d
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/foo.sh *)   # optional, see below
+disable-model-invocation: true                              # optional, see below
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
-  category: "specification"   # or "infrastructure", "review", etc.
+  category: "specification"   # or "infrastructure", "utility", "operations", etc.
   complexity: "medium"
+  version: "1.0.0"
+  status: active          # draft | active | deprecated | superseded
+  last_reviewed: YYYY-MM-DD
+  review_interval: 180d
+  impact: "low"
 ---
 ```
+
+**`metadata.*`** — this kit's own governance fields (`category`, `complexity`,
+`version`, `status`, `last_reviewed`, `review_interval`, `impact`) live nested
+inside the Agent Skills standard's `metadata` field, never at top level. Two
+reasons: (1) the standard's own guidance for `metadata` is "a map from string
+keys to string values... make key names reasonably unique to avoid accidental
+conflicts" — nesting under `metadata` already scopes them to this kit's
+namespace, no per-key prefix needed; (2) unlike `user-invocable` or
+`allowed-tools`, nothing outside this repo's own `audit-skills.sh` and the
+`metamodel` skill ever reads these fields, so they carry no risk of colliding
+with what a real skill loader expects at the top level. `user-invocable` and
+`allowed-tools`/`disable-model-invocation` stay top-level instead — Claude
+Code's runtime looks for them there specifically, so nesting them would
+silently break their function.
+
+**`allowed-tools`** — pre-approves specific tool calls so Claude doesn't ask
+permission during the turn that invokes the skill (the grant clears after that
+turn; it does not restrict which tools are available). Only add it for a
+bounded, repeatable pattern — typically the skill's own
+`${CLAUDE_SKILL_DIR}/scripts/*` helper(s), or a narrow, always-safe read-only
+git/gh call the skill body already documents (`Bash(gh repo view *)`). Never
+grant a bare `Bash` or a wildcard covering a side-effecting command (`git
+commit`, `git push`, `gh pr create`, `terraform apply`, mutating `exo` verbs,
+…) unless the skill's entire documented purpose is that one action — and even
+then, scope it to the exact subcommands, not `Bash(*)`.
+
+**`disable-model-invocation`** — set `true` on any skill whose action has side
+effects or timing you want to control (a commit, a PR, an autonomous loop) so
+Claude never triggers it on its own; the skill still works via `/name`. Use
+this instead of leaving mutating skills silently auto-invocable.
 
 Codex agent loaders enforce a hard limit on the frontmatter `description`
 field: **1024 characters maximum**. If the description exceeds that limit, the
@@ -183,6 +220,16 @@ Validate before committing:
 ```bash
 ruby -e 'require "yaml"; d = YAML.load_file("SKILL.md")["description"]; puts d.length; abort("description too long") if d.length > 1024'
 ```
+
+`scripts/audit-skills.sh` enforces presence of `name`, `description`,
+`license`, `user-invocable` (top-level) and `metadata.version`,
+`metadata.status`, `metadata.last_reviewed`, `metadata.impact`,
+`metadata.category`, `metadata.complexity`, plus a valid `metadata.status`
+value — it does not check `metadata.review_interval` or `allowed-tools`
+(both genuinely optional), so drift on those is silent. When adding a new
+required field to this convention, add it to the script's `top_level_fields`
+or `metadata_fields` array in the same change, or the doc and the linter will
+diverge again.
 
 ## Output artefact frontmatter (mandatory for all doc-producing skills)
 

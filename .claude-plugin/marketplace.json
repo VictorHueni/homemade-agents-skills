@@ -5,7 +5,7 @@
     "url": "https://github.com/VictorHueni"
   },
   "metadata": {
-    "description": "Personal toolkit: strategic-architecture documentation stack, metamodel, and developer workflow \u2014 56 skills in 10 toggleable sets.",
+    "description": "Personal toolkit: strategic-architecture documentation stack, metamodel, and developer workflow \u2014 59 skills in 11 toggleable sets.",
     "version": "1.0.0"
   },
   "plugins": [
@@ -52,7 +52,12 @@
     {
       "name": "product-spec",
       "source": "./plugins/product-spec",
-      "description": "Product specs & planning. FBS, PRDs, quality attributes, use cases, delivery roadmap, and implementation plans."
+      "description": "Product specs & planning. FBS, PRDs, use cases, delivery roadmap, and implementation plans."
+    },
+    {
+      "name": "quality-assurance",
+      "source": "./plugins/quality-assurance",
+      "description": "Quality assurance & test layer. Quality attributes (ISO/IEC 25010) and test strategy (pyramid allocation, QA-XXNN→TS-NN mapping)."
     },
     {
       "name": "strategy",

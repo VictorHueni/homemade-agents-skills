@@ -1,13 +1,16 @@
 ---
-type: skill
 name: dev-git-worktree
+license: MIT
 description: "Use when starting feature work that needs isolation from current workspace or before executing implementation plans - creates isolated git worktrees with smart directory selection and safety verification"
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-22
-review_interval: 180d
 user-invocable: true
-impact: "low"
+metadata:
+  category: "utility"
+  complexity: "medium"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-22
+  review_interval: 180d
+  impact: "low"
 ---
 
 # Using Git Worktrees

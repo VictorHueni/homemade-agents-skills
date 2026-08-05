@@ -1,17 +1,16 @@
 ---
-type: skill
 name: dev-stack-guide
+license: MIT
 description: "Research a technology stack's latest official docs and official MCP server, then write a developer guide covering core patterns, anti-patterns, best practices, and coding-agent integration. Three modes: research (web-fetches docs + changelog + MCP discovery → docs/dev-guides/research/{tech-slug}-research.md), draft (writes the guide from research + project context → docs/dev-guides/{tech-slug}.md), refresh (re-researches, diffs version pin, updates changed sections). Triggers on: stack guide, tech guide, developer guide, Supabase guide, Spring guide, Next.js guide, stack best practices, how to use X, MCP server for X, technology patterns, framework guide, developer reference."
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-28
-review_interval: 90d
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
   category: "developer-documentation"
   complexity: "medium"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-28
+  review_interval: 90d
+  impact: "low"
 ---
 
 # dev-stack-guide

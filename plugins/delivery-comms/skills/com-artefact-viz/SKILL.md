@@ -1,17 +1,17 @@
 ---
-type: skill
 name: com-artefact-viz
+license: MIT
 description: "Render canonical kit artefacts into single-file, self-contained interactive HTML views via a shared Python pipeline and a token-driven design system. Five pluggable renderers: capability map, delivery roadmap timeline (walking-skeleton band + per-epic features), FBS collapsible tree, Business Model / Lean Canvas grid, and service blueprint (swimlane composition over process + value-stream + persona docs, with the line of visibility and pain overlays). Renderers emit only semantic classes and var() tokens — one design-system CSS sheet re-themes every view. Use when the user wants a web view, visualisation, board, timeline, canvas, swimlane, or shareable HTML of a capability map, FBS, delivery roadmap, BMC, Lean Canvas, or service blueprint. Triggers on: visualise capability map, render FBS tree, roadmap timeline view, BMC canvas HTML, service blueprint, swimlane view, line of visibility, artefact visualisation, com-artefact-viz. Do NOT use for slide decks (com-slide-deck) or C4 diagrams (arch-c4)."
-version: "1.0.0"
-status: active
-last_reviewed: 2026-05-29
-review_interval: 180d
+allowed-tools: Bash(python ${CLAUDE_SKILL_DIR}/scripts/render.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/dev_server.py *)
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
   category: "communication"
   complexity: "medium"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-05-29
+  review_interval: 180d
+  impact: "low"
 ---
 
 # com-artefact-viz — Artefact Web Visualiser

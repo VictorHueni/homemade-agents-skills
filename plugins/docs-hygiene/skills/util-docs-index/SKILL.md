@@ -1,17 +1,17 @@
 ---
-type: skill
 name: util-docs-index
+license: MIT
 description: "Generate or update an OKF index.md for a folder. A deterministic script parses the folder's docs (frontmatter type/title/status/description) and renders a consistent listing table; the skill then writes a concise one-line summary for any doc that lacks one. Idempotent — updates and completes an existing index, preserving summaries, byte-stable on re-run. Asks which folder if none is given. Triggers on: generate index, docs index, folder index, index.md, update the index, regenerate index, OKF index, progressive-disclosure listing, list the docs in, summarize this folder, refresh index."
-version: "1.0.0"
-status: active
-last_reviewed: 2026-07-01
-review_interval: 180d
+allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/gen_index.py *)
 user-invocable: true
-allow_implicit_invocation: true
-impact: "low"
 metadata:
   category: "utility"
   complexity: "low"
+  version: "1.0.0"
+  status: active
+  last_reviewed: 2026-07-01
+  review_interval: 180d
+  impact: "low"
 ---
 
 # util-docs-index — OKF folder index generator
