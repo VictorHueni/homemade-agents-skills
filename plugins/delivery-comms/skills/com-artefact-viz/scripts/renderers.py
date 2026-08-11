@@ -97,20 +97,23 @@ def render_capability_map(model, options):
 .cap-group-body { display: flex; flex-direction: column; gap: 0.3rem; align-self: start; }
 .cap-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--node-radius);
   padding: 0.28rem 0.45rem; box-shadow: var(--shadow); }
-.cap-head { display: flex; gap: 0.3rem; align-items: baseline; flex-wrap: wrap; }
+/* Text flow, not flex: the name starts on the identifier's line and wraps
+   under itself; the importance badge floats to the right edge. */
+.cap-head { display: block; }
+.cap-head::after { content: ""; display: block; clear: both; }
 .cap-head[data-disclose] { cursor: pointer; }
-.cap-chev { flex: 0 0 auto; font-size: 0.5rem; color: var(--muted); }
+.cap-chev { font-size: 0.5rem; color: var(--muted); margin-right: 0.15rem; }
 .cap-chev::before { content: "\\25B8"; }
 .cap-card.is-open > .cap-head .cap-chev::before { content: "\\25BE"; }
 .cap-card[data-card] > .cap-body { display: none; }
 .cap-card.is-open > .cap-body { display: block; }
-.cap-id { font-family: var(--font-mono); font-size: 0.55rem; color: var(--accent); font-weight: 600; }
+.cap-id { font-family: var(--font-mono); font-size: 0.55rem; color: var(--accent); font-weight: 600; margin-right: 0.25rem; }
 .cap-id--l0 { color: var(--ink); }
 .cap-name { font-family: var(--font-heading); font-size: 0.5rem; font-weight: 600; line-height: 1.3; }
 .cap-def { margin: 0.3rem 0 0; font-size: 0.66rem; line-height: 1.35; color: var(--muted); }
 .cap-children { margin-top: 0.35rem; padding-left: 0.5rem; border-left: 2px solid var(--surface-2);
   display: flex; flex-direction: column; gap: 0.3rem; }
-.cap-imp { margin-left: auto; font-family: var(--font-heading); font-size: 0.44rem; text-transform: uppercase;
+.cap-imp { float: right; margin: 0.1rem 0 0 0.3rem; font-family: var(--font-heading); font-size: 0.44rem; text-transform: uppercase;
   letter-spacing: 0.04em; padding: 0.03rem 0.3rem; border-radius: 999px; color: var(--accent-ink); font-weight: 600; }
 .cap-imp--differentiator { background: var(--differentiator); }
 .cap-imp--necessary { background: var(--necessary); }
