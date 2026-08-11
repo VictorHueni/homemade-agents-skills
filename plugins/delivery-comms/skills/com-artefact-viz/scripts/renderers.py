@@ -94,9 +94,9 @@ def render_capability_map(model, options):
   display: grid; grid-row: span 2; grid-template-rows: subgrid; }
 .cap-group-head { display: flex; gap: 0.3rem; align-items: baseline; padding: 0.15rem 0.25rem 0.3rem; }
 .cap-group-head .cap-name { font-family: var(--font-heading); font-size: 0.72rem; font-weight: 600; }
-.cap-group-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.3rem; align-self: start; align-items: start; }
+.cap-group-body { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 1fr; gap: 0.3rem; align-self: start; }
 .cap-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--node-radius);
-  padding: 0.28rem 0.45rem; box-shadow: var(--shadow); }
+  padding: 0.28rem 0.45rem 0.85rem; box-shadow: var(--shadow); min-height: 3.6rem; position: relative; }
 /* Text flow, not flex: the name starts on the identifier's line and wraps
    under itself; the importance badge floats to the right edge. */
 .cap-head { display: block; font-size: 0.5rem; line-height: 1.5; }
@@ -113,8 +113,9 @@ def render_capability_map(model, options):
 .cap-def { margin: 0.25rem 0 0; font-size: 0.33rem; line-height: 1.45; color: var(--muted); }
 .cap-children { margin-top: 0.35rem; padding-left: 0.5rem; border-left: 2px solid var(--surface-2);
   display: flex; flex-direction: column; gap: 0.3rem; }
-.cap-imp { float: right; margin: 0.1rem 0 0 0.3rem; font-family: var(--font-heading); font-size: 0.44rem; text-transform: uppercase;
-  letter-spacing: 0.04em; padding: 0.03rem 0.3rem; border-radius: 999px; color: var(--accent-ink); font-weight: 600; }
+.cap-imp { position: absolute; right: 0.3rem; bottom: 0.28rem; font-family: var(--font-heading); font-size: 0.44rem; text-transform: uppercase;
+  letter-spacing: 0.04em; padding: 0.03rem 0.3rem; border-radius: 999px; color: var(--accent-ink); font-weight: 600;
+  min-width: 5.1rem; text-align: center; box-sizing: border-box; }
 .cap-imp--differentiator { background: var(--differentiator); }
 .cap-imp--necessary { background: var(--necessary); }
 .cap-imp--commodity { background: var(--commodity); }
