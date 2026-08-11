@@ -88,13 +88,13 @@ def render_capability_map(model, options):
 /* Groups sit in one grid; each group spans a [head][body] row pair via subgrid,
    so every card stack starts on the same row no matter how many lines its L0
    title wraps. Browsers without subgrid degrade to per-group stacking. */
-.cap-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.5rem; flex: 1;
+.cap-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.5rem; flex: 1;
   align-items: start; }
 .cap-group { background: var(--surface-2); border-radius: var(--card-radius); padding: 0.35rem;
   display: grid; grid-row: span 2; grid-template-rows: subgrid; }
 .cap-group-head { display: flex; gap: 0.3rem; align-items: baseline; padding: 0.15rem 0.25rem 0.3rem; }
 .cap-group-head .cap-name { font-family: var(--font-heading); font-size: 0.72rem; font-weight: 600; }
-.cap-group-body { display: flex; flex-direction: column; gap: 0.3rem; align-self: start; }
+.cap-group-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.3rem; align-self: start; align-items: start; }
 .cap-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--node-radius);
   padding: 0.28rem 0.45rem; box-shadow: var(--shadow); }
 /* Text flow, not flex: the name starts on the identifier's line and wraps
