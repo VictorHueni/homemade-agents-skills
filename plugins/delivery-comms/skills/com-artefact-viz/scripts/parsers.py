@@ -179,6 +179,10 @@ def parse_overview_tree(code, strip_after=None):
         if strip_after and strip_after in tail:
             tail = tail.split(strip_after)[0]
         label = clean(tail)
+        # Authoring noise: trees often suffix labels with the importance
+        # annotation ("... ★ Differentiator"); the index-table join already
+        # surfaces importance as a badge, so keep the label clean.
+        label = re.sub(r"\s*★\s*(differentiator|necessary|commodity)?\s*$", "", label, flags=re.I)
         if cid in by_id:  # ignore duplicate appearances
             continue
         node = {

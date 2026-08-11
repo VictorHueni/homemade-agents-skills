@@ -15,28 +15,30 @@ body {
   font-family: var(--font-body, var(--font-sans, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif));
   color: var(--ink, #1a1a1a);
   background: var(--canvas-bg, #f6f7f9);
-  line-height: 1.45;
+  line-height: 1.35;
 }
-.viz-shell { max-width: var(--shell-max, 1400px); margin: 0 auto; padding: var(--space-lg, 2rem); }
-.viz-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.75rem; margin-bottom: 0.25rem; }
+.viz-shell { max-width: var(--shell-max, 1400px); margin: 0 auto; padding: 0.75rem 1rem; }
+.viz-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; margin-bottom: 0.1rem; }
+/* Views are dashboard-density surfaces: the title deliberately reads from
+   --viz-title-size, not the deck-scaled --title-size. */
 .viz-title { font-family: var(--font-heading, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
-             font-size: var(--title-size, 1.6rem); font-weight: 700; margin: 0; }
-.viz-kind  { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.7rem; text-transform: uppercase;
+             font-size: var(--viz-title-size, 1.1rem); font-weight: 700; margin: 0; }
+.viz-kind  { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.58rem; text-transform: uppercase;
              letter-spacing: 0.08em; color: var(--muted, #6b7280); border: 1px solid var(--border, #d1d5db);
-             padding: 0.1rem 0.45rem; border-radius: 999px; }
-.viz-meta  { font-size: 0.8rem; color: var(--muted, #6b7280); margin: 0 0 1.25rem; }
-.viz-toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+             padding: 0.08rem 0.4rem; border-radius: 999px; }
+.viz-meta  { font-size: 0.68rem; color: var(--muted, #6b7280); margin: 0 0 0.5rem; }
+.viz-toolbar { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.5rem; }
 .viz-btn {
-  font: inherit; font-family: var(--font-heading, system-ui, sans-serif); font-size: 0.8rem; cursor: pointer;
+  font: inherit; font-family: var(--font-heading, system-ui, sans-serif); font-size: 0.68rem; cursor: pointer;
   background: var(--surface, #fff); color: var(--ink, #1a1a1a);
   border: 1px solid var(--border, #d1d5db); border-radius: var(--btn-radius, 8px);
-  padding: 0.35rem 0.7rem; transition: background .12s ease, border-color .12s ease;
+  padding: 0.2rem 0.5rem; transition: background .12s ease, border-color .12s ease;
 }
 .viz-btn:hover { border-color: var(--accent, #3b6ef5); }
 .viz-btn[aria-pressed="true"] { background: var(--accent, #3b6ef5); color: var(--accent-ink, #fff); border-color: var(--accent, #3b6ef5); }
 .viz-empty { color: var(--muted, #6b7280); font-style: italic; padding: 2rem 0; }
-.viz-footer { margin-top: 2rem; font-size: 0.72rem; color: var(--muted, #6b7280);
-              border-top: 1px solid var(--border, #d1d5db); padding-top: 0.75rem; }
+.viz-footer { margin-top: 0.9rem; font-size: 0.58rem; color: var(--muted, #6b7280);
+              border-top: 1px solid var(--border, #d1d5db); padding-top: 0.5rem; }
 
 /* ===== 3. View-specific CSS (emitted by the renderer) ===== */
 {{VIEW_CSS}}
