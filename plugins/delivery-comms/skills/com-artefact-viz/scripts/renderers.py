@@ -93,25 +93,25 @@ def render_capability_map(model, options):
 .cap-group { background: var(--surface-2); border-radius: var(--card-radius); padding: 0.35rem;
   display: grid; grid-row: span 2; grid-template-rows: subgrid; }
 .cap-group-head { display: flex; gap: 0.3rem; align-items: baseline; padding: 0.15rem 0.25rem 0.3rem; }
-.cap-group-head .cap-name { font-family: var(--font-heading); font-size: 0.8rem; font-weight: 700; }
+.cap-group-head .cap-name { font-family: var(--font-heading); font-size: 0.72rem; font-weight: 600; }
 .cap-group-body { display: flex; flex-direction: column; gap: 0.3rem; align-self: start; }
 .cap-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--node-radius);
   padding: 0.28rem 0.45rem; box-shadow: var(--shadow); }
 .cap-head { display: flex; gap: 0.3rem; align-items: baseline; flex-wrap: wrap; }
 .cap-head[data-disclose] { cursor: pointer; }
-.cap-chev { flex: 0 0 auto; font-size: 0.55rem; color: var(--muted); }
+.cap-chev { flex: 0 0 auto; font-size: 0.5rem; color: var(--muted); }
 .cap-chev::before { content: "\\25B8"; }
 .cap-card.is-open > .cap-head .cap-chev::before { content: "\\25BE"; }
 .cap-card[data-card] > .cap-body { display: none; }
 .cap-card.is-open > .cap-body { display: block; }
-.cap-id { font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent); font-weight: 700; }
+.cap-id { font-family: var(--font-mono); font-size: 0.55rem; color: var(--accent); font-weight: 600; }
 .cap-id--l0 { color: var(--ink); }
-.cap-name { font-family: var(--font-heading); font-size: 0.72rem; font-weight: 600; line-height: 1.25; }
+.cap-name { font-family: var(--font-heading); font-size: 0.65rem; font-weight: 500; line-height: 1.25; }
 .cap-def { margin: 0.3rem 0 0; font-size: 0.66rem; line-height: 1.35; color: var(--muted); }
 .cap-children { margin-top: 0.35rem; padding-left: 0.5rem; border-left: 2px solid var(--surface-2);
   display: flex; flex-direction: column; gap: 0.3rem; }
-.cap-imp { margin-left: auto; font-family: var(--font-heading); font-size: 0.48rem; text-transform: uppercase;
-  letter-spacing: 0.04em; padding: 0.04rem 0.32rem; border-radius: 999px; color: var(--accent-ink); font-weight: 700; }
+.cap-imp { margin-left: auto; font-family: var(--font-heading); font-size: 0.44rem; text-transform: uppercase;
+  letter-spacing: 0.04em; padding: 0.03rem 0.3rem; border-radius: 999px; color: var(--accent-ink); font-weight: 600; }
 .cap-imp--differentiator { background: var(--differentiator); }
 .cap-imp--necessary { background: var(--necessary); }
 .cap-imp--commodity { background: var(--commodity); }
