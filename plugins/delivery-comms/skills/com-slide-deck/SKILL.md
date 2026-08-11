@@ -327,7 +327,7 @@ shipped `tokens.fallback.css` is a harmless base layer and the deck's own
 3. **Pick a path:**
    - `--apply` — adds a backwards-compatible alias `:root` shim to `styles.css`
      (`--bg: var(--canvas-bg)`, `--text: var(--ink)`, `--card-bg: var(--surface)`,
-     `--font-body: var(--font-sans)`). **No partial edits** — old `var(--bg)` keeps
+     `--font-sans: var(--font-body)`). **No partial edits** — old `var(--bg)` keeps
      working, now resolving to the contract value. Low-risk, reversible.
    - `--rename` — rewrites the changed names → contract names across `styles.css`
      and every partial (whole-token match). Thorough; no shim needed afterwards.

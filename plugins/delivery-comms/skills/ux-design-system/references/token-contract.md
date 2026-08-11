@@ -40,7 +40,8 @@ themes four portable names instead of kit jargon.
 ### Typography
 | Token | Role |
 |---|---|
-| `--font-sans` | Body + UI |
+| `--font-body` | Body / reading text (legacy alias: `--font-sans`, still honored by consumers) |
+| `--font-heading` | UI chrome — titles, headings, badges, buttons (independent of `--font-body` by design) |
 | `--font-mono` | IDs, code, labels |
 | `--title-size` | View / slide title size |
 

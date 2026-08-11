@@ -57,6 +57,6 @@ python scripts/render.py docs/business/03a-capability-map.md \
   --design-system docs/communication/slides/{slug}/design/styles.css
 ```
 
-Any `:root { --accent: …; --font-sans: …; }` tokens in that sheet override the
+Any `:root { --accent: …; --font-body: …; }` tokens in that sheet override the
 defaults, so the capability map, roadmap, FBS, and canvas all adopt the deck's
 look without touching the renderers.

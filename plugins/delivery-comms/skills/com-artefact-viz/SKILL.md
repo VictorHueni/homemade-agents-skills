@@ -129,6 +129,11 @@ evolve alone:
    the generics. **Renderers reference only `var(--token)` — never a literal
    colour, font, or radius.** That contract is what makes re-theming a one-file
    operation (theme the four generics; every view follows).
+   UI chrome (view title, group/card headings, badges, toolbar buttons) uses
+   `--font-heading`, which is deliberately **not** derived from `--font-body`:
+   a project sheet that themes `--font-body` with a serif reading face (as deck
+   themes do) keeps sans headings/badges unless it overrides `--font-heading`
+   explicitly.
 2. **Base layout** — `templates/base.html.tmpl` is the shell with slots
    (`{{TITLE}}`, `{{KIND}}`, `{{META}}`, `{{TOOLBAR}}`, `{{CONTENT}}`,
    `{{DESIGN_SYSTEM_CSS}}`, `{{VIEW_CSS}}`, `{{RUNTIME_JS}}`, `{{FOOTER}}`).
@@ -151,7 +156,11 @@ or design-system change is needed.
 - **Capability map.** Hierarchy comes from the artefact's `## Global overview`
   ASCII tree (nesting derived from the `C-N.M` ID depth, robust to indentation).
   Strategic importance + one-line definitions are joined in from the
-  `## Capability index` table. The **left-axis band** defaults to the declared
+  `## Capability index` table. Capability cards are **collapsed by default** —
+  the grid reads as a compact taxonomy; clicking a card head (or Enter/Space —
+  heads are keyboard-focusable) discloses its definition and children, and the
+  toolbar's expand-all / collapse-all drives every card at once. The
+  **left-axis band** defaults to the declared
   L0 axis and is overridable per project via `--left-axis-label` /
   `--left-axis-arrow` (the "arrow text varies by project" requirement).
 - **FBS.** Same overview tree, with functionalities attached from each
@@ -176,7 +185,7 @@ or design-system change is needed.
 3. [ ] Output opens in a browser with no console errors and no missing styles.
 4. [ ] Every expected element is present (groups/nodes/phases/blocks — compare to source).
 5. [ ] Project design system, if supplied, visibly themes the view (`--design-system`).
-6. [ ] Interactive controls work (FBS orientation + collapse; epic feature disclosure).
+6. [ ] Interactive controls work (FBS orientation + collapse; epic feature disclosure; capability-card disclosure + expand/collapse-all).
 7. [ ] Re-rendering after a source edit reflects the change (no stale authored content).
 8. [ ] *(service-blueprint)* `--proc` resolves; ≥1 customer and ≥1 frontstage/backstage lane; the three control lines sit between the right bands; any **Unclassified** actor is one whose `Persona type` is missing in the source persona doc (fix there, not in the view); phase columns match the value stream (or note the §6 fallback); handoff spine lists the cross-actor data objects.
 

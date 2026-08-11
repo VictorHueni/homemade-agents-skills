@@ -41,9 +41,19 @@ def render_capability_map(model, options):
             body += f'<p class="cap-def">{esc(node["definition"])}</p>'
         if kids:
             body += '<div class="cap-children">' + "".join(render_cap(k) for k in kids) + "</div>"
+        # Cards with a body are collapsible (collapsed by default) so the grid
+        # reads as a compact taxonomy; the description is on-demand detail.
+        if body:
+            head_attrs = ' data-disclose role="button" tabindex="0" aria-expanded="false"'
+            card_attrs = " data-card"
+            chevron = '<span class="cap-chev" aria-hidden="true"></span>'
+            body = f'<div class="cap-body">{body}</div>'
+        else:
+            head_attrs = card_attrs = chevron = ""
         return (
-            f'<div class="cap-card cap-l{node["level"]}">'
-            f'<div class="cap-head">'
+            f'<div class="cap-card cap-l{node["level"]}"{card_attrs}>'
+            f'<div class="cap-head"{head_attrs}>'
+            f"{chevron}"
             f'<span class="cap-id">{esc(node["id"])}</span>'
             f'<span class="cap-name">{esc(node["label"]) or "&nbsp;"}</span>'
             f'{importance_badge(node.get("importance"))}'
@@ -78,27 +88,37 @@ def render_capability_map(model, options):
 .cap-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-md); flex: 1; }
 .cap-group { background: var(--surface-2); border-radius: var(--card-radius); padding: var(--space-sm); }
 .cap-group-head { display: flex; gap: 0.4rem; align-items: baseline; padding: 0.3rem 0.4rem 0.6rem; }
-.cap-group-head .cap-name { font-weight: 700; }
+.cap-group-head .cap-name { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; }
 .cap-group-body { display: flex; flex-direction: column; gap: var(--space-sm); }
 .cap-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--node-radius);
   padding: 0.55rem 0.7rem; box-shadow: var(--shadow); }
 .cap-head { display: flex; gap: 0.45rem; align-items: baseline; flex-wrap: wrap; }
+.cap-head[data-disclose] { cursor: pointer; }
+.cap-chev { flex: 0 0 auto; font-size: 0.7rem; color: var(--muted); }
+.cap-chev::before { content: "\\25B8"; }
+.cap-card.is-open > .cap-head .cap-chev::before { content: "\\25BE"; }
+.cap-card[data-card] > .cap-body { display: none; }
+.cap-card.is-open > .cap-body { display: block; }
 .cap-id { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); font-weight: 700; }
 .cap-id--l0 { color: var(--ink); }
-.cap-name { font-size: 0.92rem; }
-.cap-def { margin: 0.4rem 0 0; font-size: 0.8rem; color: var(--muted); }
+.cap-name { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 600; }
+.cap-def { margin: 0.4rem 0 0; font-size: 0.74rem; line-height: 1.4; color: var(--muted); }
 .cap-children { margin-top: 0.5rem; padding-left: 0.6rem; border-left: 2px solid var(--surface-2);
   display: flex; flex-direction: column; gap: 0.4rem; }
-.cap-imp { margin-left: auto; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.04em;
-  padding: 0.05rem 0.4rem; border-radius: 999px; color: var(--accent-ink); font-weight: 700; }
+.cap-imp { margin-left: auto; font-family: var(--font-heading); font-size: 0.62rem; text-transform: uppercase;
+  letter-spacing: 0.04em; padding: 0.05rem 0.4rem; border-radius: 999px; color: var(--accent-ink); font-weight: 700; }
 .cap-imp--differentiator { background: var(--differentiator); }
 .cap-imp--necessary { background: var(--necessary); }
 .cap-imp--commodity { background: var(--commodity); }
 """
+    toolbar = (
+        '<button class="viz-btn" type="button" data-action="expand-all">Expand all</button>'
+        '<button class="viz-btn" type="button" data-action="collapse-all">Collapse all</button>'
+    )
     return {
         "kind_label": "capability map",
         "meta": f'{len(model["tree"])} L0 groups · grouped by axis "{esc(axis)}"',
-        "toolbar": "",
+        "toolbar": toolbar if groups else "",
         "view_css": view_css,
         "content": content,
     }
@@ -174,7 +194,7 @@ def render_fbs(model, options):
 .st--planned { background: var(--status-planned); }
 .st--backlog { background: var(--status-backlog); }
 .fbs-id { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); font-weight: 700; }
-.fbs-label { font-size: 0.9rem; }
+.fbs-label { font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; }
 .fbs-count { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted);
   background: var(--surface-2); border-radius: 999px; padding: 0 0.4rem; }
 .fbs-vs { font-size: 0.68rem; color: var(--muted); font-style: italic; }
@@ -288,7 +308,7 @@ def render_roadmap(model, options):
     view_css = """
 .ws-band { background: var(--surface-2); border-radius: var(--card-radius); padding: var(--space-md);
   margin-bottom: var(--space-lg); border-left: 4px solid var(--accent); }
-.ws-title { margin: 0 0 0.4rem; font-size: 1rem; }
+.ws-title { font-family: var(--font-heading); margin: 0 0 0.4rem; font-size: 1rem; }
 .ws-hyp, .ws-vs { margin: 0.2rem 0; font-size: 0.85rem; color: var(--ink); }
 .ws-vs { color: var(--muted); }
 .ws-cols { display: flex; gap: var(--space-lg); margin-top: 0.6rem; flex-wrap: wrap; }
@@ -304,7 +324,7 @@ def render_roadmap(model, options):
   background: var(--border); z-index: 0; }
 .phase-col { flex: 1 0 260px; min-width: 260px; position: relative; z-index: 1; }
 .phase-head { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.3rem 0; }
-.phase-name { font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+.phase-name { font-family: var(--font-heading); font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.4rem; }
 .phase-name::before { content: ""; width: 0.8rem; height: 0.8rem; border-radius: 50%;
   background: var(--accent); display: inline-block; }
 .phase-vs { font-size: 0.7rem; color: var(--muted); }
@@ -319,7 +339,7 @@ def render_roadmap(model, options):
 .epic-card.epic--low { border-left-color: var(--pain-low); }
 .epic-head { display: flex; gap: 0.4rem; align-items: baseline; }
 .epic-id { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); font-weight: 700; }
-.epic-name { font-size: 0.9rem; font-weight: 600; }
+.epic-name { font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; }
 .epic-vstmt { font-size: 0.8rem; color: var(--muted); margin: 0.35rem 0 0.4rem; }
 .epic-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .epic-chip { font-size: 0.66rem; font-family: var(--font-mono); background: var(--surface-2);
@@ -385,7 +405,7 @@ def render_bmc(model, options):
 .bmc-cell { background: var(--surface); padding: 0.6rem 0.7rem; display: flex; flex-direction: column; min-height: 120px; }
 .bmc-cell-head { display: flex; gap: 0.4rem; align-items: baseline; margin-bottom: 0.4rem; flex-wrap: wrap; }
 .bmc-key { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); font-weight: 700; }
-.bmc-name { font-size: 0.82rem; font-weight: 700; }
+.bmc-name { font-family: var(--font-heading); font-size: 0.82rem; font-weight: 700; }
 .bmc-conf { margin-left: auto; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.04em;
   padding: 0.05rem 0.4rem; border-radius: 999px; color: var(--accent-ink); }
 .bmc-conf--assumed { background: var(--conf-assumed); }
@@ -535,7 +555,7 @@ def render_service_blueprint(model, options):
   padding: 0.25rem 0.6rem; }
 .sb-lane-label { background: var(--surface); padding: 0.5rem 0.6rem; display: flex; flex-direction: column;
   gap: 0.15rem; border-right: 2px solid var(--surface-2); }
-.sb-lane-name { font-size: 0.82rem; font-weight: 600; }
+.sb-lane-name { font-family: var(--font-heading); font-size: 0.82rem; font-weight: 600; }
 .sb-lane-persona { font-size: 0.66rem; color: var(--muted); font-style: italic; }
 .sb-cell { background: var(--surface); padding: 0.4rem; display: flex; flex-wrap: wrap; gap: 0.3rem;
   align-content: flex-start; }
@@ -549,7 +569,7 @@ def render_service_blueprint(model, options):
   display: flex; align-items: center; }
 .sb-line-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--muted); font-weight: 700; padding: 0 0.6rem; }
-.sb-badge { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700;
+.sb-badge { font-family: var(--font-heading); font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700;
   border-radius: 999px; padding: 0.05rem 0.4rem; width: fit-content; }
 .sb-badge--warn { background: var(--pain-medium); color: var(--accent-ink); }
 .sb-badge--fail { background: var(--pain-high); color: var(--accent-ink); }

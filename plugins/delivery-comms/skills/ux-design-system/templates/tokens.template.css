@@ -31,7 +31,11 @@
   --info:    #3b6ef5;   /* informational / planned / neutral-active */
 
   /* ---- Typography ---- */
-  --font-sans:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;   /* body / reading text (renamed from --font-sans; consumers honor the old name as a legacy alias) */
+  /* UI chrome (titles, headings, badges, buttons). Independent of --font-body
+     by design: themes that set a serif reading face keep sans chrome unless
+     they override this token too. */
+  --font-heading: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono:  ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
   --title-size: 1.6rem;
 

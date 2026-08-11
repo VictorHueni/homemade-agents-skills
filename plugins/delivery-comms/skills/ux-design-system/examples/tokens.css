@@ -27,7 +27,7 @@
   --info:    #0f9d8f;
 
   /* ---- Typography ---- */
-  --font-sans:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono:  ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
   --title-size: 1.7rem;
 

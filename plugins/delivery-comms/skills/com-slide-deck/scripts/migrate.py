@@ -36,7 +36,7 @@ RENAME = {
     "--bg":        "--canvas-bg",
     "--text":      "--ink",
     "--card-bg":   "--surface",
-    "--font-body": "--font-sans",
+    "--font-sans": "--font-body",
 }
 # Legacy names with no contract equivalent — they stay deck-only (no action;
 # they remain defined in the deck's styles.css and keep working).
@@ -46,7 +46,7 @@ DECK_ONLY = ["--dim", "--accent-lt", "--danger-lt", "--font-heading"]
 CONTRACT_BASE = [
     "--ink", "--muted", "--canvas-bg", "--surface", "--surface-2", "--border",
     "--accent", "--accent-ink", "--success", "--warning", "--danger", "--info",
-    "--font-sans", "--font-mono",
+    "--font-body", "--font-heading", "--font-mono",
 ]
 
 SHIM_START = "/* >>> com-slide-deck migrate: legacy-token shim >>> */"

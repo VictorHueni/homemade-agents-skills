@@ -8,7 +8,7 @@ its deterministic template structure, and emits:
     token cascade as com-slide-deck / com-artefact-viz — ``templates/
     tokens.fallback.css`` first, then the project's ``docs/ux/tokens.css``
     (auto-detected, or ``--design-system PATH``), project values winning.
-    ``tokens.css`` only ever carries font *names* (``--font-sans``); if the
+    ``tokens.css`` only ever carries font *names* (``--font-body``); if the
     project also self-hosts real font files under ``docs/ux/fonts/fonts.css``
     (plain ``@font-face`` rules, relative ``url()`` to sibling files —
     auto-detected, no flag), those are inlined as base64 data URIs so the
@@ -556,7 +556,7 @@ _FONT_URL_RE = re.compile(r"url\(\s*\.?/?([^)'\"]+\.woff2?)\s*\)")
 def _embed_fonts(fonts_dir: Path) -> str:
     """Inline docs/ux/fonts/fonts.css's @font-face rules with base64 font data.
 
-    tokens.css only ever carries font *names* (--font-sans, --font-mono); nothing
+    tokens.css only ever carries font *names* (--font-body, --font-mono); nothing
     loads the actual font file, so a project's brand font silently falls through
     to its CSS fallback in headless Chromium. A project that self-hosts real font
     files opts in with docs/ux/fonts/fonts.css (plain @font-face rules, relative

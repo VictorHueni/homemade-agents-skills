@@ -166,7 +166,7 @@ if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 /* Component styles go here — reference var(--ink), var(--surface), var(--accent),
-   var(--font-sans), var(--font-mono), etc. Never hard-code a hex value. */
+   var(--font-body), var(--font-mono), etc. Never hard-code a hex value. */
 """
 
     placeholders = [

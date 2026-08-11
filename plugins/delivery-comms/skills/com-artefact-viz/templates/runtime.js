@@ -27,8 +27,20 @@
     var disc = e.target.closest("[data-disclose]");
     if (disc) {
       var card = disc.closest("[data-card]");
-      if (card) card.classList.toggle("is-open");
+      if (card) {
+        card.classList.toggle("is-open");
+        disc.setAttribute("aria-expanded", card.classList.contains("is-open") ? "true" : "false");
+      }
     }
+  });
+
+  // Keyboard access for disclosure heads exposed as role="button".
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var disc = e.target.closest("[data-disclose]");
+    if (!disc) return;
+    e.preventDefault();
+    disc.click();
   });
 
   /* ---- Toolbar actions --------------------------------------------------- */
@@ -37,6 +49,12 @@
       n.classList.toggle("is-collapsed", collapsed);
       var t = n.querySelector(":scope > * [data-toggle], :scope > [data-toggle]");
       if (t) t.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    });
+    // Disclosure cards share the same toolbar verbs: open = expanded.
+    document.querySelectorAll("[data-card]").forEach(function (c) {
+      c.classList.toggle("is-open", !collapsed);
+      var d = c.querySelector(":scope > [data-disclose]");
+      if (d) d.setAttribute("aria-expanded", collapsed ? "false" : "true");
     });
   }
 

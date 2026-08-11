@@ -95,12 +95,13 @@ do not redefine:
 
 | Token         | Usage                              | Source            |
 |---------------|------------------------------------|-------------------|
-| `--font-sans` | Headings + body text, labels, cards | contract (inherited) |
+| `--font-body` | Body text, labels, cards | contract (inherited) |
+| `--font-heading` | Headings, badges, UI chrome | contract (inherited) |
 | `--font-mono` | Code, tags, metadata, slide numbers | contract (inherited) |
 
 If the deck needs a distinct heading face, add a **deck-only** `--font-heading`
-in this stylesheet's `:root` (defaulting to `var(--font-sans)`); otherwise use
-`--font-sans` for both headings and body. Set the actual font families and web-
+in this stylesheet's `:root` (defaulting to `var(--font-body)`); otherwise the
+contract's `--font-heading` covers headings and `--font-body` covers body. Set the actual font families and web-
 font loading in `docs/ux/design-system.md` (and the `fonts:` block of
 `config.yaml` for the Google-Fonts `<link>`), so they flow from the one source.
 

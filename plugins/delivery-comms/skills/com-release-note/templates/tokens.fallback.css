@@ -27,7 +27,9 @@
   --info:    #3b6ef5;   /* informational / planned / neutral-active */
 
   /* ---- Typography ---- */
-  --font-sans:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Body text. --font-sans is honored as a legacy alias: older project sheets
+     that still define it theme --font-body through the var() chain. */
+  --font-body:  var(--font-sans, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
   --font-mono:  ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
   --title-size: 1.6rem;
 

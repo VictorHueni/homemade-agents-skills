@@ -55,7 +55,7 @@ visualisations theme from the tokens below.
 
 | Token | Value | Role |
 |---|---|---|
-| `--font-sans` | `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` | Body + UI |
+| `--font-body` | `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` | Body / reading text |
 | `--font-mono` | `ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace` | IDs, code, labels |
 | `--title-size` | `1.7rem` | View / slide title size |
 

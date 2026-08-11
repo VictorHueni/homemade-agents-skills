@@ -68,7 +68,8 @@ onto these in its own stylesheet), so a project only ever themes these four.
 
 | Token | Value | Role |
 |---|---|---|
-| `--font-sans` | `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` | Body + UI |
+| `--font-body` | `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` | Body / reading text |
+| `--font-heading` | `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` | UI chrome — titles, headings, badges, buttons |
 | `--font-mono` | `ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace` | IDs, code, labels |
 | `--title-size` | `1.6rem` | View / slide title size |
 
