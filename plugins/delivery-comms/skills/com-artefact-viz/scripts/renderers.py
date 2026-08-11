@@ -99,7 +99,7 @@ def render_capability_map(model, options):
   padding: 0.28rem 0.45rem; box-shadow: var(--shadow); }
 /* Text flow, not flex: the name starts on the identifier's line and wraps
    under itself; the importance badge floats to the right edge. */
-.cap-head { display: block; }
+.cap-head { display: block; font-size: 0.5rem; line-height: 1.5; }
 .cap-head::after { content: ""; display: block; clear: both; }
 .cap-head[data-disclose] { cursor: pointer; }
 .cap-chev { font-size: 0.5rem; color: var(--muted); margin-right: 0.15rem; }
@@ -110,7 +110,7 @@ def render_capability_map(model, options):
 .cap-id { font-family: var(--font-mono); font-size: 0.55rem; color: var(--accent); font-weight: 600; margin-right: 0.25rem; }
 .cap-id--l0 { color: var(--ink); }
 .cap-name { font-family: var(--font-heading); font-size: 0.5rem; font-weight: 600; line-height: 1.3; }
-.cap-def { margin: 0.3rem 0 0; font-size: 0.66rem; line-height: 1.35; color: var(--muted); }
+.cap-def { margin: 0.25rem 0 0; font-size: 0.33rem; line-height: 1.45; color: var(--muted); }
 .cap-children { margin-top: 0.35rem; padding-left: 0.5rem; border-left: 2px solid var(--surface-2);
   display: flex; flex-direction: column; gap: 0.3rem; }
 .cap-imp { float: right; margin: 0.1rem 0 0 0.3rem; font-family: var(--font-heading); font-size: 0.44rem; text-transform: uppercase;
