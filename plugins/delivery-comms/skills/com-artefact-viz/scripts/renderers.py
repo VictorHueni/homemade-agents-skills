@@ -106,7 +106,7 @@ def render_capability_map(model, options):
 .cap-card.is-open > .cap-body { display: block; }
 .cap-id { font-family: var(--font-mono); font-size: 0.55rem; color: var(--accent); font-weight: 600; }
 .cap-id--l0 { color: var(--ink); }
-.cap-name { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600; line-height: 1.25; }
+.cap-name { font-family: var(--font-heading); font-size: 0.5rem; font-weight: 600; line-height: 1.3; }
 .cap-def { margin: 0.3rem 0 0; font-size: 0.66rem; line-height: 1.35; color: var(--muted); }
 .cap-children { margin-top: 0.35rem; padding-left: 0.5rem; border-left: 2px solid var(--surface-2);
   display: flex; flex-direction: column; gap: 0.3rem; }
