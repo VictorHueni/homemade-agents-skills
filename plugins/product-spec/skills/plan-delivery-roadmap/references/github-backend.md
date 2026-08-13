@@ -34,8 +34,8 @@ rather than re-derived).
 | `name` | Epic name | value-oriented phrasing, per `SKILL.md` Step 2 |
 | `vs_anchor` | `VS-N.M` | unaffected by backend — read from `docs/business/04a-value-streams.md`, which stays markdown regardless of FBS backend (out of `adr-0010`'s scope) |
 | `fbs_scope` | The member functionality issues | native sub-issue set, §2 |
-| `phase` | Phase 1/2/3 tag | **not mapped** — see §5, a known gap |
-| `differentiator` (★) | Differentiator anchor marker | **not mapped** — see §5, a known gap |
+| `phase` | Phase 1/2/3 tag | **not mapped** — see §5, the one genuinely open gap |
+| `differentiator` | Anchoring signal for epic grouping | **resolved via the BC Map**, not a GitHub primitive: a functionality's differentiator status is its parent capability's Strategic Importance (`Differentiator` / `Necessary` / `Commodity`, `business-capability-map`'s own column) — read `Capability: C-N.M` off the functionality issue, then look up that capability in `docs/business/03a-capability-map.md`. No label, no gap. |
 | `status` | Epic-level roll-up | not automatically derived in this increment — operator sets it if a `project` Status field exists |
 
 ## 2. GitHub serialization
@@ -65,8 +65,8 @@ grouping heuristic in `SKILL.md` §Step 1/§Step 3 has a GitHub primitive to rea
 | :--- | :--- | :--- |
 | VS stage affinity | `VS stage:` body line, when the functionality issue carries one (optional per the FBS mapping) | mechanical, when present; functionalities with no `VS stage:` line behave like the markdown mode's `—` case |
 | Capability domain coherence | `Capability:` body line (dual-stored, always present) | mechanical |
-| Differentiator anchoring (★) | **no primitive** | propose groupings without it, then ask the operator which functionalities are differentiators before finalising — do not invent a label unprompted (see §5) |
-| Phase boundary | **no primitive** | same as above — surfaced as an explicit operator decision per proposed epic, not inferred |
+| Differentiator anchoring | `Capability:` body line, cross-checked against the BC Map's Strategic Importance column | mechanical — no operator prompt; the signal lives on the capability, which stays markdown in both backends |
+| Phase boundary | **no primitive** | the one genuinely open gap — surfaced as an explicit operator decision per proposed epic, not inferred (§5) |
 | Sizing check (5–25 rows) | issue count per proposed group | mechanical |
 
 Pain-index ordering (Step 3) is **unaffected** — it reads `docs/business/04a-value-streams.md`
@@ -90,19 +90,23 @@ future increment adds a batch epic-migration mode.
 
 ---
 
-## 5. Known gap — phase and differentiator have no GitHub primitive
+## 5. Known gap — phase has no GitHub primitive
 
-Neither is invented here. The markdown-mode heuristics that key off "phase tag (Phase
-1/2/3)" and "★ marker" (`SKILL.md` Step 1) assume per-functionality FBS columns that, on
-inspection, the current `spec-functional-breakdown-structure` template does not actually
-carry either (its functionality table is `ID | Functionality | Status | VS stage` — no Phase
-or ★ column) — this is a pre-existing gap in the `markdown` backend, not something this
-increment introduces or is scoped to fix. Under `github`, the gap is simply more visible: Mode
-2 surfaces phase and differentiator as explicit questions to the operator at proposal time
-rather than silently reading a column that was never reliably populated. A future increment —
-candidate labels `phase:1|2|3` and `differentiator` on functionality issues — would need its
-own design pass (which level owns the signal, when it's set, how it interacts with the FBS
-side's idempotency marker) and is not decided by this reference.
+Not invented here. The markdown-mode heuristic that keys off "phase tag (Phase 1/2/3)"
+(`SKILL.md` Step 1 heuristic #4) assumes a per-functionality FBS column that, on inspection,
+the current `spec-functional-breakdown-structure` template does not actually carry (its
+functionality table is `ID | Functionality | Status | VS stage` — no Phase column) — this is
+a pre-existing gap in the `markdown` backend, not something this increment introduces or is
+scoped to fix. Under `github`, the gap is simply more visible: Mode 2 surfaces phase as an
+explicit question to the operator per proposed group at proposal time, rather than silently
+reading a column that was never reliably populated. A future increment — a candidate
+`phase:1|2|3` label on functionality or epic issues — would need its own design pass (which
+level owns the signal, when it's set, how it interacts with the FBS side's idempotency
+marker) and is not decided by this reference.
+
+**Differentiator anchoring is not part of this gap.** It resolves cleanly via the BC Map's
+Strategic Importance column (§1, §3): the signal lives one level up, on the capability, which
+stays markdown in both backends and is already being read for other purposes.
 
 ---
 
@@ -115,8 +119,9 @@ side's idempotency marker) and is not decided by this reference.
   `util-open-items` applies to `tracker_ref`.
 - **I3** — Capability is never duplicated onto the epic issue; it is read off member
   functionality issues, single source per functionality (§2).
-- **I4** — Phase and differentiator are operator-confirmed at proposal time in this
-  increment, never silently inferred or defaulted (§5).
+- **I4** — Phase is operator-confirmed at proposal time in this increment, never silently
+  inferred or defaulted (§5). Differentiator anchoring is the opposite: always derived from
+  the BC Map, never asked.
 
 ---
 

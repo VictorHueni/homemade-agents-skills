@@ -95,7 +95,10 @@ has a stable E-NN ID.
 (implementation plan), or a value stream (value stream doc).
 
 **Sizing:** 5–25 FBS functionalities, 2–8 weeks of focused development.
-Differentiator (★) functionalities always anchor their own epic.
+Functionalities under a capability marked `Differentiator` (BC Map Strategic Importance —
+see `business-capability-map`'s Strategic Importance column) always anchor their own epic;
+this is a BC Map lookup, not a per-functionality marker (★ is shorthand for it in this
+skill's prose, not a column that exists on FBS rows).
 
 ---
 
@@ -149,8 +152,10 @@ project: 3                # optional — Project v2 number
 
 **Operational github mapping.** Before running Mode 2, read
 [`references/github-backend.md`](references/github-backend.md) — the epic-side mapping,
-what's mechanically derivable from the functionality inventory vs what needs operator
-confirmation (phase, differentiator — no GitHub primitive carries either yet), and
+what's mechanically derivable from the functionality inventory (including differentiator
+anchoring, resolved via the BC Map's Strategic Importance column — no GitHub primitive
+needed) vs what still needs operator confirmation (phase only — no GitHub primitive carries
+it, see the reference doc §5), and
 [`../spec-functional-breakdown-structure/references/github-backend.md`](../spec-functional-breakdown-structure/references/github-backend.md)
 for the functionality-side mapping this mode reads as its input.
 
@@ -163,14 +168,20 @@ for the functionality-side mapping this mode reads as its input.
 ```bash
 cat docs/VISION.md 2>/dev/null                                     # optional: read if exists — phase goals should connect to vision north star
 cat docs/product-specs/07a-fbs.md
+cat docs/business/03a-capability-map.md                            # Strategic Importance column — differentiator anchoring
 cat docs/business/04a-value-streams.md
 cat docs/business/01a-personas.md
 cat docs/product-specs/09a-quality-attributes.md                   # optional
 ```
 
 **From FBS extract:**
-- Every C-N.M.FXX with VS stage link, phase tag (Phase 1/2/3), ★ marker
+- Every C-N.M.FXX with VS stage link, phase tag (Phase 1/2/3)
 - Total count by phase
+
+**From the BC Map extract:**
+- Strategic Importance per capability (`Differentiator` / `Necessary` / `Commodity`) — a
+  functionality's differentiator status is its parent capability's, not a column on the FBS
+  row itself.
 
 **From value streams extract:**
 - Pain index per VS stage (Critical → High → Medium → Low)
@@ -193,8 +204,9 @@ Apply these heuristics in order:
    whether functionalities span multiple L0 domains. If they span
    configuration domains (C1 + C2), they may form one setup epic.
 
-3. **Differentiator anchoring** — any ★ functionality anchors its own
-   epic. Never merge a ★ into a secondary epic.
+3. **Differentiator anchoring** — any functionality whose parent capability is marked
+   `Differentiator` (BC Map Strategic Importance) anchors its own epic. Never merge such a
+   functionality into a secondary epic.
 
 4. **Phase boundary** — Phase 2 functionalities always form separate
    epics from Phase 1 functionalities.
@@ -278,20 +290,21 @@ gh issue list --repo <repo> --label type:functionality --state all --json number
 ```
 
 Parse each issue's `Capability: C-N.M` line (always present) and `VS stage: VS-N.M` line
-(present when set). Read `docs/business/04a-value-streams.md` and
-`docs/business/01a-personas.md` exactly as Mode 1 — those stay markdown regardless of the FBS
-backend.
+(present when set). Read `docs/business/03a-capability-map.md` for Strategic Importance per
+capability, and `docs/business/04a-value-streams.md` and `docs/business/01a-personas.md`
+exactly as Mode 1 — all three stay markdown regardless of the FBS backend.
 
 ### Step 1 — Group the inventory into proposed epics
 
-Apply VS-stage affinity, capability-domain coherence, and the sizing check mechanically (same
-heuristics as Mode 1 Step 1, §3 of the reference doc marks these as backend-derivable). Do
-**not** attempt to infer differentiator anchoring or phase boundary — no GitHub primitive
-carries either (reference doc §5, a pre-existing gap, not new to this mode). Present the
-mechanically-grouped proposal to the operator and ask, per proposed group: "does this contain
-a differentiator functionality that should anchor its own epic instead?" and "which phase does
-this group belong to?" Fold the answers back into the grouping before proceeding — this is a
-**proposal**, not a batch import; the operator reviews before anything is created.
+Apply VS-stage affinity, capability-domain coherence, differentiator anchoring, and the
+sizing check mechanically (same heuristics as Mode 1 Step 1; §3 of the reference doc marks
+these as backend-derivable — differentiator anchoring resolves via each functionality's
+`Capability:` line against the BC Map's Strategic Importance, no GitHub primitive needed). Do
+**not** attempt to infer phase boundary — no GitHub primitive carries it and no existing
+roadmap doc exists yet to read it from (reference doc §5, the one genuinely open gap). Present
+the mechanically-grouped proposal to the operator and ask, per proposed group: "which phase
+does this group belong to?" Fold the answer back into the grouping before proceeding — this is
+a **proposal**, not a batch import; the operator reviews before anything is created.
 
 ### Steps 2–5 — Name, order, walking skeleton, phase plan
 
@@ -428,13 +441,13 @@ Before declaring complete:
 - [ ] Every epic has a value statement ("when this ships, P-NN can…")
 - [ ] Every epic references ≥1 OBJ-NN (when objectives doc exists at `docs/business/04b-objectives.md`)
 - [ ] Phase goals express VS streams operational, not feature lists
-- [ ] Differentiator (★) functionalities each anchor their own epic
+- [ ] Functionalities under a `Differentiator` (BC Map Strategic Importance) capability each anchor their own epic
 - [ ] E-NN IDs in pain-index priority order (Critical before High before Medium)
 - [ ] Sizing within 5–25 FBS rows per epic (outliers flagged)
 - [ ] Phase 2 epics listed after all Phase 1 epics
 
 **Under `backend: github`** (Mode 2), in addition to the backend-independent checks above:
-- [ ] Every proposed epic's differentiator/phase question was put to the operator, never inferred (`references/github-backend.md` §5)
+- [ ] Every proposed epic's phase question was put to the operator, never inferred (`references/github-backend.md` §5 — the one genuinely open gap; differentiator anchoring is resolved via the BC Map, not asked)
 - [ ] Every functionality issue attached as a sub-issue of exactly one epic (coverage check run)
 - [ ] §Epic Table / §FBS-scope tables in `delivery-roadmap.md` are a fresh read-out, not stale from a prior run
 
