@@ -6,7 +6,7 @@ user-invocable: true
 metadata:
   category: "planning"
   complexity: "medium"
-  version: "1.2.0"
+  version: "1.3.0"
   status: active
   last_reviewed: 2026-08-13
   impact: "low"
@@ -141,6 +141,9 @@ Which functionality inventory this skill reads from is a **serialization** choic
   `markdown`, functionalities and epics are both authored here; under `github`,
   functionalities are already born in the tracker by `spec-functional-breakdown-structure`,
   and this skill's job is to propose and create the epic layer over them.
+
+Cutting an existing `markdown` project's roadmap over to `github` is **Mode 3 — Migrate**,
+run **after** FBS's own migrate mode — see below.
 
 **Declaration** — no separate file; this skill reads the same `backend.yml` FBS declares:
 
@@ -336,6 +339,59 @@ issue not attached to exactly one epic.
 
 ---
 
+## Mode 3 — Migrate (`markdown → github`, one-way)
+
+**When:** an existing `markdown`-backed project's delivery roadmap is cut over to `github` —
+once, not an ongoing sync, and only **after**
+`spec-functional-breakdown-structure`'s own Mode 4 migrate has run (epics attach
+functionality issues that must already exist).
+
+**Driver:** [`scripts/migrate_markdown_to_github.py`](scripts/migrate_markdown_to_github.py)
+— stdlib + `gh`, **dry-run by default**.
+
+```text
+# 1. Dry-run — prints planned epics + the E-NN→#N map + ref-rewrite diff, mutates nothing
+python3 scripts/migrate_markdown_to_github.py --repo OWNER/NAME
+
+# 2. Apply — create epics, attach sub-issues, write the map, rewrite E-NN back-references
+python3 scripts/migrate_markdown_to_github.py --repo OWNER/NAME --apply
+```
+
+**Per epic:**
+
+1. Reads `docs/plans/delivery-roadmap.md`'s per-epic sections — ID, name, `**Phase:**` (the
+   one field the migration case *can* read mechanically, unlike Mode 2's fresh-proposal case
+   — see `references/github-backend.md` §5), and the FBS-scope `C-N.M.FXX` list.
+2. Resolves each scope entry against `spec-functional-breakdown-structure`'s migration map
+   (`docs/product-specs/migration-map.md`). An entry with no mapping is a **warning, not a
+   hard failure** — it means that functionality wasn't migrated yet; the epic is still
+   created, just without that sub-issue attached, and the gap is printed so it isn't silently
+   dropped.
+3. De-dups by an idempotency marker (`<!-- roadmap-seed: E-NN -->`) — unlike Mode 2's
+   interactive, operator-confirmed proposal (which carries no marker, per
+   `references/github-backend.md` §4), this migrate mode is meant to be safely re-run, so it
+   needs one.
+4. `gh issue create` — name → title, label `type:epic`.
+5. Attaches every resolved functionality issue as a native **sub-issue** via the
+   `addSubIssue` GraphQL mutation (`gh api graphql` — the CLI has no sub-issue subcommand).
+6. Records `E-NN → #N`, writing the map to `docs/plans/migration-map.md` (frozen, one-time —
+   not a living document, same posture as the FBS-side map).
+7. Rewrites every `E-NN` back-reference under `--docs` to `#N`.
+
+**Operator finish (not automated — verify first):**
+
+1. Eyeball each epic's sub-issue hierarchy (`gh issue view <epic> --json subIssuesSummary`)
+   against the source roadmap's FBS-scope counts.
+2. Move `docs/plans/delivery-roadmap.md` into `archive/` as a frozen, dated snapshot — never
+   silent-delete.
+3. Set `backend.yml: github`. From here Mode 2 operates the `github` backend.
+
+**Rollback** (before step 2–3): the migration is one-way, so undo = delete the created epic
+issues (this does not touch the functionality issues they reference) and `git checkout` the
+ref rewrites while `delivery-roadmap.md` is still authoritative.
+
+---
+
 ## Output structure
 
 ```markdown
@@ -459,6 +515,7 @@ Two files carry the `github`-backend content. Read before running Mode 2:
 
 - **`references/github-backend.md`** — the epic-side mapping (this skill). Never copied into the project.
 - **`../spec-functional-breakdown-structure/references/github-backend.md`** — the functionality-side mapping Mode 2 reads as input. Never copied into the project.
+- **`scripts/migrate_markdown_to_github.py`** — the Mode 3 driver (dry-run by default). Never copied into the project; run from the skill's own folder, after FBS's Mode 4.
 
 ---
 

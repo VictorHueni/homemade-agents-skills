@@ -83,10 +83,15 @@ Personas likewise read from `docs/business/01a-personas.md` unchanged.
 3. If `project` is set in `backend.yml`, add the epic issue to that Project (no dedicated
    epic-level field beyond `Status`, set manually — see §1).
 
-No idempotency marker is defined for epics in this increment: epic creation is an
-operator-confirmed, one-shot proposal step (not a re-run batch import like the functionality
-side), so accidental duplication is a review-time concern, not a re-run concern. Revisit if a
-future increment adds a batch epic-migration mode.
+**Mode 2** (interactive propose) defines no idempotency marker: epic creation there is an
+operator-confirmed, one-shot proposal step, so accidental duplication is a review-time
+concern, not a re-run concern.
+
+**Mode 3** (migrate — `scripts/migrate_markdown_to_github.py`) is the opposite: it is meant
+to be safely re-run, so it carries `<!-- roadmap-seed: E-NN -->`, keyed on the epic's
+pre-existing markdown ID — mirroring the FBS migrate script's own marker, not Mode 2's
+markerless proposal. The two epic-creation paths intentionally differ here; this is not an
+inconsistency to reconcile.
 
 ---
 
