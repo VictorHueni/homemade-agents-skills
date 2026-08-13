@@ -6,7 +6,7 @@ user-invocable: true
 metadata:
   category: "specification"
   complexity: "medium"
-  version: "1.3.0"
+  version: "1.4.0"
   status: active
   last_reviewed: 2026-08-13
   impact: "low"
@@ -263,6 +263,9 @@ backends:
   issue number as identity; `C-N.M.FXX` minting is retired for functionalities created under
   this backend.
 
+Cutting an existing `markdown` project over to `github` is **Mode 4 — Migrate**, not a
+manual one-off: it is one-way, idempotent, and driven by a script — see below.
+
 **Declaration.** A project selects its backend in `docs/product-specs/backend.yml`; absent ⇒
 `markdown`:
 
@@ -278,8 +281,7 @@ functionality-identity layer only — see the ADR for why). Switching backends c
 *functionality* row's identity lives, never a capability's.
 
 **One backend per project.** Never both. Moving between them is a one-way `markdown →
-github` migration, performed once — not yet built as a skill mode (`adr-0010`'s Open Items
-table); do not hand-roll a live sync.
+github` migration, performed once via Mode 4; do not hand-roll a live sync.
 
 **Operational github mapping.** Before operating the `github` backend, read
 [`references/github-backend.md`](references/github-backend.md) — the normative slug
@@ -288,7 +290,7 @@ and invariants I1–I5.
 
 ---
 
-## The three modes of operation
+## The four modes of operation
 
 ### Mode 1 — Scaffold
 
@@ -370,6 +372,58 @@ this is the procedure that invokes it.
    identity, not a `C-N.M.FXX`.
 5. Run the same discipline checks as step 4 of the `markdown` process — they are
    backend-independent.
+
+### Mode 4 — Migrate (`markdown → github`, one-way)
+
+**When:** an existing `markdown`-backed project's FBS is cut over to `github` — once, not an
+ongoing sync. Read [`references/github-backend.md`](references/github-backend.md) §4
+(idempotency marker) before running this.
+
+**Driver:** [`scripts/migrate_markdown_to_github.py`](scripts/migrate_markdown_to_github.py)
+— stdlib + `gh`, **dry-run by default**.
+
+```text
+# 1. Dry-run — prints planned issues + the C-N.M.FXX→#N map + ref-rewrite diff, mutates nothing
+python3 scripts/migrate_markdown_to_github.py --repo OWNER/NAME
+
+# 2. Apply — create issues, write the map, rewrite C-N.M.FXX back-references across docs/
+python3 scripts/migrate_markdown_to_github.py --repo OWNER/NAME --apply
+```
+
+**Per functionality row:**
+
+1. De-dups by the idempotency marker (`<!-- fbs-seed: C-N.M.FXX -->`, keyed on the row's
+   existing ID — the migration case, unlike Mode 3's interactive path, always has a real ID
+   to key off) — re-runs are idempotent.
+2. `gh issue create` — name → title (no ID prefix), label `type:functionality`, body =
+   `Capability:` line + `VS stage:` line (when set) + the functionality's own name text
+   (the FBS template's only free-text field, and where an inline cross-reference like "see
+   also C1.2.F03" would actually live).
+3. **Two-pass cross-reference resolution** across the batch, exactly as Mode 3 — pass 1
+   creates with unresolved mentions as plain text, pass 2 patches every issue created *in
+   this run* once the full map is known. The marker trailer is never part of the scanned
+   text (excluded by construction — the two are separate strings from composition onward).
+4. Records `C-N.M.FXX → #N`, writing the map to `docs/product-specs/migration-map.md` (the
+   frozen, one-time decode artefact ADR-0010 requires — not a living document).
+5. Rewrites every `C-N.M.FXX` back-reference under `--docs` to `#N`.
+
+**Capability identity never appears in this pipeline** — `C-N.M` stays exactly where it is in
+the BC Map; only the `Capability: C-N.M` dual-store line on each functionality issue
+references it.
+
+**Operator finish (not automated — verify first):**
+
+1. Eyeball the issues (`gh issue list --label type:functionality`).
+2. **Run `plan-delivery-roadmap`'s own Mode 3 migrate next** — epic creation depends on this
+   map (functionalities must exist before they can be attached as sub-issues).
+3. Move `docs/product-specs/07a-fbs.md` into `archive/` as a frozen, dated snapshot — never
+   silent-delete.
+4. Set `backend.yml: github`. From here Mode 3 operates the `github` backend.
+5. If `project` is set, sync the Capability/Status Project fields manually (not automated —
+   see the script's own reminder and its module docstring).
+
+**Rollback** (before step 3–4): the migration is one-way, so undo = delete the created
+issues and `git checkout` the ref rewrites while `07a-fbs.md` is still authoritative.
 
 ---
 
@@ -543,6 +597,7 @@ Four files in `references/` carry the canonical content. Read when needed:
 - **`references/methodology-references.md`** — canonical bibliography (BABOK §10.22, NASA FBS, NASA WBS Handbook, TOGAF, Hackernoon practitioner guide). **Lives only in the kit** — never copied to projects. Project docs link here via the 2-line pointer in their header.
 - **`references/fbs-discipline.md`** — internal Claude guidance: 6 anti-patterns, capability-vs-functionality-vs-feature decision tree, status-drift detection, sizing heuristics. Never copied into the project.
 - **`references/github-backend.md`** — normative `backend: github` mapping (slug contract, two-pass cross-reference resolution, idempotency marker, invariants). Read before running Mode 3 against a `github`-backed project. Never copied into the project.
+- **`scripts/migrate_markdown_to_github.py`** — the Mode 4 driver (dry-run by default). Never copied into the project; run from the skill's own folder.
 
 ---
 

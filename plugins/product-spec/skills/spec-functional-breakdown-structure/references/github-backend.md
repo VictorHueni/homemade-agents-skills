@@ -104,6 +104,12 @@ an existing one carrying the same marker (`gh issue list --repo <repo> --search 
 text>" --state all`); if found, treat the functionality as already present and skip creation
 (re-running Mode 3 against an already-populated capability must not duplicate issues).
 
+**Mode 4 (migrate) uses a different, simpler marker key:** `<!-- fbs-seed: C-N.M.FXX -->`,
+the row's own pre-existing ID — no slug derivation needed, since a migration source always
+has a real minted ID to key off. The two marker shapes never collide (one always contains a
+`:` separator before the slug, the other never does) and are never compared against each
+other; each mode only ever searches for its own shape.
+
 ---
 
 ## 5. Interoperability
@@ -126,25 +132,24 @@ table, a separate increment from this backend's interactive create path — not 
 *by reference* (§2), never re-identified. A project on `backend: github` for functionalities
 still authors and edits capabilities in the BC Map / FBS markdown structure exactly as today.
 
-### 5c. Open question — the FBS markdown document under `backend: github`
+### 5c. Resolved — `FBS.md` does not survive the switch to `backend: github`
 
-Not resolved by this reference or by `adr-0010`: whether `FBS.md`'s per-capability
-functionality table stays a hand-authored artefact, becomes a regenerated read-out queried
-from the tracker (mirroring `util-open-items`'s `report` mode), or is dropped in favour of a
-direct tracker view once `backend: github` is active. `SKILL.md`'s Mode 3 currently creates
-the github issue and adopts its number as identity; it does not yet change what (if anything)
-Mode 3 writes back into `FBS.md`'s functionality table. Flag this to the user rather than
-silently picking one — the reference implementation's downstream project resolved it by
-retiring the markdown FBS entirely, but that is a project-level choice, not a backend
-requirement.
+Settled by Mode 4's design (clean-cut, operator directive): a project migrating an existing
+`FBS.md` archives it as a frozen, dated snapshot (Mode 4's operator-finish step 3) rather
+than keeping it live, regenerating it as a read-out, or dropping it silently. Once
+`backend.yml` is set to `github`, there is no living `FBS.md` for Mode 3 to write back into
+at all — functionality issues are the sole source of truth from that point forward, mirroring
+`util-open-items`'s own posture (no parallel markdown ledger once `github` is selected). A
+project that never had a markdown FBS (starts on `backend: github` from scratch) never faces
+this question in the first place.
 
 ---
 
 ## 6. Invariants
 
 - **I1** — `type:functionality` label ≡ this backend's functionality marker; `adr-0010`'s
-  primitive mapping (§2 here) is the single source both `SKILL.md` and any future migration
-  script bind to.
+  primitive mapping (§2 here) is the single source both `SKILL.md` and
+  `scripts/migrate_markdown_to_github.py` (Mode 4) bind to.
 - **I2** — Migration is one-way (`markdown → github`), once, with a persisted ID map; never
   concurrent. One backend per project.
 - **I3** — Capability identity is never migrated or re-minted; it is dual-stored by reference
