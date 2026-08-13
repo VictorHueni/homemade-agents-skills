@@ -6,9 +6,9 @@ user-invocable: true
 metadata:
   category: "specification"
   complexity: "medium"
-  version: "1.2.0"
+  version: "1.3.0"
   status: active
-  last_reviewed: 2026-05-29
+  last_reviewed: 2026-08-13
   impact: "low"
 ---
 
@@ -251,6 +251,43 @@ The line's full content is `` `slug: <handle>` `` — one space after the colon,
 
 ---
 
+## Backends
+
+Functionality identity is a **serialization** choice, per `adr-0010` (in the consuming
+repo's `docs/architecture/decisions/`, e.g. the kit). This skill operates one of two
+backends:
+
+- **`markdown`** (default) — hand-mint `C-N.M.FXX` into the FBS document, exactly as
+  described below.
+- **`github`** — Mode 3 creates one GitHub Issue per functionality and adopts the returned
+  issue number as identity; `C-N.M.FXX` minting is retired for functionalities created under
+  this backend.
+
+**Declaration.** A project selects its backend in `docs/product-specs/backend.yml`; absent ⇒
+`markdown`:
+
+```yaml
+backend: github          # markdown (default) | github
+repo: owner/name         # github only — where the issues live
+project: 3                # optional — Project v2 number, required only for the Status field
+```
+
+**Capabilities never migrate.** Regardless of backend, `C-N.M` capability identity stays
+markdown-authored in the BC Map / FBS structure (`adr-0010` scopes this ADR to the
+functionality-identity layer only — see the ADR for why). Switching backends changes where a
+*functionality* row's identity lives, never a capability's.
+
+**One backend per project.** Never both. Moving between them is a one-way `markdown →
+github` migration, performed once — not yet built as a skill mode (`adr-0010`'s Open Items
+table); do not hand-roll a live sync.
+
+**Operational github mapping.** Before operating the `github` backend, read
+[`references/github-backend.md`](references/github-backend.md) — the normative slug
+contract, the two-pass cross-reference resolution mechanics, the idempotency marker format,
+and invariants I1–I5.
+
+---
+
 ## The three modes of operation
 
 ### Mode 1 — Scaffold
@@ -292,7 +329,7 @@ Source from `references/template.md`. Substitute `{{product_or_scope}}` and `{{L
 
 **When:** the structure exists; the user wants to enumerate / update functionalities for one or more capabilities.
 
-**Process:**
+**Process (`backend: markdown`, default):**
 1. **Confirm the capability** (e.g., `C1.1` or "all of C1") the user wants populated.
 2. **For each functionality, assign:**
    - **ID** — `C1.1.F01`, `C1.1.F02`, … (counter scoped under the capability; never reused or recycled even if a functionality is retired).
@@ -308,6 +345,31 @@ Source from `references/template.md`. Substitute `{{product_or_scope}}` and `{{L
    - Status reflects production reality (audit when in doubt)
    - No PRD / roadmap content crept in
    - Functionality counts are within sizing heuristics
+
+**Under `backend: github`:** read [`references/github-backend.md`](references/github-backend.md)
+before running this mode against a `github`-backed project — it is the normative mapping;
+this is the procedure that invokes it.
+
+1. Confirm the capability exactly as in the `markdown` process (step 1 above) — capability
+   identity is unaffected by backend.
+2. **For each functionality**, in place of minting an ID:
+   - Derive a stable kebab-case slug from the functionality name.
+   - Search for an existing issue carrying the marker `<!-- fbs-seed: C-N.M:<slug> -->`
+     (`gh issue list --repo <repo> --search "<marker text>" --state all`). If found, treat it
+     as already present — update its title/body if content changed, do not create a
+     duplicate.
+   - Otherwise `gh issue create` — title = functionality name (no ID prefix), label
+     `type:functionality`, body = the `Capability: C-N.M` line + any `VS stage:` line + the
+     functionality's description, with the marker as a trailing HTML comment.
+   - If `project` is set in `backend.yml`, set the issue's `Capability` and `Status` Project
+     fields to match the body line (dual-storage — both must agree).
+3. **Resolve cross-references in two passes** across the batch just created/updated — see
+   `references/github-backend.md` §3. Do not scan the marker trailer for references (the
+   caught bug that reference doc ports in as a starting constraint).
+4. **Report the resulting `#N`** for each functionality back to the user; this is now its
+   identity, not a `C-N.M.FXX`.
+5. Run the same discipline checks as step 4 of the `markdown` process — they are
+   backend-independent.
 
 ---
 
@@ -475,11 +537,12 @@ If a folder exists at a non-default location, use it — don't move existing wor
 
 ## Reference materials
 
-Three files in `references/` carry the canonical content. Read when needed:
+Four files in `references/` carry the canonical content. Read when needed:
 
 - **`references/template.md`** — the canonical `FBS.md` skeleton. Copy to `{folder}/FBS.md` and fill placeholders.
 - **`references/methodology-references.md`** — canonical bibliography (BABOK §10.22, NASA FBS, NASA WBS Handbook, TOGAF, Hackernoon practitioner guide). **Lives only in the kit** — never copied to projects. Project docs link here via the 2-line pointer in their header.
 - **`references/fbs-discipline.md`** — internal Claude guidance: 6 anti-patterns, capability-vs-functionality-vs-feature decision tree, status-drift detection, sizing heuristics. Never copied into the project.
+- **`references/github-backend.md`** — normative `backend: github` mapping (slug contract, two-pass cross-reference resolution, idempotency marker, invariants). Read before running Mode 3 against a `github`-backed project. Never copied into the project.
 
 ---
 
@@ -505,7 +568,8 @@ Before declaring the work done:
 - [ ] Product slug present — `` `slug: <handle>` `` under the H1 (and under each L0 product section for a product-family FBS); well-formed kebab (≤ 20 chars) and **globally unique** across the FBS product slugs + BC Map L0/L1 slugs (one flat namespace).
 - [ ] Methodology pointer in `FBS.md` header links to the kit's canonical bibliography.
 - [ ] L0 / L1 imported from BC Map (or manual entry flagged in changelog).
-- [ ] Each functionality has ID (`C-N.M.F01` pattern), name, status; optional VS-stage / code paths populated where applicable.
+- [ ] `backend.yml` checked before Mode 3; `markdown` → each functionality has ID (`C-N.M.F01` pattern); `github` → each functionality has an issue number, the idempotency marker, and (if `project` is set) matching Project fields.
+- [ ] Each functionality has name, status; optional VS-stage / code paths populated where applicable.
 - [ ] No capability definitions, PRD content, or roadmap detail leaked in.
 - [ ] Sizing heuristics respected (L2 ≤ 25 per capability; total ≤ ~500).
 - [ ] No project-specific terms baked in (kit version).
