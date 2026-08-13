@@ -127,8 +127,8 @@ Do NOT invent use cases in scaffold mode. Substitute `{{product_or_scope}}`. Ope
 **Process** (per `references/methodology.md` §Use-Case 2.0):
 1. Take a fully-dressed use case. Its **basic flow** (main success scenario) is the **first slice** — the thinnest end-to-end path.
 2. Each meaningful **alternative flow** (an extension run start-to-finish) becomes a further **slice**.
-3. For each slice, write **its test case(s)** — the slice's acceptance criteria. *A slice without a test case is incomplete, exactly as a user story without acceptance criteria is.*
-4. Record slices in a `## Use-Case 2.0 Slices` section of the use-case file: `UC-NN.S1`, `UC-NN.S2`… with a one-line narrative + test-case pointer + status. These are the backlog-ready increments.
+3. For each slice, write **its test case(s)** — the slice's acceptance criteria. *A slice without a test case is incomplete, exactly as a user story without acceptance criteria is.* `qa-test-scenario` authors the actual scenario (`UC-NN.SC-NN`) and case (`TC-NN`); this mode's own job is only to point at it.
+4. Record slices in a `## Use-Case 2.0 Slices` section of the use-case file: `UC-NN.S1`, `UC-NN.S2`… with a one-line narrative + test-case pointer (the `UC-NN.SC-NN`/`TC-NN` from `qa-test-scenario`, once minted) + status. These are the backlog-ready increments.
 
 ### Mode 5 — Review (quality audit)
 
@@ -161,7 +161,7 @@ Use cases are the **behavioural bridge** between the strategic/registry layer an
 | **Use case** *(this skill)* | The actor↔system scenario, all paths, guarantees | — |
 | **PRD** (`PRD-NNNN`) | What we build for one slice + acceptance criteria | A PRD **references** the use case(s) it delivers; the scenario grounds the acceptance criteria. Its embedded stories (`PRD-NNNN.US-NN`) may carry a `Covers: UC-NN` soft edge — stories are PRD-scoped delivery slices, distinct from Use-Case 2.0 slices (see `references/methodology.md` §5) |
 | **Domain model** (`BC-NN.AGG-NN`, `BC-NN.EVT-NN`) | Entities, aggregates, domain events | Use-case steps that change state map to **commands → domain events**; scenarios drive aggregate design |
-| **Test cases** | Verification | Each flow / slice yields test cases (Use-Case 2.0 makes this explicit) |
+| **Test cases** | Verification | Each flow yields a test scenario, which expands into test cases (`qa-test-scenario`; Use-Case 2.0 slices make the pointer explicit) |
 
 **Soft-reference principle** (same as the rest of the kit): use cases reference other artefacts as pointers, not prerequisites. Author a use case even if the FBS or PRDs don't yet exist; add the `Realises:` links when they do.
 

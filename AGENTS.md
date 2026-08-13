@@ -16,7 +16,7 @@ These guidelines are working if: fewer unnecessary changes in diffs, clarifying 
 
 ## Project
 
-`homemade-claude-kit` is a personal, **harness-agnostic** skill/plugin toolkit — 59 skills across 11 toggleable plugin sets (strategic-architecture docs, developer workflow, agent-execution) — authored once and installed natively into Claude Code, Codex, and OpenCode by `install.sh`, or consumed as a Claude Code marketplace (`.claude-plugin/marketplace.json`). The north star is [`docs/VISION.md`](docs/VISION.md): one authored capability, run everywhere from a single source of truth. The repo also dogfoods its own governance system: its backlog runs on the `github` open-items backend (see Domain context below).
+`homemade-claude-kit` is a personal, **harness-agnostic** skill/plugin toolkit — 60 skills across 11 toggleable plugin sets (strategic-architecture docs, developer workflow, agent-execution) — authored once and installed natively into Claude Code, Codex, and OpenCode by `install.sh`, or consumed as a Claude Code marketplace (`.claude-plugin/marketplace.json`). The north star is [`docs/VISION.md`](docs/VISION.md): one authored capability, run everywhere from a single source of truth. The repo also dogfoods its own governance system: its backlog runs on the `github` open-items backend (see Domain context below).
 
 **Stack:** Bash (`install.sh`, `scripts/`) · Python 3 stdlib (skill helper scripts under `plugins/*/skills/*/scripts/`; PyYAML available system-side for YAML validation) · YAML (skill frontmatter, GitHub Actions, `marketplace.json`) · Markdown (skills, docs, rules).
 **Package manager:** none — no npm/pip project; every script is a direct interpreter invocation.

@@ -273,6 +273,24 @@ artefact_types:
     review_interval: 60d
     frontmatter_conditionals: []
     property_schema_ref: null   # TBD until clew defines property schemas
+  - type: test_scenario
+    okf_type: "Test Scenario"
+    minting_skill: qa-test-scenario
+    id_format: "UC-\\d{2}\\.SC-\\d{2}"
+    layout: single-collection
+    default_path: "docs/qa/test-scenarios.md"
+    review_interval: 60d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
+  - type: test_case
+    okf_type: "Test Case"
+    minting_skill: qa-test-scenario
+    id_format: "(UC-\\d{2}\\.SC-\\d{2}|PRD-\\d{4}\\.US-\\d{2}|QA-[A-Z]{2}\\d{2})\\.TC-\\d{2}"
+    layout: single-collection
+    default_path: "docs/qa/test-scenarios.md"
+    review_interval: 60d
+    frontmatter_conditionals: []
+    property_schema_ref: null   # TBD until clew defines property schemas
   - type: use_case
     okf_type: "Use Case"
     minting_skill: spec-use-case

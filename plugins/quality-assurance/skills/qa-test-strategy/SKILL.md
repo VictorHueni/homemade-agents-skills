@@ -1,14 +1,14 @@
 ---
 name: qa-test-strategy
 license: MIT
-description: "Create a Test Strategy — the project-wide test policy per ISTQB / ISO/IEC/IEEE 29119-3: pyramid (or trophy) allocation across test levels, a QA-XXNN quality-attribute → test-type mapping, entry/exit criteria, environments, roles, and defect management. Mints TS-NN. Policy only — does not author test cases or log results (that's the separately-reserved qa-test-scenario / qa-test-plan / qa-acceptance-test). Modes: scaffold (docs/qa/test-strategy.md skeleton), draft (interactive Q&A authoring the policy + mapping table), update (revise as quality attributes or ADRs change). Triggers on: test strategy, test policy, test pyramid, testing trophy, QA-XXNN mapping, entry criteria, exit criteria, test levels, defect management policy, ISTQB, ISO 29119-3."
+description: "Create a Test Strategy — the project-wide test policy per ISTQB / ISO/IEC/IEEE 29119-3: pyramid (or trophy) allocation across test levels, a QA-XXNN quality-attribute → test-type mapping, entry/exit criteria, environments, roles, and defect management. Mints TS-NN. Policy only — does not author test cases or log results (that's qa-test-scenario / the still-reserved qa-test-plan / qa-acceptance-test). Modes: scaffold (docs/qa/test-strategy.md skeleton), draft (interactive Q&A authoring the policy + mapping table), update (revise as quality attributes or ADRs change). Triggers on: test strategy, test policy, test pyramid, testing trophy, QA-XXNN mapping, entry criteria, exit criteria, test levels, defect management policy, ISTQB, ISO 29119-3."
 user-invocable: true
 metadata:
   category: "specification"
   complexity: "medium"
   version: "1.0.0"
   status: active
-  last_reviewed: 2026-08-03
+  last_reviewed: 2026-08-13
   review_interval: 60d
   impact: "low"
 ---
@@ -40,7 +40,7 @@ project and revised as quality attributes or architecture decisions change.
 **Is NOT:**
 | Symptom | Belongs in |
 |---|---|
-| Authoring individual test cases (Gherkin scenarios, tabular cases) | `qa-test-scenario` *(planned, not yet built)* |
+| Authoring individual test scenarios or test cases (Gherkin, tabular) | `qa-test-scenario` |
 | A scoped plan naming which scenarios run in a given cycle/release | `qa-test-plan` *(planned, not yet built)* |
 | Executing tests, logging pass/fail results, filing bugs on failure | `qa-acceptance-test` *(planned, not yet built — absorbs the dropped `qa-eval-harness` scope)* |
 | Defining the quality *requirement* itself (the threshold a test must prove) | `spec-quality-attributes` (`QA-XXNN`) — distinct package, do not merge |
@@ -146,19 +146,22 @@ the requirement.
 
 ## Test Case Format Rules
 
-Policy for the format future test cases (authored by `qa-test-scenario`,
-not this skill) must follow — codified here so that skill has a fixed
-contract to build against, not a decision to re-litigate per case:
+Policy for the format test scenarios and test cases (authored by
+`qa-test-scenario`, not this skill) must follow — codified here so that
+skill has a fixed contract to build against, not a decision to re-litigate
+per case:
 
-| Anchor | Format | Rationale |
-|---|---|---|
-| `UC-NN` (use-case flow) or `PRD-NNNN.US-NN` (user story, no escalation) | **Gherkin** — `Given/When/Then`, one scenario per flow/extension | Behavioural, actor-facing; Gherkin mirrors the use case's own step structure |
-| `QA-XXNN` (quality attribute) | **Tabular** — `ID \| Stimulus \| Environment \| Response \| Response measure \| Verification method` (Bass/Clements/Kazman quality-attribute scenario shape) | Non-functional, measurement-driven; a prose Given/When/Than obscures the threshold |
+| Anchor | Scenario tier? | Case format | Rationale |
+|---|---|---|---|
+| `UC-NN` (use-case flow) | Yes — one `SC-NN` per flow/extension | **Gherkin** — `Given/When/Then` | Behavioural, actor-facing; Gherkin mirrors the use case's own step structure |
+| `PRD-NNNN.US-NN` (user story, no escalation) | No — story's own acceptance criteria are the oracle | **Gherkin** — `Given/When/Then` | Same format, no intermediate scenario needed |
+| `QA-XXNN` (quality attribute) | No — the row is already a Bass/Clements/Kazman scenario | **Tabular** — `ID \| Stimulus \| Environment \| Response \| Response measure \| Verification method` | Non-functional, measurement-driven; a prose Given/When/Than obscures the threshold |
 
 **ID anchoring — never both for the same requirement:**
-- `UC-NN.TC-NN` when the requirement has escalated to a use case.
+- `UC-NN.SC-NN.TC-NN` when the requirement has escalated to a use case (via its scenario).
 - `PRD-NNNN.US-NN.TC-NN` when it hasn't (the story's own acceptance criteria
   are the oracle).
+- `QA-XXNN.TC-NN` for a quality attribute, direct.
 - A story that later escalates to a use case (`Covers:` set) is tested via
   the use case from that point on — retire the direct-anchored case, don't
   keep both.
@@ -211,7 +214,7 @@ without dropping the function itself. Record who (or what role) owns each:
 | Function | ISTQB role | Typical owner on a small team |
 |---|---|---|
 | Strategy ownership, this document | Test Manager | Tech lead / solo founder |
-| Test design (writing cases once `qa-test-scenario` ships) | Test Analyst | Developer-in-test |
+| Test design (`qa-test-scenario` — scenarios + cases) | Test Analyst | Developer-in-test |
 | Execution, triage-to-defect handoff | Test Executor | CI + developer-in-test |
 
 Do not invent named individuals — record the *function*, and who currently
@@ -302,7 +305,8 @@ ledger via `util-open-items` — no local Open Items section (ADR-0005).
 | Artefact | Relationship |
 |---|---|
 | **Quality Attributes** (`QA-XXNN`) | Source of the mapping table — this strategy states *how* each requirement gets verified; it does not restate the requirement |
-| **Use Cases** (`UC-NN`) / **User Stories** (`PRD-NNNN.US-NN`) | Anchor points for future test cases (Test Case Format Rules) |
+| **Use Cases** (`UC-NN`) / **User Stories** (`PRD-NNNN.US-NN`) | Anchor points for test scenarios/cases (Test Case Format Rules); `qa-test-scenario` does the actual authoring |
+| **`qa-test-scenario`** | Authors the test scenarios (`SC-NN`) and test cases (`TC-NN`) this strategy's format rules govern |
 | **ADRs** | May fix tooling, environments, or a pipeline choice this document should cite rather than re-decide |
 | **`plan-implementation`** | Its per-milestone Standalone Test Gate is a narrower, execution-time concern; a future refactor may have it reference `TS-NN`/test-case IDs instead of hand-written commands — not this skill's job to perform |
 | **`util-open-items`** | Pre-ship defect filing |
@@ -327,8 +331,9 @@ After any mode, summarise in 4–6 lines:
 4. **Coverage check** — which `QA-XXNN` entries now have a mapped test type,
    which still don't.
 5. **Open items filed**, if any, via `util-open-items`.
-6. **Next step** — populate remaining mappings, or hand off to
-   `qa-test-scenario`/`qa-test-plan`/`qa-acceptance-test` once they ship.
+6. **Next step** — populate remaining mappings, run `qa-test-scenario` to author
+   scenarios/cases against them, or hand off to `qa-test-plan`/`qa-acceptance-test`
+   once they ship.
 
 ---
 
