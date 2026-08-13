@@ -6,9 +6,9 @@ user-invocable: true
 metadata:
   category: "planning"
   complexity: "medium"
-  version: "1.1.0"
+  version: "1.2.0"
   status: active
-  last_reviewed: 2026-05-29
+  last_reviewed: 2026-08-13
   impact: "low"
 ---
 
@@ -124,7 +124,39 @@ the persona cannot complete the journey — the skeleton is broken.
 
 ---
 
-## Mode — Generate (single mode, full output)
+## Backends
+
+Which functionality inventory this skill reads from is a **serialization** choice, per
+`adr-0010` (in the consuming repo's `docs/architecture/decisions/`, e.g. the kit) — the same
+`docs/product-specs/backend.yml` that `spec-functional-breakdown-structure` reads:
+
+- **`markdown`** (default) — Mode 1 reads `docs/product-specs/07a-fbs.md` and enumerates
+  `C-N.M.FXX` rows into epics, exactly as described below.
+- **`github`** — Mode 2 reads the existing functionality-issue inventory
+  (`type:functionality`-labelled issues) and **proposes** an epic grouping over it, rather
+  than enumerating from a markdown table. This is a genuine workflow inversion: under
+  `markdown`, functionalities and epics are both authored here; under `github`,
+  functionalities are already born in the tracker by `spec-functional-breakdown-structure`,
+  and this skill's job is to propose and create the epic layer over them.
+
+**Declaration** — no separate file; this skill reads the same `backend.yml` FBS declares:
+
+```yaml
+backend: github          # markdown (default) | github
+repo: owner/name         # github only
+project: 3                # optional — Project v2 number
+```
+
+**Operational github mapping.** Before running Mode 2, read
+[`references/github-backend.md`](references/github-backend.md) — the epic-side mapping,
+what's mechanically derivable from the functionality inventory vs what needs operator
+confirmation (phase, differentiator — no GitHub primitive carries either yet), and
+[`../spec-functional-breakdown-structure/references/github-backend.md`](../spec-functional-breakdown-structure/references/github-backend.md)
+for the functionality-side mapping this mode reads as its input.
+
+---
+
+## Mode 1 — Generate (`backend: markdown`)
 
 ### Step 0 — Read all upstream artefacts
 
@@ -233,6 +265,64 @@ Compare to Phase 1 FBS total. Flag orphaned functionalities.
 
 ---
 
+## Mode 2 — Propose epics from backend (`backend: github`)
+
+Read [`references/github-backend.md`](references/github-backend.md) before running this
+mode. Steps not listed here are identical to Mode 1 — only the functionality source and the
+epic-creation target change.
+
+### Step 0 — Read the functionality inventory
+
+```bash
+gh issue list --repo <repo> --label type:functionality --state all --json number,title,body
+```
+
+Parse each issue's `Capability: C-N.M` line (always present) and `VS stage: VS-N.M` line
+(present when set). Read `docs/business/04a-value-streams.md` and
+`docs/business/01a-personas.md` exactly as Mode 1 — those stay markdown regardless of the FBS
+backend.
+
+### Step 1 — Group the inventory into proposed epics
+
+Apply VS-stage affinity, capability-domain coherence, and the sizing check mechanically (same
+heuristics as Mode 1 Step 1, §3 of the reference doc marks these as backend-derivable). Do
+**not** attempt to infer differentiator anchoring or phase boundary — no GitHub primitive
+carries either (reference doc §5, a pre-existing gap, not new to this mode). Present the
+mechanically-grouped proposal to the operator and ask, per proposed group: "does this contain
+a differentiator functionality that should anchor its own epic instead?" and "which phase does
+this group belong to?" Fold the answers back into the grouping before proceeding — this is a
+**proposal**, not a batch import; the operator reviews before anything is created.
+
+### Steps 2–5 — Name, order, walking skeleton, phase plan
+
+Identical to Mode 1 Steps 2–5. Ordering (Step 3) still reads pain index from value streams,
+unaffected by backend. Phase Plan (Step 5) uses the operator-confirmed phase from Step 1
+above, not an inferred column.
+
+### Step 6 — Create the epics and write the roadmap
+
+1. For each confirmed group, create the epic issue and attach its member functionality
+   issues as native sub-issues per `references/github-backend.md` §4.
+2. Write `docs/plans/delivery-roadmap.md`'s narrative sections (Walking Skeleton hypothesis,
+   Phase Plan goals, "can/cannot yet") exactly as Mode 1 — these have no GitHub primitive and
+   stay authored prose.
+3. Render §Epic Table and §Per-epic §FBS-scope tables as a **read-out** of the just-created
+   GitHub structure (epic issue number, its sub-issues, each sub-issue's `Capability:`/`VS
+   stage:` lines) rather than hand-authoring them — they are a snapshot, regenerable by
+   re-running this step.
+
+### Step 7 — Coverage check
+
+```bash
+gh issue list --repo <repo> --label type:functionality --state all --json number | jq length
+```
+
+Compare against the total count of functionality issues attached as sub-issues across every
+created epic (`gh issue view <epic> --json subIssuesSummary`, summed). Flag any functionality
+issue not attached to exactly one epic.
+
+---
+
 ## Output structure
 
 ```markdown
@@ -322,6 +412,10 @@ pointer, companion docs (FBS, VS, QA, personas).
 Retired epics: marked ❌ with a note; row preserved, ID not reused.
 PRDs reference epics as `E-NN · [name]` in §0 Architecture Traceability.
 
+**Under `backend: github`:** identity is the epic issue's `#N` (native, never recycled);
+`E-NN` minting is retired for that project, mirroring `C-N.M.FXX`'s retirement on the
+functionality side. PRDs reference epics as `#N` instead.
+
 ---
 
 ## Discipline checks
@@ -339,13 +433,27 @@ Before declaring complete:
 - [ ] Sizing within 5–25 FBS rows per epic (outliers flagged)
 - [ ] Phase 2 epics listed after all Phase 1 epics
 
+**Under `backend: github`** (Mode 2), in addition to the backend-independent checks above:
+- [ ] Every proposed epic's differentiator/phase question was put to the operator, never inferred (`references/github-backend.md` §5)
+- [ ] Every functionality issue attached as a sub-issue of exactly one epic (coverage check run)
+- [ ] §Epic Table / §FBS-scope tables in `delivery-roadmap.md` are a fresh read-out, not stale from a prior run
+
+---
+
+## Reference materials
+
+Two files carry the `github`-backend content. Read before running Mode 2:
+
+- **`references/github-backend.md`** — the epic-side mapping (this skill). Never copied into the project.
+- **`../spec-functional-breakdown-structure/references/github-backend.md`** — the functionality-side mapping Mode 2 reads as input. Never copied into the project.
+
 ---
 
 ## Cross-references
 
 | Reads | Why |
 |---|---|
-| FBS (`C-N.M.FXX` + VS stage + phase + ★) | Primary input — every functionality lands in an epic |
+| FBS — `docs/product-specs/07a-fbs.md` (`markdown` backend) or `type:functionality`-labelled issues (`github` backend, per `backend.yml`) | Primary input — every functionality lands in an epic |
 | Value streams (`VS-N.M` pain index + value proposition per VS) | Epic priority + phase goal vocabulary |
 | Personas (`P-NN` device + context) | Walking skeleton "can/cannot yet" narrative |
 | Quality attributes (`QA-XXNN`) | Optional — which QA entries apply per epic scope |
