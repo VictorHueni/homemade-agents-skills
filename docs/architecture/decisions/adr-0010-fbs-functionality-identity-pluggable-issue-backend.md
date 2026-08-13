@@ -1,6 +1,6 @@
 ---
 title: FBS Functionality Identity — Pluggable Issue-Tracker Backend for spec-functional-breakdown-structure and plan-delivery-roadmap
-status: draft
+status: active
 owner: Victor Hueni
 last_reviewed: 2026-08-13
 review_interval: 180d
@@ -180,11 +180,11 @@ decision driver above.
 
 ## Open Items
 
-| Item | Resolution path | Priority |
-| :--- | :--- | :--- |
-| Add `backend:` setting + `github` mode to `spec-functional-breakdown-structure` (create-issue, adopt-ID, idempotency-marker, two-pass reference resolution) | Implement per the primitive mapping above; port the reference implementation's caught marker-scanning bug fix (exclude the trailer from reference resolution) as a starting correctness constraint, not something to rediscover | high |
-| Add the workflow-inversion mode to `plan-delivery-roadmap` (read backend functionality issues, propose an epic grouping) | Design as its own increment — larger than the FBS-side backend wrapper | high |
-| Author `docs/product-specs/backend.yml`'s schema doc + a `github-backend.md` reference for `spec-functional-breakdown-structure`, mirroring `util-open-items/references/github-backend.md` | Write alongside the skill implementation | medium |
-| Build a one-way `markdown C-N.M.FXX → github #N` migration mode, emitting the ID map | Mirror `util-open-items`'s Mode 7 migration design | medium |
-| Update `rules/open-items-governance.md`-equivalent FBS governance doc (if one exists / gets created) to describe the two-backend model | Follow ADR-0002's own tooling-consequences precedent | low |
-| **Deferred, own future ADR:** should `util-epic-estimate`'s *mechanism* (read functionality/epic issues from a backend, combine with role-rate calibration, produce a dual-track estimate) move to the kit, with calibration supplied per-project rather than baked in? | Blocked on this ADR's own Open Items landing first (the estimator needs the GitHub-issue shape to exist before it can be redesigned to read it). Also blocked on `util-codebase-valuation`'s own status — `util-epic-estimate` depends on its output, and that skill is *also* project-local for the same calibration-specificity reason; moving one without resolving the other creates a kit skill depending on a project-local skill. Needs a calibration-injection design (mechanism in the kit, Swiss rates / measured founder velocity / any project's own numbers supplied as project-local config) before a move is even well-formed — not a file move. Raised 2026-08-13, not decided | deferred |
+| Item | Resolution path | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Add `backend:` setting + `github` mode to `spec-functional-breakdown-structure` (create-issue, adopt-ID, idempotency-marker, two-pass reference resolution) | Implement per the primitive mapping above; port the reference implementation's caught marker-scanning bug fix (exclude the trailer from reference resolution) as a starting correctness constraint, not something to rediscover | high | ✅ done |
+| Add the workflow-inversion mode to `plan-delivery-roadmap` (read backend functionality issues, propose an epic grouping) | Design as its own increment — larger than the FBS-side backend wrapper | high | ✅ done |
+| Author `docs/product-specs/backend.yml`'s schema doc + a `github-backend.md` reference for `spec-functional-breakdown-structure`, mirroring `util-open-items/references/github-backend.md` | Write alongside the skill implementation | medium | ✅ done — `references/github-backend.md` shipped as scoped; the config surface is documented inline in both skills' `SKILL.md` §Backends, mirroring `util-open-items`'s own precedent of no separate schema-doc file |
+| Build a one-way `markdown C-N.M.FXX → github #N` migration mode, emitting the ID map | Mirror `util-open-items`'s Mode 7 migration design | medium | ✅ done — one script per skill (FBS Mode 4, roadmap Mode 3, sequenced), each dry-run by default |
+| Update `rules/open-items-governance.md`-equivalent FBS governance doc (if one exists / gets created) to describe the two-backend model | Follow ADR-0002's own tooling-consequences precedent | low | ➖ not applicable — no such doc exists for FBS; `SKILL.md` + the two `github-backend.md` files already carry the model, unlike open-items' split into a separate abstract-model doc |
+| **Deferred, own future ADR:** should `util-epic-estimate`'s *mechanism* (read functionality/epic issues from a backend, combine with role-rate calibration, produce a dual-track estimate) move to the kit, with calibration supplied per-project rather than baked in? | Blocked on this ADR's own Open Items landing first (the estimator needs the GitHub-issue shape to exist before it can be redesigned to read it). Also blocked on `util-codebase-valuation`'s own status — `util-epic-estimate` depends on its output, and that skill is *also* project-local for the same calibration-specificity reason; moving one without resolving the other creates a kit skill depending on a project-local skill. Needs a calibration-injection design (mechanism in the kit, Swiss rates / measured founder velocity / any project's own numbers supplied as project-local config) before a move is even well-formed — not a file move. Raised 2026-08-13, not decided | deferred | ⏸ still deferred — both blocking conditions unchanged as of 2026-08-13 |
