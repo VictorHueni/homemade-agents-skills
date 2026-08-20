@@ -283,12 +283,19 @@ def _compact(n: int) -> str:
     return f"{n:,}" if n < 10_000 else f"{n / 1000:.1f}k"
 
 
-def _git_stats(note_path: Path, changelog: str) -> dict:
+def _git_stats(note_path: Path, changelog: str, exclude_paths: list[str] | None = None) -> dict:
     """Commits, active days and lines changed for the note's changelog range.
 
     Deterministic and offline: the range comes from the note's own Full Changelog
     line. A repo without those tags (or no git) yields nothing, and the affected
     cards are omitted rather than guessed.
+
+    `exclude_paths` scopes only the lines-changed measure (via git pathspec
+    exclusion, e.g. ["docs/**", "*.md"]) — commits and active days still count
+    the whole range, since those describe the release's cadence, not its code
+    volume. A project whose release note is dominated by generated seeds or
+    plan-execution logs (not source) would otherwise report a "lines changed"
+    figure that is mostly non-code.
     """
     match = _RANGE_RE.search(changelog or "")
     if not match:
@@ -310,12 +317,14 @@ def _git_stats(note_path: Path, changelog: str) -> dict:
     dates = run(["log", "--format=%cs", rng])
     if dates is not None:
         stats["active_days"] = len({d for d in dates.split() if d}) or ""
-    short = run(["diff", "--shortstat", rng]) or ""
+    pathspec = ["--", ".", *[f":!{p}" for p in exclude_paths]] if exclude_paths else []
+    short = run(["diff", "--shortstat", rng, *pathspec]) or ""
     added = re.search(r"(\d+) insertion", short)
     removed = re.search(r"(\d+) deletion", short)
     if added or removed:
         stats["lines"] = (int(added.group(1)) if added else 0,
                           int(removed.group(1)) if removed else 0)
+        stats["lines_scoped"] = bool(exclude_paths)
     return stats
 
 
@@ -461,8 +470,9 @@ def _recap(model: dict, git: dict, tokens: dict) -> str:
     lines = git.get("lines")
     lines_html = (f'<span class="rc-pair">+{_compact(lines[0])} &#8722;{_compact(lines[1])}</span>'
                   if lines else "")
+    lines_label = "Lines (code)" if git.get("lines_scoped") else "Lines"
     cards = [("Days", m["days"]), ("Active days", git.get("active_days", "")),
-             ("Commits", git.get("commits", "")), ("Lines", lines_html)]
+             ("Commits", git.get("commits", "")), (lines_label, lines_html)]
     card_html = "".join(f'<div class="recap-card"><div class="rc-k">{key}</div>'
                         f'<div class="rc-v">{value}</div></div>'
                         for key, value in cards if value != "" and value is not None)
@@ -618,7 +628,8 @@ def _warn_unknown_sections(model: dict) -> None:
           f"Rename the section, or fold its content into one of these.", file=sys.stderr)
 
 
-def build_html(note_path: Path, design_system: str | None, release_url: str | None) -> str:
+def build_html(note_path: Path, design_system: str | None, release_url: str | None,
+               exclude_paths: list[str] | None = None) -> str:
     model = parse_note(note_path.read_text(encoding="utf-8"))
     _warn_unknown_sections(model)
     today = datetime.date.today().isoformat()
@@ -636,7 +647,7 @@ def build_html(note_path: Path, design_system: str | None, release_url: str | No
     for key, value in {"TITLE": _esc(title),
                        "DESIGN_SYSTEM_CSS": all_css,
                        "CONTENT": render_content(model, url, note_label, today,
-                                                 _git_stats(note_path, model["changelog"]),
+                                                 _git_stats(note_path, model["changelog"], exclude_paths),
                                                  tokens)}.items():
         tmpl = tmpl.replace("{{" + key + "}}", value)
     return tmpl
@@ -749,6 +760,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path,
                         help="Output PDF path (default: <note-dir>/pdf/<note-stem>.pdf).")
     parser.add_argument("--html-only", action="store_true", help="Write the HTML and skip the PDF step.")
+    parser.add_argument("--exclude-path", action="append", default=[], metavar="PATHSPEC",
+                        help="Git pathspec to exclude from the recap's 'Lines' card (repeatable), "
+                             "e.g. --exclude-path 'docs/**' --exclude-path '*.md'. Scopes only that "
+                             "measure to code churn; commits and active days still cover the full "
+                             "range. Omit to keep the whole-tree diff (default, unchanged behaviour).")
     args = parser.parse_args(argv)
 
     if not args.note.is_file():
@@ -757,7 +773,9 @@ def main(argv: list[str] | None = None) -> int:
     html_path = pdf_path.with_suffix(".html")
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
 
-    html_path.write_text(build_html(args.note, args.design_system, args.release_url), encoding="utf-8")
+    html_path.write_text(
+        build_html(args.note, args.design_system, args.release_url, args.exclude_path),
+        encoding="utf-8")
     print(f"render_pdf.py: wrote {html_path}")
     if args.html_only:
         return 0
