@@ -317,7 +317,11 @@ def _git_stats(note_path: Path, changelog: str, exclude_paths: list[str] | None 
     dates = run(["log", "--format=%cs", rng])
     if dates is not None:
         stats["active_days"] = len({d for d in dates.split() if d}) or ""
-    pathspec = ["--", ".", *[f":!{p}" for p in exclude_paths]] if exclude_paths else []
+    # Top-anchored (":/", ":!/…") because `run()` invokes git via `-C cwd` where
+    # cwd is the *note's* directory, not the repo root — a plain "." / ":!p"
+    # pathspec would resolve relative to the note's own folder and silently
+    # scope the whole diff down to whatever lives next to the note.
+    pathspec = ["--", ":/", *[f":!/{p}" for p in exclude_paths]] if exclude_paths else []
     short = run(["diff", "--shortstat", rng, *pathspec]) or ""
     added = re.search(r"(\d+) insertion", short)
     removed = re.search(r"(\d+) deletion", short)
