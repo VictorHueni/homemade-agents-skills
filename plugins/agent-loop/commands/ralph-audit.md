@@ -48,14 +48,23 @@ Read the plan and its workspace, then verify each item. Report PASS / FAIL / WAR
 1. **Audit report** — one line per check, grouped by section, with PASS / FAIL / WARN and a short reason.
 2. **Blockers** — any FAILs that would prevent the loop from running. If any exist, STOP and do not emit the command.
 3. **Warnings** — non-blocking issues the user should know about before starting.
-4. **Ready-to-run command** — if no blockers, emit a single bash oneliner in a fenced code block:
+4. **Ready-to-run command** — if no blockers, resolve `ralph.sh`'s actual location first, then emit a single bash oneliner in a fenced code block.
+
+   **Resolve `<ralph-sh-path>` before emitting anything — never hardcode a literal path.** Installation mode varies by machine (flat skills directory vs. plugin marketplace), and a plugin-cache path is version-qualified, so a literal path baked into this command goes stale on the next `agent-loop` version bump. Resolve in this order:
+   1. Flat install: `~/.claude/skills/agent-ralph-loop/scripts/ralph.sh` — use if it exists.
+   2. Else, plugin marketplace cache (version-agnostic glob, take the newest if more than one):
+      ```bash
+      find ~/.claude/plugins/cache -type f -path '*/agent-ralph-loop/scripts/ralph.sh' 2>/dev/null | sort -V | tail -1
+      ```
+   3. Neither resolves — **this is a blocker**: report it under Blockers ("ralph.sh not found under a flat skills install or any plugin cache — is agent-loop installed?") and do not emit a command.
 
     ```bash
-    cd <repo-root-or-worktree-path> && ~/.claude/skills/agent-ralph-loop/scripts/ralph.sh <workspace-dir> --max-iterations <N>
+    cd <repo-root-or-worktree-path> && <ralph-sh-path> <workspace-dir> --max-iterations <N>
     ```
 
    Rules for building the command:
    - `<repo-root-or-worktree-path>` — resolve via `git rev-parse --show-toplevel` from the current working directory.
+   - `<ralph-sh-path>` — the path resolved above; state which of the two install modes it came from in the accompanying prose.
    - `<workspace-dir>` — path to the workspace relative to the repo root.
    - `<N>` — number of pending increments plus a buffer of 3.
    - Add `--with-prd` if the exec plan frontmatter has a `prd:` field pointing to an existing file.
