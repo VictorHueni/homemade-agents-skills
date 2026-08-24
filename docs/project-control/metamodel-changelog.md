@@ -11,6 +11,46 @@
 > touched; the authoritative *why* for each is its row in
 > `docs/project-control/open-items/open-items.md`.
 
+**`qa-test-scenario` ships — second `qa-` skill, three-tier scenario/case model (2026-08-13):**
+Derives test scenarios from a use case's flows (Cockburn: one `SC-NN` per main-success-scenario
+step or extension) and expands scenarios into concrete cases — plus two direct-to-case paths with
+no scenario tier (`PRD-NNNN.US-NN` user stories with no `Covers:` use case; `QA-XXNN` quality
+attributes, whose row is already a Bass/Clements/Kazman scenario). Format is Gherkin
+(`UC-NN`/`PRD-NNNN.US-NN`) or tabular stimulus/response (`QA-XXNN`), per `qa-test-strategy`'s
+already-fixed Test Case Format Rules — this skill builds against that policy, never redecides it.
+**New registry rows**: `test_scenario` (`UC-NN.SC-NN`, single-collection) and `test_case`
+(`(UC-NN.SC-NN|PRD-NNNN.US-NN|QA-XXNN).TC-NN`, single-collection), both →
+`docs/qa/test-scenarios.md`. Design settled through two rounds with the operator: an initial
+"two-tier, no case ID" proposal was based on a locally-stale clew clone (8 days behind
+`origin/main`); pulling latest revealed clew's canonical package page already modelled the full
+three-tier chain, so the shipped design matches clew's existing text almost verbatim — the one
+real gap closed here is `quality_attribute → test_case` (QAs previously only reached
+`test_strategy`, even in the fresh clew page; the kit's already-shipped `qa-test-strategy` assumed
+otherwise). **Clew-side (authored first, per ADR-0008)**: `docs/metamodel/packages/quality-assurance.md`
+(status line, zoom diagram, artefacts table, boundary relationships — `test_scenario`/`test_case`
+flipped active; `quality_attribute → test_case` edge added) · `docs/metamodel/packages/product-specs.md`
+(boundary table: `is oracle for` + new `defines tests for` rows) · `docs/metamodel/README.md`
+(packages table qa- row) · root `README.md` (QA subgraph nodes/edges solidified, `defines tests for`
+backfilled as active — it had never been updated when `qa-test-strategy` itself shipped — + intro
+line). Committed on a fresh `docs/qa-test-scenario-metamodel` branch off `main` (the sibling
+checkout was on an unrelated feature branch with 7 unpushed commits, left untouched). **Kit-side**:
+`plugins/kit-core/skills/metamodel/references/artefact-types-registry.yaml` (`test_scenario` +
+`test_case` rows) · `metamodel-reference.md` (Ongoing build-order note, canonical-paths tree,
+prefix→folder mapping) · `rules/skill-creation-sync.md` (`qa-` row) · `docs/index.md` (Supporting
+artefacts + ID conventions) · `plugins/quality-assurance/skills/qa-test-strategy/SKILL.md` (Test
+Case Format Rules section gets the scenario tier inserted, ID anchoring updated to
+`UC-NN.SC-NN.TC-NN`, Is-NOT table / roles / cross-references / closing report all de-"planned"d) ·
+`plugins/product-spec/skills/spec-use-case/SKILL.md` (Mode 4 slice + metamodel-position table point
+at `qa-test-scenario` for the actual authoring) · `plugins/quality-assurance/skills/qa-test-scenario/`
+(new, incl. `references/methodology-references.md`) · `README.md` (skill count 59→60; **also fixed
+a pre-existing gap**: the `quality-assurance` plugin set — live since `qa-test-strategy` shipped —
+had never been added to the Plugin sets table) · `AGENTS.md` (skill count). No promotion of the new
+verbs (`realises`, `expands into`, `is oracle for`, `defines tests for`) into clew's master
+`relationships.md` catalogue — matching how `qa-test-strategy`'s own edge was left for the future
+OI-0074 batch-ratification pass, not promoted individually when it shipped. No GitHub issue existed
+for this skill before it shipped (checked both repos); recommend filing one retroactively via
+`util-open-items`.
+
 **`qa-test-strategy` ships — first real `qa-` skill, new `quality-assurance` plugin (2026-08-03):**
 The `qa-` category's reservation (2026-06-26 entry below) graduates its lead skill:
 `qa-test-strategy` mints `TS-NN` — test pyramid (or trophy) allocation, `QA-XXNN`→`TS-NN`

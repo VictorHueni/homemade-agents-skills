@@ -57,7 +57,7 @@
     {
       "name": "quality-assurance",
       "source": "./plugins/quality-assurance",
-      "description": "Quality assurance & test layer. Quality attributes (ISO/IEC 25010) and test strategy (pyramid allocation, QA-XXNN→TS-NN mapping)."
+      "description": "Quality assurance & test layer. Quality attributes (ISO/IEC 25010), test strategy (pyramid allocation, QA-XXNN→TS-NN mapping), and test scenarios/cases derived from use-case flows, user stories, and quality attributes."
     },
     {
       "name": "strategy",
