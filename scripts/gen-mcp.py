@@ -57,8 +57,10 @@ def toml_block(reg) -> str:
         lines.append(f"[mcp_servers.{s['name']}]")
         lines.append(f'command = "{t["command"]}"')
         lines.append("args = [" + ", ".join(f'"{a}"' for a in t["args"]) + "]")
-        for k, v in t.get("env", {}).items():
-            lines.append(f'env = {{ "{k}" = "{v}" }}')
+        env = t.get("env", {})
+        if env:
+            entries = ", ".join(f'"{k}" = "{v}"' for k, v in env.items())
+            lines.append(f"env = {{ {entries} }}")
     lines.append(TOML_END)
     return "\n".join(lines)
 
