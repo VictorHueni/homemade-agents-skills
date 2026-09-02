@@ -28,7 +28,7 @@ body {
 .doc-section { break-before: page; page-break-before: always; }
 .doc-section:first-child, .doc-section.doc-section--flow { break-before: auto; page-break-before: auto; }
 h1, h2, h3, h4, .doc-label { break-after: avoid; page-break-after: avoid; }
-table, figure, li, .doc-keep { break-inside: avoid; page-break-inside: avoid; }
+figure, li, .doc-keep { break-inside: avoid; page-break-inside: avoid; }  /* tables may span pages: rows stay whole, thead repeats */
 table { width: 100%; border-collapse: collapse; }
 thead { display: table-header-group; }
 tfoot { display: table-footer-group; }
