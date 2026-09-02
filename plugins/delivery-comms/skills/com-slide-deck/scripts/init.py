@@ -23,17 +23,25 @@ SKILL_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = SKILL_DIR / "templates"
 
 
-def init_project(target: Path, name: str = "", author: str = ""):
+DOC_SCRIPT = """\
+// Document mode: no presentation controls. Only icon initialisation.
+if (typeof lucide !== 'undefined') lucide.createIcons();
+"""
+
+
+def init_project(target: Path, name: str = "", author: str = "", mode: str = "slides"):
     if target.exists() and any(target.iterdir()):
         print(f"[WARN] Target directory is not empty: {target}")
         print("       Existing files will NOT be overwritten.\n")
+
+    is_doc = mode == "document"
 
     # Create folder structure
     dirs = [
         "context",
         "design",
-        "output/slide-deck",
-        "output/slides",
+        "output/document" if is_doc else "output/slide-deck",
+        "output/pages" if is_doc else "output/slides",
         "output/prototypes",
     ]
     for d in dirs:
@@ -171,7 +179,7 @@ if (typeof lucide !== 'undefined') lucide.createIcons();
 
     placeholders = [
         ("design/styles.css", DEFAULT_STYLES),
-        ("design/script.js",  DEFAULT_SCRIPT),
+        ("design/script.js",  DOC_SCRIPT if is_doc else DEFAULT_SCRIPT),
     ]
     for rel, content in placeholders:
         path = target / rel
@@ -183,12 +191,17 @@ if (typeof lucide !== 'undefined') lucide.createIcons();
 
     # Patch config.yaml with name/author if provided
     config_path = target / "config.yaml"
-    if config_path.exists() and (name or author):
+    if config_path.exists() and (name or author or is_doc):
         text = config_path.read_text(encoding="utf-8")
         if name:
             text = text.replace('title: "Presentation Title"', f'title: "{name}"')
         if author:
             text = text.replace('author: "Author"', f'author: "{author}"')
+        if is_doc:
+            text = text.replace("mode: slides", "mode: document")
+            text = text.replace('slides_dir:        "output/slides"', 'slides_dir:        "output/pages"')
+            text = text.replace('output_dir:        "output/slide-deck"', 'output_dir:        "output/document"')
+            text = text.replace('output_filename:   "presentation.html"', 'output_filename:   "document.html"')
         config_path.write_text(text, encoding="utf-8")
 
     # Print summary
@@ -197,7 +210,7 @@ if (typeof lucide !== 'undefined') lucide.createIcons();
     print(f"\nNext steps:")
     print(f"  1. Fill in  {target / 'context/brief.md'}")
     print(f"  2. Fill in  {target / 'design/design-system.md'}")
-    print(f"  3. Create slides in  {target / 'output/slides/'}")
+    print(f"  3. Create {'pages' if is_doc else 'slides'} in  {target / ('output/pages/' if is_doc else 'output/slides/')}")
     print(f"  4. Build with:")
     print(f"       python {skill_rel / 'scripts/build.py'} --config {target / 'config.yaml'}")
 
@@ -220,10 +233,16 @@ def main():
         default="",
         help="Author name (written into config.yaml)",
     )
+    parser.add_argument(
+        "--mode", "-m",
+        choices=["slides", "document"],
+        default="slides",
+        help="slides (16:9 deck, default) or document (paginated A4/Letter)",
+    )
     args = parser.parse_args()
 
     target = Path(args.target).resolve()
-    init_project(target, name=args.name, author=args.author)
+    init_project(target, name=args.name, author=args.author, mode=args.mode)
 
 
 if __name__ == "__main__":

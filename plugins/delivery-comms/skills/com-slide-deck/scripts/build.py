@@ -33,6 +33,37 @@ except ImportError:
 # so a deck renders correctly with no project design system. Mirrors
 # com-artefact-viz/templates/tokens.fallback.css (same name, same role).
 FALLBACK_TOKENS = Path(__file__).resolve().parent.parent / "templates" / "tokens.fallback.css"
+# Structural defaults for `mode: document` (paginated A4/Letter, flowing partials).
+DOC_BASELINE = Path(__file__).resolve().parent.parent / "templates" / "doc.baseline.css"
+
+# Paper sizes (mm) for the on-screen sheet preview in document mode.
+PAGE_SIZES_MM = {"A4": (210, 297), "A3": (297, 420), "A5": (148, 210), "Letter": (216, 279), "Legal": (216, 356)}
+DEFAULT_PAGE_MARGIN = {"top": "18mm", "right": "18mm", "bottom": "20mm", "left": "18mm"}
+
+
+def page_geometry(cfg: dict) -> dict:
+    """Normalise config.yaml's `page:` block (document mode). Shared with render.py
+    so the CSS @page box and Chromium's print margins come from one source."""
+    page = cfg.get("page", {}) or {}
+    margin = dict(DEFAULT_PAGE_MARGIN)
+    margin.update({k: str(v) for k, v in (page.get("margin") or {}).items() if k in margin})
+    size = str(page.get("size", "A4"))
+    orientation = str(page.get("orientation", "portrait"))
+    w, h = PAGE_SIZES_MM.get(size, PAGE_SIZES_MM["A4"])
+    if orientation == "landscape":
+        w, h = h, w
+    return {"size": size, "orientation": orientation, "margin": margin, "width_mm": w, "height_mm": h}
+
+
+def make_document_css(geom: dict) -> str:
+    m = geom["margin"]
+    return (
+        f"@page {{ size: {geom['size']} {geom['orientation']}; "
+        f"margin: {m['top']} {m['right']} {m['bottom']} {m['left']}; }}\n"
+        f":root {{ --doc-page-width: {geom['width_mm']}mm; --doc-margin-top: {m['top']}; "
+        f"--doc-margin-right: {m['right']}; --doc-margin-bottom: {m['bottom']}; --doc-margin-left: {m['left']}; }}\n"
+        + read_file(DOC_BASELINE)
+    )
 
 
 def load_config(config_path: Path) -> dict:
@@ -152,15 +183,16 @@ def format_source_bar(keys: list, bibliography: dict) -> str:
 
 
 def inject_before_slide_end(slide_html: str, injection: str) -> str:
-    """Insert injection content just before the root .slide div's closing tag.
+    """Insert injection content just before the partial's root closing tag.
 
-    Relies on the invariant that every slide partial ends with </div> (the root
-    .slide closing tag) as the last non-whitespace content. The slide-number div
-    closes before it, so rstrip() + endswith("</div>") reliably targets the root.
+    Relies on the invariant that every partial ends with its root closing tag
+    (</div> for a slide, </section> for a document section) as the last
+    non-whitespace content, so the last closing tag is the root's.
     """
     stripped = slide_html.rstrip()
-    if stripped.endswith("</div>"):
-        return stripped[: -len("</div>")] + injection + "\n</div>\n"
+    m = re.search(r"</(div|section|article)>$", stripped)
+    if m:
+        return stripped[: m.start()] + injection + f"\n{m.group(0)}\n"
     return slide_html  # fallback: return unchanged if invariant not met
 
 
@@ -267,9 +299,10 @@ def build_head(cfg: dict) -> str:
     )
     if meta_tags:
         meta_tags += "\n"
+    lang = html.escape(str(cfg.get("lang", "en")), quote=True)
     return textwrap.dedent(f"""\
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="{lang}">
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -305,8 +338,14 @@ def build(config_path: Path, output_override: str = None):
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # `mode: document` swaps the fixed-canvas slide baseline for a paginated,
+    # flowing document (A4 by default) — same partial/stitch model, no canvas.
+    is_doc = str(cfg.get("mode", "slides")).lower() == "document"
+    unit = "pages" if is_doc else "slides"
+
     print(f"[BUILD] Config:  {config_path}")
-    print(f"[BUILD] Slides:  {slides_dir}")
+    print(f"[BUILD] Mode:    {'document' if is_doc else 'slides'}")
+    print(f"[BUILD] Partials: {slides_dir}")
     print(f"[BUILD] Output:  {output_file}")
 
     # Bibliography (optional — empty dict if absent or not configured)
@@ -321,8 +360,15 @@ def build(config_path: Path, output_override: str = None):
     canvas = cfg.get("canvas", {})
     canvas_w = int(canvas.get("width",  960))
     canvas_h = int(canvas.get("height", 540))
-    baseline_css = make_baseline_css(canvas_w, canvas_h)
-    baseline_js  = make_baseline_js(canvas_w)
+    if is_doc:
+        geom = page_geometry(cfg)
+        baseline_css = make_document_css(geom)
+        baseline_js = ""
+        print(f"[BUILD] Page:    {geom['size']} {geom['orientation']}, margins "
+              f"{geom['margin']['top']} {geom['margin']['right']} {geom['margin']['bottom']} {geom['margin']['left']}")
+    else:
+        baseline_css = make_baseline_css(canvas_w, canvas_h)
+        baseline_js  = make_baseline_js(canvas_w)
 
     # Styles — layered so values cascade in the right order (same model as
     # com-artefact-viz):
@@ -339,18 +385,23 @@ def build(config_path: Path, output_override: str = None):
     parts.append("<style>\n" + "\n".join(layers) + "\n</style>")
     parts.append("</head>\n<body>\n")
 
-    # Controls hint
-    parts.append(textwrap.dedent("""\
-    <div class="controls-hint">
-      Press <kbd>F</kbd> for fullscreen presentation &middot; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to navigate &middot; <kbd>Esc</kbd> to exit
-    </div>
-    """))
+    # Controls hint (slides only — a document has no presentation mode)
+    if not is_doc:
+        parts.append(textwrap.dedent("""\
+        <div class="controls-hint">
+          Press <kbd>F</kbd> for fullscreen presentation &middot; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to navigate &middot; <kbd>Esc</kbd> to exit
+        </div>
+        """))
+    else:
+        parts.append('<div class="doc">\n')
 
-    # Slides
-    slide_entries = cfg.get("slides", [])
+    # Slides / pages (`pages:` is accepted as an alias of `slides:` in document mode)
+    slide_entries = cfg.get("slides") or cfg.get("pages") or []
     total = len(slide_entries)
     numbering = cfg.get("numbering", {})
-    num_enabled = numbering.get("enabled", True)
+    # Document page numbers are Chromium's job at render time (partial count is
+    # not page count), so .slide-number rewriting is a slides-only feature.
+    num_enabled = numbering.get("enabled", True) and not is_doc
     num_format = numbering.get("format", "{current} / {total}")
 
     for idx, entry in enumerate(slide_entries, start=1):
@@ -383,9 +434,13 @@ def build(config_path: Path, output_override: str = None):
         parts.append("\n")
         print(" OK")
 
-    # Script (baseline responsive + project)
-    js = read_file(script_path)
-    parts.append(f"\n<script>\n{baseline_js}\n{js}\n</script>\n")
+    if is_doc:
+        parts.append("</div>\n")
+
+    # Script (baseline responsive + project; document mode ships no baseline JS)
+    js = read_file(script_path) if script_path.exists() else ""
+    if baseline_js or js:
+        parts.append(f"\n<script>\n{baseline_js}\n{js}\n</script>\n")
 
     parts.append("</body>\n</html>\n")
 
@@ -395,7 +450,7 @@ def build(config_path: Path, output_override: str = None):
         f.write(final)
 
     size_kb = output_file.stat().st_size / 1024
-    print(f"\n[DONE] {output_file.name} ({size_kb:.1f} KB, {total} slides)")
+    print(f"\n[DONE] {output_file.name} ({size_kb:.1f} KB, {total} {unit})")
 
 
 def main():

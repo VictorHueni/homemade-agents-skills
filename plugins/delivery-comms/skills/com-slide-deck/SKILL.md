@@ -9,16 +9,18 @@ description: >
   builder", requesting a new slide, editing an existing slide, prototyping visual
   variations, migrating an old deck onto the design system, or working with the
   slide-builder folder. Also use when the user asks to define or update a design
-  system for a presentation. Do NOT use for
+  system for a presentation, and for paginated A4/Letter documents built from the
+  same partials pipeline (`mode: document`: user guides, forms, handouts,
+  one-pagers rendered to a print PDF with running header and page numbers). Do NOT use for
   PowerPoint (.pptx) files or Google Slides (this skill exports its own decks to PDF via render.py).
 allowed-tools: Bash(python ${CLAUDE_SKILL_DIR}/scripts/init.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/build.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/split.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/migrate.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/dev_server.py *) Bash(python ${CLAUDE_SKILL_DIR}/scripts/render.py *)
 user-invocable: true
 metadata:
   category: "communication"
   complexity: "high"
-  version: "1.2.0"
+  version: "1.3.0"
   status: active
-  last_reviewed: 2026-05-31
+  last_reviewed: 2026-09-02
   impact: "low"
 ---
 
@@ -36,6 +38,7 @@ project-specific content.
 | Task                         | What to do                                                |
 |------------------------------|-----------------------------------------------------------|
 | New project from scratch     | `python scripts/init.py docs/communication/slides/{slug}` then fill brief + design system |
+| New A4 document (guide, form, handout) | `python scripts/init.py docs/communication/documents/{slug} --mode document`, then fill brief + design system; see **Document mode** |
 | Add a slide                  | Create partial in project's `src/`, add to `config.yaml`  |
 | Edit a slide                 | Edit the partial directly, run `build.py --config`        |
 | Re-theme the brand (palette/fonts) | Edit `docs/ux/design-system.md` → `ux-design-system generate` (shared `tokens.css` re-themes deck + viz) |
@@ -43,6 +46,7 @@ project-specific content.
 | Prototype a variation        | Create file in project's `dist/prototypes/`               |
 | Build shareable HTML         | `python scripts/build.py --config path/to/config.yaml`    |
 | Export deck to PDF           | `python scripts/render.py --config path/to/config.yaml [--recipient NAME]` (optional Playwright) |
+| Export document to PDF       | same `render.py` call; `mode: document` in config.yaml selects the paginated A4 path |
 | Split an existing deck       | `python scripts/split.py <file> --config path/to/config.yaml` |
 | Migrate an old deck to the design system | `python scripts/migrate.py --config path/to/config.yaml` (report) · `--apply` (alias shim) · `--rename` (rewrite names) |
 | Cite a source on a slide     | Add `data-sources="key1,key2"` to the `.slide` div; add entries to `context/bibliography.yaml` |
@@ -385,12 +389,12 @@ Run through this before every build. Items 1-5 are startup gates.
 5. [ ] `design/styles.css` defines only deck-only tokens + components (does NOT redefine the inherited base palette or semantic state tokens)
 6. [ ] Slide class name does not conflict with existing slides
 7. [ ] All colors, fonts, spacing use `var(--token)` (contract names), no raw hex; build log shows the shared `Tokens:` line
-8. [ ] `<div class="slide-number"></div>` present in every partial
+8. [ ] `<div class="slide-number"></div>` present in every partial (slides mode; document partials carry none)
 9. [ ] Slide added to `config.yaml` in the correct position
 10. [ ] Content aligns with the brief (tone, audience, key messages)
 11. [ ] Build runs without errors
 12. [ ] Output file opens correctly in a browser
-13. [ ] Slides scale correctly on mobile viewports (baseline responsive is auto-injected by build.py)
+13. [ ] Slides scale correctly on mobile viewports (baseline responsive is auto-injected by build.py) — slides mode only
 14. [ ] Every external figure on a slide has a matching key in `context/bibliography.yaml`
 
 ---
@@ -410,6 +414,26 @@ then render.
 
 ```bash
 python scripts/render.py --config path/to/config.yaml --recipient "Partner Name"
+```
+
+## Document mode (A4 / Letter documents)
+
+`mode: document` in `config.yaml` reuses the whole pipeline (brief, design system, token cascade, partials, bibliography, `build.py`, `render.py`) to produce a **paginated print document** instead of a 16:9 deck: a user guide, a data-collection form, a handout, a one-pager. Scaffold with `init.py --mode document` (creates `output/pages/` and `output/document/`, and a `script.js` with no presentation controls).
+
+What changes versus slides:
+
+- **Partials are flowing sections, not fixed canvases.** Each file is `<section class="doc-section">…</section>`; no `.slide` wrapper, no absolute positioning, no `.slide-number`. A `.doc-section` starts a new page by default; add `doc-section--flow` to let it follow the previous one. Use `.doc-keep` on any block that must not split across pages.
+- **Page geometry lives in one place.** The `page:` block (`size`, `orientation`, `margin`, `running_header`, `footer_left`, `numbering`) is turned into the `@page` rule by `build.py` and passed verbatim to Chromium by `render.py`, so the pagination box and the print margins can never disagree. On screen, `build.py` previews the document on a paper sheet with the same margins.
+- **Page numbers come from Chromium**, not from `.slide-number` (partial count is not page count). The header and footer are page furniture rendered in the margin boxes; design tokens cannot reach them, so they stay neutral grey mono.
+- **`render.py` prints with real print media** (`@media print` applies); slides mode emulates screen media. Set `lang:` in `config.yaml` for a non-English document.
+- **Break rules in the shipped baseline** (`templates/doc.baseline.css`): headings never strand at a page foot, tables repeat their `<thead>`, rows / list items / figures do not split, orphans and widows are three lines.
+
+Design-system rules apply unchanged: every colour, font, radius through `var()`; the deck-level `design/styles.css` defines only document-local tokens and components. In `design/design-system.md`, §4 Canvas becomes the page geometry and §10 Presentation Mode is N/A.
+
+```bash
+python scripts/init.py docs/communication/documents/user-guide --mode document --name "User guide" --author "Jane"
+python scripts/build.py --config docs/communication/documents/user-guide/config.yaml
+python scripts/render.py --config docs/communication/documents/user-guide/config.yaml   # → output/pdf/document.pdf
 ```
 
 ## Dependencies

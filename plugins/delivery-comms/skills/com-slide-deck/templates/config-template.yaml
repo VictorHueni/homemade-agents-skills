@@ -9,10 +9,27 @@ title: "Presentation Title"
 author: "Author"
 date_label: ""
 
-# Dimensions of the slide canvas (px)
+# Document language (<html lang>) — e.g. "en", "fr"
+lang: "en"
+
+# Output shape: "slides" (fixed 16:9 canvas, presentation mode) or "document"
+# (paginated A4/Letter, flowing partials, running header + page numbers in the PDF).
+mode: slides
+
+# Dimensions of the slide canvas (px) — slides mode only
 canvas:
   width: 960
   height: 540
+
+# Page geometry — document mode only. build.py turns this into the @page rule and
+# render.py passes the same values to Chromium, so the two can never disagree.
+# page:
+#   size: A4                    # A4 | A5 | A3 | Letter | Legal
+#   orientation: portrait       # portrait | landscape
+#   margin: { top: 18mm, right: 18mm, bottom: 20mm, left: 18mm }
+#   running_header: "{title}"   # placeholders: {title} {author} {date_label} {date}
+#   footer_left: "{author} · {date_label}"
+#   numbering: true             # "n / total" in the footer, from Chromium
 
 # Google Fonts to load
 fonts: []
@@ -23,7 +40,8 @@ fonts: []
 external_scripts: []
 #  - "https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"
 
-# Ordered list of slide partial files (relative to slides_dir)
+# Ordered list of partial files (relative to slides_dir). In document mode each
+# partial is a flowing <section class="doc-section"> (new page by default).
 slides: []
 #  - file: "00-title.html"
 #    class: "s1"

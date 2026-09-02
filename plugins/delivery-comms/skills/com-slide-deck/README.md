@@ -121,6 +121,10 @@ Then rename the generated slide files, update `config.yaml`, and build.
 
 ---
 
+## Document mode (A4 / Letter)
+
+Set `mode: document` in `config.yaml` (or scaffold with `init.py --mode document`) to build a paginated print document from the same partials pipeline: flowing `<section class="doc-section">` partials, page geometry from the `page:` block (shared by the `@page` rule and Chromium's print margins), running header and page numbers in the PDF. Same `build.py` / `render.py` commands. See SKILL.md → Document mode.
+
 ## Dev Server
 
 Auto-rebuild on file changes with a local HTTP server:

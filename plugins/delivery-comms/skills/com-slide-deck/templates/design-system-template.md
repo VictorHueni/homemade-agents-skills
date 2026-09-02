@@ -130,6 +130,8 @@ Include the exact URL or @font-face declarations needed._
 
 ## 4. Canvas
 
+_Document mode (`mode: document`): replace this table with the page geometry (size, orientation, margins) from `config.yaml`'s `page:` block and the print measure (page width minus side margins)._
+
 | Property     | Value | Notes                                  |
 |--------------|-------|----------------------------------------|
 | Width        |       | in px                                  |
@@ -289,7 +291,7 @@ comparison columns, timeline, maturity ring, etc.)_
 
 ## 10. Presentation Mode
 
-_Define the behavior when the deck enters fullscreen/presentation mode._
+_Define the behavior when the deck enters fullscreen/presentation mode. Document mode has none: write "N/A (document mode)" and describe the running header / footer instead._
 
 | Property            | Value                                    |
 |---------------------|------------------------------------------|
