@@ -38,13 +38,15 @@ The language ecosystem (`{{lang_ecosystem}}`) is pinned by Q1. The Node package 
 | C | yarn (Node) | `npm` |
 | D | Python, pip-family (pip / pip-tools / poetry / setuptools) | `pip` |
 | E | Python, uv | `uv` |
+| F | Maven (JVM) | `maven` |
 
-Dependabot's `npm` ecosystem parses `package-lock.json`, `yarn.lock`, and `pnpm-lock.yaml` alike — one ecosystem covers all three managers. On the Python side `pip` and `uv` are distinct ecosystems: `pip` reads `requirements.txt` / pip-resolved `pyproject.toml`; `uv` reads `pyproject.toml` + `uv.lock`. Picking the wrong one means Dependabot silently watches nothing.
+Dependabot's `npm` ecosystem parses `package-lock.json`, `yarn.lock`, and `pnpm-lock.yaml` alike — one ecosystem covers all three managers. On the Python side `pip` and `uv` are distinct ecosystems: `pip` reads `requirements.txt` / pip-resolved `pyproject.toml`; `uv` reads `pyproject.toml` + `uv.lock`. Picking the wrong one means Dependabot silently watches nothing. Maven's `maven` ecosystem parses `pom.xml` (including every module of a multi-module reactor) directly — no lockfile to pick between.
 
 ## Update-policy defaults
 
 - **`github-actions`**: `directory: /`, `schedule: weekly`, one grouped PR (`patterns: ["*"]`, all update-types). Pinned actions never float, so a scheduled bump is the only way they move; grouping keeps the noise to one PR/week.
-- **Language ecosystem**: `directory: /` (or the detected package root), `schedule: monthly`, `cooldown: { default-days: 7 }`, `groups: { minor-patch: { update-types: [minor, patch] } }`. Minor+patch land grouped in one PR; **majors intentionally fall outside the group** and arrive as individual PRs so each breaking bump is reviewed on its own. The 7-day cooldown is a supply-chain detection buffer — it withholds a bump PR until a fresh release has been public long enough for malware in a compromised version to surface.
+- **Language ecosystem (Node/Python)**: `directory: /` (or the detected package root), `schedule: monthly`, `cooldown: { default-days: 7 }`, `groups: { minor-patch: { update-types: [minor, patch] } }`. Minor+patch land grouped in one PR; **majors intentionally fall outside the group** and arrive as individual PRs so each breaking bump is reviewed on its own. The 7-day cooldown is a supply-chain detection buffer — it withholds a bump PR until a fresh release has been public long enough for malware in a compromised version to surface.
+- **`maven` (Q1 = F)**: same 7-day cooldown, but `schedule: weekly` rather than monthly — a deliberate deviation from the Node/Python default, matching the cadence a real Maven reactor repo in this kit's own family already runs (`package-ecosystem: maven`, weekly, `cooldown: { default-days: 7 }`). No minor/patch grouping distinction is made; majors are not split out separately for the Maven ecosystem.
 - **`open-pull-requests-limit: 5`** on every entry — a backpressure cap so Dependabot never floods the queue.
 
 ## Docker / docker-compose — detect, never emit empty

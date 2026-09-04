@@ -16,6 +16,7 @@ The PR-title check reuses the **same** config as the local commit-msg hook so th
 |---|---|---|
 | Node | `commitlint --edit` (reads `commitlint.config.js`) | `echo "$PR_TITLE" \| npx --no -- commitlint` — same config file, incl. `scope-enum` |
 | Python | commitizen `commit-msg` hook (reads `pyproject.toml [tool.commitizen]`) | `cz check --message "$PR_TITLE"` — same config |
+| Maven | `config/git-hooks/commit-msg` (shell regex, installed via `git-build-hook-maven-plugin`, no separate config file) | the same inline shell regex, re-embedded directly in the workflow step — no Node/Python runtime, so there is no config file to point a CLI at |
 
 **Injection hardening (zizmor):** the PR title is attacker-influenced. Always pass it through an `env:` binding (`PR_TITLE: ${{ github.event.pull_request.title }}`) and reference `"$PR_TITLE"` in `run:` — never interpolate `${{ github.event.pull_request.title }}` directly inside a `run:` block.
 
@@ -61,6 +62,7 @@ Because slugs are short (≤20 chars), kebab, and globally unique *by constructi
 
 - **Node:** `commitlint.config.js` gains `'scope-enum': [2, 'always', require('./.commit-scopes.json').scopes]`. This enforces the allowlist natively on **both** the commit-msg hook and the PR-title lint (both run commitlint). `feat(billing): …` ✅ · `feat(0121): …` ❌ (not in enum).
 - **Python:** commitizen's `cz_conventional_commits` does not enforce a scope allowlist, so the PR-title-lint workflow adds a small **advisory** scope step (pure `python3`, reads `.commit-scopes.json`) after the blocking format check. It warns (does not fail) when the title's scope is outside the enum.
+- **Maven:** the `config/git-hooks/commit-msg` shell regex has no native scope-enum either (same as Python) — it validates format only. The PR-title-lint workflow's advisory scope step applies identically, reading the same `.commit-scopes.json`.
 - **`cross-cutting` label override:** a PR labelled `cross-cutting` bypasses the scope check (not the format check) — for the legitimate multi-capability PR that no single scope describes. The label is the escape hatch that keeps the check advisory-friendly.
 
 ### Drift-gate

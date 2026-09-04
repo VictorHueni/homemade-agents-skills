@@ -2,7 +2,7 @@
 name: dev-git-init
 license: MIT
 disable-model-invocation: true
-description: 'Scaffold the deterministic git enforcement stack for a Node or Python project — husky/pre-commit hooks, commitlint/commitizen with Conventional Commits, gitleaks, .gitignore + .gitattributes + .editorconfig, CONTRIBUTING.md, GitHub PR template + CODEOWNERS + 3 issue templates, CI workflows, scripts/setup-branch-protection.sh, Dependabot config; on squash-merge strategies also a PR-title lint check, squash-title setting, and a capability scope-enum. Two modes: audit (read-only) and scaffold (3-question Q&A: stack · branching strategy · reviewer model). Uniformly skip-if-exists. Emits install + branch-protection commands; never executes them. Post-scaffold prompt asks whether to record decisions as an ADR via arch-adr. Triggers on: scaffold git, git init, set up git hooks, install husky, install commitlint, install commitizen, set up commit conventions, PR title lint, commit scope enum, branch protection, git workflow setup, dev workflow setup, repo conventions, scaffold contributing, scaffold dependabot.'
+description: 'Scaffold the deterministic git enforcement stack for a Node, Python, or Maven (JVM) project — husky/pre-commit/Maven hooks, commitlint/commitizen with Conventional Commits, gitleaks, .gitignore + .gitattributes + .editorconfig, CONTRIBUTING.md, GitHub PR template + CODEOWNERS + issue templates, CI workflows, scripts/setup-branch-protection.sh, Dependabot config; on squash-merge also a PR-title lint, squash-title setting, and a capability scope-enum. Two modes: audit (read-only) and scaffold (3-question Q&A: stack, branching strategy, reviewer model). Uniformly skip-if-exists. Emits install + branch-protection commands; never executes them. Post-scaffold prompt asks whether to record decisions as an ADR via arch-adr. Triggers on: scaffold git, git init, set up git hooks, install husky, install commitlint, install commitizen, set up commit conventions, PR title lint, commit scope enum, branch protection, git workflow setup, dev workflow setup, repo conventions, scaffold contributing, scaffold dependabot.'
 allowed-tools: Bash(gh repo view *)
 user-invocable: true
 metadata:
@@ -19,11 +19,11 @@ metadata:
 
 ## Overview
 
-`dev-git-init` provisions the **deterministic git enforcement stack** for a Node or Python project — the layered set of client-side hooks, server-side checks, and convention files that make every contributor (human or AI) produce compliant commits, branches, and PRs without having to remember the rules. It is the one-shot scaffolder that lands before the project's first real commit.
+`dev-git-init` provisions the **deterministic git enforcement stack** for a Node, Python, or Maven (JVM) project — the layered set of client-side hooks, server-side checks, and convention files that make every contributor (human or AI) produce compliant commits, branches, and PRs without having to remember the rules. It is the one-shot scaffolder that lands before the project's first real commit.
 
 **Two-layer model the skill assumes** (per industry standard pre-AI tooling):
 
-- **Client-side hooks** = fast, bypassable feedback (husky / pre-commit / commitlint / commitizen / gitleaks pre-commit)
+- **Client-side hooks** = fast, bypassable feedback (husky / pre-commit / commitlint / commitizen / git-build-hook-maven-plugin / gitleaks pre-commit)
 - **Server-side checks** = authoritative, unbypassable truth (GitHub Actions + branch protection)
 
 Both layers exist; the AI-skill layer is purely a *compliance helper* on top — it does not replace enforcement.
@@ -39,7 +39,7 @@ Both layers exist; the AI-skill layer is purely a *compliance helper* on top —
 
 **Three choices preserved** (genuinely vary across projects):
 
-- **Q1 — Stack + package manager:** pnpm / npm / yarn (Node) · pip-family / uv (Python) (5 options — the package manager pins the exact Dependabot ecosystem; see §Q1 → Dependabot ecosystem)
+- **Q1 — Stack + package manager:** pnpm / npm / yarn (Node) · pip-family / uv (Python) · Maven (JVM) (6 options — the package manager pins the exact Dependabot ecosystem; see §Q1 → Dependabot ecosystem)
 - **Q2 — Branching strategy + merge mode:** trunk-based + squash / GitLab Flow / GitFlow (3 options)
 - **Q3 — Reviewer model:** solo founder admin-bypass / mutual peer / CODEOWNERS-driven (3 options — **no default; operator must make an explicit governance choice**)
 
@@ -48,7 +48,7 @@ Both layers exist; the AI-skill layer is purely a *compliance helper* on top —
 **Scope discipline:**
 - This skill **writes files** — it does NOT install dependencies (`pnpm add ...`, `pip install ...`), execute hooks, or apply remote configuration (branch protection on GitHub). It emits commands for the operator to run.
 - It is **uniformly skip-if-exists**: every existing file is preserved untouched. To replace one, delete it and re-run.
-- It produces no `.claude/*.yaml` config file. The scaffolded standard files (`commitlint.config.js` / commitizen `pyproject.toml` section, `.husky/` or `.pre-commit-config.yaml`, `CONTRIBUTING.md`, `.github/*`) ARE the source of truth that downstream skills (`dev-git-commit`, `dev-pr`) read.
+- It produces no `.claude/*.yaml` config file. The scaffolded standard files (`commitlint.config.js` / commitizen `pyproject.toml` section / the `config/git-hooks/commit-msg` regex, `.husky/` or `.pre-commit-config.yaml` or `config/git-hooks/` + `pom.xml`, `CONTRIBUTING.md`, `.github/*`) ARE the source of truth that downstream skills (`dev-git-commit`, `dev-pr`) read.
 
 ---
 
@@ -62,22 +62,23 @@ Both layers exist; the AI-skill layer is purely a *compliance helper* on top —
 | 2 | `.husky/pre-commit` *(Node only)* | `.husky/pre-commit` | Node — see above |
 | 3 | `.husky/pre-push` *(Node only)* | `.husky/pre-push` | Node — see above |
 | 1–3 (Python) | `.pre-commit-config.yaml` *(Python only)* | `.pre-commit-config.yaml` | Python — replaces the 3 husky slots |
-| 4 | Commit linter config | Node: `commitlint.config.js` · Python: `pyproject.toml` `[tool.commitizen]` section appended | Both |
-| 5 | `.gitleaks.toml` | `.gitleaks.toml` | Both |
-| 6 | `.gitignore` | `.gitignore` | Both (stack-appropriate base) |
-| 7 | `.gitattributes` | `.gitattributes` | Both |
-| 8 | `.editorconfig` | `.editorconfig` | Both |
-| 9 | `CONTRIBUTING.md` | `CONTRIBUTING.md` | Both (text varies per Q2 + Q3) |
-| 10 | `.github/PULL_REQUEST_TEMPLATE.md` | (file) | Both |
-| 11 | `.github/CODEOWNERS` | (file) | Both |
-| 12 | `.github/ISSUE_TEMPLATE/*` | `bug.md` + `feature.md` + `docs.md` (3 files) | Both |
-| 13 | `.github/workflows/*` | `lint-build.yml` + `typecheck.yml` + `test.yml` + `gitleaks.yml` (4 files) | Both (runtime + commands differ) |
-| 14 | `scripts/setup-branch-protection.sh` | (file) | Both |
-| 15 | `.github/dependabot.yml` | (file) | Both (language ecosystem differs per Q1; `docker` / `docker-compose` blocks emitted only when detected) |
-| 16 *(conditional — Q2 squash-merge)* | PR-title lint workflow | `.github/workflows/pr-title-lint.yml` | Both (Node runs commitlint, Python runs `cz check`) |
-| 17 *(conditional — capability map/FBS present)* | Capability scope-enum bundle | `scripts/gen-commit-scopes.py` + `.commit-scopes.json` + `.github/workflows/scope-enum-drift.yml` + the `scope-enum` line wired into the slot-4 commit-linter config | Both |
+| 1–3 (Maven) | `config/git-hooks/{pre-commit,commit-msg}` *(Maven only)* + `pom.xml` wiring | `config/git-hooks/pre-commit`, `config/git-hooks/commit-msg` | Maven — `git-build-hook-maven-plugin` installs them into `.git/hooks/` on the first `./mvnw` run; no separate pre-push slot |
+| 4 | Commit linter config | Node: `commitlint.config.js` · Python: `pyproject.toml` `[tool.commitizen]` section appended · Maven: embedded in `config/git-hooks/commit-msg` (no separate config file — no Node/Python runtime) | All three |
+| 5 | `.gitleaks.toml` | `.gitleaks.toml` | All three |
+| 6 | `.gitignore` | `.gitignore` | All three (stack-appropriate base) |
+| 7 | `.gitattributes` | `.gitattributes` | All three |
+| 8 | `.editorconfig` | `.editorconfig` | All three |
+| 9 | `CONTRIBUTING.md` | `CONTRIBUTING.md` | All three (text varies per Q2 + Q3) |
+| 10 | `.github/PULL_REQUEST_TEMPLATE.md` | (file) | All three |
+| 11 | `.github/CODEOWNERS` | (file) | All three |
+| 12 | `.github/ISSUE_TEMPLATE/*` | `bug.md` + `feature.md` + `docs.md` (3 files) | All three |
+| 13 | `.github/workflows/*` | `lint-build.yml` + `typecheck.yml` + `test.yml` + `gitleaks.yml` (4 files) | All three (runtime + commands differ) |
+| 14 | `scripts/setup-branch-protection.sh` | (file) | All three |
+| 15 | `.github/dependabot.yml` | (file) | All three (language ecosystem differs per Q1; `docker` / `docker-compose` blocks emitted only when detected) |
+| 16 *(conditional — Q2 squash-merge)* | PR-title lint workflow | `.github/workflows/pr-title-lint.yml` | All three (Node runs commitlint, Python runs `cz check`, Maven runs the same shell regex as its commit-msg hook) |
+| 17 *(conditional — capability map/FBS present)* | Capability scope-enum bundle | `scripts/gen-commit-scopes.py` + `.commit-scopes.json` + `.github/workflows/scope-enum-drift.yml` + the `scope-enum` line wired into the slot-4 commit-linter config | All three (Maven has no native scope-enum either — same advisory-only treatment as Python) |
 
-**17 logical slots — 15 base + 2 conditional.** Node projects fill slots 1–3 with husky; Python fills the same 3 slots with `.pre-commit-config.yaml`. Slots 16–17 apply only when their condition holds (see below); everything else is the same across stacks.
+**17 logical slots — 15 base + 2 conditional.** Node projects fill slots 1–3 with husky; Python fills the same 3 slots with `.pre-commit-config.yaml`; Maven fills them with `config/git-hooks/{pre-commit,commit-msg}` wired into `pom.xml` via `git-build-hook-maven-plugin`. Slots 16–17 apply only when their condition holds (see below); everything else is the same across stacks.
 
 **Conditional-slot rules:**
 - **Slot 16 (PR-title lint)** is scaffolded only when **Q2 squash-merges** (option A or B). For GitFlow (Q2=C) it is **N/A** — a merge-commit repo lints every branch commit, so the PR title is not the landed subject.
@@ -90,7 +91,7 @@ What the skill does **NOT** write:
 - `lint-staged` config (Node) or per-language lint runners — varies too much within each ecosystem; deferred to follow-up per-stack skills
 - A second PR-title type-list Action like `amannn/action-semantic-pull-request` — the PR-title lint (slot 16) reuses the **same** commitlint/commitizen config as the commit-msg hook, so there is one vocabulary and nothing to hand-sync
 - ADRs directly — closing report invokes `arch-adr` via the post-scaffold prompt
-- `package.json` / `pyproject.toml` script entries — operator adds via the emitted install command
+- `package.json` / `pyproject.toml` script entries — operator adds via the emitted install command (Maven has no analogous scripts section; the `pom.xml` plugin wiring itself is the corresponding config)
 - `.claude/*.yaml` config — classical configs above ARE the source of truth
 
 ---
@@ -113,7 +114,8 @@ Run first whenever the project already has any of the stack components.
 ```bash
 # Run from project root.
 # NOTE on slot counting (see §Counting convention below the loop):
-#   - .husky/* (Node) or .pre-commit-config.yaml (Python) = slots 1–3 (one stack populates them)
+#   - .husky/* (Node), .pre-commit-config.yaml (Python), or config/git-hooks/{pre-commit,commit-msg}
+#     wired into pom.xml (Maven) = slots 1–3 (one stack populates them)
 #   - commitlint.config.{js,mjs} / .commitlintrc.{yaml,json} (Node) OR pyproject.toml [tool.commitizen] (Python) = 1 slot (any one variant)
 #   - .github/ISSUE_TEMPLATE/{bug,feature,docs}.md = 1 slot (3 files)
 #   - .github/workflows/{lint-build,typecheck,test,gitleaks}.yml = 1 slot (4 files)
@@ -124,6 +126,7 @@ Run first whenever the project already has any of the stack components.
 for f in \
   .husky/commit-msg .husky/pre-commit .husky/pre-push \
   .pre-commit-config.yaml \
+  config/git-hooks/pre-commit config/git-hooks/commit-msg \
   commitlint.config.js commitlint.config.mjs .commitlintrc.yaml .commitlintrc.json \
   .gitleaks.toml \
   .gitignore .gitattributes .editorconfig \
@@ -148,15 +151,20 @@ done
 [ -f pyproject.toml ] && grep -q '^\[tool\.commitizen\]' pyproject.toml \
   && echo "✅ pyproject.toml [tool.commitizen]" \
   || echo "⬜ pyproject.toml [tool.commitizen]"
+
+# Also check pom.xml for the git-build-hook-maven-plugin wiring (Maven path)
+[ -f pom.xml ] && grep -q 'git-build-hook-maven-plugin' pom.xml \
+  && echo "✅ pom.xml git-build-hook-maven-plugin wired" \
+  || echo "⬜ pom.xml git-build-hook-maven-plugin wired"
 ```
 
 Also detect:
-- **Stack:** presence of `package.json` (Node) · `pyproject.toml` (Python). **If neither matches, classify as `none / docs-only`** — hook-based pieces cannot run without an app. Recommend either deferring the scaffold or running it after `pnpm init` / `python -m venv && touch pyproject.toml`.
+- **Stack:** presence of `package.json` (Node) · `pyproject.toml` (Python) · `pom.xml` + `mvnw` (Maven, JVM). **If none matches, classify as `none / docs-only`** — hook-based pieces cannot run without an app. Recommend either deferring the scaffold or running it after `pnpm init` / `python -m venv && touch pyproject.toml` / scaffolding `pom.xml` + the Maven Wrapper.
 - **Package manager (Node only):** presence of `pnpm-lock.yaml` / `yarn.lock` / `package-lock.json`
 - **Default branch:** assumed `main`. Operator may override via Q-skip with `--default-branch <name>` flag. Detection is intentionally not chained — assumption is cheaper, override is one flag.
 - **Repo platform:** `git remote get-url origin` (github.com / gitlab.com / bitbucket.org)
 
-**Counting convention for the audit report below:** the denominator is **15 base slots + up to 2 conditional slots (16–17)**, one per row in the §Output catalogue. Each grouped row counts as one slot regardless of how many files it expands to (issue templates = 3 files / 1 slot; workflows = 4 files / 1 slot; commitlint config variants count toward the single commit-linter slot; the scope-enum bundle = 3+ files / 1 slot). Mark a slot as **in place** when at least one file in the family exists. For slots 1–3 the rule is: if `.pre-commit-config.yaml` exists (Python), it fills all three; otherwise check each `.husky/*` file (Node). Slot 15 (`.github/dependabot.yml`) is base — always counted. **Conditional slots** are reported as **N/A** (not counted in the denominator) when their condition does not hold: slot 16 is N/A unless the repo squash-merges; slot 17 is N/A unless a capability map / FBS exists. The invariant is: **in-place + missing + N/A = 17**.
+**Counting convention for the audit report below:** the denominator is **15 base slots + up to 2 conditional slots (16–17)**, one per row in the §Output catalogue. Each grouped row counts as one slot regardless of how many files it expands to (issue templates = 3 files / 1 slot; workflows = 4 files / 1 slot; commitlint config variants count toward the single commit-linter slot; the scope-enum bundle = 3+ files / 1 slot). Mark a slot as **in place** when at least one file in the family exists. For slots 1–3 the rule is: if `.pre-commit-config.yaml` exists (Python), it fills all three; if `config/git-hooks/{pre-commit,commit-msg}` exist and are wired into `pom.xml` (Maven), they fill all three; otherwise check each `.husky/*` file (Node). Slot 15 (`.github/dependabot.yml`) is base — always counted. **Conditional slots** are reported as **N/A** (not counted in the denominator) when their condition does not hold: slot 16 is N/A unless the repo squash-merges; slot 17 is N/A unless a capability map / FBS exists. The invariant is: **in-place + missing + N/A = 17**.
 
 ### Step 2 — report
 
@@ -209,10 +217,14 @@ When a conditional slot does not apply, report it under **N/A** instead of Missi
 **Docs-only project variant** — when stack detection returns `none / docs-only`, the **Next action** changes:
 
 ```
-**Next action:** stack is docs-only — hook-based pieces (husky/pre-commit + commitlint/commitizen)
-cannot run without an app first. Two paths:
+**Next action:** stack is docs-only — hook-based pieces (husky/pre-commit,
+commitlint/commitizen, git-build-hook-maven-plugin) cannot run without an app first.
+Three paths:
   (1) Defer scaffold until the app is scaffolded (recommended).
   (2) Run `pnpm init` (or `touch pyproject.toml`) first to seed a minimal app,
+      then re-run dev-git-init scaffold.
+  (3) For a JVM project, scaffold `pom.xml` + the Maven Wrapper first
+      (e.g. `mvn archetype:generate` then `mvn wrapper:wrapper`),
       then re-run dev-git-init scaffold.
 The scaffold WILL run on a docs-only repo but the hook layer will be inert until
 an app exists and the install command is executed.
@@ -235,6 +247,7 @@ Three questions upfront. User responds like `1A, 2A, 3` — and for Q3 you MUST 
    C. yarn (Node)
    D. Python, pip-family (pip / pip-tools / poetry / setuptools — requirements.txt or pyproject.toml resolved by pip)
    E. Python, uv (pyproject.toml + uv.lock)
+   F. Maven (JVM) — pom.xml + Maven Wrapper (mvnw)
 
 2. Branching strategy + merge mode?
    A. Trunk-based + squash-merge — recommended for solo + small teams + continuous deploy
@@ -260,6 +273,7 @@ Q1 captures the package manager precisely so slot 15's language ecosystem is exa
 | C | yarn (Node) | `npm` |
 | D | Python, pip-family | `pip` |
 | E | Python, uv | `uv` |
+| F | Maven (JVM) | `maven` |
 
 **D and E differ ONLY at slot 15.** For every other slot they are the same "Python" path — both use `.pre-commit-config.yaml` (slots 1–3), the `pyproject.toml [tool.commitizen]` linter (slot 4), the Python `.gitignore`, and the Python CI-workflow variants. The pip-vs-uv split exists purely to name the Dependabot ecosystem correctly; wherever a template says "Python" or "Q1 = D/E", treat D and E identically.
 
@@ -325,9 +339,11 @@ For each file in the scoped scaffold list, write the appropriate template from �
 - File doesn't exist + parent dir exists → create file
 - **To overwrite an existing file:** the operator deletes it and re-runs. No `--force` flag exists.
 
+**Slots 1–3 (Maven)** — when Q1 = F: write `config/git-hooks/pre-commit` and `config/git-hooks/commit-msg` from §File templates, then wire `git-build-hook-maven-plugin` into `pom.xml`'s `<build><plugins>` (skip the wiring if `pom.xml` already declares the plugin — checked via the Step 1 grep, same skip-if-exists spirit as every other slot).
+
 **Slot 15 (Dependabot config)** — always (base slot): write `.github/dependabot.yml` from the §`.github/dependabot.yml` template. Substitute `{{lang_ecosystem}}` per the Q1 → Dependabot ecosystem map (`npm` / `pip` / `uv`) and `{{integration_branch}}` per the Q2-derived integration branch. Append the `docker` block only if a Dockerfile was detected, and the `docker-compose` block only if a compose file was detected (Step 1) — never emit an empty ecosystem. Skip-if-exists like every file.
 
-**Slot 16 (PR-title lint)** — when Q2 squash-merges: write `.github/workflows/pr-title-lint.yml` (Node or Python variant per Q1). Skip entirely for Q2=C.
+**Slot 16 (PR-title lint)** — when Q2 squash-merges: write `.github/workflows/pr-title-lint.yml` (Node, Python, or Maven variant per Q1). Skip entirely for Q2=C.
 
 **Slot 17 (scope-enum bundle)** — when a capability map / FBS was detected in Step 1:
 1. Copy the generator into the target repo: `cp ~/.claude/skills/dev-git-init/scripts/gen-commit-scopes.py scripts/gen-commit-scopes.py` (skip-if-exists like every file).
@@ -335,7 +351,7 @@ For each file in the scoped scaffold list, write the appropriate template from �
 3. Write `.github/workflows/scope-enum-drift.yml`.
 4. Wire the `scope-enum` line into the slot-4 commit-linter config **only if that config was scaffolded this same run** (a pre-existing `commitlint.config.js` is skip-if-exists, so the closing report instead tells the operator to add the line by hand).
 
-Make scripts executable: `chmod +x .husky/* scripts/*.sh scripts/*.py` after writing.
+Make scripts executable: `chmod +x .husky/* config/git-hooks/* scripts/*.sh scripts/*.py` after writing.
 
 ### Step 4 — post-scaffold ADR prompt
 
@@ -406,7 +422,10 @@ On `n`: the closing report omits the ADR step.
    # Python:
    pip install pre-commit commitizen
    pre-commit install --hook-type commit-msg --hook-type pre-commit
-   # gitleaks (both stacks): install via OS package manager
+   # Maven: nothing to install — git-build-hook-maven-plugin installs the hooks itself,
+   # bound to the `initialize` phase; they land in .git/hooks/ on the first ./mvnw run:
+   ./mvnw -q initialize
+   # gitleaks (all stacks): install via OS package manager
    brew install gitleaks   # macOS
    scoop install gitleaks  # Windows
    apt install gitleaks    # Debian/Ubuntu
@@ -415,10 +434,14 @@ On `n`: the closing report omits the ADR step.
 
    echo "test commit" > .git/COMMIT_EDITMSG && pnpm exec commitlint --edit  # should reject
    echo "feat: test commit" > .git/COMMIT_EDITMSG && pnpm exec commitlint --edit  # should pass
+   # Maven (no separate config file — the hook script itself is the linter):
+   git commit --allow-empty -m "test commit"        # should reject (commit-msg hook exits 1)
+   git commit --allow-empty -m "feat: test commit"  # should pass
 
 3. Commit the scaffold:
 
    git add .husky/ commitlint.config.js .gitleaks.toml .editorconfig .gitattributes .github/workflows/ .github/dependabot.yml
+   # Maven: git add config/git-hooks/ pom.xml ...
    git commit -m "chore(repo): scaffold git enforcement stack via dev-git-init"
 
 4. Push and open the first PR to trigger CI workflows (so status check names register with GitHub).
@@ -543,6 +566,78 @@ repos:
         stages: [pre-commit]
 ```
 
+### `config/git-hooks/pre-commit` + `config/git-hooks/commit-msg` + `pom.xml` wiring *(Maven only — Q1 = F)*
+
+The Maven-world equivalent of husky's `prepare` script: no Node/Python runtime is available, so the
+hook logic is plain POSIX shell, and `git-build-hook-maven-plugin` (bound to the `initialize` phase,
+which every `./mvnw` invocation runs through) installs the committed scripts into `.git/hooks/` on the
+first build — an owner decision over the alternative (`core.hooksPath`), because it needs no operator
+step beyond running `./mvnw` once.
+
+**`config/git-hooks/pre-commit`:**
+
+```sh
+#!/usr/bin/env sh
+# Installed into .git/hooks/pre-commit by git-build-hook-maven-plugin (initialize phase).
+staged_java=$(git diff --cached --name-only --diff-filter=ACM -- '*.java')
+if [ -n "$staged_java" ]; then
+  ./mvnw -q spotless:check || { echo "Spotless check failed — run ./mvnw spotless:apply"; exit 1; }
+fi
+
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --no-banner --redact
+else
+  echo "⚠ gitleaks not installed — skipping secret scan. Install via your OS package manager."
+fi
+```
+
+**`config/git-hooks/commit-msg`:**
+
+```sh
+#!/usr/bin/env sh
+# Installed into .git/hooks/commit-msg by git-build-hook-maven-plugin (initialize phase).
+# No Node/Python runtime — plain POSIX shell regex, mirrors the minimal 7-type set
+# (feat, fix, docs, chore, refactor, test, perf) the Node/Python linter configs also use.
+commit_msg_file="$1"
+first_line=$(head -n1 "$commit_msg_file")
+pattern='^(feat|fix|docs|chore|refactor|test|perf)(\([a-z0-9.-]+\))?!?: .{1,72}$'
+if ! printf '%s' "$first_line" | grep -Eq "$pattern"; then
+  echo "❌ Commit message does not follow Conventional Commits:"
+  echo "   $first_line"
+  echo "   Expected: <type>(<scope>): <subject>  (types: feat fix docs chore refactor test perf)"
+  exit 1
+fi
+```
+
+`chmod +x config/git-hooks/pre-commit config/git-hooks/commit-msg`.
+
+**`pom.xml` wiring** — add to the parent (or only) pom's `<build><plugins>`. Pin the exact version;
+verified present on Maven Central at scaffold time:
+
+```xml
+<plugin>
+  <groupId>com.rudikershaw.gitbuildhook</groupId>
+  <artifactId>git-build-hook-maven-plugin</artifactId>
+  <version>3.6.0</version>
+  <configuration>
+    <installHooks>
+      <pre-commit>config/git-hooks/pre-commit</pre-commit>
+      <commit-msg>config/git-hooks/commit-msg</commit-msg>
+    </installHooks>
+  </configuration>
+  <executions>
+    <execution>
+      <phase>initialize</phase>
+      <goals>
+        <goal>install</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+```
+
+Skip the `pom.xml` edit if the plugin is already declared (Step 1's `grep -q 'git-build-hook-maven-plugin' pom.xml` check) — same skip-if-exists spirit as every other slot, applied to an existing-file edit rather than a new file.
+
 ### `commitlint.config.js` *(Node — minimal 7-type set, always)*
 
 ```js
@@ -661,6 +756,21 @@ dist/
 .vscode/
 .idea/
 .DS_Store
+```
+
+**Maven (JVM) template:**
+
+```
+# Maven / Java
+target/
+*.class
+
+# Editor
+.idea/
+*.iml
+
+# Maven wrapper jar (the wrapper's .properties/.cmd/.sh ARE committed; only the jar is not)
+.mvn/wrapper/*.jar
 ```
 
 ### `.gitattributes` (stack-agnostic)
@@ -909,12 +1019,36 @@ jobs:
       - run: python -m build
 ```
 
+**Maven template:**
+
+```yaml
+name: lint-build
+on:
+  pull_request:
+    branches: [{{default_branch}}]
+  push:
+    branches: [{{default_branch}}]
+
+jobs:
+  lint-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'   # match the project's pinned JDK major
+      - run: ./mvnw -B -ntp spotless:check
+      - run: ./mvnw -B -ntp compile
+```
+
 Substitute `{{default_branch}}` per detected/assumed value (default `main`).
 
 ### `.github/workflows/typecheck.yml`
 
 **Node:** runs `pnpm typecheck` (project-defined; typically `tsc --noEmit`).
 **Python:** runs `mypy .` or `pyright`.
+**Maven:** compilation IS the type check (`./mvnw -B -ntp compile`, already covered by `lint-build.yml`) — this workflow is typically omitted for a Maven repo.
 
 (Structure mirrors `lint-build.yml` with the relevant runtime setup.)
 
@@ -922,6 +1056,7 @@ Substitute `{{default_branch}}` per detected/assumed value (default `main`).
 
 **Node:** runs `pnpm test`.
 **Python:** runs `pytest`.
+**Maven:** runs `./mvnw -B -ntp test`.
 
 (Structure mirrors `lint-build.yml`.)
 
@@ -949,7 +1084,7 @@ jobs:
 
 ### `.github/dependabot.yml` *(slot 15 — base, always scaffolded)*
 
-The dependency-freshness config. Always emits the `github-actions` block plus the language ecosystem from Q1; the `docker` / `docker-compose` blocks are appended **only when detected** (Step 1) — never emit an empty ecosystem. Substitute `{{lang_ecosystem}}` (`npm` / `pip` / `uv`, per §Q1 → Dependabot ecosystem) and `{{integration_branch}}` (per the Q2-derived integration branch). Full rationale — arming gotcha, ecosystem map, group/cooldown policy, integration-branch resolution — lives in [`references/dependabot-config.md`](references/dependabot-config.md).
+The dependency-freshness config. Always emits the `github-actions` block plus the language ecosystem from Q1; the `docker` / `docker-compose` blocks are appended **only when detected** (Step 1) — never emit an empty ecosystem. Substitute `{{lang_ecosystem}}` (`npm` / `pip` / `uv` / `maven`, per §Q1 → Dependabot ecosystem) and `{{integration_branch}}` (per the Q2-derived integration branch). **Q1 = F (Maven) overrides the language-ecosystem block's cadence:** `schedule.interval: weekly` in place of `monthly`, and no `groups: minor-patch` section — matching the cadence a real Maven reactor repo in this kit's own family already runs. Full rationale — arming gotcha, ecosystem map, group/cooldown policy, integration-branch resolution — lives in [`references/dependabot-config.md`](references/dependabot-config.md).
 
 **Base template (always — `github-actions` + language ecosystem):**
 
@@ -989,7 +1124,7 @@ updates:
   # Language dependencies: monthly cadence, 7-day cooldown (a supply-chain
   # detection buffer on fresh releases), minor+patch grouped into one PR;
   # majors intentionally fall OUTSIDE the group and arrive as individual PRs so
-  # a breaking bump is reviewed on its own. {{lang_ecosystem}} = npm | pip | uv.
+  # a breaking bump is reviewed on its own. {{lang_ecosystem}} = npm | pip | uv | maven.
   - package-ecosystem: "{{lang_ecosystem}}"
     directory: "/"
     target-branch: "{{integration_branch}}"
@@ -1099,6 +1234,35 @@ jobs:
         run: pipx run --spec commitizen==3.20.0 cz check --message "$PR_TITLE"
 ```
 
+**Maven variant** (reuses the same shell regex as `config/git-hooks/commit-msg` — no Node/Python runtime, so only the same `actions/checkout@v4` action the other two variants already use):
+
+```yaml
+name: PR Title Lint
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [{{default_branch}}]
+
+permissions:
+  contents: read
+
+jobs:
+  pr-title:
+    name: PR Title Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PR title (same regex as commit-msg hook — no Node/Python runtime)
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|docs|chore|refactor|test|perf)(\([a-z0-9.-]+\))?!?: .{1,72}$'
+          if ! printf '%s' "$PR_TITLE" | grep -Eq "$pattern"; then
+            echo "::error::PR title does not follow Conventional Commits: $PR_TITLE"
+            exit 1
+          fi
+```
+
 **Advisory scope-enum step** *(append to the job above — only scaffolded when slot 17 is active)*. Warns (does not fail) when the title's scope is outside `.commit-scopes.json`; bypassed by the `cross-cutting` label. To harden to blocking once the vocabulary settles, swap `::warning::` for `::error::` and add `exit 1`.
 
 ```yaml
@@ -1166,7 +1330,7 @@ When slot 17 is active **and** `commitlint.config.js` is scaffolded this run, ad
     'scope-enum': [2, 'always', require('./.commit-scopes.json').scopes],
 ```
 
-(Python commitizen has no native scope-enum; the allowlist there is the workflow's advisory step above.)
+(Python commitizen and the Maven shell-regex hook both have no native scope-enum; the allowlist for those two is the workflow's advisory step above.)
 
 ### `scripts/setup-branch-protection.sh`
 
@@ -1236,6 +1400,7 @@ Per-Q3 substitution:
 | npm (Node) | `npm install -D husky @commitlint/cli @commitlint/config-conventional && npx husky init` |
 | yarn (Node) | `yarn add -D husky @commitlint/cli @commitlint/config-conventional && yarn husky init` |
 | Python | `pip install pre-commit commitizen && pre-commit install --hook-type commit-msg --hook-type pre-commit` |
+| Maven (JVM) | nothing to install — `git-build-hook-maven-plugin` installs the hooks itself on the first `./mvnw` run (`./mvnw -q initialize`) |
 
 gitleaks for all: `brew install gitleaks` (macOS) · `scoop install gitleaks` (Windows) · `apt install gitleaks` (Debian/Ubuntu) · or download a binary release from https://github.com/gitleaks/gitleaks/releases
 
@@ -1251,7 +1416,7 @@ gitleaks for all: `brew install gitleaks` (macOS) · `scoop install gitleaks` (W
 6. **Skipping the audit step on existing projects.** Always detect what's present before scaffolding. The Step 2 scope-confirmation prevents surprises.
 7. **Defaulting Q3 (reviewer model).** This is the one decision with too much downstream consequence (branch protection rules, founder admin-bypass policy) to default. If the operator declines to answer, re-explain the trade-off and re-ask. Do not pick on their behalf.
 8. **Creating duplicate ADRs.** Step 1 detects an existing branching-strategy ADR via grep; the post-scaffold ADR prompt (Step 4) is skipped if one exists. The closing report notes the existing ADR and suggests amending it instead.
-9. **Forgetting `chmod +x` on `.husky/*` and `scripts/*.sh`.** Hooks won't fire if not executable. Step 3 must explicitly set the executable bit on scripts.
+9. **Forgetting `chmod +x` on `.husky/*`, `config/git-hooks/*`, and `scripts/*.sh`.** Hooks won't fire if not executable. Step 3 must explicitly set the executable bit on scripts.
 10. **Adding `amannn/action-semantic-pull-request` (a second type-list).** The PR-title lint reuses the *same* commitlint/commitizen config as the commit-msg hook — one vocabulary, no drift. A second Action means two type lists to hand-sync.
 11. **Interpolating the PR title inline in `run:`.** `${{ github.event.pull_request.title }}` inside a `run:` block is a template-injection hole. Always bind it to `env: PR_TITLE:` and reference `"$PR_TITLE"`.
 12. **Running the `gh api` squash-title or branch-protection commands.** Both are remote side effects — emit them, never execute (same discipline as branch protection).
@@ -1269,7 +1434,7 @@ gitleaks for all: `brew install gitleaks` (macOS) · `scoop install gitleaks` (W
 - [ ] Step 1 detected stack + default branch + existing files + existing branching-strategy ADR (if any)
 - [ ] Step 2 scope summary echoed with answers + scaffold list + skip list; operator confirmed
 - [ ] Every written file exists at its target path; existing files skipped silently
-- [ ] All `.husky/*`, `.sh`, and `.py` files are executable (`chmod +x` applied)
+- [ ] All `.husky/*`, `config/git-hooks/*`, `.sh`, and `.py` files are executable (`chmod +x` applied)
 - [ ] Slot 15 (`.github/dependabot.yml`) scaffolded (base — always); `{{lang_ecosystem}}` set per Q1, `{{integration_branch}}` per Q2; docker/docker-compose blocks appended only when detected
 - [ ] Slot 16 (`pr-title-lint.yml`) scaffolded iff Q2 squash-merges; PR title bound via `env:`, not inline
 - [ ] Slot 17 (generator + `.commit-scopes.json` + drift-gate + scope-enum wiring) scaffolded iff a capability map / FBS exists; generator exit 2 handled as graceful fallback
@@ -1287,7 +1452,7 @@ gitleaks for all: `brew install gitleaks` (macOS) · `scoop install gitleaks` (W
 
 ## Relations to other skills
 
-- **Consumed by `dev-git-commit`** (post-rewrite): reads `commitlint.config.js` (Node) / `pyproject.toml [tool.commitizen]` (Python) for type/scope rules; `.husky/commit-msg` or `.pre-commit-config.yaml` to know what's about to run; project script files for pre-flight commands; `CONTRIBUTING.md` for narrative fallback
+- **Consumed by `dev-git-commit`** (post-rewrite): reads `commitlint.config.js` (Node) / `pyproject.toml [tool.commitizen]` (Python) / `config/git-hooks/commit-msg` (Maven) for type/scope rules; `.husky/commit-msg`, `.pre-commit-config.yaml`, or `config/git-hooks/commit-msg` to know what's about to run; project script files for pre-flight commands; `CONTRIBUTING.md` for narrative fallback
 - **Consumed by `dev-pr`** (post-rewrite): reads `commitlint.config.js` / commitizen schema for PR title format; `.github/PULL_REQUEST_TEMPLATE.md` for body skeleton; `.github/CODEOWNERS` for reviewer acknowledgement; `docs/architecture/decisions/adr-*.md` glob for auto-linking ADR references
 - **Invokes `arch-adr`** via the Step 4 post-scaffold prompt (operator runs separately): records the Q2 + Q3 decisions as an ADR for revisitability
 - **Enables `dev-release-init`** (release automation) **and `com-release-note`** (stakeholder narrative): the PR-title lint + `squash_merge_commit_title=PR_TITLE` + capability scope-enum guarantee every squash-merge lands a clean, capability-scoped Conventional Commit — the clean history those skills parse to group and attribute changelog entries. `dev-git-init` owns the commit/PR/merge hygiene contract; the release skills consume it and never touch scopes. Setting up releases next? → `dev-release-init` reads this skill's branching-strategy decision + PR-title-lint layer directly.
