@@ -65,8 +65,11 @@ Which would you prefer?
 **MUST verify directory is ignored before creating worktree:**
 
 ```bash
-# Check if directory is ignored (respects local, global, and system gitignore)
-git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/dev/null
+# Check if directory is ignored (respects local, global, and system gitignore).
+# Query WITH the trailing slash: this check runs before the worktree (and so the
+# directory) exists, and git cannot match a directory-only gitignore pattern
+# (e.g. `.worktrees/`) against a path it cannot prove is a directory.
+git check-ignore -q .worktrees/ 2>/dev/null || git check-ignore -q worktrees/ 2>/dev/null
 ```
 
 **If NOT ignored:**
@@ -176,7 +179,7 @@ Ready to implement <feature-name>
 ### Skipping ignore verification
 
 - **Problem:** Worktree contents get tracked, pollute git status
-- **Fix:** Always use `git check-ignore` before creating project-local worktree
+- **Fix:** Always use `git check-ignore` before creating project-local worktree, and query with a trailing slash (`.worktrees/`) — the directory doesn't exist yet, so a bare query falsely reports "not ignored" against a directory-only gitignore pattern
 
 ### Assuming directory location
 
@@ -199,7 +202,7 @@ Ready to implement <feature-name>
 You: I'm using the dev-git-worktree skill to set up an isolated workspace.
 
 [Check .worktrees/ - exists]
-[Verify ignored - git check-ignore confirms .worktrees/ is ignored]
+[Verify ignored - git check-ignore -q .worktrees/ confirms .worktrees/ is ignored]
 [Create worktree: git worktree add .worktrees/auth -b feature/auth]
 [Run npm install]
 [Run npm test - 47 passing]
