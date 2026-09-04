@@ -600,6 +600,14 @@ fi
 # (feat, fix, docs, chore, refactor, test, perf) the Node/Python linter configs also use.
 commit_msg_file="$1"
 first_line=$(head -n1 "$commit_msg_file")
+
+# Subjects git GENERATES rather than you authoring them can never match a
+# Conventional Commits pattern. Without this bypass, `git merge` and `git revert`
+# become uncommittable in the repo.
+case "$first_line" in
+  "Merge "*|"Revert "*|"fixup!"*|"squash!"*) exit 0 ;;
+esac
+
 pattern='^(feat|fix|docs|chore|refactor|test|perf)(\([a-z0-9.-]+\))?!?: .{1,72}$'
 if ! printf '%s' "$first_line" | grep -Eq "$pattern"; then
   echo "❌ Commit message does not follow Conventional Commits:"
@@ -675,18 +683,29 @@ schema_pattern = "^(feat|fix|docs|chore|refactor|test|perf)(\\(.+\\))?: .{1,72}$
 ### `.gitleaks.toml`
 
 ```toml
-# gitleaks config — extends the default ruleset.
-# Add per-project allowlist entries below as false positives surface.
+# gitleaks config for this repo.
+#
+# useDefault pulls in gitleaks' own maintained ruleset; everything below is additive.
+#
+# Do NOT add a bare [[allowlists]] (or legacy [allowlist]) block whose paths/regexes
+# arrays are empty. gitleaks 8.x rejects the WHOLE config with
+#   "[[allowlists]] must contain at least one check for: commits, paths, regexes, or stopwords"
+# and because the pre-commit hook calls gitleaks unconditionally, that fails EVERY
+# commit at config-load time rather than failing on a finding. The error text looks
+# nothing like a leak report, so it reads as a broken hook.
+[extend]
+useDefault = true
 
-[allowlist]
-description = "Project-specific allowlist"
-paths = [
-  # '''docs/business/06a-models/.*\.md''',  # example: documentation containing fake API keys
-]
-regexes = [
-  # '''AKIA[0-9A-Z]{16}''',  # example: a specific known-safe pattern
-]
+# Add allowlists as false positives surface, for example:
+#
+# [[allowlists]]
+# description = "Fixture files containing deliberately fake credentials"
+# paths = ['''src/test/resources/.*\.json''']
 ```
+
+**Verify after writing** (any stack): `gitleaks protect --staged --no-banner --redact` should
+exit 0 on a clean tree. A non-zero exit with a `Failed to load config` line is the empty-array
+trap above, not a finding.
 
 ### `.gitignore`
 
@@ -1069,6 +1088,14 @@ on:
     branches: [{{default_branch}}]
   push:
     branches: [{{default_branch}}]
+
+# gitleaks-action lists the PR's commits on a pull_request event. contents: read
+# alone is NOT enough: the call returns 403 "Resource not accessible by integration",
+# which surfaces as a red gitleaks check that reads like a secret finding and is not
+# one. Neither actionlint nor zizmor catches a too-narrow permissions block.
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   gitleaks:
