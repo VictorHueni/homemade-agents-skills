@@ -316,6 +316,47 @@ PYEOF
     fi
 }
 
+# Enable the official Claude Code LSP plugins (jdtls-lsp, pyright-lsp, typescript-lsp)
+# in ~/.claude/settings.json when absent. install.sh already syncs kit skills, rules
+# and the kit marketplace but never touched official plugins before this — so LSP
+# enablement was machine-local (Plan-0001 increment 10). Global installs only; touches
+# only the enabledPlugins keys named here, nothing else in settings.json.
+ensure_official_plugins() {
+    local settings="$HOME/.claude/settings.json"
+    [[ -f "$settings" ]] || { log_verbose "  no ~/.claude/settings.json: skipping official-plugin enablement"; return 0; }
+    command -v python3 >/dev/null 2>&1 || { log_verbose "  python3 not on PATH: skipping official-plugin enablement"; return 0; }
+
+    local added
+    added="$(python3 - "$settings" <<'PYEOF'
+import json, sys
+
+path = sys.argv[1]
+official = ["pyright-lsp", "typescript-lsp", "jdtls-lsp"]
+
+with open(path) as f:
+    data = json.load(f)
+
+enabled = data.setdefault("enabledPlugins", {})
+added = []
+for name in official:
+    key = f"{name}@claude-plugins-official"
+    if not enabled.get(key):
+        enabled[key] = True
+        added.append(name)
+
+if added:
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+
+print(",".join(added))
+PYEOF
+)"
+    if [[ -n "$added" ]]; then
+        log "Official plugins enabled: $added"
+    fi
+}
+
 changed_skills=0
 pruned_skills=0
 unchanged_skills=0
@@ -346,6 +387,11 @@ else
     done
 fi
 sync_files "$SCRIPT_DIR/rules"    "$RULES_TARGET"    "rule"    changed_rules    pruned_rules    unchanged_rules
+
+# ── Official plugins (global installs only): see ensure_official_plugins above.
+if [[ -z "$TARGET_ROOT" ]]; then
+    ensure_official_plugins
+fi
 
 # ── Harness adapters (global installs only): AGENTS.md routing + behavioural rules
 # for Codex + OpenCode, marker-delimited so user content survives (kit ADR-0006 §4).

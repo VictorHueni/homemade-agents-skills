@@ -36,7 +36,7 @@ These guidelines are working if: fewer unnecessary changes in diffs, clarifying 
 _TODO: <PRODUCT_NAME> is a <type> that helps <audience> <do what>._
 
 **Stack:** _TODO: <Framework> <version> · <Runtime> <version> · <DB/auth> · <key deps>_
-**Package manager:** _TODO: <pnpm / npm / bun / pip / cargo / …>_
+**Package manager:** _TODO: <pnpm / npm / bun / pip / cargo / maven / gradle / …>_
 
 <!-- ================================================================
   WHY — docs navigation. Point to the living index, not inline paths.
