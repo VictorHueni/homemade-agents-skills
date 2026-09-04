@@ -89,7 +89,7 @@ Read these files in order, extracting information for each guide section:
 |---|---|
 | `package.json` | `engines.node` (runtime version), `scripts` (dev, test, build, lint, format), `name` (project name) |
 | `go.mod` | Go version, module name |
-| `pom.xml` / `build.gradle` | Java / Kotlin version, build commands |
+| `pom.xml` / `build.gradle` / `mvnw` | Java / Kotlin version (from `<maven.compiler.release>` or `sourceCompatibility`), build/test/verify commands - always run via the wrapper (`./mvnw`), never a bare `mvn` |
 | `Cargo.toml` | Rust edition, binary name, `cargo` commands |
 | `docker-compose.yml` / `docker-compose.dev.yml` | Services list, port mappings, depends_on order, volume mounts |
 | `.env.example` / `.env.template` | Required env vars, with descriptions if commented |
@@ -98,7 +98,7 @@ Read these files in order, extracting information for each guide section:
 | `.github/workflows/*.yml` / `.gitlab-ci.yml` | CI setup commands; install + test commands used in CI = the canonical way |
 | `CLAUDE.md` | Agent setup instructions, memory pointers, MCP server list |
 | `.mcp.json` | MCP servers configured for this project |
-| `.tool-versions` / `.nvmrc` / `.node-version` / `.python-version` | Exact runtime version pins |
+| `.tool-versions` / `.nvmrc` / `.node-version` / `.python-version` / `mise.toml` / `.sdkmanrc` / `<maven.compiler.release>` (pom.xml) | Exact runtime version pins |
 
 #### Fill process
 

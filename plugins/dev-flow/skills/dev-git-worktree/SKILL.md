@@ -125,7 +125,12 @@ if [ -f pyproject.toml ]; then poetry install; fi
 
 # Go
 if [ -f go.mod ]; then go mod download; fi
+
+# Java / Maven (wrapper only - never bare mvn)
+if [ -f pom.xml ]; then ./mvnw -q -DskipTests verify; fi
 ```
+
+**Maven note:** every worktree shares the same `~/.m2/repository` with the main checkout and every other worktree, so there is no per-worktree dependency-download cost - but concurrent builds across worktrees contend on that one shared local repository, so avoid running Maven builds in two worktrees of the same project at the same time.
 
 ### 4. Verify Clean Baseline
 
@@ -137,7 +142,10 @@ npm test
 cargo test
 pytest
 go test ./...
+./mvnw test
 ```
+
+**Quarkus note:** never run `quarkus:dev` (or any dev-mode server) in two worktrees of the same project at once - dev mode binds a fixed port, so the second worktree's process fails to start rather than picking a different one.
 
 **If tests fail:** Report failures, ask whether to proceed or investigate.
 
@@ -161,7 +169,7 @@ Ready to implement <feature-name>
 | Neither exists | Check CLAUDE.md → Ask user |
 | Directory not ignored | Add to .gitignore + commit |
 | Tests fail during baseline | Report failures + ask |
-| No package.json/Cargo.toml | Skip dependency install |
+| No package.json/Cargo.toml/pom.xml | Skip dependency install |
 
 ## Common Mistakes
 

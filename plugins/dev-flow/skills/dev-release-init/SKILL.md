@@ -111,12 +111,14 @@ grep -Ei 'trunk-based|gitlab flow|gitflow|integration branch|promote' CONTRIBUTI
 [ -f pyproject.toml ] && echo "python"
 [ -f Cargo.toml ]     && echo "rust"
 [ -f go.mod ]         && echo "go"
+[ -f pom.xml ]        && echo "maven"
 ```
 
 Then ask the one question the file layout cannot answer: **"Is this a deployed application (not published to a package registry), or a published library/package?"**
 
 - **Deployed app** → `release-type: simple`; `version.txt` is the truth; language manifests **frozen** and excluded from `extra-files` (lesson 8). A UI manifest whose lockfile tolerates a lagging root version *may* be tracked.
 - **Published package** → `release-type: node`/`python`/`rust`/… per the stack; the manifest IS the identity; `version.txt` is N/A.
+- **Maven (`pom.xml` present)** → prefer `release-type: maven` regardless of app-vs-library: release-please's dedicated `pom` updater recursively updates every module's `/project/version` (falling back to `/project/parent/version` for a submodule that inherits it), so a multi-module reactor is handled without a manual `extra-files` entry per module. This is *not* subject to lesson 8's manifest-freeze — Maven has no checked-in lockfile for `pom.xml` to desync, unlike npm/Python. Fall back to `extra-files` (`type: xml`, explicit `xpath`) only for a version stored somewhere the `pom` updater doesn't reach.
 
 ---
 
@@ -215,12 +217,13 @@ Echo the plan: resolved axes, the slots that will be written vs skipped, the anc
 For each missing slot, copy the template from `templates/` and substitute placeholders. **Idempotency is uniform** — file exists → skip silently; to overwrite, the operator deletes it and re-runs.
 
 **`release-please-config.json`** (`templates/release-please-config.json`) — substitute:
-- `{{release_type}}` → `simple` (deployed-app) or `node`/`python`/`rust`/… (published-package).
+- `{{release_type}}` → `simple` (deployed-app) or `node`/`python`/`rust`/`maven`/… (published-package). For a `pom.xml` repo, use `maven` even when the app is deployed-not-published (see §Detecting the axes — no lockfile-coupling risk).
 - `{{extra_files}}` → the version-echo targets:
   - **deployed-app:** empty `[]` for a backend-only app (version.txt is maintained by `release-type: simple` — do NOT list it in extra-files). Add a UI manifest only if one exists and its lockfile tolerates a lagging version, e.g.
     `{ "type": "json", "path": "frontend/package.json", "jsonpath": "$.version" }`.
     **Never** list a language manifest coupled to a checked-in lockfile (lesson 8).
   - **published-package:** usually empty (the manifest is handled by `release-type`); add entries only for *additional* echoes (a version constant, a docs badge).
+  - **maven:** usually empty — the `maven` release-type's `pom` updater bumps every module's `pom.xml` automatically. Add `extra-files` (`type: xml`, explicit `xpath`) only for a version stored outside `/project/version` / `/project/parent/version`.
 
 **`.release-please-manifest.json`** (`templates/release-please-manifest.json`) — substitute `{{anchor_version}}`.
 

@@ -35,7 +35,7 @@ git clone {repo-url}
 cd {repo-name}
 
 # 2. Install dependencies
-{install command — e.g. npm install}
+{install command — e.g. npm install (Maven/Gradle projects resolve dependencies automatically on first build - no separate install step; `./mvnw` is the wrapper, never a bare `mvn`)}
 
 # 3. {Any post-install step — e.g. copy env file}
 cp .env.example .env
@@ -62,7 +62,7 @@ Copy `.env.example` to `.env` (if you haven't already) and fill in the following
 {One command to start everything:}
 
 ```bash
-{start command — e.g. docker compose up -d / make dev / npm run dev}
+{start command — e.g. docker compose up -d / make dev / npm run dev / ./mvnw quarkus:dev (human-attended dev mode only - never run by an agent for a verdict)}
 ```
 
 Services started:
@@ -84,9 +84,9 @@ To restart a single service:
 
 | Task | Command | When to run |
 |---|---|---|
-| Run all tests | `{test command}` | Before every PR |
-| Run linter | `{lint command}` | Before every commit |
-| Run formatter | `{format command}` | Before every commit |
+| Run all tests | `{test command — e.g. npm test / pytest / ./mvnw test}` | Before every PR |
+| Run linter | `{lint command — e.g. eslint . / ruff check / ./mvnw pmd:check}` | Before every commit |
+| Run formatter | `{format command — e.g. prettier --write . / black . / ./mvnw spotless:apply}` | Before every commit |
 | Run database migrations | `{migrate command}` | After pulling changes that include new migrations |
 | Generate types / code | `{generate command}` | After modifying schema or API spec |
 | Seed local database | `{seed command}` | After first clone or after dropping the database |
