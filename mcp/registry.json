@@ -111,6 +111,32 @@
         }
       },
       "context": "Anthropic's reference server was archived July 2025 (SQLi); PGDG ships none — revisit if an official server appears."
+    },
+    "quarkus-agent": {
+      "server": "quarkusio/quarkus-agent-mcp (Quarkus Agent MCP)",
+      "why_not_user_global": "Wraps a supervised `quarkus dev` child process for one specific Quarkus project (ADR-0006): declare it in that project's own .mcp.json, never as a user-level plugin, or every unrelated repo would try to launch a Quarkus dev-mode session it doesn't have.",
+      "claude_project_mcp_json": {
+        "mcpServers": {
+          "quarkus-agent": {
+            "command": "mise",
+            "args": ["x", "--", "quarkus-agent-mcp"]
+          }
+        }
+      },
+      "context": "Binary pinned exactly (e.g. 1.2.6) via the project's dotfiles-declared mise install, launched through `mise x --` since mise only puts an install directory on PATH inside an activated interactive shell. First adopted by paracel-codex (Plan-0001)."
+    },
+    "maven-tools": {
+      "server": "arvindand/maven-tools-mcp (Maven Tools MCP)",
+      "why_not_user_global": "Dependency-version triage against live Maven Central makes sense only for a JVM/Maven project (ADR-0006); declare it in that project's own .mcp.json rather than every repo on the machine.",
+      "claude_project_mcp_json": {
+        "mcpServers": {
+          "maven-tools": {
+            "command": "docker",
+            "args": ["run", "-i", "--rm", "arvindand/maven-tools-mcp:3.2.1-noc7"]
+          }
+        }
+      },
+      "context": "The `-noc7` tag disables the server's bundled Context7-proxy doc tools, since Context7 is already served by the kit's own `context7` server above. Read-only advice only; running actual Maven goals stays in the shell via ./mvnw, never through this server. First adopted by paracel-codex (Plan-0001)."
     }
   }
 }
